@@ -66,7 +66,7 @@ server
 - `pages` || the page components of our app, any routing will go between these components
 - `pages/components` || components used specifically on those pages
 - `util` || any utility functions that can be used anywhere on the client side
-- `main.jsx` || the start point of the client
+- `main.tsx` || the start point of the client
 - `vite.config.js` || to configure vite
 
 ### 2.2 Cypress structure

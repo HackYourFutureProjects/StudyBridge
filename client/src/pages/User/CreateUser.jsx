@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import Input from "../../components/Input";
+import Input from "../../components/Input.tsx";
 import useFetch from "../../hooks/useFetch";
 import TEST_ID from "./CreateUser.testid";
 

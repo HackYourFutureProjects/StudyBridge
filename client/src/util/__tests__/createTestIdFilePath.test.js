@@ -1,4 +1,4 @@
-import createTestIdFilePath from "../createTestIdFilePath";
+import createTestIdFilePath from "../createTestIdFilePath.js";
 
 describe("createTestIdFilePath", () => {
   it("Adds all of the args", () => {

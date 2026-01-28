@@ -1,4 +1,4 @@
-import createTestIdFilePath from "../../util/createTestIdFilePath";
+import createTestIdFilePath from "../../util/createTestIdFilePath.js";
 
 const TEST_ID = {
   container: `${createTestIdFilePath("pages", "User", "CreateUser")}-container`,

@@ -1,8 +1,8 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 
-import App from "../App";
-import TEST_ID_HOME from "../pages/Home/Home.testid";
+import App from "../App.tsx";
+import TEST_ID_HOME from "../pages/Home/Home.testid.ts";
 import TEST_ID_USER_LIST from "../pages/User/UserList.testid";
 import TEST_ID_CREATE_USER from "../pages/User/CreateUser.testid";
 import { getUsersSuccessMock } from "../__testUtils__/fetchUserMocks";
