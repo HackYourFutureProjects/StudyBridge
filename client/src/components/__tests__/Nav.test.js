@@ -6,8 +6,8 @@ import { MemoryRouter } from "react-router-dom";
  * We use the App component to test here as it will do the routing for us.
  * This allows our test to be more user centric!
  */
-import App from "../../App";
-import TEST_ID_HOME from "../../pages/Home/Home.testid";
+import App from "../../App.tsx";
+import TEST_ID_HOME from "../../pages/Home/Home.testid.ts";
 import TEST_ID_USER_LIST from "../../pages/User/UserList.testid";
 import TEST_ID_NAV from "../Nav.testid";
 import { getUsersSuccessMock } from "../../__testUtils__/fetchUserMocks";
