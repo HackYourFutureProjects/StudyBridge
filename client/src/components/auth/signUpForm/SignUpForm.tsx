@@ -6,6 +6,8 @@ import { Button } from "../../ui/button/Button";
 import { signUpSchema } from "./signUpForm.validation";
 import { Role, SignUpData } from "../types";
 import Google from "../../icons/Google";
+import { NavLink } from "react-router-dom";
+import { authRoutesVariables } from "../../../router/routesVariables/pathVariables";
 
 type SignUpFormTypes = {
   loading: boolean;
@@ -69,6 +71,8 @@ export const SignUpForm = ({
         <div className="auth-actions">
           <div className="auth-actions-inner">
             <Button
+              as={NavLink}
+              to={authRoutesVariables.recovery}
               variant="link"
               className="auth-link-underline self-center p-0"
               type="button"
@@ -78,7 +82,17 @@ export const SignUpForm = ({
             <Button variant="secondary" size="auth" type="submit">
               Sign Up
             </Button>
-            <Button variant="tertiary" size="auth" type="button">
+            <Button
+              as={NavLink}
+              to={
+                role === "student"
+                  ? authRoutesVariables.loginStudent
+                  : authRoutesVariables.loginTutor
+              }
+              variant="tertiary"
+              size="auth"
+              type="button"
+            >
               Sign In
             </Button>
           </div>
