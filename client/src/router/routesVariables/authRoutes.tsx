@@ -1,5 +1,6 @@
 import type { RouteObject } from "react-router-dom";
 import { authRoutesVariables } from "./pathVariables";
+import { SignUpPage } from "../../pages/signUpPage/SignUpPage";
 
 export const authRoutes: RouteObject[] = [
   {
@@ -13,11 +14,11 @@ export const authRoutes: RouteObject[] = [
 
   {
     path: `${authRoutesVariables.registerStudent}`,
-    element: <div>Register student</div>,
+    element: <SignUpPage role="student" />,
   },
   {
     path: `${authRoutesVariables.registerTutor}`,
-    element: <div>Register student tutor</div>,
+    element: <SignUpPage role="tutor" />,
   },
 
   { path: `${authRoutesVariables.recovery}`, element: <div>Recovery</div> },
