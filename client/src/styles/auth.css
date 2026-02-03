@@ -1,0 +1,82 @@
+@layer components {
+  .auth-page {
+    @apply w-full flex items-center justify-center px-4;
+  }
+
+  .auth-form {
+    @apply w-full max-w-[1326px] px-[20px] py-[100px] md:px-[150px] md:py-[100px] bg-bg-secondary mt-[30px] rounded-[20px] border border-dark-600;
+  }
+
+  .auth-title {
+    color: transparent;
+    background-clip: text;
+    -webkit-background-clip: text;
+    background-image: linear-gradient(to right, #7186ff, #fe7587);
+
+    @apply font-bold leading-tight text-center
+        text-[40px] md:text-[48px] lg:text-[54px] xl:text-7xl
+        mb-[20px] xl:mb-[32px];
+  }
+
+  .auth-subtitle {
+    @apply text-center font-bold text-[18px] leading-[1] text-light-300;
+  }
+
+  .auth-content {
+    @apply mt-[80px] flex flex-col;
+  }
+
+  .auth-fields {
+    @apply flex flex-col items-center justify-center lg:grid lg:grid-cols-2 gap-[24px];
+  }
+
+  .auth-fields > :only-child {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: 100%;
+    max-width: 518px;
+  }
+
+  .auth-actions {
+    @apply flex flex-col items-center mt-[40px];
+  }
+
+  .auth-actions-inner {
+    @apply w-full max-w-[518px] flex flex-col gap-[24px] mb-[24px];
+  }
+
+  .auth-link-underline {
+    @apply p-0 underline font-bold text-[18px] leading-[1.5] text-center;
+  }
+
+  .auth-divider {
+    @apply w-full max-w-[518px] flex items-center gap-[20px] mb-[30px];
+  }
+
+  .auth-divider-line {
+    @apply h-px flex-1 bg-[var(--color-light-300)];
+  }
+
+  .auth-divider-text {
+    @apply text-[18px] text-[var(--color-light-300)];
+  }
+
+  .tf-autofill {
+    /* Chrome/Safari autofill */
+  }
+  .tf-autofill-dark:-webkit-autofill,
+  .tf-autofill-dark:-webkit-autofill:hover,
+  .tf-autofill-dark:-webkit-autofill:focus,
+  .tf-autofill-dark:-webkit-autofill:active {
+    -webkit-text-fill-color: #fff;
+    box-shadow: 0 0 0 30px var(--color-dark-800) inset !important;
+  }
+
+  .tf-autofill-light:-webkit-autofill,
+  .tf-autofill-light:-webkit-autofill:hover,
+  .tf-autofill-light:-webkit-autofill:focus,
+  .tf-autofill-light:-webkit-autofill:active {
+    -webkit-text-fill-color: #000;
+    box-shadow: 0 0 0 30px var(--color-light-100) inset !important;
+  }
+}
