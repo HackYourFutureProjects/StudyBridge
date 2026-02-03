@@ -1,19 +1,12 @@
-*,
-::after,
-::before,
-::backdrop,
-::file-selector-button {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+@import "tailwindcss";
+@import "./styles/base.css";
+@import "./styles/components.css";
+@import "./styles/theme.css";
+@import "./styles/auth.css";
 
-ol,
-ul,
-menu {
-  list-style: none;
-}
-
-body {
-  padding: 20px;
+@font-face {
+  font-family: "Raleway";
+  font-style: normal;
+  font-weight: 100 900;
+  src: url("../src/assets/fonts/Raleway-Italic-VariableFont_wght.ttf");
 }
