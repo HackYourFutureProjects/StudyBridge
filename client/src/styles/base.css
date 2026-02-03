@@ -19,7 +19,7 @@
 
   body {
     margin: 0;
-    background-color: #1e1c26;
+    background-color: var(--color-bg-main);
     font-family: "Raleway", system-ui, sans-serif;
   }
 

@@ -1,0 +1,64 @@
+import { useState } from "react";
+import { Button } from "../ui/button/Button";
+import { NavLink } from "react-router-dom";
+import { ControlPanel } from "../controlPanel/ControlPanel";
+import { MenuButton, MobileMenu } from "../ui/mobileMenu/MobileMenu";
+import {
+  authRoutesVariables,
+  publicRoutesVariables,
+} from "../../router/routesVariables/pathVariables";
+import { Logo } from "../logo/Logo";
+
+export const Header = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const isAuth = false;
+  const handleMobileMenuToggle = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const handleMobileMenuClose = () => {
+    setIsMobileMenuOpen(false);
+  };
+
+  return (
+    <>
+      <header
+        className="
+            fixed top-0 left-0 z-50
+            w-full h-[var(--header-height)]
+            bg-[#15141D40]
+            backdrop-blur-[12px]
+        "
+      >
+        <div className="flex items-center justify-between mx-auto max-w-[1440px] h-full px-4 sm:px-6 md:px-8 lg:px-[151px]">
+          <Logo />
+          <div className="hidden md:flex justify-center gap-4 sm:gap-6 lg:gap-7 border border-[#ffffff15] rounded-[20px] px-4 sm:px-6 lg:px-[38px]">
+            <Button
+              as={NavLink}
+              to={publicRoutesVariables.teachers}
+              className="p-0 text-[#ffffff60] hover:text-light-100"
+              variant="link"
+            >
+              Tutors
+            </Button>
+            <Button
+              as={NavLink}
+              to={authRoutesVariables.registerTutor}
+              className="p-0 text-[#ffffff60] hover:text-light-100"
+              variant="link"
+            >
+              I want be tutor
+            </Button>
+          </div>
+          {isAuth ? <div>is auth </div> : <ControlPanel classNames="" />}
+          <MenuButton
+            onClick={handleMobileMenuToggle}
+            isOpen={isMobileMenuOpen}
+          />
+        </div>
+      </header>
+
+      <MobileMenu isOpen={isMobileMenuOpen} onClose={handleMobileMenuClose} />
+    </>
+  );
+};
