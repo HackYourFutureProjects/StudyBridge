@@ -12,7 +12,7 @@ export const Home = () => {
         <PopularSubjects />
       </section>
       <section className="section-spacing relative z-10 bg-bg-main">
-       <OurClients />
+        <OurClients />
       </section>
     </div>
   );
