@@ -3,7 +3,7 @@ export default function Footer({ className }: { className?: string }) {
     <footer
       className={
         className ||
-        "fixed bottom-0 left-0 w-full bg-[#1a161f] backdrop-blur-md py-8 pl-6"
+        "relative w-full bg-[#1a161f] backdrop-blur-md py-8 pl-6"
       }
     >
       <div className="max-w-7xl mx-auto px-4 flex flex-col lg:flex-row justify-between items-start lg:items-center text-white gap-8 lg:gap-0">
