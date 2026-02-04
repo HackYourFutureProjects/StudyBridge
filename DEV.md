@@ -18,7 +18,7 @@ When developing, Vite is acting like a [proxy](https://vite.dev/config/server-op
 
 ### 1.2 Server
 
-The server will be run from the `index.js` file. This is separate from the `app.js` for testing purposes. In dev mode it will be ran using `nodemon`, in production using `node`. The `.env` determines the port and the URL to the mongodb database. If you change the port here, then don't forget to also change it on the client side.
+The server will be run from the `index.ts` file. This is separate from the `app.ts` for testing purposes. In dev mode it will be ran using `nodemon`, in production using `node`. The `.env` determines the port and the URL to the mongodb database. If you change the port here, then don't forget to also change it on the client side.
 
 You probably want to set up your own personal mongodb database for your own usage so that you don't interfere with other developers and use that url most of the time.
 

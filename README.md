@@ -53,7 +53,7 @@ server
     └── models
     └── routes
     └── util
-    index.js
+    index.ts
 ```
 
 ### 2.1 Client structure
@@ -85,7 +85,7 @@ server
 - `models` || all of our `mongoose` models will be placed here
 - `routes` || code to match up the API with our controllers
 - `util` || any utility functions that can be used anywhere on the server side
-- `index.js` || the start point of the server
+- `index.ts` || the start point of the server
 
 ## 3. Stack / external libraries
 
