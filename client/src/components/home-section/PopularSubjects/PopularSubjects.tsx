@@ -1,16 +1,9 @@
 import { SubjectCard } from "./SubjectCard";
 import { Button } from "../../ui/button/Button";
 import bgImage from "../../../assets/images/bg-popular-subjects.png";
+import { subjects } from "../../../constants/subjects";
 
-const subjects = [
-  "English",
-  "Dutch",
-  "French",
-  "German",
-  "Frontend Development",
-  "Backend Development",
-  "QA / Software Testing",
-];
+const subjectLabels = subjects.map((subject) => subject.label);
 
 export const PopularSubjects = () => {
   return (
@@ -39,7 +32,7 @@ export const PopularSubjects = () => {
           </Button>
 
           <div className="flex flex-col gap-3.5 w-full max-w-md md:pr-8 lg:text-left lg:ml-12 lg:pr-8 max-[1166px]:text-center max-[1166px]:pr-0 max-[1166px]:ml-0 min-[1167px]:text-right min-[1167px]:pr-8 min-[1167px]:ml-0">
-            {subjects.map((subject, index) => (
+            {subjectLabels.map((subject, index) => (
               <SubjectCard key={index} title={subject} />
             ))}
           </div>
@@ -63,7 +56,7 @@ export const PopularSubjects = () => {
           </div>
 
           <div className="flex flex-col gap-[32px]">
-            {subjects.map((subject, index) => (
+            {subjectLabels.map((subject, index) => (
               <SubjectCard key={index} title={subject} />
             ))}
           </div>
