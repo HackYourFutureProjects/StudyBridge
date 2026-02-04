@@ -5,9 +5,9 @@ export type StudentTypeDB = {
   email: string;
   passwordHash: string;
   passwordSalt: string;
-  profileImageUrl: string;
-  address: string;
-  mainLanguage: string;
+  profileImageUrl: string | null;
+  address: string | null;
+  mainLanguage: string | null;
   createdAt: Date;
   role: string;
 };

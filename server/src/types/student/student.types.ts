@@ -9,3 +9,10 @@ export type StudentViewType = {
   createdAt: Date;
   role: string;
 };
+
+export type StudentRegistrationType = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+};

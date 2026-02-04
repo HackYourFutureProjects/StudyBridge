@@ -1,6 +1,6 @@
 import { check } from "express-validator";
-import { StudentQuery } from "../../repositories/queryRepositories/studentQuery.js";
-import { container } from "../../compositionRoot.js";
+import { StudentQuery } from "../../repositories/queryRepositories/student.query.js";
+import { container } from "../../composition/compositionRoot.js";
 export const studentName = check("firstName")
   .trim()
   .notEmpty()
