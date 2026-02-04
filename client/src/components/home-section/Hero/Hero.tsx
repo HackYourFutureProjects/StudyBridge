@@ -1,16 +1,7 @@
 import heroImage from "../../../assets/images/hero.png";
 import { SelectComponent } from "../../ui/select/Select";
 import { Button } from "../../ui/button/Button";
-
-const subjects = [
-  { label: "English", value: "english" },
-  { label: "Dutch", value: "dutch" },
-  { label: "French", value: "french" },
-  { label: "German", value: "german" },
-  { label: "Frontend Development", value: "frontend" },
-  { label: "Backend Development", value: "backend" },
-  { label: "QA / Software Testing", value: "qa" },
-];
+import { subjects } from "../../../constants/subjects";
 
 export const Hero = () => {
   return (
@@ -18,7 +9,7 @@ export const Hero = () => {
       <div className="absolute inset-0 z-0">
         <img
           src={heroImage}
-          alt="learn"
+          alt="Students learning together"
           className="w-full h-full object-cover object-top scale-110"
         />
       </div>
@@ -43,7 +34,7 @@ export const Hero = () => {
           <SelectComponent
             options={subjects}
             defaultValue="english"
-            onChange={(value) => console.log(value)}
+            onChange={() => {}}
             className="w-full sm:w-auto"
           />
           <Button variant="secondary">Search</Button>
