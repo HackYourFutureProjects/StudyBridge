@@ -1,5 +1,6 @@
 import { Features } from "../../components/home-section/Features/Features";
 import { PopularSubjects } from "../../components/home-section/PopularSubjects/PopularSubjects";
+import { OurClients } from "../../components/home-section/OurClients/ourClients";
 
 export const Home = () => {
   return (
@@ -9,6 +10,9 @@ export const Home = () => {
       </section>
       <section className="section-spacing relative z-10 bg-bg-main">
         <PopularSubjects />
+      </section>
+      <section className="section-spacing relative z-10 bg-bg-main">
+       <OurClients />
       </section>
     </div>
   );
