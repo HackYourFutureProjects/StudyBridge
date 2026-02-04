@@ -12,9 +12,7 @@ const port = process.env.PORT || 3000;
 
 const startServer = async () => {
   try {
-    connectDB()
-      .then(() => logInfo("MongoDB connected"))
-      .catch((err) => logError(err));
+    await connectDB();
     app.listen(port, () => {
       logInfo(`Server started on port ${port}`);
     });

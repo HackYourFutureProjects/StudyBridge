@@ -1,4 +1,4 @@
-export const logInfo = (message: never) => {
+export const logInfo = (message: unknown) => {
   // eslint-disable-next-line no-console
   console.log(message);
 };
@@ -6,7 +6,7 @@ export const logInfo = (message: never) => {
 /**
  * logWarning should be used to log anything that signals a problem that is not app breaking
  */
-export const logWarning = (message: never) => {
+export const logWarning = (message: unknown) => {
   // eslint-disable-next-line no-console
   console.warn(message);
 };
