@@ -1,0 +1,21 @@
+import { injectable } from "inversify";
+import { StudentViewType } from "../../types/student/student.types.js";
+import { StudentModel } from "../../db/schemes/studentSchema.js";
+import { studentMapper } from "../../utils/mappers/student.mapper.js";
+
+@injectable()
+export class StudentQuery {
+  async getStudentByEmail(email: string): Promise<StudentViewType | null> {
+    try {
+      const student = await StudentModel.findOne({ email }).lean();
+      if (!student) {
+        return null;
+      }
+      return studentMapper(student);
+    } catch (err: unknown) {
+      throw new Error("Something went wrong with student search", {
+        cause: err,
+      });
+    }
+  }
+}
