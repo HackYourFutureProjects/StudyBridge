@@ -2,8 +2,7 @@ export default function Footer({ className }: { className?: string }) {
   return (
     <footer
       className={
-        className ||
-        "relative w-full bg-[#1a161f] backdrop-blur-md py-8 pl-6"
+        className || "relative w-full bg-[#1a161f] backdrop-blur-md py-8 pl-6"
       }
     >
       <div className="max-w-7xl mx-auto px-4 flex flex-col lg:flex-row justify-between items-start lg:items-center text-white gap-8 lg:gap-0">
