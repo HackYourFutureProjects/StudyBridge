@@ -1,3 +1,5 @@
+import { Role } from "../../../types/common.types.js";
+
 export type StudentTypeDB = {
   id: string;
   firstName: string;
@@ -9,5 +11,5 @@ export type StudentTypeDB = {
   address: string | null;
   mainLanguage: string | null;
   createdAt: Date;
-  role: string;
+  role: Role;
 };

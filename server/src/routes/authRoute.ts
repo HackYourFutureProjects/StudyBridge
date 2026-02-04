@@ -3,15 +3,14 @@ import { autStudentValidationMiddleware } from "../validation/auth/studentAuthMi
 import { errorMiddleware } from "../middlewares/error.middleware.js";
 import { container } from "../composition/compositionRoot.js";
 import { AuthController } from "../controllers/auth.controller.js";
+import { TYPES } from "../composition/composition.types.js";
 
 export const authRouter = Router();
-const authControllerInstance = container.get(AuthController);
+const authController = container.get<AuthController>(TYPES.AuthController);
 
 authRouter.post(
   "/registration-student",
   autStudentValidationMiddleware(),
   errorMiddleware,
-  authControllerInstance.registrationStudentController.bind(
-    authControllerInstance,
-  ),
+  authController.registrationStudentController.bind(authController),
 );

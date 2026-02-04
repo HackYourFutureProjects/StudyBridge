@@ -1,6 +1,8 @@
 import { check } from "express-validator";
 import { StudentQuery } from "../../repositories/queryRepositories/student.query.js";
 import { container } from "../../composition/compositionRoot.js";
+import { TYPES } from "../../composition/composition.types.js";
+const allowedRoles = ["student", "teacher", "admin"] as const;
 export const studentName = check("firstName")
   .trim()
   .notEmpty()
@@ -9,6 +11,13 @@ export const studentName = check("firstName")
   .withMessage(
     "The first name must not be less then 2 symbols and more then 15 symbols",
   );
+
+export const role = check("role")
+  .trim()
+  .notEmpty()
+  .withMessage("Role is required")
+  .isIn(allowedRoles)
+  .withMessage("Role must be one of: student, teacher, admin");
 
 export const studentLastName = check("lastName")
   .trim()
@@ -33,13 +42,12 @@ export const email = check("email")
   .isLength({ min: 3 })
   .withMessage("Email should be at least 3 characters long")
   .custom(async (value) => {
-    const studentQuery = container.get(StudentQuery);
+    const studentQuery = container.get<StudentQuery>(TYPES.StudentQuery);
     const user = await studentQuery.getStudentByEmail(value);
 
     if (user) {
       throw new Error("Email already exist");
     }
-
     return true;
   });
 
@@ -48,4 +56,5 @@ export const autStudentValidationMiddleware = () => [
   studentLastName,
   userPassword,
   email,
+  role,
 ];

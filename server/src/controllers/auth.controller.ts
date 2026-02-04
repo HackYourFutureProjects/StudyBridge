@@ -4,7 +4,7 @@ import { StudentRegistrationType } from "../types/student/student.types.js";
 import { inject } from "inversify";
 import { TYPES } from "../composition/composition.types.js";
 import { StudentService } from "../services/student/student.service.js";
-import { Response } from "express";
+import { NextFunction, Response } from "express";
 @injectable()
 export class AuthController {
   constructor(
@@ -14,17 +14,21 @@ export class AuthController {
   async registrationStudentController(
     req: RequestWithBody<StudentRegistrationType>,
     res: Response,
+    next: NextFunction,
   ) {
-    const { firstName, lastName, email, password } = req.body;
+    const { firstName, lastName, email, password, role } = req.body;
+    try {
+      await this.studentService.createStudent({
+        firstName,
+        lastName,
+        email,
+        password,
+        role,
+      });
 
-    await this.studentService.createStudent({
-      firstName,
-      lastName,
-      email,
-      password,
-    });
-
-    res.sendStatus(204);
-    return;
+      res.sendStatus(204);
+    } catch (error) {
+      next(error);
+    }
   }
 }

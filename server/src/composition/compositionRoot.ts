@@ -11,7 +11,7 @@ export const container = new Container();
 //auth
 container.bind<AuthController>(TYPES.AuthController).to(AuthController);
 
-//student
+// student
 container.bind<StudentCommand>(TYPES.StudentCommand).to(StudentCommand);
+container.bind<StudentQuery>(TYPES.StudentQuery).to(StudentQuery);
 container.bind<StudentService>(TYPES.StudentService).to(StudentService);
-container.bind<StudentQuery>(TYPES.StudentService).to(StudentQuery);

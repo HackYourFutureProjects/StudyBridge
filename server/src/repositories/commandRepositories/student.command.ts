@@ -6,10 +6,8 @@ import { StudentModel } from "../../db/schemes/studentSchema.js";
 export class StudentCommand {
   async createStudent(newStudent: StudentTypeDB) {
     try {
-      await StudentModel.create(newStudent);
-
-      const findUser = await StudentModel.findOne({ id: newStudent.id }).lean();
-      return findUser ?? null;
+      const created = await StudentModel.create(newStudent);
+      return created.toObject();
     } catch (err: unknown) {
       throw new Error("Student was not created", { cause: err });
     }

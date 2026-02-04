@@ -9,7 +9,7 @@ import { studentMapper } from "../../utils/mappers/student.mapper.js";
 @injectable()
 export class StudentService {
   constructor(
-    @inject(TYPES.StudentCommand) protected studentCommand: StudentCommand,
+    @inject(TYPES.StudentCommand) private studentCommand: StudentCommand,
   ) {}
 
   async createStudent({
@@ -17,6 +17,7 @@ export class StudentService {
     email,
     lastName,
     password,
+    role,
   }: StudentRegistrationType) {
     const passwordSalt = await bcrypt.genSalt(10);
     const passwordHash = await this._generateHash(password, passwordSalt);
@@ -32,13 +33,10 @@ export class StudentService {
       createdAt: new Date(),
       profileImageUrl: null,
       mainLanguage: null,
-      role: "student",
+      role,
     };
     const student = await this.studentCommand.createStudent(newStudent);
 
-    if (!student) {
-      return null;
-    }
     return studentMapper(student);
   }
 
