@@ -1,15 +1,8 @@
-import type { Role } from "../../components/auth/types.ts";
 import { SignUpForm } from "../../components/auth/signUpForm/SignUpForm";
-
-export type SignUpData = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-};
+import { RegisterFinalType, Role } from "../../api/auth/types";
 
 export const SignUpPage = ({ role }: { role: Role }) => {
-  const onSubmit = (data: SignUpData & { role: Role }) => {
+  const onSubmit = (data: RegisterFinalType) => {
     console.log({ ...data, role });
   };
 

@@ -4,16 +4,20 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ControlledTextField } from "../../ui/controlled/controlledTextField/ControlledTextField";
 import { Button } from "../../ui/button/Button";
 import { signUpSchema } from "./signUpForm.validation";
-import { Role, SignUpData } from "../types";
 import Google from "../../icons/Google";
 import { NavLink } from "react-router-dom";
 import { authRoutesVariables } from "../../../router/routesVariables/pathVariables";
+import {
+  RegisterFinalType,
+  RegisterFormTypes,
+  Role,
+} from "../../../api/auth/types";
 
 type SignUpFormTypes = {
   loading: boolean;
   title: string;
   role: Role;
-  onSubmit: (data: SignUpData & { role: Role }) => void;
+  onSubmit: (data: RegisterFinalType) => void;
 };
 
 export const SignUpForm = ({
@@ -32,7 +36,7 @@ export const SignUpForm = ({
     },
   });
 
-  const onSubmitForm = (data: SignUpData) => {
+  const onSubmitForm = (data: RegisterFormTypes) => {
     onSubmit({ ...data, role });
     reset();
   };
