@@ -1,17 +1,20 @@
 import { SignUpForm } from "../../components/auth/signUpForm/SignUpForm";
 import { RegisterFinalType, Role } from "../../api/auth/types";
+import { useRegisterStudentMutation } from "../../features/auth/mutations/useRegisterStudentMutation";
 
 export const SignUpPage = ({ role }: { role: Role }) => {
+  const { mutateAsync, isPending } = useRegisterStudentMutation(role);
+
   const onSubmit = (data: RegisterFinalType) => {
-    console.log({ ...data, role });
+    mutateAsync({ ...data, role });
   };
 
   return (
     <div className="auth-page">
       <SignUpForm
-        loading={false}
+        loading={isPending}
         onSubmit={onSubmit}
-        title={role === "tutor" ? "SIGN UP AS A TUTOR" : "SIGN UP"}
+        title={role === "teacher" ? "SIGN UP AS A TUTOR" : "SIGN UP"}
         role={role}
       />
     </div>

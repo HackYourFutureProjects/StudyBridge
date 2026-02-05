@@ -69,6 +69,7 @@ export const SignUpForm = ({
             placeholder="Enter your Password"
             control={control}
             name="password"
+            type="password"
           />
         </div>
 
