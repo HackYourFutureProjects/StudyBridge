@@ -2,10 +2,11 @@ import { inject, injectable } from "inversify";
 import { StudentCommand } from "../../repositories/commandRepositories/student.command.js";
 import { TYPES } from "../../composition/composition.types.js";
 import { StudentRegistrationType } from "../../types/student/student.types.js";
+import { StudentTypeDB } from "../../db/schemes/types/student.types.js";
 import bcrypt from "bcryptjs";
 import { randomUUID } from "node:crypto";
-import { StudentTypeDB } from "../../db/schemes/types/student.types.js";
 import { studentMapper } from "../../utils/mappers/student.mapper.js";
+import { NotFoundError } from "../../utils/error.util.js";
 @injectable()
 export class StudentService {
   constructor(
@@ -38,6 +39,14 @@ export class StudentService {
     const student = await this.studentCommand.createStudent(newStudent);
 
     return studentMapper(student);
+  }
+
+  async deleteStudent(id: string): Promise<void> {
+    const deleted = await this.studentCommand.deleteStudent(id);
+
+    if (!deleted) {
+      throw new NotFoundError("Student not found", { id });
+    }
   }
 
   async _generateHash(password: string, salt: string) {
