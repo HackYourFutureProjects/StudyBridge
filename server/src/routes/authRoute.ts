@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { autStudentValidationMiddleware } from "../validation/auth/studentAuthMiddleware.js";
+import { autTeacherValidationMiddleware } from "../validation/auth/teacherAuthMiddleware.js";
 import { errorMiddleware } from "../middlewares/error.middleware.js";
 import { container } from "../composition/compositionRoot.js";
 import { AuthController } from "../controllers/auth.controller.js";
@@ -13,4 +14,11 @@ authRouter.post(
   autStudentValidationMiddleware(),
   errorMiddleware,
   authController.registrationStudentController.bind(authController),
+);
+
+authRouter.post(
+  "/registration-teacher",
+  autTeacherValidationMiddleware(),
+  errorMiddleware,
+  authController.registrationTeacherController.bind(authController),
 );
