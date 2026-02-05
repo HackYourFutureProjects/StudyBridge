@@ -6,6 +6,7 @@ import bcrypt from "bcryptjs";
 import { randomUUID } from "node:crypto";
 import { TeacherTypeDB } from "../../db/schemes/types/teacher.types.js";
 import { teacherMapper } from "../../utils/mappers/teacher.mapper.js";
+import { NotFoundError } from "../../utils/error.util.js";
 
 @injectable()
 export class TeacherService {
@@ -67,6 +68,14 @@ export class TeacherService {
     const teacher = await this.teacherCommand.createTeacher(newTeacher);
 
     return teacherMapper(teacher);
+  }
+
+  async deleteTeacher(id: string): Promise<void> {
+    const deleted = await this.teacherCommand.deleteTeacher(id);
+
+    if (!deleted) {
+      throw new NotFoundError("Teacher not found", { id });
+    }
   }
 
   async _generateHash(password: string, salt: string) {
