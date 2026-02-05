@@ -11,7 +11,7 @@ const teacherController = container.get<TeacherController>(
   TYPES.TeacherController,
 );
 const authMiddleware = container.get<AuthMiddleware>(TYPES.AuthMiddleware);
-teacherRouter.post(
+teacherRouter.delete(
   "/teachers/:id",
   authMiddleware.handle,
   requireRole("teacher"),
