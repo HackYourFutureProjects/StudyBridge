@@ -13,4 +13,13 @@ export class StudentCommand {
       throw new HttpError(500, "Student was not created", { cause: err });
     }
   }
+
+  async deleteStudent(id: string) {
+    try {
+      const deleted = await StudentModel.deleteOne({ id });
+      return deleted.deletedCount === 1;
+    } catch (err: unknown) {
+      throw new HttpError(500, "Student was not deleted", { cause: err, id });
+    }
+  }
 }
