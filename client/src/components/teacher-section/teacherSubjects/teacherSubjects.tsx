@@ -53,7 +53,7 @@ const subjects: SubjectType[] = [
   },
 ];
 
-export default function App() {
+export default function TeacherSubjects() {
   const [activeLanguage, setActiveLanguage] = useState("dutch");
 
   const currentSubject = subjects.find(
