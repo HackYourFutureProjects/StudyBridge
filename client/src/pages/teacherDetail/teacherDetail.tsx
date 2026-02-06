@@ -1,10 +1,26 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/ui/button/Button";
+import { TeacherCard } from "../../components/teacherCard/teacherCard";
 import { TeacherNavigation } from "../../components/teacher-section/teacherNavigation/TeacherNavigation";
 import TeacherSubjects from "../../components/teacher-section/teacherSubjects/teacherSubjects";
 import TeacherAbout from "../../components/teacher-section/teacherAbout/teacherAbout";
 import TeacherSchedule from "../../components/teacher-section/teacherSchedule/TeacherSchedule";
 import { useState } from "react";
+import Person from "../../assets/images/person.jpg";
+import { TeacherType } from "../../types/teacher.types";
+import { ReviewsTeacher } from "../../components/teacher-section/Reviews/ReviewsTeacher";
+
+const teacher: TeacherType = {
+  id: "1",
+  name: "Els Menson",
+  subject: "English",
+  price: 35,
+  image: Person,
+  experience: "12 years",
+  education: "University of Amsterdam",
+  approaching:
+    "Communicative, student-centered methodology focused on real-life English. Lessons emphasize speaking practice, practical vocabulary, and personalized learning goals.",
+};
 
 type TabType = "about" | "subjects" | "schedule";
 
@@ -37,10 +53,14 @@ export const TeacherDetail = () => {
             Back
           </Button>
         </div>
+        <TeacherCard teacher={teacher} />
         <div className="section-spacing">
           <TeacherNavigation activeTab={activeTab} onTabChange={setActiveTab} />
         </div>
         <div className="section-spacing">{renderContent()}</div>
+        <section className="section-spacing relative z-10 bg-bg-main">
+          <ReviewsTeacher />
+        </section>
       </div>
     </div>
   );
