@@ -8,10 +8,12 @@ import {
   publicRoutesVariables,
 } from "../../router/routesVariables/pathVariables";
 import { Logo } from "../logo/Logo";
+import { useAuthSessionStore } from "../../store/authSession.store";
 
 export const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const isAuth = false;
+  const isAuth = useAuthSessionStore((s) => s.user !== null);
+  const user = useAuthSessionStore((s) => s.user);
   const handleMobileMenuToggle = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
@@ -50,7 +52,11 @@ export const Header = () => {
               I want be tutor
             </Button>
           </div>
-          {isAuth ? <div>is auth </div> : <ControlPanel classNames="" />}
+          {isAuth ? (
+            <div className="text-light-100">{user?.email}</div>
+          ) : (
+            <ControlPanel classNames="" />
+          )}
           <MenuButton
             onClick={handleMobileMenuToggle}
             isOpen={isMobileMenuOpen}
