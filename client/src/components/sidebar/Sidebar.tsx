@@ -6,6 +6,7 @@ import DashboardIcon from "../icons/Dashboard";
 import LessonsIcon from "../icons/Lessons";
 import SettingsIcon from "../icons/Settings";
 import VideoCallIcon from "../icons/VideoCall";
+import UsersIcon from "../icons/UsersIcon";
 
 export type MenuItem = {
   name: string;
@@ -16,6 +17,15 @@ export type MenuItem = {
 export const defaultStudentMenuItems: MenuItem[] = [
   { name: "Dashboard", link: "/clients-dashboard", icon: DashboardIcon },
   { name: "My Classes", link: "/student-classes", icon: LessonsIcon },
+  { name: "Billings", link: "/clients-billing", icon: BillingIcon },
+  { name: "Video call", link: "/video-call", icon: VideoCallIcon },
+  { name: "Settings", link: "/settings", icon: SettingsIcon },
+];
+
+export const defaultTeacherMenuItems: MenuItem[] = [
+  { name: "Dashboard", link: "teacher/my-dashboard", icon: DashboardIcon },
+  { name: "My Classes", link: "/student-classes", icon: LessonsIcon },
+  { name: "My Students", link: "/student-classes", icon: UsersIcon },
   { name: "Billings", link: "/clients-billing", icon: BillingIcon },
   { name: "Video call", link: "/video-call", icon: VideoCallIcon },
   { name: "Settings", link: "/settings", icon: SettingsIcon },
