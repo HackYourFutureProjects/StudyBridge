@@ -12,11 +12,13 @@ import { TeacherCommand } from "../repositories/commandRepositories/teacher.comm
 import { TeacherController } from "../controllers/teacher.controller.js";
 import { JwtService } from "../services/jwt/jwt.service.js";
 import { AuthMiddleware } from "../middlewares/authMiddlewareWithBearer.js";
+import { AuthService } from "../services/auth/auth.service.js";
 
 export const container = new Container();
 
 //auth
 container.bind<AuthController>(TYPES.AuthController).to(AuthController);
+container.bind<AuthService>(TYPES.AuthService).to(AuthService);
 //jwt
 container.bind<JwtService>(TYPES.JwtService).to(JwtService);
 //middleware

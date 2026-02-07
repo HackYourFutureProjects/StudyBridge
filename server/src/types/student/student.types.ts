@@ -19,3 +19,8 @@ export type StudentRegistrationType = {
   password: string;
   role: Role;
 };
+
+export type StudentLoginType = {
+  email: string;
+  password: string;
+};

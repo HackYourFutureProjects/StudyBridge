@@ -1,18 +1,25 @@
 import { injectable } from "inversify";
 import { RequestWithBody } from "../types/common.types.js";
-import { StudentRegistrationType } from "../types/student/student.types.js";
+import {
+  StudentLoginType,
+  StudentRegistrationType,
+} from "../types/student/student.types.js";
 import { inject } from "inversify";
 import { TYPES } from "../composition/composition.types.js";
 import { StudentService } from "../services/student/student.service.js";
 import { NextFunction, Response } from "express";
 import { TeacherRegistrationType } from "../types/teacher/teacher.types.js";
 import { TeacherService } from "../services/teacher/teacher.service.js";
+import { AuthService } from "../services/auth/auth.service.js";
+import { JwtService } from "../services/jwt/jwt.service.js";
 
 @injectable()
 export class AuthController {
   constructor(
     @inject(TYPES.StudentService) protected studentService: StudentService,
     @inject(TYPES.TeacherService) protected teacherService: TeacherService,
+    @inject(TYPES.AuthService) protected authService: AuthService,
+    @inject(TYPES.JwtService) protected jwtService: JwtService,
   ) {}
 
   async registrationStudentController(
@@ -53,6 +60,33 @@ export class AuthController {
       });
 
       res.sendStatus(204);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async loginStudentController(
+    req: RequestWithBody<StudentLoginType>,
+    res: Response,
+    next: NextFunction,
+  ) {
+    const { email, password } = req.body;
+
+    try {
+      const user = await this.authService.checkAuthStudentCredentials(
+        email,
+        password,
+      );
+
+      const accessToken = await this.jwtService.createJWTAccessToken(user);
+      const refreshToken = await this.jwtService.createJWTRefreshToken(user);
+
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: true,
+      });
+      res.status(200).send({ accessToken });
+      return;
     } catch (error) {
       next(error);
     }

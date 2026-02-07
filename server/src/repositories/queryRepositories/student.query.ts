@@ -18,4 +18,18 @@ export class StudentQuery {
       });
     }
   }
+
+  async findUserByEmailWithHash(email: string) {
+    try {
+      const user = await StudentModel.findOne({ email }).lean();
+      if (!user) {
+        return null;
+      }
+      return user;
+    } catch (err: unknown) {
+      throw new Error("Something went wrong with student search", {
+        cause: err,
+      });
+    }
+  }
 }
