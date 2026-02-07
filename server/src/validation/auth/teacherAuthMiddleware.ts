@@ -1,7 +1,4 @@
 import { check } from "express-validator";
-import { TeacherQuery } from "../../repositories/queryRepositories/teacher.query.js";
-import { container } from "../../composition/compositionRoot.js";
-import { TYPES } from "../../composition/composition.types.js";
 const allowedRoles = ["student", "teacher", "admin"] as const;
 
 export const teacherName = check("firstName")
@@ -39,18 +36,7 @@ export const email = check("email")
   .notEmpty()
   .withMessage("Email is required")
   .isEmail()
-  .withMessage("Invalid email format")
-  .isLength({ min: 3 })
-  .withMessage("Email should be at least 3 characters long")
-  .custom(async (value) => {
-    const teacherQuery = container.get<TeacherQuery>(TYPES.TeacherQuery);
-    const user = await teacherQuery.getTeacherByEmail(value);
-
-    if (user) {
-      throw new Error("Email already exist");
-    }
-    return true;
-  });
+  .withMessage("Invalid email format");
 
 export const autTeacherValidationMiddleware = () => [
   teacherName,

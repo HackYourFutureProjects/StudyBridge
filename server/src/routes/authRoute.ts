@@ -32,3 +32,10 @@ authRouter.post(
   errorMiddleware,
   authController.loginStudentController.bind(authController),
 );
+
+authRouter.post(
+  "/login-teacher",
+  authStudentLoginValidationMiddleware(),
+  errorMiddleware,
+  authController.loginStudentController.bind(authController),
+);

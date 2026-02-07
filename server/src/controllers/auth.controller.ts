@@ -8,7 +8,10 @@ import { inject } from "inversify";
 import { TYPES } from "../composition/composition.types.js";
 import { StudentService } from "../services/student/student.service.js";
 import { NextFunction, Response } from "express";
-import { TeacherRegistrationType } from "../types/teacher/teacher.types.js";
+import {
+  TeacherLoginType,
+  TeacherRegistrationType,
+} from "../types/teacher/teacher.types.js";
 import { TeacherService } from "../services/teacher/teacher.service.js";
 import { AuthService } from "../services/auth/auth.service.js";
 import { JwtService } from "../services/jwt/jwt.service.js";
@@ -80,6 +83,33 @@ export class AuthController {
 
       const accessToken = await this.jwtService.createJWTAccessToken(user);
       const refreshToken = await this.jwtService.createJWTRefreshToken(user);
+
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: true,
+      });
+      res.status(200).send({ accessToken });
+      return;
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async loginTeacherController(
+    req: RequestWithBody<TeacherLoginType>,
+    res: Response,
+    next: NextFunction,
+  ) {
+    const { email, password } = req.body;
+
+    try {
+      const teacher = await this.authService.checkAuthStudentCredentials(
+        email,
+        password,
+      );
+
+      const accessToken = await this.jwtService.createJWTAccessToken(teacher);
+      const refreshToken = await this.jwtService.createJWTRefreshToken(teacher);
 
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
