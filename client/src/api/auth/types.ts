@@ -15,3 +15,12 @@ export type RegisterFinalType = RegisterFormTypes & {
 };
 
 export type UserType = StudentType | TeacherType;
+
+export type LoginFormTypes = {
+  email: string;
+  password: string;
+};
+
+export type LoginFinalType = LoginFormTypes & {
+  role: Role;
+};
