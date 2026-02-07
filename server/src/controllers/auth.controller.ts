@@ -17,6 +17,7 @@ import { AuthService } from "../services/auth/auth.service.js";
 import { JwtService } from "../services/jwt/jwt.service.js";
 import { StudentQuery } from "../repositories/queryRepositories/student.query.js";
 import { TeacherQuery } from "../repositories/queryRepositories/teacher.query.js";
+import { RefreshTokenPayload } from "../types/auth/auth.types.js";
 
 @injectable()
 export class AuthController {
@@ -80,17 +81,26 @@ export class AuthController {
     const { email, password } = req.body;
 
     try {
-      const user = await this.authService.checkAuthStudentCredentials(
+      const student = await this.authService.checkAuthStudentCredentials(
         email,
         password,
       );
 
-      const accessToken = await this.jwtService.createJWTAccessToken(user);
-      const refreshToken = await this.jwtService.createJWTRefreshToken(user);
+      const accessToken = this.jwtService.createJWTAccessToken({
+        userId: student.id,
+        role: "student",
+      });
+
+      const { refreshToken } = await this.authService.createRefreshSession({
+        userId: student.id,
+        role: "student",
+      });
 
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: true,
+        path: "/api/auth",
+        maxAge: 2 * 60 * 60 * 1000,
       });
       res.status(200).send({ accessToken });
       return;
@@ -112,12 +122,21 @@ export class AuthController {
         password,
       );
 
-      const accessToken = await this.jwtService.createJWTAccessToken(teacher);
-      const refreshToken = await this.jwtService.createJWTRefreshToken(teacher);
+      const accessToken = this.jwtService.createJWTAccessToken({
+        userId: teacher.id,
+        role: "teacher",
+      });
+
+      const { refreshToken } = await this.authService.createRefreshSession({
+        userId: teacher.id,
+        role: "teacher",
+      });
 
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: true,
+        path: "/api/auth",
+        maxAge: 2 * 60 * 60 * 1000,
       });
       res.status(200).send({ accessToken });
       return;
@@ -147,26 +166,30 @@ export class AuthController {
 
   async refreshController(req: Request, res: Response, next: NextFunction) {
     try {
-      const { userId, role } = req.auth!;
-
-      const user =
-        role === "student"
-          ? await this.studentQuery.getStudentById(userId)
-          : await this.teacherQuery.getTeacherById(userId);
-
-      if (!user) {
+      const refreshToken = req.cookies?.["refreshToken"];
+      if (!refreshToken) {
         return res.sendStatus(401);
       }
+      let payload: RefreshTokenPayload;
+      try {
+        payload = this.jwtService.verifyRefreshToken(refreshToken);
+      } catch {
+        return res.sendStatus(401);
+      }
+      const { newAccessToken, newRefreshToken } =
+        await this.authService.rotateRefreshToken({
+          refreshToken,
+          payload,
+        });
 
-      const accessToken = await this.jwtService.createJWTAccessToken(user);
-      const refreshToken = await this.jwtService.createJWTRefreshToken(user);
-
-      res.cookie("refreshToken", refreshToken, {
+      res.cookie("refreshToken", newRefreshToken, {
         httpOnly: true,
         secure: true,
+        path: "/api/auth",
+        maxAge: 2 * 60 * 60 * 1000,
       });
 
-      return res.status(200).send({ accessToken });
+      return res.status(200).send({ accessToken: newAccessToken });
     } catch (e) {
       return next(e);
     }

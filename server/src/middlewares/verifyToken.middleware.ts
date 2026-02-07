@@ -13,12 +13,15 @@ export class VerifyMiddleware {
       return res.sendStatus(401);
     }
 
-    const payload = await this.jwtService.verifyToken(token);
+    const payload = this.jwtService.verifyRefreshToken(token);
 
     if (!payload?.userId || !payload?.role) {
       return res.sendStatus(401);
     }
-    req.auth = { userId: payload.userId, role: payload.role };
+    req.auth = {
+      userId: payload.userId,
+      role: payload.role,
+    };
     return next();
   };
 }

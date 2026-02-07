@@ -18,4 +18,6 @@ export const TYPES = {
   //auth
   AuthController: Symbol.for("AuthController"),
   AuthService: Symbol.for("AuthService"),
+  //refresh
+  RefreshSessionRepository: Symbol.for("RefreshSessionRepository"),
 };
