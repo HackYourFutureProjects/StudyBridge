@@ -7,7 +7,7 @@ import {
 import { inject } from "inversify";
 import { TYPES } from "../composition/composition.types.js";
 import { StudentService } from "../services/student/student.service.js";
-import { NextFunction, Response } from "express";
+import { Request, NextFunction, Response } from "express";
 import {
   TeacherLoginType,
   TeacherRegistrationType,
@@ -15,6 +15,8 @@ import {
 import { TeacherService } from "../services/teacher/teacher.service.js";
 import { AuthService } from "../services/auth/auth.service.js";
 import { JwtService } from "../services/jwt/jwt.service.js";
+import { StudentQuery } from "../repositories/queryRepositories/student.query.js";
+import { TeacherQuery } from "../repositories/queryRepositories/teacher.query.js";
 
 @injectable()
 export class AuthController {
@@ -23,6 +25,8 @@ export class AuthController {
     @inject(TYPES.TeacherService) protected teacherService: TeacherService,
     @inject(TYPES.AuthService) protected authService: AuthService,
     @inject(TYPES.JwtService) protected jwtService: JwtService,
+    @inject(TYPES.StudentQuery) protected studentQuery: StudentQuery,
+    @inject(TYPES.TeacherQuery) protected teacherQuery: TeacherQuery,
   ) {}
 
   async registrationStudentController(
@@ -119,6 +123,25 @@ export class AuthController {
       return;
     } catch (error) {
       next(error);
+    }
+  }
+
+  async getMe(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { userId, role } = req.auth!;
+
+      const me =
+        role === "student"
+          ? await this.studentQuery.getStudentById(userId)
+          : await this.teacherQuery.getTeacherById(userId);
+
+      if (!me) {
+        return res.sendStatus(401);
+      }
+
+      return res.status(200).send(me);
+    } catch (e) {
+      return next(e);
     }
   }
 }

@@ -19,6 +19,20 @@ export class StudentQuery {
     }
   }
 
+  async getStudentById(id: string): Promise<StudentViewType | null> {
+    try {
+      const student = await StudentModel.findOne({ id }).lean();
+      if (!student) {
+        return null;
+      }
+      return studentMapper(student);
+    } catch (err: unknown) {
+      throw new Error("Something went wrong with student search", {
+        cause: err,
+      });
+    }
+  }
+
   async findUserByEmailWithHash(email: string) {
     try {
       const user = await StudentModel.findOne({ email }).lean();
