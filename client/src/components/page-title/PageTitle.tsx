@@ -5,7 +5,7 @@ type PageTitleProps = {
 export const PageTitle = ({ title }: PageTitleProps) => {
   return (
     <div>
-      <div className="w-full mt-6">
+      <div className="w-full mt-0">
         <div className="h-[85px] w-full p-[0px] flex flex-col">
           <div className="h-[85px] w-full opacity-100 pl-[24px] pr-[24px] pt-[8px] pb-[8px] border-b border-[#E4E4E4] flex flex-row flex-nowrap justify-start items-start relative">
             <div
