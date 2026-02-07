@@ -19,6 +19,20 @@ export class TeacherQuery {
     }
   }
 
+  async getTeacherById(id: string): Promise<TeacherViewType | null> {
+    try {
+      const teacher = await TeacherModel.findOne({ id }).lean();
+      if (!teacher) {
+        return null;
+      }
+      return teacherMapper(teacher);
+    } catch (err: unknown) {
+      throw new Error("Something went wrong with teacher search", {
+        cause: err,
+      });
+    }
+  }
+
   async findTeacherByEmailWithHash(email: string) {
     try {
       const teacher = await TeacherModel.findOne({ email }).lean();
