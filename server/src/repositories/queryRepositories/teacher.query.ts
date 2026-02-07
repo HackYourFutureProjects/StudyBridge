@@ -18,4 +18,18 @@ export class TeacherQuery {
       });
     }
   }
+
+  async findTeacherByEmailWithHash(email: string) {
+    try {
+      const teacher = await TeacherModel.findOne({ email }).lean();
+      if (!teacher) {
+        return null;
+      }
+      return teacher;
+    } catch (err: unknown) {
+      throw new Error("Something went wrong with teacher search", {
+        cause: err,
+      });
+    }
+  }
 }

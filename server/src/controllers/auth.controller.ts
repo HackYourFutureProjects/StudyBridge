@@ -103,7 +103,7 @@ export class AuthController {
     const { email, password } = req.body;
 
     try {
-      const teacher = await this.authService.checkAuthStudentCredentials(
+      const teacher = await this.authService.checkAuthTeacherCredentials(
         email,
         password,
       );

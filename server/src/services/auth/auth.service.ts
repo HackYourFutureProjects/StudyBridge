@@ -4,10 +4,15 @@ import { TYPES } from "../../composition/composition.types.js";
 import { HttpError } from "../../utils/error.util.js";
 import { studentMapper } from "../../utils/mappers/student.mapper.js";
 import bcrypt from "bcryptjs";
+import { TeacherQuery } from "../../repositories/queryRepositories/teacher.query.js";
+import { teacherMapper } from "../../utils/mappers/teacher.mapper.js";
 
 @injectable()
 export class AuthService {
-  constructor(@inject(TYPES.StudentQuery) private studentQuery: StudentQuery) {}
+  constructor(
+    @inject(TYPES.StudentQuery) private studentQuery: StudentQuery,
+    @inject(TYPES.TeacherQuery) private teacherQuery: TeacherQuery,
+  ) {}
 
   async checkAuthStudentCredentials(email: string, password: string) {
     const student = await this.studentQuery.findUserByEmailWithHash(email);
@@ -23,6 +28,25 @@ export class AuthService {
 
     if (student.passwordHash === passwordHash) {
       return studentMapper(student);
+    } else {
+      throw new HttpError(401, "Invalid credentials");
+    }
+  }
+
+  async checkAuthTeacherCredentials(email: string, password: string) {
+    const teacher = await this.teacherQuery.findTeacherByEmailWithHash(email);
+
+    if (!teacher) {
+      throw new HttpError(401, "Invalid credentials");
+    }
+
+    const passwordHash = await this._generateHash(
+      password,
+      teacher.passwordSalt,
+    );
+
+    if (teacher.passwordHash === passwordHash) {
+      return teacherMapper(teacher);
     } else {
       throw new HttpError(401, "Invalid credentials");
     }
