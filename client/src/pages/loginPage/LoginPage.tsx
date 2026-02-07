@@ -1,15 +1,18 @@
 import { LoginFinalType, Role } from "../../api/auth/types";
 import { LoginForm } from "../../components/auth/loginForm/LoginForm";
+import { useLoginMutation } from "../../features/auth/mutations/useLoginStudentMutation";
 
 export const LoginPage = ({ role }: { role: Role }) => {
+  const { mutateAsync, isPending } = useLoginMutation(role);
+
   const onSubmit = (data: LoginFinalType) => {
-    console.log(data);
+    mutateAsync(data);
   };
 
   return (
     <div className="auth-page">
       <LoginForm
-        loading={false}
+        loading={isPending}
         onSubmit={onSubmit}
         title={role === "teacher" ? "LOGIN AS A TUTOR" : "LOGIN"}
         role={role}
