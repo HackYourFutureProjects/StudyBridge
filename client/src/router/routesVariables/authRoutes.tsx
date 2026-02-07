@@ -1,15 +1,16 @@
 import type { RouteObject } from "react-router-dom";
 import { authRoutesVariables } from "./pathVariables";
 import { SignUpPage } from "../../pages/signUpPage/SignUpPage";
+import { LoginPage } from "../../pages/loginPage/LoginPage";
 
 export const authRoutes: RouteObject[] = [
   {
     path: `${authRoutesVariables.loginStudent}`,
-    element: <div>Login student</div>,
+    element: <LoginPage role="student" />,
   },
   {
     path: `${authRoutesVariables.loginTutor}`,
-    element: <div>Login student tutor</div>,
+    element: <LoginPage role="teacher" />,
   },
 
   {
