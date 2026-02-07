@@ -69,7 +69,6 @@ export class AuthService {
     userId: string;
     role: "teacher" | "student";
   }) {
-    await this.refreshSessionRepository.revokeAllForUser(userId, role);
     const sessionId = randomUUID();
     const refreshToken = this.jwtService.createJWTRefreshToken({
       userId,
@@ -126,16 +125,23 @@ export class AuthService {
   }
 
   async rotateRefreshToken({ refreshToken, payload }: RotateArgs) {
-    await this.assertRefreshSessionValid(payload, refreshToken);
-
+    const session = await this.assertRefreshSessionValid(payload, refreshToken);
     const newAccessToken = this.jwtService.createJWTAccessToken({
       userId: payload.userId,
       role: payload.role,
     });
 
-    const { refreshToken: newRefreshToken } = await this.createRefreshSession({
+    const newRefreshToken = this.jwtService.createJWTRefreshToken({
       userId: payload.userId,
       role: payload.role,
+      sessionId: session.id,
+    });
+
+    await this.refreshSessionRepository.updateById(session.id, {
+      refreshTokenHash: this.sha256(newRefreshToken),
+      expiresAt: new Date(Date.now() + 2 * 60 * 60 * 1000),
+      revokedAt: null,
+      replacedBySessionId: null,
     });
 
     return { newAccessToken, newRefreshToken };
@@ -149,7 +155,6 @@ export class AuthService {
     } catch {
       return;
     }
-
     await this.refreshSessionRepository.revoke(payload.sessionId);
   }
 

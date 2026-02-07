@@ -1,5 +1,8 @@
 import { RefreshSessionModel } from "../../db/schemes/session.schema.js";
-import { RefreshSessionDB } from "../../db/schemes/types/session.types.js";
+import {
+  RefreshSessionDB,
+  RefreshSessionPatch,
+} from "../../db/schemes/types/session.types.js";
 import { injectable } from "inversify";
 import { HttpError } from "../../utils/error.util.js";
 
@@ -46,6 +49,7 @@ export class RefreshSessionRepository {
       if (role) {
         filter.role = role;
       }
+
       const res = await RefreshSessionModel.updateMany(filter, {
         $set: { revokedAt },
       });
@@ -56,6 +60,9 @@ export class RefreshSessionRepository {
     }
   }
 
+  updateById(id: string, patch: RefreshSessionPatch) {
+    return RefreshSessionModel.updateOne({ id }, { $set: patch });
+  }
   async replace(oldSessionId: string, newSessionId: string): Promise<boolean> {
     try {
       const res = await RefreshSessionModel.updateOne(

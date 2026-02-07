@@ -9,14 +9,11 @@ import { container } from "../composition/compositionRoot.js";
 import { AuthController } from "../controllers/auth.controller.js";
 import { TYPES } from "../composition/composition.types.js";
 import { AuthMiddleware } from "../middlewares/authMiddlewareWithBearer.js";
-import { VerifyMiddleware } from "../middlewares/verifyToken.middleware.js";
 
 export const authRouter = Router();
 const authController = container.get<AuthController>(TYPES.AuthController);
 const authMiddleware = container.get<AuthMiddleware>(TYPES.AuthMiddleware);
-const verifyTokenMiddleware = container.get<VerifyMiddleware>(
-  TYPES.VerifyMiddleware,
-);
+
 authRouter.post(
   "/registration-student",
   autStudentValidationMiddleware(),
@@ -53,6 +50,5 @@ authRouter.get(
 
 authRouter.post(
   "/refresh-token",
-  verifyTokenMiddleware.verify,
   authController.refreshController.bind(authController),
 );

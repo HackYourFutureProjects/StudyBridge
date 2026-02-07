@@ -8,3 +8,6 @@ export type RefreshSessionDB = {
   revokedAt: Date | null;
   replacedBySessionId: string | null;
 };
+export type RefreshSessionPatch = Partial<
+  Omit<RefreshSessionDB, "id" | "createdAt">
+>;
