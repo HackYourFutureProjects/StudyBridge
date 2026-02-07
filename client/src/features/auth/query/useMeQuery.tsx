@@ -8,10 +8,11 @@ import { UserType } from "../../../api/auth/types";
 export function useMeQuery() {
   const setSession = useAuthSessionStore((s) => s.setSession);
   const clearSession = useAuthSessionStore((s) => s.clearSession);
-
+  const accessToken = useAuthSessionStore((s) => s.accessToken);
   const query = useQuery<UserType>({
     queryKey: queryKeys.me,
     queryFn: meApi,
+    enabled: !!accessToken,
     retry: false,
   });
 
@@ -19,7 +20,7 @@ export function useMeQuery() {
     if (query.isSuccess && query.data) {
       setSession(query.data, (query.data as UserType).role ?? "student");
     }
-  }, [query.dataUpdatedAt]);
+  }, [query.dataUpdatedAt, query.isSuccess, query.data, setSession]);
 
   useEffect(() => {
     if (query.isError) {

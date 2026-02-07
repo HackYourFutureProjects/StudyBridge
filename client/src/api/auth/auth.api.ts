@@ -22,3 +22,8 @@ export async function meApi() {
   const res = await apiProtected.get<UserType>("/api/auth/me");
   return res.data;
 }
+
+export async function refreshApi() {
+  const res = await apiProtected.post("/api/auth/refresh-token");
+  return res.data as { accessToken: string };
+}
