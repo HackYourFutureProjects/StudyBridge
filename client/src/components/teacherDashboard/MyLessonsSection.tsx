@@ -1,14 +1,14 @@
 import LessonsTable from "../table/LessonsTable";
 import { Calendar } from "../calendar/Calendar";
 import { PageTitle } from "../page-title/PageTitle";
-// import { FindTeachersCard } from "./FindTeachersCard";
+import { NumberOfStudentsCard } from "./NumberOfStudentsCard";
 
 export const MyLessonsSection = () => {
   return (
     <div>
       <PageTitle title="General" />
       <div className="mt-[24px] flex items-start justify-between gap-[40px]">
-        {/* <FindTeachersCard /> */}
+        <NumberOfStudentsCard count={789} />
         <Calendar />
       </div>
       <PageTitle title="My lessons today" />
@@ -17,7 +17,7 @@ export const MyLessonsSection = () => {
           height={290}
           columns={[
             { key: "lesson", label: "Lessons", width: "130px" },
-            { key: "teacher", label: "Teachers", width: "184px" },
+            { key: "student", label: "Students", width: "184px" },
             { key: "price", label: "Price", width: "146px" },
             { key: "videoCall", label: "Video call", width: "146px" },
           ]}
@@ -26,7 +26,7 @@ export const MyLessonsSection = () => {
               id: 1,
               checked: true,
               lesson: "English",
-              teacher: "Anna Tkachuk",
+              student: "John Smith",
               price: "25 euro",
               videoCall: "Join",
             },
@@ -34,7 +34,7 @@ export const MyLessonsSection = () => {
               id: 2,
               checked: true,
               lesson: "English",
-              teacher: "Anna Tkachuk",
+              student: "John Smith",
               price: "25 euro",
               videoCall: "Join",
             },
@@ -42,7 +42,7 @@ export const MyLessonsSection = () => {
               id: 3,
               checked: false,
               lesson: "English",
-              teacher: "Anna Tkachuk",
+              student: "John Smith",
               price: "25 euro",
               videoCall: "Join",
             },
@@ -50,7 +50,7 @@ export const MyLessonsSection = () => {
               id: 4,
               checked: false,
               lesson: "English",
-              teacher: "Anna Tkachuk",
+              student: "John Smith",
               price: "25 euro",
               videoCall: "Join",
             },

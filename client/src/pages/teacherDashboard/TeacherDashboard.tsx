@@ -1,4 +1,4 @@
-import { MyLessonsSection } from "../../components/clientsDashboard/MyLessonsSection";
+import { MyLessonsSection } from "../../components/teacherDashboard/MyLessonsSection";
 import {
   Sidebar,
   defaultTeacherMenuItems,
