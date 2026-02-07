@@ -13,6 +13,7 @@ import { TeacherController } from "../controllers/teacher.controller.js";
 import { JwtService } from "../services/jwt/jwt.service.js";
 import { AuthMiddleware } from "../middlewares/authMiddlewareWithBearer.js";
 import { AuthService } from "../services/auth/auth.service.js";
+import { VerifyMiddleware } from "../middlewares/verifyToken.middleware.js";
 
 export const container = new Container();
 
@@ -23,6 +24,7 @@ container.bind<AuthService>(TYPES.AuthService).to(AuthService);
 container.bind<JwtService>(TYPES.JwtService).to(JwtService);
 //middleware
 container.bind<AuthMiddleware>(TYPES.AuthMiddleware).to(AuthMiddleware);
+container.bind<VerifyMiddleware>(TYPES.VerifyMiddleware).to(VerifyMiddleware);
 
 // student
 container.bind<StudentCommand>(TYPES.StudentCommand).to(StudentCommand);
