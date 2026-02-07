@@ -6,11 +6,16 @@ import { StudentTypeDB } from "../../db/schemes/types/student.types.js";
 import bcrypt from "bcryptjs";
 import { randomUUID } from "node:crypto";
 import { studentMapper } from "../../utils/mappers/student.mapper.js";
-import { NotFoundError } from "../../utils/error.util.js";
+import { HttpError, NotFoundError } from "../../utils/error.util.js";
+import { StudentQuery } from "../../repositories/queryRepositories/student.query.js";
+import { TeacherQuery } from "../../repositories/queryRepositories/teacher.query.js";
+import { isMongoDuplicateKeyError } from "../../utils/duplicateType.guard.js";
 @injectable()
 export class StudentService {
   constructor(
     @inject(TYPES.StudentCommand) private studentCommand: StudentCommand,
+    @inject(TYPES.StudentQuery) private studentQuery: StudentQuery,
+    @inject(TYPES.TeacherQuery) private teacherQuery: TeacherQuery,
   ) {}
 
   async createStudent({
@@ -20,6 +25,13 @@ export class StudentService {
     password,
     role,
   }: StudentRegistrationType) {
+    const studentExists = await this.studentQuery.getStudentByEmail(email);
+    const teacherExists = await this.teacherQuery.getTeacherByEmail(email);
+
+    if (studentExists || teacherExists) {
+      throw new HttpError(409, "Email already registered");
+    }
+
     const passwordSalt = await bcrypt.genSalt(10);
     const passwordHash = await this._generateHash(password, passwordSalt);
 
@@ -36,9 +48,15 @@ export class StudentService {
       mainLanguage: null,
       role,
     };
-    const student = await this.studentCommand.createStudent(newStudent);
-
-    return studentMapper(student);
+    try {
+      const student = await this.studentCommand.createStudent(newStudent);
+      return studentMapper(student);
+    } catch (e: unknown) {
+      if (isMongoDuplicateKeyError(e)) {
+        throw new HttpError(409, "Email already registered");
+      }
+      throw e;
+    }
   }
 
   async deleteStudent(id: string): Promise<void> {

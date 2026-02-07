@@ -11,27 +11,22 @@ export class JwtService {
   secret = "1234";
   constructor() {}
 
-  async createJWTAccessToken(user: StudentViewType | TeacherViewType) {
-    const token = jwt.sign({ userId: user.id, role: user.role }, this.secret, {
+  async createJWTAccessToken(
+    user: StudentViewType | TeacherViewType,
+  ): Promise<string> {
+    return jwt.sign({ userId: user.id, role: user.role }, this.secret, {
       expiresIn: "1h",
     });
-
-    return {
-      accessToken: token,
-    };
   }
 
   async createJWTRefreshToken(user: StudentViewType | TeacherViewType) {
-    const currentDate = new Date();
-
     return jwt.sign(
       {
         userId: user.id,
-        lastActiveDate: currentDate,
-        expireDate: new Date(currentDate.getTime() + 20 * 1000),
+        role: user.role,
       },
       this.secret,
-      { expiresIn: "1h" },
+      { expiresIn: "2h" },
     );
   }
   async verifyToken(token: string): Promise<AccessTokenPayload | null> {

@@ -6,12 +6,17 @@ import bcrypt from "bcryptjs";
 import { randomUUID } from "node:crypto";
 import { TeacherTypeDB } from "../../db/schemes/types/teacher.types.js";
 import { teacherMapper } from "../../utils/mappers/teacher.mapper.js";
-import { NotFoundError } from "../../utils/error.util.js";
+import { HttpError, NotFoundError } from "../../utils/error.util.js";
+import { StudentQuery } from "../../repositories/queryRepositories/student.query.js";
+import { TeacherQuery } from "../../repositories/queryRepositories/teacher.query.js";
+import { isMongoDuplicateKeyError } from "../../utils/duplicateType.guard.js";
 
 @injectable()
 export class TeacherService {
   constructor(
     @inject(TYPES.TeacherCommand) private teacherCommand: TeacherCommand,
+    @inject(TYPES.StudentQuery) private studentQuery: StudentQuery,
+    @inject(TYPES.TeacherQuery) private teacherQuery: TeacherQuery,
   ) {}
 
   async createTeacher({
@@ -21,6 +26,13 @@ export class TeacherService {
     password,
     role,
   }: TeacherRegistrationType) {
+    const studentExists = await this.studentQuery.getStudentByEmail(email);
+    const teacherExists = await this.teacherQuery.getTeacherByEmail(email);
+
+    if (studentExists || teacherExists) {
+      throw new HttpError(409, "Email already registered");
+    }
+
     const passwordSalt = await bcrypt.genSalt(10);
     const passwordHash = await this._generateHash(password, passwordSalt);
 
@@ -65,9 +77,16 @@ export class TeacherService {
 
       role,
     };
-    const teacher = await this.teacherCommand.createTeacher(newTeacher);
 
-    return teacherMapper(teacher);
+    try {
+      const teacher = await this.teacherCommand.createTeacher(newTeacher);
+      return teacherMapper(teacher);
+    } catch (e: unknown) {
+      if (isMongoDuplicateKeyError(e)) {
+        throw new HttpError(409, "Email already registered");
+      }
+      throw e;
+    }
   }
 
   async deleteTeacher(id: string): Promise<void> {

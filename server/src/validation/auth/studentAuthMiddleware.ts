@@ -51,6 +51,22 @@ export const email = check("email")
     return true;
   });
 
+export const emailLogin = check("email")
+  .trim()
+  .notEmpty()
+  .withMessage("Email is required")
+  .isEmail()
+  .withMessage("Invalid email format");
+
+export const userPasswordLogin = check("password")
+  .notEmpty()
+  .withMessage("Password is required");
+
+export const authStudentLoginValidationMiddleware = () => [
+  emailLogin,
+  userPasswordLogin,
+];
+
 export const autStudentValidationMiddleware = () => [
   studentName,
   studentLastName,

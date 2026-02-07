@@ -16,4 +16,5 @@ export const TYPES = {
   AuthMiddleware: Symbol.for("AuthMiddleware"),
   //auth
   AuthController: Symbol.for("AuthController"),
+  AuthService: Symbol.for("AuthService"),
 };

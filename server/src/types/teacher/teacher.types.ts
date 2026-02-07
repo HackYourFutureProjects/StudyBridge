@@ -64,3 +64,8 @@ export type TeacherRegistrationType = {
   password: string;
   role: Role;
 };
+
+export type TeacherLoginType = {
+  email: string;
+  password: string;
+};
