@@ -144,4 +144,31 @@ export class AuthController {
       return next(e);
     }
   }
+
+  async refreshController(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { userId, role } = req.auth!;
+
+      const user =
+        role === "student"
+          ? await this.studentQuery.getStudentById(userId)
+          : await this.teacherQuery.getTeacherById(userId);
+
+      if (!user) {
+        return res.sendStatus(401);
+      }
+
+      const accessToken = await this.jwtService.createJWTAccessToken(user);
+      const refreshToken = await this.jwtService.createJWTRefreshToken(user);
+
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: true,
+      });
+
+      return res.status(200).send({ accessToken });
+    } catch (e) {
+      return next(e);
+    }
+  }
 }
