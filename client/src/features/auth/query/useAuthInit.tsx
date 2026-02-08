@@ -7,11 +7,17 @@ export const useAuthInit = () => {
   const clearSession = useAuthSessionStore((s) => s.clearSession);
 
   useEffect(() => {
+    const hadSession = localStorage.getItem("hadSession") === "1";
+    if (!hadSession) {
+      clearSession();
+      return;
+    }
     (async () => {
       try {
         const { accessToken } = await refreshApi();
         setAccessToken(accessToken);
       } catch {
+        localStorage.removeItem("hadSession");
         clearSession();
       }
     })();

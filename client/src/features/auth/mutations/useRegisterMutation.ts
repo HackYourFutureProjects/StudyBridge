@@ -7,7 +7,7 @@ import { queryKeys } from "../../queryKeys";
 import { getErrorMessage } from "../../../util/ErrorUtil";
 import { RegisterFinalType, Role } from "../../../api/auth/types";
 
-export const useRegisterStudentMutation = (role: Role) => {
+export const useRegisterMutation = (role: Role) => {
   const qc = useQueryClient();
 
   const mutationFn = (data: RegisterFinalType) => {

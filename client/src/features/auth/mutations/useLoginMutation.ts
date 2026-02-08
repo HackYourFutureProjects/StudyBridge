@@ -18,6 +18,7 @@ export function useLoginMutation(role: Role) {
     mutationFn,
     onSuccess: async ({ accessToken }) => {
       setAccessToken(accessToken);
+      localStorage.setItem("hadSession", "1");
       navigate("/", { replace: true });
       await qc.invalidateQueries({ queryKey: queryKeys.me });
     },

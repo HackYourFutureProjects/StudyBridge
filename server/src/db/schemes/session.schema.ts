@@ -8,7 +8,7 @@ const RefreshSessionSchema = new mongoose.Schema<RefreshSessionDB>(
     role: { type: String, required: true, enum: ["teacher", "student"] },
     refreshTokenHash: { type: String, required: true },
 
-    expiresAt: { type: Date, required: true, index: true },
+    expiresAt: { type: Date, required: true },
     createdAt: { type: Date, default: Date.now },
 
     revokedAt: { type: Date, default: null },

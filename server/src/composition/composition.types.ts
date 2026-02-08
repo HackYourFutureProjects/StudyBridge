@@ -14,7 +14,7 @@ export const TYPES = {
   JwtService: Symbol.for("JwtService"),
   //middlewares
   AuthMiddleware: Symbol.for("AuthMiddleware"),
-  VerifyMiddleware: Symbol.for("VerifyMiddleware"),
+  RefreshTokenMiddleware: Symbol.for("RefreshTokenMiddleware"),
   //auth
   AuthController: Symbol.for("AuthController"),
   AuthService: Symbol.for("AuthService"),

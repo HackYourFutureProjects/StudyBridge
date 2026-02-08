@@ -17,7 +17,6 @@ import { AuthService } from "../services/auth/auth.service.js";
 import { JwtService } from "../services/jwt/jwt.service.js";
 import { StudentQuery } from "../repositories/queryRepositories/student.query.js";
 import { TeacherQuery } from "../repositories/queryRepositories/teacher.query.js";
-import { RefreshTokenPayload } from "../types/auth/auth.types.js";
 
 @injectable()
 export class AuthController {
@@ -166,19 +165,10 @@ export class AuthController {
 
   async refreshController(req: Request, res: Response, next: NextFunction) {
     try {
-      const refreshToken = req.cookies?.["refreshToken"];
-      if (!refreshToken) {
-        return res.sendStatus(401);
-      }
-      let payload: RefreshTokenPayload;
-      try {
-        payload = this.jwtService.verifyRefreshToken(refreshToken);
-      } catch {
-        return res.sendStatus(401);
-      }
+      const { token, payload } = req.refresh!;
       const { newAccessToken, newRefreshToken } =
         await this.authService.rotateRefreshToken({
-          refreshToken,
+          refreshToken: token,
           payload,
         });
 
