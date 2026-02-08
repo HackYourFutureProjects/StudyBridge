@@ -18,7 +18,7 @@ export class AuthMiddleware {
     }
     const token = req.headers.authorization.split(" ")[1];
 
-    const payload = await this.jwtService.verifyToken(token);
+    const payload = this.jwtService.verifyAccessToken(token);
 
     if (!payload?.userId || !payload?.role) {
       res.sendStatus(401);

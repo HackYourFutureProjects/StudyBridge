@@ -80,17 +80,26 @@ export class AuthController {
     const { email, password } = req.body;
 
     try {
-      const user = await this.authService.checkAuthStudentCredentials(
+      const student = await this.authService.checkAuthStudentCredentials(
         email,
         password,
       );
 
-      const accessToken = await this.jwtService.createJWTAccessToken(user);
-      const refreshToken = await this.jwtService.createJWTRefreshToken(user);
+      const accessToken = this.jwtService.createJWTAccessToken({
+        userId: student.id,
+        role: "student",
+      });
+
+      const { refreshToken } = await this.authService.createRefreshSession({
+        userId: student.id,
+        role: "student",
+      });
 
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: true,
+        path: "/api/auth",
+        maxAge: 2 * 60 * 60 * 1000,
       });
       res.status(200).send({ accessToken });
       return;
@@ -112,12 +121,21 @@ export class AuthController {
         password,
       );
 
-      const accessToken = await this.jwtService.createJWTAccessToken(teacher);
-      const refreshToken = await this.jwtService.createJWTRefreshToken(teacher);
+      const accessToken = this.jwtService.createJWTAccessToken({
+        userId: teacher.id,
+        role: "teacher",
+      });
+
+      const { refreshToken } = await this.authService.createRefreshSession({
+        userId: teacher.id,
+        role: "teacher",
+      });
 
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: true,
+        path: "/api/auth",
+        maxAge: 2 * 60 * 60 * 1000,
       });
       res.status(200).send({ accessToken });
       return;
@@ -147,26 +165,21 @@ export class AuthController {
 
   async refreshController(req: Request, res: Response, next: NextFunction) {
     try {
-      const { userId, role } = req.auth!;
+      const { token, payload } = req.refresh!;
+      const { newAccessToken, newRefreshToken } =
+        await this.authService.rotateRefreshToken({
+          refreshToken: token,
+          payload,
+        });
 
-      const user =
-        role === "student"
-          ? await this.studentQuery.getStudentById(userId)
-          : await this.teacherQuery.getTeacherById(userId);
-
-      if (!user) {
-        return res.sendStatus(401);
-      }
-
-      const accessToken = await this.jwtService.createJWTAccessToken(user);
-      const refreshToken = await this.jwtService.createJWTRefreshToken(user);
-
-      res.cookie("refreshToken", refreshToken, {
+      res.cookie("refreshToken", newRefreshToken, {
         httpOnly: true,
         secure: true,
+        path: "/api/auth",
+        maxAge: 2 * 60 * 60 * 1000,
       });
 
-      return res.status(200).send({ accessToken });
+      return res.status(200).send({ accessToken: newAccessToken });
     } catch (e) {
       return next(e);
     }

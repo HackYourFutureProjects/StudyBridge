@@ -12,7 +12,6 @@ export const useAuthInit = () => {
       clearSession();
       return;
     }
-
     (async () => {
       try {
         const { accessToken } = await refreshApi();

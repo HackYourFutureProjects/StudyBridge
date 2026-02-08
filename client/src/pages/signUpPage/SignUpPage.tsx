@@ -1,9 +1,9 @@
 import { SignUpForm } from "../../components/auth/signUpForm/SignUpForm";
 import { RegisterFinalType, Role } from "../../api/auth/types";
-import { useRegisterStudentMutation } from "../../features/auth/mutations/useRegisterStudentMutation";
+import { useRegisterMutation } from "../../features/auth/mutations/useRegisterMutation";
 
 export const SignUpPage = ({ role }: { role: Role }) => {
-  const { mutateAsync, isPending } = useRegisterStudentMutation(role);
+  const { mutateAsync, isPending } = useRegisterMutation(role);
 
   const onSubmit = (data: RegisterFinalType) => {
     mutateAsync({ ...data, role });

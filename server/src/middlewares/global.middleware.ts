@@ -8,15 +8,18 @@ export const globalErrorMiddleware: ErrorRequestHandler = (
   res,
   next,
 ) => {
-  logError(err);
-
-  if (res.headersSent) return next(err);
-
-  if (err instanceof HttpError) {
-    return res.status(err.statusCode).json({
-      message: err.message,
-    });
+  if (res.headersSent) {
+    return next(err);
   }
 
+  if (err instanceof HttpError) {
+    if (err.statusCode >= 500) {
+      logError(err);
+    }
+
+    return res.status(err.statusCode).json({ message: err.message });
+  }
+
+  logError(err);
   return res.status(500).json({ message: "Internal server error" });
 };

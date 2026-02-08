@@ -1,6 +1,6 @@
 import { LoginFinalType, Role } from "../../api/auth/types";
 import { LoginForm } from "../../components/auth/loginForm/LoginForm";
-import { useLoginMutation } from "../../features/auth/mutations/useLoginStudentMutation";
+import { useLoginMutation } from "../../features/auth/mutations/useLoginMutation";
 
 export const LoginPage = ({ role }: { role: Role }) => {
   const { mutateAsync, isPending } = useLoginMutation(role);

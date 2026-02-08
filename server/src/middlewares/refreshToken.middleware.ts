@@ -1,24 +1,23 @@
-import { inject, injectable } from "inversify";
 import { TYPES } from "../composition/composition.types.js";
+import { inject, injectable } from "inversify";
 import { JwtService } from "../services/jwt/jwt.service.js";
 import { NextFunction, Request, Response } from "express";
-
 @injectable()
-export class VerifyMiddleware {
+export class RefreshTokenMiddleware {
   constructor(@inject(TYPES.JwtService) private jwtService: JwtService) {}
 
-  verify = async (req: Request, res: Response, next: NextFunction) => {
+  handle = (req: Request, res: Response, next: NextFunction) => {
     const token = req.cookies?.refreshToken;
     if (!token) {
       return res.sendStatus(401);
     }
 
-    const payload = await this.jwtService.verifyToken(token);
-
-    if (!payload?.userId || !payload?.role) {
+    const payload = this.jwtService.verifyRefreshToken(token);
+    if (!payload) {
       return res.sendStatus(401);
     }
-    req.auth = { userId: payload.userId, role: payload.role };
+
+    req.refresh = { token, payload };
     return next();
   };
 }
