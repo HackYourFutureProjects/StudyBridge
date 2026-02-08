@@ -1,7 +1,7 @@
 import { Navigate, type RouteObject } from "react-router-dom";
 import { privatesRoutesVariables } from "./pathVariables";
 import { ClientsDashboard } from "../../pages/ClientsDashboard/ClientsDashboard";
-import { StudentClasses } from "../../pages/StudentClasses/StudentClasses";
+import { ClientsClasses } from "../../pages/ClientsClasses/ClientsClasses";
 import { ClientsBilling } from "../../pages/clientsBilling/ClientsBilling";
 import { TeacherDashboard } from "../../pages/teacherDashboard/TeacherDashboard";
 
@@ -11,8 +11,11 @@ export const privateRoutes: RouteObject[] = [
     element: <Navigate to={privatesRoutesVariables.dashboard} replace />,
   },
   { path: "/clients-dashboard", element: <ClientsDashboard /> },
-  { path: "/student-classes", element: <StudentClasses /> },
+  { path: "/student-classes", element: <ClientsClasses /> },
 
   { path: "/clients-billing", element: <ClientsBilling /> },
   { path: "/teacher/my-dashboard", element: <TeacherDashboard /> },
+  { path: "/teacher/my-classes", element: <ClientsClasses /> },
+  { path: "/teacher/my-students", element: <ClientsClasses /> },
+  { path: "/teacher/my-billings", element: <ClientsBilling /> },
 ];
