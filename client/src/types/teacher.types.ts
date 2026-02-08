@@ -7,4 +7,8 @@ export type TeacherType = {
   education: string;
   price: number;
   approaching: string;
+  availableTimeSlots?: string[];
+  schedule?: {
+    [date: string]: string[];
+  };
 };
