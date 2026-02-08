@@ -1,4 +1,4 @@
-import reviewsIcon from "../../../assets/icons/reviews.svg";
+import ReviewsIcon from "../../icons/Reviews";
 
 interface ReviewCardProps {
   avatar: string;
@@ -28,11 +28,7 @@ export const ReviewCardHome = ({
             <p className="text-white/60 text-sm truncate">{course}</p>
           </div>
 
-          <img
-            src={reviewsIcon}
-            alt=""
-            className="w-auto h-auto opacity-20 flex-shrink-0"
-          />
+          <ReviewsIcon className="w-auto h-auto opacity-20 flex-shrink-0" />
         </div>
 
         <p className="text-white/80 text-base leading-relaxed">{review}</p>

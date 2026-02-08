@@ -1,24 +1,24 @@
 import { FeatureCard } from "./FeatureCard";
 import { Button } from "../../ui/button/Button";
-import icon1 from "../../../assets/icons/home-section1-icon.svg";
-import icon2 from "../../../assets/icons/home-section1-icon2.svg";
-import icon3 from "../../../assets/icons/home-section1-icon3.svg";
+import HomeSection1Icon from "../../icons/HomeSection1Icon";
+import HomeSection1Icon2 from "../../icons/HomeSection1Icon2";
+import HomeSection1Icon3 from "../../icons/HomeSection1Icon3";
 
 const features = [
   {
-    icon: icon1,
+    icon: <HomeSection1Icon />,
     title: "Trusted tutors",
     description:
       "All tutors are carefully selected and verified to ensure high teaching quality and a safe learning experience.",
   },
   {
-    icon: icon2,
+    icon: <HomeSection1Icon2 />,
     title: "Simple process",
     description:
       "Find a tutor, book a session, and start learning in just a few clicks – no complicated steps or confusion.",
   },
   {
-    icon: icon3,
+    icon: <HomeSection1Icon3 />,
     title: "Real results",
     description:
       "Students see progress faster thanks to focused sessions and tutors who know how to explain things clearly.",

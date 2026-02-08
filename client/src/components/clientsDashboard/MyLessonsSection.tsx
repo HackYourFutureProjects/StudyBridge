@@ -1,6 +1,6 @@
 import LessonsTable from "../table/LessonsTable";
 import { Calendar } from "../calendar/Calendar";
-import { PageTitle } from "../page-title/PageTitle";
+import { PageTitle } from "../pageTitle/PageTitle";
 import { FindTeachersCard } from "./FindTeachersCard";
 
 export const MyLessonsSection = () => {
