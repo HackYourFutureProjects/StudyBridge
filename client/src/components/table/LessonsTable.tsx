@@ -39,10 +39,11 @@ const LessonsTable = ({
   const [rows, setRows] = useState<LessonRowData[]>(sourceRows);
 
   const handleToggleRow = (rowIndex: number) => {
-    setRows((prev) =>
-      prev.map((row, index) =>
-        index === rowIndex ? { ...row, checked: !row.checked } : row,
-      ),
+    setRows(
+      (prev) =>
+        prev.map((row, index) =>
+          index === rowIndex ? { ...row, checked: !row.checked } : row,
+        ) as LessonRowData[],
     );
   };
 

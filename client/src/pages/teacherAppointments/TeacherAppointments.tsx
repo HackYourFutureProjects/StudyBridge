@@ -7,9 +7,20 @@ import { TopBar } from "../../components/headerPrivate/TopBar";
 import { PageTitle } from "../../components/pageTitle/PageTitle";
 import LessonsTable from "../../components/table/LessonsTable";
 import { Pagination } from "../../components/ui/pagination/Pagination";
+import { useTeacherAppointmentsQuery } from "../../features/appointments/query/useTeacherAppointmentsQuery";
+import { useUpdateAppointmentMutation } from "../../features/appointments/mutations/useUpdateAppointmentMutation";
+import { AppointmentStatus } from "../../types/appointments.types";
+import { LessonRowData } from "../../components/table/LessonRow";
 
 export const TeacherAppointments = () => {
   const [page, setPage] = useState(1);
+
+  const {
+    data: appointments = [],
+    isLoading,
+    error,
+  } = useTeacherAppointmentsQuery();
+  const updateAppointmentMutation = useUpdateAppointmentMutation();
 
   const columns = [
     { key: "lesson", label: "Lessons", width: "130px" },
@@ -19,6 +30,61 @@ export const TeacherAppointments = () => {
     { key: "time", label: "Time", width: "146px" },
     { key: "status", label: "Status", width: "200px" },
   ];
+
+  const handleStatusChange = (
+    appointmentId: string,
+    newStatus: AppointmentStatus,
+  ) => {
+    updateAppointmentMutation.mutate({
+      appointmentId,
+      status: newStatus,
+    });
+  };
+
+  const tableRows = appointments.map((appointment) => ({
+    id: appointment.id,
+    checked: false,
+    lesson: appointment.lesson,
+    student: appointment.student,
+    price: appointment.price,
+    date: appointment.date,
+    time: appointment.time,
+    status: appointment.status,
+    onStatusChange: (newStatus: AppointmentStatus) =>
+      handleStatusChange(appointment.id, newStatus),
+  })) as LessonRowData[];
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen pl-[218px]">
+        <Sidebar items={defaultTeacherMenuItems} />
+        <div className="px-6 lg:px-10 min-h-screen flex flex-col">
+          <TopBar />
+          <div className="pt-[40px] flex flex-col flex-1">
+            <div className="text-white text-center">
+              Loading appointments...
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen pl-[218px]">
+        <Sidebar items={defaultTeacherMenuItems} />
+        <div className="px-6 lg:px-10 min-h-screen flex flex-col">
+          <TopBar />
+          <div className="pt-[40px] flex flex-col flex-1">
+            <div className="text-white text-center">
+              Error loading appointments
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen pl-[218px]">
@@ -38,88 +104,7 @@ export const TeacherAppointments = () => {
             rowHeight={66}
             columns={columns}
             useStatusButtons={true}
-            rows={[
-              {
-                id: 1,
-                checked: false,
-                lesson: "English",
-                student: "Anna Tkachuk",
-                price: "25 euro",
-                date: "5/27/15",
-                time: "2:00 PM",
-                status: "pending",
-              },
-              {
-                id: 2,
-                checked: false,
-                lesson: "English",
-                student: "Anna Tkachuk",
-                price: "25 euro",
-                date: "5/27/15",
-                time: "2:00 PM",
-                status: "pending",
-              },
-              {
-                id: 3,
-                checked: false,
-                lesson: "English",
-                student: "Anna Tkachuk",
-                price: "25 euro",
-                date: "5/27/15",
-                time: "2:00 PM",
-                status: "pending",
-              },
-              {
-                id: 4,
-                checked: false,
-                lesson: "English",
-                student: "Anna Tkachuk",
-                price: "25 euro",
-                date: "5/27/15",
-                time: "2:00 PM",
-                status: "pending",
-              },
-              {
-                id: 5,
-                checked: false,
-                lesson: "English",
-                student: "Anna Tkachuk",
-                price: "25 euro",
-                date: "5/27/15",
-                time: "2:00 PM",
-                status: "pending",
-              },
-              {
-                id: 6,
-                checked: false,
-                lesson: "English",
-                student: "Anna Tkachuk",
-                price: "25 euro",
-                date: "5/27/15",
-                time: "2:00 PM",
-                status: "pending",
-              },
-              {
-                id: 7,
-                checked: false,
-                lesson: "English",
-                student: "Anna Tkachuk",
-                price: "25 euro",
-                date: "5/27/15",
-                time: "2:00 PM",
-                status: "pending",
-              },
-              {
-                id: 8,
-                checked: false,
-                lesson: "English",
-                student: "Anna Tkachuk",
-                price: "25 euro",
-                date: "5/27/15",
-                time: "2:00 PM",
-                status: "pending",
-              },
-            ]}
+            rows={tableRows}
           />
 
           <div className="mt-auto pt-4 mb-6 flex justify-center">

@@ -2,12 +2,13 @@ import { useState } from "react";
 
 interface TimeProps {
   onTimeSelect: (time: string) => void;
+  availableSlots?: string[];
 }
 
-export function Time({ onTimeSelect }: TimeProps) {
+export function Time({ onTimeSelect, availableSlots }: TimeProps) {
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
 
-  const timeSlots = [
+  const defaultTimeSlots = [
     "7:00",
     "8:00",
     "9:00",
@@ -24,6 +25,8 @@ export function Time({ onTimeSelect }: TimeProps) {
     "20:00",
     "21:00",
   ];
+
+  const timeSlots = availableSlots || defaultTimeSlots;
 
   const handleTimeClick = (time: string): void => {
     setSelectedTime(time);

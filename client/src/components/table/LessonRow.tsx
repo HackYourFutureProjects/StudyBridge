@@ -4,12 +4,21 @@ import KebabVerticalIcon from "../icons/KebabVertical";
 import UncheckedIcon from "../icons/Uncheked";
 import Check from "../icons/Check";
 import { StatusButtons } from "../ui/statusButtons/StatusButtons";
+import { AppointmentStatus } from "../../types/appointments.types";
 
 export type LessonRowData = {
   id?: string | number;
-  checked: boolean; // checkbox state
+  checked: boolean;
   linkText?: string;
-  [key: string]: ReactNode;
+  lesson?: string;
+  student?: string;
+  price?: string;
+  date?: string;
+  time?: string;
+  status?: AppointmentStatus;
+  onStatusChange?: (status: AppointmentStatus) => void;
+} & {
+  [key: string]: ReactNode | string | number | boolean | undefined;
 };
 
 type LessonRowProps = {
@@ -74,9 +83,10 @@ const LessonRow = ({
                   | "approved"
                   | "rejected"
               }
+              onStatusChange={data.onStatusChange}
             />
           ) : (
-            data[column.key]
+            (data[column.key] as ReactNode)
           )}
         </td>
       ))}
