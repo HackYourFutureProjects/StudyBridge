@@ -1,8 +1,8 @@
-import { Hero } from "../../components/home-section/Hero/Hero";
-import { Features } from "../../components/home-section/Features/Features";
-import { PopularSubjects } from "../../components/home-section/PopularSubjects/PopularSubjects";
-import { OurClients } from "../../components/home-section/OurClients/ourClients";
-import { ReviewsHome } from "../../components/home-section/Reviews/ReviewsHome";
+import { Hero } from "../../components/homeSection/Hero/Hero";
+import { Features } from "../../components/homeSection/Features/Features";
+import { PopularSubjects } from "../../components/homeSection/PopularSubjects/PopularSubjects";
+import { OurClients } from "../../components/homeSection/OurClients/ourClients";
+import { ReviewsHome } from "../../components/homeSection/Reviews/ReviewsHome";
 
 export const Home = () => {
   return (

@@ -3,6 +3,7 @@ import { Button } from "../ui/button/Button";
 import KebabVerticalIcon from "../icons/KebabVertical";
 import UncheckedIcon from "../icons/Uncheked";
 import Check from "../icons/Check";
+import { StatusButtons } from "../ui/statusButtons/StatusButtons";
 
 export type LessonRowData = {
   id?: string | number;
@@ -17,6 +18,7 @@ type LessonRowProps = {
   onToggle: () => void; // checkbox toggle handler
   columns: { key: string; label: string }[]; // columns to render in order
   rowHeight: number; // row height in px
+  useStatusButtons?: boolean;
 };
 
 const LessonRow = ({
@@ -25,6 +27,7 @@ const LessonRow = ({
   onToggle,
   columns,
   rowHeight,
+  useStatusButtons = false,
 }: LessonRowProps) => {
   const rowBgClass = index % 2 === 0 ? "bg-[#0F0E13]" : "bg-[#211C27]";
 
@@ -58,10 +61,23 @@ const LessonRow = ({
         <td
           key={`${String(data.id ?? index)}-${column.key}`}
           className={`font-inter text-[14px] text-[#B9B9B9] border-b border-[#E1E1E1] ${
-            columnIndex === columns.length - 1 ? "underline" : ""
+            columnIndex === columns.length - 1 && column.key !== "status"
+              ? "underline"
+              : ""
           }`}
         >
-          {data[column.key]}
+          {column.key === "status" && useStatusButtons ? (
+            <StatusButtons
+              initialStatus={
+                (data[column.key] as string).toLowerCase() as
+                  | "pending"
+                  | "approved"
+                  | "rejected"
+              }
+            />
+          ) : (
+            data[column.key]
+          )}
         </td>
       ))}
 

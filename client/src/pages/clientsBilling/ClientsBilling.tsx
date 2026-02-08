@@ -5,7 +5,7 @@ import {
   defaultStudentMenuItems,
   defaultTeacherMenuItems,
 } from "../../components/sidebar/Sidebar";
-import { TopBar } from "../../components/header-private/TopBar";
+import { TopBar } from "../../components/headerPrivate/TopBar";
 import { Pagination } from "../../components/ui/pagination/Pagination";
 import { BillingHeader } from "../../components/clientsBillings/BillingHeader";
 import { useAuthSessionStore } from "../../store/authSession.store";

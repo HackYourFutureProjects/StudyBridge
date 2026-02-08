@@ -1,14 +1,14 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/ui/button/Button";
 import { TeacherCard } from "../../components/teacherCard/teacherCard";
-import { TeacherNavigation } from "../../components/teacher-section/teacherNavigation/TeacherNavigation";
-import TeacherSubjects from "../../components/teacher-section/teacherSubjects/teacherSubjects";
-import TeacherAbout from "../../components/teacher-section/teacherAbout/teacherAbout";
-import TeacherSchedule from "../../components/teacher-section/teacherSchedule/TeacherSchedule";
+import { TeacherNavigation } from "../../components/teacherSection/teacherNavigation/TeacherNavigation";
+import TeacherSubjects from "../../components/teacherSection/teacherSubjects/teacherSubjects";
+import TeacherAbout from "../../components/teacherSection/teacherAbout/teacherAbout";
+import TeacherSchedule from "../../components/teacherSection/teacherSchedule/TeacherSchedule";
 import { useState } from "react";
 import Person from "../../assets/images/person.jpg";
 import { TeacherType } from "../../types/teacher.types";
-import { ReviewsTeacher } from "../../components/teacher-section/Reviews/ReviewsTeacher";
+import { ReviewsTeacher } from "../../components/teacherSection/Reviews/ReviewsTeacher";
 
 const teacher: TeacherType = {
   id: "1",

@@ -1,5 +1,7 @@
+import React from "react";
+
 interface FeatureCardProps {
-  icon: string;
+  icon: React.ReactNode;
   title: string;
   description: string;
   className?: string;
@@ -14,7 +16,7 @@ export const FeatureCard = ({
   return (
     <div className={`card-glass-center group ${className || ""}`}>
       <div className="flex justify-center mb-6 text-purple-400 group-hover:text-purple-300 transition-colors">
-        <img src={icon} alt={title} className="w-auto h-auto" />
+        {icon}
       </div>
 
       <h3 className="text-2xl font-bold text-white mb-4">{title}</h3>

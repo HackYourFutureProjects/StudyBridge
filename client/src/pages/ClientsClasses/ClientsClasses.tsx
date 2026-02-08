@@ -4,10 +4,10 @@ import {
   defaultStudentMenuItems,
   defaultTeacherMenuItems,
 } from "../../components/sidebar/Sidebar";
-import { TopBar } from "../../components/header-private/TopBar";
+import { TopBar } from "../../components/headerPrivate/TopBar";
 import { Pagination } from "../../components/ui/pagination/Pagination";
 import LessonsTable from "../../components/table/LessonsTable";
-import { PageTitle } from "../../components/page-title/PageTitle";
+import { PageTitle } from "../../components/pageTitle/PageTitle";
 import { useAuthSessionStore } from "../../store/authSession.store";
 import { useLocation } from "react-router-dom";
 

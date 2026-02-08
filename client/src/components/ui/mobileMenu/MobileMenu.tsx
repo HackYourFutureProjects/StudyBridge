@@ -1,7 +1,7 @@
 import React from "react";
 import * as Dialog from "@radix-ui/react-dialog";
-import menuIcon from "../../../assets/icons/Menu Button.svg";
-import crossIcon from "../../../assets/icons/cross.svg";
+import MenuIcon from "../../icons/Menu-button";
+import CrossIcon from "../../icons/Cross";
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -58,7 +58,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose }) => {
               "
               aria-label="Close menu"
             >
-              <img src={crossIcon} alt="Close" className="w-6 h-6" />
+              <CrossIcon className="w-6 h-6" />
             </Dialog.Close>
           </div>
 
@@ -96,6 +96,6 @@ export const MenuButton: React.FC<MenuButtonProps> = ({ onClick, isOpen }) => (
     "
     aria-label={isOpen ? "Close menu" : "Open menu"}
   >
-    <img src={menuIcon} alt="Menu" className="w-8 h-8" />
+    <MenuIcon className="w-8 h-8" />
   </button>
 );

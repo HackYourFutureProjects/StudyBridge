@@ -3,7 +3,7 @@ import {
   Sidebar,
   defaultTeacherMenuItems,
 } from "../../components/sidebar/Sidebar";
-import { TopBar } from "../../components/header-private/TopBar";
+import { TopBar } from "../../components/headerPrivate/TopBar";
 
 export const TeacherDashboard = () => {
   return (

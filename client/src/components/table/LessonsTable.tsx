@@ -17,6 +17,7 @@ type LessonsTableProps = {
   headerHeight?: number; // header row height in px
   rowHeight?: number; // body row height in px
   className?: string; // extra classes for the table container
+  useStatusButtons?: boolean;
 };
 
 const DEFAULT_CHECKBOX_COL = "62px";
@@ -33,6 +34,7 @@ const LessonsTable = ({
   headerHeight = 58,
   rowHeight = 58,
   className,
+  useStatusButtons = false,
 }: LessonsTableProps) => {
   const [rows, setRows] = useState<LessonRowData[]>(sourceRows);
 
@@ -70,7 +72,6 @@ const LessonsTable = ({
         </colgroup>
 
         <LessonsTableHeader columns={columns} headerHeight={headerHeight} />
-
         <tbody
           style={
             hasFixedHeight ? { height: `calc(100% - ${headerHeight}px)` } : {}
@@ -84,6 +85,7 @@ const LessonsTable = ({
               onToggle={() => handleToggleRow(index)}
               columns={columns}
               rowHeight={rowHeight}
+              useStatusButtons={useStatusButtons}
             />
           ))}
         </tbody>
