@@ -168,7 +168,7 @@ export class AuthController {
     try {
       const refreshToken = req.cookies?.["refreshToken"];
       if (!refreshToken) {
-        return res.sendStatus(204);
+        return res.sendStatus(401);
       }
       let payload: RefreshTokenPayload;
       try {
