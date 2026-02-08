@@ -26,10 +26,7 @@ const LessonRow = ({
   columns,
   rowHeight,
 }: LessonRowProps) => {
-  const rowBgClass =
-    index % 2 === 0
-      ? "bg-[var(--color-table-row-dark)]"
-      : "bg-[var(--color-table-row-light)]";
+  const rowBgClass = index % 2 === 0 ? "bg-[#0F0E13]" : "bg-[#211C27]";
 
   return (
     <tr

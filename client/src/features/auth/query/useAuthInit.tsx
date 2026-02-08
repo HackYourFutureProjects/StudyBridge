@@ -16,8 +16,8 @@ export const useAuthInit = () => {
       try {
         const { accessToken } = await refreshApi();
         setAccessToken(accessToken);
-      } catch {
         localStorage.removeItem("hadSession");
+      } catch {
         clearSession();
       }
     })();
