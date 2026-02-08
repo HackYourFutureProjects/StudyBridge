@@ -14,4 +14,5 @@ export const authRoutesVariables = {
 
 export const privatesRoutesVariables = {
   dashboard: "/dashboard",
+  appointments: "/appointments",
 };
