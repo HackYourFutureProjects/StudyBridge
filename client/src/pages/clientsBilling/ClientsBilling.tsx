@@ -3,16 +3,44 @@ import { useState } from "react";
 import {
   Sidebar,
   defaultStudentMenuItems,
+  defaultTeacherMenuItems,
 } from "../../components/sidebar/Sidebar";
 import { TopBar } from "../../components/header-private/TopBar";
 import { Pagination } from "../../components/ui/pagination/Pagination";
 import { BillingHeader } from "../../components/clientsBillings/BillingHeader";
+import { useAuthSessionStore } from "../../store/authSession.store";
+import { useLocation } from "react-router-dom";
 
 export const ClientsBilling = () => {
   const [page, setPage] = useState(1);
+
+  const { pathname } = useLocation();
+  const accountType = useAuthSessionStore((s) => s.accountType ?? s.user?.role);
+  const inferredType =
+    accountType ?? (pathname.startsWith("/teacher") ? "teacher" : "student");
+  const isTeacher = inferredType === "teacher";
+  const sidebarItems = isTeacher
+    ? defaultTeacherMenuItems
+    : defaultStudentMenuItems;
+  const columns = isTeacher
+    ? [
+        { key: "index", label: "Index#", width: "120px" },
+        { key: "invoiceNumber", label: "Invoice Number", width: "180px" },
+        { key: "student", label: "Student", width: "220px" },
+        { key: "invoiceDate", label: "Invoice Date", width: "140px" },
+        { key: "invoiceAmount", label: "Invoice Amount", width: "140px" },
+      ]
+    : [
+        { key: "index", label: "Index#", width: "120px" },
+        { key: "invoiceNumber", label: "Invoice Number", width: "180px" },
+        { key: "teacher", label: "Teacher", width: "220px" },
+        { key: "invoiceDate", label: "Invoice Date", width: "140px" },
+        { key: "invoiceAmount", label: "Invoice Amount", width: "140px" },
+      ];
+
   return (
     <div className="min-h-screen pl-[218px]">
-      <Sidebar items={defaultStudentMenuItems} />
+      <Sidebar items={sidebarItems} />
 
       <div className="px-6 lg:px-10 min-h-screen flex flex-col">
         <TopBar />
@@ -31,13 +59,7 @@ export const ClientsBilling = () => {
           width={1065}
           headerHeight={66}
           rowHeight={66}
-          columns={[
-            { key: "index", label: "Index#", width: "120px" },
-            { key: "invoiceNumber", label: "Invoice Number", width: "180px" },
-            { key: "teacher", label: "Teacher", width: "220px" },
-            { key: "invoiceDate", label: "Invoice Date", width: "140px" },
-            { key: "invoiceAmount", label: "Invoice Amount", width: "140px" },
-          ]}
+          columns={columns}
           rows={[
             {
               id: 1,
@@ -45,6 +67,7 @@ export const ClientsBilling = () => {
               index: "0012023",
               invoiceNumber: "INV-0201-2023",
               teacher: "Anna Kravchuk",
+              student: "John Smith",
               invoiceDate: "5/27/15",
               invoiceAmount: "200.00",
             },
@@ -54,6 +77,7 @@ export const ClientsBilling = () => {
               index: "0022023",
               invoiceNumber: "INV-0002-2023",
               teacher: "Labour Matters",
+              student: "John Smith",
               invoiceDate: "5/19/12",
               invoiceAmount: "1200.00",
             },
@@ -63,6 +87,7 @@ export const ClientsBilling = () => {
               index: "0032023",
               invoiceNumber: "INV-0021-2023",
               teacher: "Family Law Matters",
+              student: "John Smith",
               invoiceDate: "3/4/16",
               invoiceAmount: "16.00",
             },
@@ -72,6 +97,7 @@ export const ClientsBilling = () => {
               index: "0042023",
               invoiceNumber: "INV-0231-2023",
               teacher: "Direct Taxes Matter",
+              student: "John Smith",
               invoiceDate: "3/4/16",
               invoiceAmount: "321.00",
             },
@@ -81,6 +107,7 @@ export const ClientsBilling = () => {
               index: "0052023",
               invoiceNumber: "INV-0001-2023",
               teacher: "Criminal Matters",
+              student: "John Smith",
               invoiceDate: "7/27/13",
               invoiceAmount: "100.00",
             },
@@ -90,6 +117,7 @@ export const ClientsBilling = () => {
               index: "0062023",
               invoiceNumber: "INV-0241-2023",
               teacher: "Election Matters",
+              student: "John Smith",
               invoiceDate: "5/27/15",
               invoiceAmount: "500.00",
             },
@@ -99,6 +127,7 @@ export const ClientsBilling = () => {
               index: "0072023",
               invoiceNumber: "INV-0012-2023",
               teacher: "Indirect Taxes Matters",
+              student: "John Smith",
               invoiceDate: "7/11/19",
               invoiceAmount: "71.00",
             },
@@ -108,6 +137,7 @@ export const ClientsBilling = () => {
               index: "0082023",
               invoiceNumber: "INV-0018-2023",
               teacher: "Service Matters",
+              student: "John Smith",
               invoiceDate: "9/23/16",
               invoiceAmount: "1000.00",
             },
