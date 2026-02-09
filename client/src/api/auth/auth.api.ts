@@ -28,7 +28,6 @@ export async function refreshApi() {
   return res.data as { accessToken: string };
 }
 
-export async function logoutApi() {
-  const res = await apiProtected.post("/api/auth/logout");
-  return res.data;
+export async function logoutApi(): Promise<void> {
+  await apiProtected.post("/api/auth/logout");
 }
