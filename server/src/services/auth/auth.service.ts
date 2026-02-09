@@ -15,6 +15,7 @@ import {
 } from "../../types/auth/auth.types.js";
 import { randomBytes } from "crypto";
 import { StudentCommand } from "../../repositories/commandRepositories/student.command.js";
+import { sendPasswordResetEmail } from "../email/mailSender.js";
 
 @injectable()
 export class AuthService {
@@ -168,8 +169,7 @@ export class AuthService {
     return await bcrypt.hash(password, salt);
   }
 
-  //............
-
+  //reset password
   async requestPasswordResetForRole(
     email: string,
     role: "student" | "teacher",
@@ -203,6 +203,7 @@ export class AuthService {
 
     const resetLink = `${appBaseUrl}/reset-password?token=${token}`;
 
-    // send email with MailSender
+    //send email with the reset link
+    await sendPasswordResetEmail(email, resetLink);
   }
 }
