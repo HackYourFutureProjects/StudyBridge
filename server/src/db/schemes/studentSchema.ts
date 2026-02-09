@@ -10,6 +10,10 @@ export const StudentSchema = new mongoose.Schema<StudentTypeDB>(
     email: { type: String, required: true, index: true, unique: true },
     passwordHash: { type: String, required: true },
     passwordSalt: { type: String, required: true },
+    passwordReset: {
+      tokenHash: { type: String, default: null },
+      expiresAt: { type: Date, default: null },
+    },
     profileImageUrl: { type: String, default: null },
     address: { type: String, default: null },
     mainLanguage: { type: String, default: null },

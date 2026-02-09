@@ -184,4 +184,19 @@ export class AuthController {
       return next(e);
     }
   }
+
+  async requestPasswordResetStudentController(
+    req: RequestWithBody<{ email: string }>,
+    res: Response,
+    next: NextFunction,
+  ) {
+    const { email } = req.body;
+
+    try {
+      await this.authService.requestPasswordResetForRole(email, "student");
+      return res.sendStatus(204);
+    } catch (error) {
+      next(error);
+    }
+  }
 }

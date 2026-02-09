@@ -13,12 +13,15 @@ import {
   RefreshTokenPayload,
   RotateArgs,
 } from "../../types/auth/auth.types.js";
+import { randomBytes } from "crypto";
+import { StudentCommand } from "../../repositories/commandRepositories/student.command.js";
 
 @injectable()
 export class AuthService {
   constructor(
     @inject(TYPES.StudentQuery) private studentQuery: StudentQuery,
     @inject(TYPES.TeacherQuery) private teacherQuery: TeacherQuery,
+    @inject(TYPES.StudentCommand) private studentCommand: StudentCommand,
     @inject(TYPES.JwtService) protected jwtService: JwtService,
     @inject(TYPES.RefreshSessionRepository)
     protected refreshSessionRepository: RefreshSessionRepository,
@@ -163,5 +166,43 @@ export class AuthService {
   }
   async _generateHash(password: string, salt: string) {
     return await bcrypt.hash(password, salt);
+  }
+
+  //............
+
+  async requestPasswordResetForRole(
+    email: string,
+    role: "student" | "teacher",
+  ) {
+    const user =
+      role === "student"
+        ? await this.studentQuery.findUserByEmailWithHash(email)
+        : await this.teacherQuery.findTeacherByEmailWithHash(email);
+
+    if (!user) {
+      //if no email found , then stop
+      return;
+    }
+
+    //generate token and save hash of it in db with expiration date
+    const token = randomBytes(32).toString("hex");
+    const tokenHash = this.sha256(token);
+    const expiresAt = new Date(Date.now() + 3 * 60 * 60 * 1000); //expires in 3 hours
+
+    if (role === "student") {
+      await this.studentCommand.updatePasswordResetToken(
+        user.id,
+        tokenHash,
+        expiresAt,
+      );
+    } else {
+      return; // for teacher, we be implement later
+    }
+
+    const appBaseUrl = process.env.APP_BASE_URL ?? "http://localhost:5173";
+
+    const resetLink = `${appBaseUrl}/reset-password?token=${token}`;
+
+    // send email with MailSender
   }
 }

@@ -22,4 +22,28 @@ export class StudentCommand {
       throw new HttpError(500, "Student was not deleted", { cause: err, id });
     }
   }
+
+  async updatePasswordResetToken(
+    studentId: string,
+    tokenHash: string,
+    expiresAt: Date,
+  ) {
+    try {
+      const updated = await StudentModel.updateOne(
+        { id: studentId },
+        {
+          passwordReset: {
+            tokenHash,
+            expiresAt,
+          },
+        },
+      );
+
+      return updated.modifiedCount === 1;
+    } catch (err: unknown) {
+      throw new HttpError(500, "Password reset token was not updated", {
+        cause: err,
+      });
+    }
+  }
 }
