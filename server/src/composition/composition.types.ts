@@ -10,6 +10,12 @@ export const TYPES = {
   TeacherService: Symbol.for("TeacherService"),
   TeacherQuery: Symbol.for("TeacherQuery"),
   TeacherController: Symbol.for("TeacherController"),
+
+  //appointment
+  AppointmentRepository: Symbol.for("AppointmentRepository"),
+  AppointmentService: Symbol.for("AppointmentService"),
+  AppointmentController: Symbol.for("AppointmentController"),
+
   //jwt
   JwtService: Symbol.for("JwtService"),
   //middlewares
