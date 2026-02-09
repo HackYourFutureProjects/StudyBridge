@@ -15,6 +15,9 @@ import { AuthMiddleware } from "../middlewares/authMiddlewareWithBearer.js";
 import { AuthService } from "../services/auth/auth.service.js";
 import { RefreshSessionRepository } from "../repositories/commandRepositories/refreshSession.repository.js";
 import { RefreshTokenMiddleware } from "../middlewares/refreshToken.middleware.js";
+import { AppointmentRepository } from "../repositories/appointment.repository.js";
+import { AppointmentService } from "../services/appointment/appointment.service.js";
+import { AppointmentController } from "../controllers/appointment.controller.js";
 
 export const container = new Container();
 
@@ -48,3 +51,14 @@ container.bind<TeacherService>(TYPES.TeacherService).to(TeacherService);
 container
   .bind<TeacherController>(TYPES.TeacherController)
   .to(TeacherController);
+
+// appointment
+container
+  .bind<AppointmentRepository>(TYPES.AppointmentRepository)
+  .to(AppointmentRepository);
+container
+  .bind<AppointmentService>(TYPES.AppointmentService)
+  .to(AppointmentService);
+container
+  .bind<AppointmentController>(TYPES.AppointmentController)
+  .to(AppointmentController);
