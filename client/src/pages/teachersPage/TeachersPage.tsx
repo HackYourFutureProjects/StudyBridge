@@ -80,7 +80,7 @@ const teachers: TeacherType[] = [
     role: "teacher",
   },
   {
-    id: "1",
+    id: "2",
     firstName: "Els",
     lastName: "Menson",
     email: "aasd@gmail.com",
@@ -158,7 +158,7 @@ const teachers: TeacherType[] = [
     role: "teacher",
   },
   {
-    id: "1",
+    id: "3",
     firstName: "Els",
     lastName: "Menson",
     email: "aasd@gmail.com",

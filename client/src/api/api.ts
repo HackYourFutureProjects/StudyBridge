@@ -8,15 +8,10 @@ type QueueItem = {
 };
 export const apiPublic = axios.create({
   baseURL: "",
-  withCredentials: false,
-});
-
-export const apiProtected = axios.create({
-  baseURL: "",
   withCredentials: true,
 });
 
-export const apiAuth = axios.create({
+export const apiProtected = axios.create({
   baseURL: "",
   withCredentials: true,
 });
