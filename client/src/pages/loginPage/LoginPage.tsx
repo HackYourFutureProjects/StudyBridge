@@ -5,8 +5,8 @@ import { useLoginMutation } from "../../features/auth/mutations/useLoginMutation
 export const LoginPage = ({ role }: { role: Role }) => {
   const { mutateAsync, isPending } = useLoginMutation(role);
 
-  const onSubmit = (data: LoginFinalType) => {
-    mutateAsync(data);
+  const onSubmit = async (data: LoginFinalType) => {
+    await mutateAsync(data);
   };
 
   return (
