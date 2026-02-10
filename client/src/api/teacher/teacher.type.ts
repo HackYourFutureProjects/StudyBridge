@@ -41,8 +41,6 @@ export type TeacherType = {
   firstName: string;
   lastName: string;
   email: string;
-  passwordHash: string;
-  passwordSalt: string;
   profileImageUrl: string | null;
   experience: number;
   bio: string | null;
