@@ -23,4 +23,5 @@ export const TYPES = {
   //appointment
   AppointmentRepository: Symbol.for("AppointmentRepository"),
   AppointmentService: Symbol.for("AppointmentService"),
+  AppointmentController: Symbol.for("AppointmentController"),
 };

@@ -17,6 +17,7 @@ import { RefreshSessionRepository } from "../repositories/commandRepositories/re
 import { RefreshTokenMiddleware } from "../middlewares/refreshToken.middleware.js";
 import { AppointmentRepository } from "../repositories/appointment.repository.js";
 import { AppointmentService } from "../services/appointment/appointment.service.js";
+import { AppointmentController } from "../controllers/appointment.controller.js";
 
 export const container = new Container();
 
@@ -58,3 +59,6 @@ container
 container
   .bind<AppointmentService>(TYPES.AppointmentService)
   .to(AppointmentService);
+container
+  .bind<AppointmentController>(TYPES.AppointmentController)
+  .to(AppointmentController);
