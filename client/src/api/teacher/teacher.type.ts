@@ -40,6 +40,7 @@ export type TeacherType = {
   id: string;
   firstName: string;
   lastName: string;
+  priceFrom: number;
   email: string;
   profileImageUrl: string | null;
   experience: number;

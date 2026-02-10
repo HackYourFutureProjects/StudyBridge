@@ -1,5 +1,5 @@
-import { usePagination } from "./usePagination.ts";
-import { Button } from "../button/Button.tsx";
+import { usePagination } from "./usePagination";
+import { Button } from "../button/Button";
 import { cva } from "class-variance-authority";
 import { twMerge } from "tailwind-merge";
 
