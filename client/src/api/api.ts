@@ -16,6 +16,11 @@ export const apiProtected = axios.create({
   withCredentials: true,
 });
 
+export const apiAuth = axios.create({
+  baseURL: "",
+  withCredentials: true,
+});
+
 apiProtected.interceptors.request.use((config) => {
   const token = useAuthSessionStore.getState().accessToken;
   if (token) {
