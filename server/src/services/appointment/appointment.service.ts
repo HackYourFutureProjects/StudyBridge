@@ -1,7 +1,7 @@
 import { injectable } from "inversify";
 import { inject } from "inversify";
 import { TYPES } from "../../composition/composition.types.js";
-import { v4 as uuidv4 } from "uuid";
+import { randomUUID } from "node:crypto";
 import {
   CreateAppointmentType,
   UpdateAppointmentStatusType,
@@ -20,7 +20,7 @@ export class AppointmentService {
 
   async createAppointment(data: CreateAppointmentType) {
     const appointment = {
-      id: uuidv4(),
+      id: randomUUID(),
       studentId: data.studentId,
       teacherId: data.teacherId,
       lesson: data.lesson,
