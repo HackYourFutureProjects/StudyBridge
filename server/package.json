@@ -59,6 +59,7 @@
     "inversify": "^7.11.0",
     "jsonwebtoken": "^9.0.3",
     "mongodb-memory-server": "^11.0.1",
-    "mongoose": "^9.1.5"
+    "mongoose": "^9.1.5",
+    "uuid": "^13.0.0"
   }
 }

@@ -8,19 +8,10 @@ import {
 import { NextFunction, Response } from "express";
 import { TYPES } from "../composition/composition.types.js";
 import { AppointmentService } from "../services/appointment/appointment.service.js";
-
-interface CreateAppointmentType {
-  studentId: string;
-  teacherId: string;
-  lesson: string;
-  price: string;
-  date: string;
-  time: string;
-}
-
-interface UpdateAppointmentStatusType {
-  status: "approved" | "rejected";
-}
+import {
+  CreateAppointmentType,
+  UpdateAppointmentStatusType,
+} from "../types/appointment/appointment.types.js";
 
 @injectable()
 export class AppointmentController {
