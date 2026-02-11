@@ -3,6 +3,7 @@ import { authRoutesVariables } from "./pathVariables";
 import { SignUpPage } from "../../pages/signUpPage/SignUpPage";
 import { LoginPage } from "../../pages/loginPage/LoginPage";
 import { RecoveryPage } from "../../pages/recoveryPage/RecoveryPage";
+import { ResetPasswordPage } from "../../pages/resetPasswordPage/resetPasswordPage";
 
 export const authRoutes: RouteObject[] = [
   {
@@ -24,4 +25,8 @@ export const authRoutes: RouteObject[] = [
   },
 
   { path: `${authRoutesVariables.recovery}`, element: <RecoveryPage /> },
+  {
+    path: `${authRoutesVariables.resetPassword}`,
+    element: <ResetPasswordPage />,
+  },
 ];
