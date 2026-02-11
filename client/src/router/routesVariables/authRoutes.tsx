@@ -2,6 +2,7 @@ import type { RouteObject } from "react-router-dom";
 import { authRoutesVariables } from "./pathVariables";
 import { SignUpPage } from "../../pages/signUpPage/SignUpPage";
 import { LoginPage } from "../../pages/loginPage/LoginPage";
+import { RecoveryPage } from "../../pages/recoveryPage/RecoveryPage";
 
 export const authRoutes: RouteObject[] = [
   {
@@ -22,5 +23,5 @@ export const authRoutes: RouteObject[] = [
     element: <SignUpPage role="teacher" />,
   },
 
-  { path: `${authRoutesVariables.recovery}`, element: <div>Recovery</div> },
+  { path: `${authRoutesVariables.recovery}`, element: <RecoveryPage /> },
 ];

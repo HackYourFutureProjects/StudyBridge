@@ -14,7 +14,8 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
 
-    "useDefineForClassFields": true
+    "useDefineForClassFields": true,
+    "allowImportingTsExtensions": true
   },
   "include": ["src", "vite.config.*", "jest.config.*", "setupTests.*"]
 }
