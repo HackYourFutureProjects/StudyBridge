@@ -1,5 +1,6 @@
 import SearchIcon from "../icons/Search";
 import HelpIcon from "../icons/QuestionMark";
+import LogoutIcon from "../icons/LogoutIcon";
 
 export const TopBar = () => {
   return (
@@ -28,6 +29,19 @@ export const TopBar = () => {
         <div className="h-[38px] w-[710px] p-0 flex flex-row justify-end items-center gap-[32px] relative">
           <button className="text-[#474747] hover:text-[#8A8A8A] transition-colors">
             <HelpIcon className="w-[19.5px] h-[19.5px]" />
+          </button>
+
+          {/* Vertical Divider */}
+          <div className="w-[1px] h-[33px] bg-[#E4E4E4]" />
+
+          <button
+            onClick={() => console.log("logout")}
+            className=" cursor-pointer flex items-center w-[92px] h-[22px] gap-5 group text-[#474747] hover:text-[#8A8A8A] transition-colors"
+          >
+            <LogoutIcon className="w-[20px] h-[20px]" />
+            <span className="font-semibold text-[16px] leading-[100%] ">
+              Logout
+            </span>
           </button>
         </div>
       </header>
