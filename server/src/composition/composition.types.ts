@@ -21,6 +21,8 @@ export const TYPES = {
   //refresh
   RefreshSessionRepository: Symbol.for("RefreshSessionRepository"),
   //appointment
-  AppointmentRepository: Symbol.for("AppointmentRepository"),
   AppointmentService: Symbol.for("AppointmentService"),
+  AppointmentController: Symbol.for("AppointmentController"),
+  AppointmentQuery: Symbol.for("AppointmentQuery"),
+  AppointmentCommand: Symbol.for("AppointmentCommand"),
 };
