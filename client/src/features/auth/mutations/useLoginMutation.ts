@@ -5,11 +5,14 @@ import { queryKeys } from "../../queryKeys";
 import { useNavigate } from "react-router-dom";
 import { getErrorMessage } from "../../../util/ErrorUtil";
 import { LoginFinalType, Role } from "../../../api/auth/types";
+import { useNotificationStore } from "../../../store/notification.store";
 
 export function useLoginMutation(role: Role) {
   const qc = useQueryClient();
   const navigate = useNavigate();
   const setAccessToken = useAuthSessionStore((s) => s.setAccessToken);
+  const success = useNotificationStore((s) => s.success);
+  const notifyError = useNotificationStore((s) => s.error);
   const mutationFn = (data: LoginFinalType) => {
     return role === "teacher" ? loginTeacherApi(data) : loginStudentApi(data);
   };
@@ -18,13 +21,14 @@ export function useLoginMutation(role: Role) {
     mutationFn,
     onSuccess: async ({ accessToken }) => {
       setAccessToken(accessToken);
+      success("Successfully logged in");
       localStorage.setItem("hadSession", "1");
       navigate("/", { replace: true });
       await qc.invalidateQueries({ queryKey: queryKeys.me });
     },
     onError: (error) => {
       const msg = getErrorMessage(error);
-      console.log(msg);
+      notifyError(msg);
     },
   });
 }
