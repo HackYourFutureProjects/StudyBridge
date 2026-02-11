@@ -1,12 +1,23 @@
 import { RecoveryForm } from "../../components/auth/recoveryForm/RecoveryForm.tsx";
+import {
+  requestPasswordResetStudentApi,
+  requestPasswordResetTeacherApi,
+} from "../../api/auth/auth.api";
 
 export type RecoveryDataType = {
   email: string;
 };
 
-export const RecoveryPage = () => {
-  const onSubmit = (data: RecoveryDataType) => {
-    console.log(data);
+type RecoveryPageProps = { role: "student" | "teacher" };
+
+export const RecoveryPage = ({ role }: RecoveryPageProps) => {
+  const onSubmit = async (data: RecoveryDataType) => {
+    // console.log(data);
+    if (role === "student") {
+      await requestPasswordResetStudentApi(data);
+    } else {
+      await requestPasswordResetTeacherApi(data);
+    }
   };
 
   return (

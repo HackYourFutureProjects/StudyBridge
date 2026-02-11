@@ -2,21 +2,20 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ControlledTextField } from "../../ui/controlled/controlledTextField/ControlledTextField.tsx";
 import { Button } from "../../ui/button/Button.tsx";
-import type { RecoveryDataType } from "../../../pages/recoveryPage/RecoveryPage.tsx";
 import type { FormValues } from "./recoveryFormTypes.ts";
 import { recoverySchema } from "./recoveryForm.validation.ts";
 
-type RecoveryFormTypes = {
+type RecoveryFormProps = {
   loading: boolean;
   title: string;
-  onSubmit: (data: RecoveryDataType) => void;
+  onSubmit: (data: FormValues) => Promise<void> | void;
 };
 
 export const RecoveryForm = ({
   loading,
   onSubmit,
   title,
-}: RecoveryFormTypes) => {
+}: RecoveryFormProps) => {
   const { control, handleSubmit, reset } = useForm<FormValues>({
     resolver: zodResolver(recoverySchema),
     defaultValues: {
@@ -24,8 +23,8 @@ export const RecoveryForm = ({
     },
   });
 
-  const onSubmitForm = (data: RecoveryDataType) => {
-    onSubmit(data);
+  const onSubmitForm = async (data: FormValues) => {
+    await onSubmit(data);
     reset();
   };
 
@@ -44,10 +43,11 @@ export const RecoveryForm = ({
             name="email"
           />
         </div>
+
         <div className="auth-actions">
           <div className="auth-actions-inner">
             <Button variant="secondary" size="auth" type="submit">
-              Sent
+              Send
             </Button>
           </div>
         </div>

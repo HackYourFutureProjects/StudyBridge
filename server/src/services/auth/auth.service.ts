@@ -196,7 +196,8 @@ export class AuthService {
         expiresAt,
       );
     } else {
-      return; // for teacher, we be implement later
+      // return; // for teacher, will be implemented later
+      throw new HttpError(501, "Teacher password reset is not implemented yet");
     }
 
     const appBaseUrl = process.env.APP_BASE_URL ?? "http://localhost:5173";
