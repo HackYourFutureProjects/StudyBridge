@@ -17,7 +17,7 @@ type SignUpFormTypes = {
   loading: boolean;
   title: string;
   role: Role;
-  onSubmit: (data: RegisterFinalType) => void;
+  onSubmit: (data: RegisterFinalType) => Promise<void>;
 };
 
 export const SignUpForm = ({
@@ -36,9 +36,18 @@ export const SignUpForm = ({
     },
   });
 
-  const onSubmitForm = (data: RegisterFormTypes) => {
-    onSubmit({ ...data, role });
-    reset();
+  const onSubmitForm = async (data: RegisterFormTypes) => {
+    try {
+      await onSubmit({ ...data, role });
+      reset({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        password: "",
+      });
+    } catch {
+      // error is handled by react-query onError (toast), keep form values
+    }
   };
 
   return (

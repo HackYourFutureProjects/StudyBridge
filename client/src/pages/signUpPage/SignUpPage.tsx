@@ -5,8 +5,8 @@ import { useRegisterMutation } from "../../features/auth/mutations/useRegisterMu
 export const SignUpPage = ({ role }: { role: Role }) => {
   const { mutateAsync, isPending } = useRegisterMutation(role);
 
-  const onSubmit = (data: RegisterFinalType) => {
-    mutateAsync({ ...data, role });
+  const onSubmit = async (data: RegisterFinalType) => {
+    await mutateAsync({ ...data, role });
   };
 
   return (

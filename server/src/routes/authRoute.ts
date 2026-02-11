@@ -10,6 +10,7 @@ import { AuthController } from "../controllers/auth.controller.js";
 import { TYPES } from "../composition/composition.types.js";
 import { AuthMiddleware } from "../middlewares/authMiddlewareWithBearer.js";
 import { RefreshTokenMiddleware } from "../middlewares/refreshToken.middleware.js";
+import { accessCounterMiddleware } from "../middlewares/accessCounter.middleware.js";
 import { passwordResetValidationMiddleware } from "../validation/auth/passwordResetMiddleware.js";
 
 export const authRouter = Router();
@@ -21,6 +22,7 @@ const refreshTokenMiddleware = container.get<RefreshTokenMiddleware>(
 
 authRouter.post(
   "/registration-student",
+  accessCounterMiddleware,
   autStudentValidationMiddleware(),
   errorMiddleware,
   authController.registrationStudentController.bind(authController),
@@ -28,6 +30,7 @@ authRouter.post(
 
 authRouter.post(
   "/registration-teacher",
+  accessCounterMiddleware,
   autTeacherValidationMiddleware(),
   errorMiddleware,
   authController.registrationTeacherController.bind(authController),
@@ -35,6 +38,7 @@ authRouter.post(
 
 authRouter.post(
   "/login-student",
+  accessCounterMiddleware,
   authStudentLoginValidationMiddleware(),
   errorMiddleware,
   authController.loginStudentController.bind(authController),
@@ -42,6 +46,7 @@ authRouter.post(
 
 authRouter.post(
   "/login-teacher",
+  accessCounterMiddleware,
   authStudentLoginValidationMiddleware(),
   errorMiddleware,
   authController.loginTeacherController.bind(authController),
@@ -55,6 +60,7 @@ authRouter.get(
 
 authRouter.post(
   "/refresh-token",
+  accessCounterMiddleware,
   refreshTokenMiddleware.handle,
   authController.refreshController.bind(authController),
 );

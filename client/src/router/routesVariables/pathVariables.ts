@@ -10,6 +10,7 @@ export const authRoutesVariables = {
   registerStudent: "/register/student",
   registerTutor: "/register/tutor",
   recovery: "/recovery",
+  resetPassword: "/reset-password",
 };
 
 export const privatesRoutesVariables = {

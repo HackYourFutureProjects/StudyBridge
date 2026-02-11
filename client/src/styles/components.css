@@ -66,4 +66,25 @@
     transition: all 0.3s ease;
     cursor: pointer;
   }
+
+  @layer utilities {
+    @keyframes toast-fadeout {
+      0% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      90% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+    }
+
+    .animate-toast-fadeout {
+      animation: toast-fadeout 4s ease-in-out forwards;
+    }
+  }
 }
