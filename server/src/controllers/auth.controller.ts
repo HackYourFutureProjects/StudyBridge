@@ -196,7 +196,7 @@ export class AuthController {
       await this.authService.requestPasswordResetForRole(email, "student");
       return res.sendStatus(204);
     } catch (error) {
-      next(error);
+      return next(error);
     }
   }
 }
