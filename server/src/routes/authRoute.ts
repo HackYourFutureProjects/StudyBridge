@@ -11,7 +11,10 @@ import { TYPES } from "../composition/composition.types.js";
 import { AuthMiddleware } from "../middlewares/authMiddlewareWithBearer.js";
 import { RefreshTokenMiddleware } from "../middlewares/refreshToken.middleware.js";
 import { accessCounterMiddleware } from "../middlewares/accessCounter.middleware.js";
-import { passwordResetValidationMiddleware } from "../validation/auth/passwordResetMiddleware.js";
+import {
+  passwordResetValidationMiddleware,
+  sendPasswordResetValidationMiddleware,
+} from "../validation/auth/passwordResetMiddleware.js";
 
 export const authRouter = Router();
 const authController = container.get<AuthController>(TYPES.AuthController);
@@ -70,4 +73,11 @@ authRouter.post(
   passwordResetValidationMiddleware(),
   errorMiddleware,
   authController.requestPasswordResetStudentController.bind(authController),
+);
+
+authRouter.post(
+  "/reset-password",
+  sendPasswordResetValidationMiddleware(),
+  errorMiddleware,
+  authController.resetPasswordController.bind(authController),
 );

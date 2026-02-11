@@ -46,4 +46,30 @@ export class StudentCommand {
       });
     }
   }
+
+  async updatePasswordAndClearResetToken(
+    studentId: string,
+    passwordHash: string,
+    passwordSalt: string,
+  ) {
+    try {
+      const updated = await StudentModel.updateOne(
+        { id: studentId },
+        {
+          passwordHash,
+          passwordSalt,
+          passwordReset: {
+            tokenHash: null,
+            expiresAt: null,
+          },
+        },
+      );
+
+      return updated.modifiedCount === 1;
+    } catch (err: unknown) {
+      throw new HttpError(500, "Password was not updated", {
+        cause: err,
+      });
+    }
+  }
 }

@@ -179,26 +179,21 @@ export class AuthService {
         ? await this.studentQuery.findUserByEmailWithHash(email)
         : await this.teacherQuery.findTeacherByEmailWithHash(email);
 
-    if (!user) {
-      //if no email found , then stop
-      return;
-    }
+    if (!user) return; //if no email found , then stop
 
+    if (role !== "student") {
+      throw new HttpError(501, "Teacher password reset is not implemented yet");
+    }
     //generate token and save hash of it in db with expiration date
     const token = randomBytes(32).toString("hex");
     const tokenHash = this.sha256(token);
     const expiresAt = new Date(Date.now() + 3 * 60 * 60 * 1000); //expires in 3 hours
 
-    if (role === "student") {
-      await this.studentCommand.updatePasswordResetToken(
-        user.id,
-        tokenHash,
-        expiresAt,
-      );
-    } else {
-      // return; // for teacher, will be implemented later
-      throw new HttpError(501, "Teacher password reset is not implemented yet");
-    }
+    await this.studentCommand.updatePasswordResetToken(
+      user.id,
+      tokenHash,
+      expiresAt,
+    );
 
     const appBaseUrl = process.env.APP_BASE_URL ?? "http://localhost:5173";
 
@@ -206,5 +201,28 @@ export class AuthService {
 
     //send email with the reset link
     await sendPasswordResetEmail(email, resetLink);
+  }
+
+  // reset password confirm
+  async resetPasswordWithToken(token: string, newPassword: string) {
+    const tokenHash = this.sha256(token);
+
+    const user = await this.studentQuery.findUserByResetTokenHash(tokenHash);
+    if (!user) {
+      throw new HttpError(400, "Invalid or expired reset token");
+    }
+
+    const passwordSalt = await bcrypt.genSalt(10);
+    const passwordHash = await this._generateHash(newPassword, passwordSalt);
+
+    const updated = await this.studentCommand.updatePasswordAndClearResetToken(
+      user.id,
+      passwordHash,
+      passwordSalt,
+    );
+
+    if (!updated) {
+      throw new HttpError(500, "Password was not updated");
+    }
   }
 }

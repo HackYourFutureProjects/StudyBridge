@@ -199,4 +199,23 @@ export class AuthController {
       return next(error);
     }
   }
+
+  async resetPasswordController(
+    req: RequestWithBody<{
+      token: string;
+      newPassword: string;
+      confirmPassword: string;
+    }>,
+    res: Response,
+    next: NextFunction,
+  ) {
+    const { token, newPassword } = req.body;
+
+    try {
+      await this.authService.resetPasswordWithToken(token, newPassword);
+      return res.sendStatus(204);
+    } catch (error) {
+      return next(error);
+    }
+  }
 }

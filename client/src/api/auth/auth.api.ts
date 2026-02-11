@@ -35,3 +35,11 @@ export async function requestPasswordResetStudentApi(data: { email: string }) {
 export async function requestPasswordResetTeacherApi(data: { email: string }) {
   await apiPublic.post("/api/auth/request-password-reset-teacher", data);
 }
+
+export async function resetPasswordApi(data: {
+  token: string;
+  newPassword: string;
+  confirmPassword: string;
+}) {
+  await apiPublic.post("/api/auth/reset-password", data);
+}
