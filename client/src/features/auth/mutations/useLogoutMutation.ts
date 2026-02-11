@@ -12,6 +12,7 @@ export function useLogoutMutation() {
   return useMutation({
     mutationFn: logoutApi,
     onSettled: () => {
+      localStorage.removeItem("hadSession");
       triggerLogout();
     },
   });
