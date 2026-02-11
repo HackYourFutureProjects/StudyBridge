@@ -1,6 +1,5 @@
-import mongoose from "mongoose";
+import mongoose, { InferSchemaType } from "mongoose";
 import { TeacherTypeDB } from "./types/teacher.types.js";
-import { WithId } from "mongodb";
 
 export const TeacherSchema = new mongoose.Schema<TeacherTypeDB>(
   {
@@ -11,14 +10,14 @@ export const TeacherSchema = new mongoose.Schema<TeacherTypeDB>(
     passwordHash: { type: String, required: true },
     passwordSalt: { type: String, required: true },
     profileImageUrl: { type: String, default: null },
-
+    priceFrom: { type: Number, required: true },
     experience: { type: Number, default: 0 },
     bio: { type: String, default: null },
     headline: { type: String, default: null },
     phoneNumber: { type: String, default: null },
     dateOfBirth: { type: Date, default: null },
     gender: { type: String, default: null },
-
+    rating: { type: Number, default: 0 },
     mainLanguage: { type: String, default: null },
     education: {
       type: [
@@ -68,7 +67,8 @@ export const TeacherSchema = new mongoose.Schema<TeacherTypeDB>(
   },
 );
 
-export const TeacherModel = mongoose.model<WithId<TeacherTypeDB>>(
+export type TeacherSchemaType = InferSchemaType<typeof TeacherSchema>;
+export const TeacherModel = mongoose.model<TeacherSchemaType>(
   "teacher",
   TeacherSchema,
 );

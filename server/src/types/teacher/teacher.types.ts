@@ -43,6 +43,7 @@ export type TeacherViewType = {
   email: string;
   profileImageUrl: string | null;
   experience: number;
+  priceFrom: number;
   bio: string | null;
   headline: string | null;
   phoneNumber: string | null;
@@ -68,4 +69,27 @@ export type TeacherRegistrationType = {
 export type TeacherLoginType = {
   email: string;
   password: string;
+};
+
+type SortDirection = "asc" | "desc";
+type SortBy = "createdAt" | "pricePerHour" | "rating";
+
+export type QueryTeacherInput = {
+  subjects?: string[];
+  minPrice?: number;
+  maxPrice?: number;
+  minRating?: number;
+  maxRating?: number;
+  sortBy?: SortBy;
+  sortDirection?: SortDirection;
+  pageNumber?: number;
+  pageSize?: number;
+};
+
+export type TeacherOutputModel = {
+  pagesCount?: number;
+  page?: number;
+  pageSize?: number;
+  totalCount?: number;
+  items: TeacherViewType[];
 };

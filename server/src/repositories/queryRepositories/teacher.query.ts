@@ -5,6 +5,8 @@ import { teacherMapper } from "../../utils/mappers/teacher.mapper.js";
 
 @injectable()
 export class TeacherQuery {
+  // async getAllTeachers(): Promise<TeacherOutputModel> {}
+
   async getTeacherByEmail(email: string): Promise<TeacherViewType | null> {
     try {
       const teacher = await TeacherModel.findOne({ email }).lean();

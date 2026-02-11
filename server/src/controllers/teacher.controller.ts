@@ -1,8 +1,13 @@
 import { inject, injectable } from "inversify";
-import { ParamsType, RequestWithParams } from "../types/common.types.js";
-import { NextFunction, Response } from "express";
+import {
+  ParamsType,
+  RequestWithParams,
+  ResponseWithData,
+} from "../types/common.types.js";
+import { NextFunction } from "express";
 import { TYPES } from "../composition/composition.types.js";
 import { TeacherService } from "../services/teacher/teacher.service.js";
+import { TeacherViewType } from "../types/teacher/teacher.types.js";
 
 @injectable()
 export class TeacherController {
@@ -12,7 +17,7 @@ export class TeacherController {
 
   async deleteTeacher(
     req: RequestWithParams<ParamsType>,
-    res: Response,
+    res: ResponseWithData<TeacherViewType>,
     next: NextFunction,
   ) {
     try {
@@ -22,4 +27,9 @@ export class TeacherController {
       return next(err);
     }
   }
+  // async getAllTeachers(
+  //   req: RequestWithParams<ParamsType>,
+  //   res: Response,
+  //   next: NextFunction,
+  // ) {}
 }
