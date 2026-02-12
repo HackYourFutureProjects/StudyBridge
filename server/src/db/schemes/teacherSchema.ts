@@ -11,7 +11,8 @@ export const TeacherSchema = new mongoose.Schema<TeacherTypeDB>(
     passwordHash: { type: String, required: true },
     passwordSalt: { type: String, required: true },
     profileImageUrl: { type: String, default: null },
-
+    priceFrom: { type: Number, required: true },
+    rating: { type: Number, default: 0 },
     experience: { type: Number, default: 0 },
     bio: { type: String, default: null },
     headline: { type: String, default: null },
