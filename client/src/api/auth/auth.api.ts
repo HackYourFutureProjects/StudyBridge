@@ -33,7 +33,7 @@ export async function requestPasswordResetStudentApi(data: { email: string }) {
 }
 
 export async function requestPasswordResetTeacherApi(data: { email: string }) {
-  await apiPublic.post("/api/auth/request-password-reset-teacher", data);
+  await apiPublic.post("/api/auth/request-password-reset-student", data);
 }
 
 export async function resetPasswordApi(data: {
