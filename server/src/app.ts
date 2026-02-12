@@ -1,6 +1,7 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import { authRouter } from "./routes/authRoute.js";
+import { appointmentRouter } from "./routes/appointmentRoute.js";
 import { globalErrorMiddleware } from "./middlewares/global.middleware.js";
 import { teacherRouter } from "./routes/teacherRoute.js";
 // Create an express server
@@ -16,5 +17,6 @@ app.use(express.json());
  */
 app.use("/api/auth", authRouter);
 app.use("/api/teachers", teacherRouter);
+app.use("/api/appointments", appointmentRouter);
 app.use(globalErrorMiddleware);
 export default app;

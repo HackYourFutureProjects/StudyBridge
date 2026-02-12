@@ -1,5 +1,4 @@
 import { injectable } from "inversify";
-import { AppointmentRepository } from "../../repositories/appointment.repository.js";
 import { inject } from "inversify";
 import { TYPES } from "../../composition/composition.types.js";
 import { randomUUID } from "node:crypto";
@@ -7,12 +6,16 @@ import {
   CreateAppointmentType,
   UpdateAppointmentStatusType,
 } from "../../types/appointment/appointment.types.js";
+import { AppointmentCommand } from "../../repositories/commandRepositories/appointment.command.js";
+import { AppointmentQuery } from "../../repositories/queryRepositories/appointment.query.js";
 
 @injectable()
 export class AppointmentService {
   constructor(
-    @inject(TYPES.AppointmentRepository)
-    protected appointmentRepository: AppointmentRepository,
+    @inject(TYPES.AppointmentCommand)
+    protected appointmentCommand: AppointmentCommand,
+    @inject(TYPES.AppointmentQuery)
+    protected appointmentQuery: AppointmentQuery,
   ) {}
 
   async createAppointment(data: CreateAppointmentType) {
@@ -33,25 +36,25 @@ export class AppointmentService {
     };
 
     const created =
-      await this.appointmentRepository.createAppointment(appointment);
+      await this.appointmentCommand.createAppointment(appointment);
 
     return this.formatAppointmentResponse(created);
   }
 
   async getAppointmentById(id: string) {
-    const appointment = await this.appointmentRepository.getAppointmentById(id);
+    const appointment = await this.appointmentQuery.getAppointmentById(id);
     return appointment ? this.formatAppointmentResponse(appointment) : null;
   }
 
   async getAppointmentsByStudent(studentId: string) {
     const appointments =
-      await this.appointmentRepository.getAppointmentsByStudent(studentId);
+      await this.appointmentQuery.getAppointmentsByStudent(studentId);
     return appointments.map((apt) => this.formatAppointmentResponse(apt));
   }
 
   async getAppointmentsByTeacher(teacherId: string) {
     const appointments =
-      await this.appointmentRepository.getAppointmentsByTeacher(teacherId);
+      await this.appointmentQuery.getAppointmentsByTeacher(teacherId);
     return appointments.map((apt) => this.formatAppointmentResponse(apt));
   }
 
@@ -61,7 +64,7 @@ export class AppointmentService {
       updatedAt: new Date(),
     };
 
-    const updated = await this.appointmentRepository.updateAppointment(
+    const updated = await this.appointmentCommand.updateAppointment(
       id,
       updateData,
     );
@@ -70,9 +73,7 @@ export class AppointmentService {
 
   async getPendingAppointmentsByTeacher(teacherId: string) {
     const appointments =
-      await this.appointmentRepository.getPendingAppointmentsByTeacher(
-        teacherId,
-      );
+      await this.appointmentQuery.getPendingAppointmentsByTeacher(teacherId);
     return appointments.map((apt) => this.formatAppointmentResponse(apt));
   }
 
@@ -83,11 +84,11 @@ export class AppointmentService {
       teacherId: string;
       studentId: string;
       price: number;
-      startTime: Date;
+      date: string;
+      time: string;
       status: string;
       videoCall?: string;
     };
-    const startTime = new Date(apt.startTime);
 
     return {
       id: apt.id,
@@ -95,8 +96,8 @@ export class AppointmentService {
       teacher: apt.teacherId,
       student: apt.studentId,
       price: apt.price.toString(),
-      date: startTime.toISOString().split("T")[0],
-      time: startTime.toTimeString().slice(0, 5),
+      date: apt.date,
+      time: apt.time,
       status: apt.status,
       videoCall: apt.videoCall,
     };
