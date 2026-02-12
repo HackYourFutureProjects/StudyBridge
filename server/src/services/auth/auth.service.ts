@@ -6,16 +6,16 @@ import { studentMapper } from "../../utils/mappers/student.mapper.js";
 import bcrypt from "bcryptjs";
 import { TeacherQuery } from "../../repositories/queryRepositories/teacher.query.js";
 import { teacherMapper } from "../../utils/mappers/teacher.mapper.js";
-import { createHash, randomUUID } from "node:crypto";
+import { createHash, randomUUID, randomBytes } from "node:crypto";
 import { JwtService } from "../jwt/jwt.service.js";
 import { RefreshSessionRepository } from "../../repositories/commandRepositories/refreshSession.repository.js";
 import {
   RefreshTokenPayload,
   RotateArgs,
 } from "../../types/auth/auth.types.js";
-import { randomBytes } from "crypto";
 import { StudentCommand } from "../../repositories/commandRepositories/student.command.js";
 import { sendPasswordResetEmail } from "../email/mailSender.js";
+import { logWarning, logError } from "../../utils/logging.js";
 
 @injectable()
 export class AuthService {
@@ -174,33 +174,47 @@ export class AuthService {
     email: string,
     role: "student" | "teacher",
   ) {
-    const user =
-      role === "student"
-        ? await this.studentQuery.findUserByEmailWithHash(email)
-        : await this.teacherQuery.findTeacherByEmailWithHash(email);
+    if (role !== "student") return; //  teacher reset flow
+    // const user =
+    //   role === "student"
+    //     ? await this.studentQuery.findUserByEmailWithHash(email)
+    //     : await this.teacherQuery.findTeacherByEmailWithHash(email);
 
-    if (!user) return; //if no email found , then stop
+    // if (!user) return; //if no email found , then stop
 
-    if (role !== "student") {
-      throw new HttpError(501, "Teacher password reset is not implemented yet");
-    }
+    const user = await this.studentQuery.findUserByEmailWithHash(email);
+    if (!user) return;
+
+    // if (role !== "student") {
+    //   throw new HttpError(501, "Teacher password reset is not implemented yet");
+    // }
     //generate token and save hash of it in db with expiration date
     const token = randomBytes(32).toString("hex");
     const tokenHash = this.sha256(token);
     const expiresAt = new Date(Date.now() + 3 * 60 * 60 * 1000); //expires in 3 hours
 
-    await this.studentCommand.updatePasswordResetToken(
+    const updated = await this.studentCommand.updatePasswordResetToken(
       user.id,
       tokenHash,
       expiresAt,
     );
 
+    if (!updated) {
+      logWarning(`Password reset token was not saved for userId=${user.id}`);
+      return; //if token was not saved, then stop
+    }
+
     const appBaseUrl = process.env.APP_BASE_URL ?? "http://localhost:5173";
 
     const resetLink = `${appBaseUrl}/reset-password?token=${token}`;
 
-    //send email with the reset link
-    await sendPasswordResetEmail(email, resetLink);
+    try {
+      //send email with the reset link
+      await sendPasswordResetEmail(email, resetLink);
+    } catch (error) {
+      logError(error);
+      throw new HttpError(500, "Failed to send reset email");
+    }
   }
 
   // reset password confirm
@@ -224,5 +238,6 @@ export class AuthService {
     if (!updated) {
       throw new HttpError(500, "Password was not updated");
     }
+    await this.refreshSessionRepository.revokeAllForUser(user.id, "student");
   }
 }

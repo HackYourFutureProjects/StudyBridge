@@ -25,6 +25,16 @@ export const StudentSchema = new mongoose.Schema<StudentTypeDB>(
   },
 );
 
+StudentSchema.index(
+  { "passwordReset.tokenHash": 1 },
+  {
+    // Partial index: only index docs where reset token exists (string), to keep index small and speed token lookup.
+    partialFilterExpression: {
+      "passwordReset.tokenHash": { $type: "string" },
+    },
+  },
+);
+
 export const StudentModel = mongoose.model<WithId<StudentTypeDB>>(
   "student",
   StudentSchema,

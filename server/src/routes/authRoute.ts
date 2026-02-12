@@ -70,6 +70,7 @@ authRouter.post(
 
 authRouter.post(
   "/request-password-reset-student",
+  accessCounterMiddleware,
   passwordResetValidationMiddleware(),
   errorMiddleware,
   authController.requestPasswordResetStudentController.bind(authController),
@@ -77,6 +78,7 @@ authRouter.post(
 
 authRouter.post(
   "/reset-password",
+  accessCounterMiddleware,
   sendPasswordResetValidationMiddleware(),
   errorMiddleware,
   authController.resetPasswordController.bind(authController),

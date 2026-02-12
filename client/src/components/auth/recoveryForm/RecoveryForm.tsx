@@ -24,8 +24,12 @@ export const RecoveryForm = ({
   });
 
   const onSubmitForm = async (data: FormValues) => {
-    await onSubmit(data);
-    reset();
+    try {
+      await onSubmit(data);
+      reset(); // only on success
+    } catch {
+      // keep form values on submit error
+    }
   };
 
   return (

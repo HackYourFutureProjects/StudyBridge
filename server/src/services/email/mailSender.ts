@@ -5,6 +5,12 @@ let transporter: nodemailer.Transporter | null = null;
 
 async function getTransporter() {
   if (!transporter) {
+    if (process.env.NODE_ENV === "production") {
+      throw new Error(
+        "Email transporter is not configured for production yet.",
+      );
+    }
+
     const testAccount = await nodemailer.createTestAccount();
     transporter = nodemailer.createTransport({
       /*
@@ -45,5 +51,7 @@ export async function sendPasswordResetEmail(to: string, resetLink: string) {
 
   const previewUrl = nodemailer.getTestMessageUrl(info);
 
-  logInfo(`Email preview URL: ${previewUrl}`);
+  if (previewUrl) {
+    logInfo(`Email preview URL: ${previewUrl}`);
+  }
 }

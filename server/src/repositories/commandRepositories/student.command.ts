@@ -56,11 +56,11 @@ export class StudentCommand {
       const updated = await StudentModel.updateOne(
         { id: studentId },
         {
-          passwordHash,
-          passwordSalt,
-          passwordReset: {
-            tokenHash: null,
-            expiresAt: null,
+          $set: {
+            passwordHash,
+            passwordSalt,
+            "passwordReset.tokenHash": null,
+            "passwordReset.expiresAt": null,
           },
         },
       );
