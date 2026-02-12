@@ -9,7 +9,11 @@ export const authRoutesVariables = {
   loginTutor: "/login/tutor",
   registerStudent: "/register/student",
   registerTutor: "/register/tutor",
-  recovery: "/recovery",
+
+  recoveryStudent: "/recovery/student",
+  recoveryTeacher: "/recovery/teacher",
+
+  resetPassword: "/reset-password",
 };
 
 export const privatesRoutesVariables = {

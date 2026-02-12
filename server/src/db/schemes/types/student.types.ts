@@ -7,6 +7,10 @@ export type StudentTypeDB = {
   email: string;
   passwordHash: string;
   passwordSalt: string;
+  passwordReset: {
+    tokenHash: string | null;
+    expiresAt: Date | null;
+  };
   profileImageUrl: string | null;
   address: string | null;
   mainLanguage: string | null;

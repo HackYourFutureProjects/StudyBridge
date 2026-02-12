@@ -5,6 +5,7 @@ type AccessTokenPayload = {
   userId: string;
   role: "student" | "teacher";
 };
+
 @injectable()
 export class JwtService {
   secret = "1234";

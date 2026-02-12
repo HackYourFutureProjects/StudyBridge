@@ -43,7 +43,8 @@ export class TeacherService {
       email,
       passwordHash,
       passwordSalt,
-
+      priceFrom: 0,
+      rating: 0,
       profileImageUrl: null,
       experience: 0,
       bio: null,

@@ -13,7 +13,7 @@ type LoginFormComponentTypes = {
   loading: boolean;
   title: string;
   role: Role;
-  onSubmit: (data: LoginFinalType) => void;
+  onSubmit: (data: LoginFinalType) => Promise<void>;
 };
 
 export const LoginForm = ({
@@ -30,9 +30,13 @@ export const LoginForm = ({
     },
   });
 
-  const onSubmitForm = (data: LoginFormTypes) => {
-    onSubmit({ ...data, role });
-    reset();
+  const onSubmitForm = async (data: LoginFormTypes) => {
+    try {
+      await onSubmit({ ...data, role });
+      reset({ email: data.email, password: "" });
+    } catch {
+      // error is handled by react-query onError (toast), keep form values
+    }
   };
 
   return (
@@ -60,7 +64,13 @@ export const LoginForm = ({
         <div className="auth-actions">
           <div className="auth-actions-inner">
             <Button
+              as={NavLink}
               variant="link"
+              to={
+                role === "teacher"
+                  ? authRoutesVariables.recoveryTeacher
+                  : authRoutesVariables.recoveryStudent
+              }
               className="auth-link-underline"
               type="button"
             >

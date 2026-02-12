@@ -10,11 +10,11 @@ export async function registerTeacherApi(data: RegisterFinalType) {
 }
 
 export async function loginTeacherApi(data: LoginFinalType) {
-  const res = await apiProtected.post("/api/auth/login-teacher", data);
+  const res = await apiPublic.post("/api/auth/login-teacher", data);
   return res.data as { accessToken: string };
 }
 export async function loginStudentApi(data: LoginFinalType) {
-  const res = await apiProtected.post("/api/auth/login-student", data);
+  const res = await apiPublic.post("/api/auth/login-student", data);
   return res.data as { accessToken: string };
 }
 
@@ -30,4 +30,18 @@ export async function refreshApi() {
 
 export async function logoutApi(): Promise<void> {
   await apiProtected.post("/api/auth/logout");
+export async function requestPasswordResetStudentApi(data: { email: string }) {
+  await apiPublic.post("/api/auth/request-password-reset-student", data);
+}
+
+export async function requestPasswordResetTeacherApi(data: { email: string }) {
+  await apiPublic.post("/api/auth/request-password-reset-student", data);
+}
+
+export async function resetPasswordApi(data: {
+  token: string;
+  newPassword: string;
+  confirmPassword: string;
+}) {
+  await apiPublic.post("/api/auth/reset-password", data);
 }
