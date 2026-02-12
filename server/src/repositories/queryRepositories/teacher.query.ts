@@ -1,10 +1,50 @@
 import { injectable } from "inversify";
-import { TeacherViewType } from "../../types/teacher/teacher.types.js";
+import {
+  QueryTeacherInput,
+  TeacherOutputModel,
+  TeacherViewType,
+} from "../../types/teacher/teacher.types.js";
 import { TeacherModel } from "../../db/schemes/teacherSchema.js";
 import { teacherMapper } from "../../utils/mappers/teacher.mapper.js";
+import { filterForSort } from "../../utils/filterSort.js";
+import { buildTeacherFilter } from "../../utils/teachersFilter.js";
 
 @injectable()
 export class TeacherQuery {
+  async getAllTeachers(
+    queries: QueryTeacherInput,
+  ): Promise<TeacherOutputModel> {
+    try {
+      const pageNumber = queries.pageNumber ?? 1;
+      const pageSize = queries.pageSize ?? 10;
+      const sortBy = queries.sortBy ?? "createdAt";
+      const sortDirection = queries.sortDirection ?? "desc";
+      const filter = buildTeacherFilter(queries);
+
+      const items = await TeacherModel.find(filter)
+        .sort(filterForSort(sortBy, sortDirection))
+        .skip((pageNumber - 1) * +pageSize)
+        .limit(+pageSize)
+        .lean();
+
+      const totalCount = await TeacherModel.countDocuments(filter);
+
+      const pagesCount = Math.ceil(totalCount / +pageSize);
+
+      return {
+        pagesCount,
+        page: pageNumber,
+        pageSize,
+        totalCount,
+        items: items.map(teacherMapper),
+      };
+    } catch (err: unknown) {
+      throw new Error("Something went wrong with getting all teachers", {
+        cause: err,
+      });
+    }
+  }
+
   async getTeacherByEmail(email: string): Promise<TeacherViewType | null> {
     try {
       const teacher = await TeacherModel.findOne({ email }).lean();

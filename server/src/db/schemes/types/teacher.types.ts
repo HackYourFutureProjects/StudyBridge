@@ -44,6 +44,8 @@ export type TeacherTypeDB = {
   email: string;
   passwordHash: string;
   passwordSalt: string;
+  priceFrom: number;
+  rating: number;
   profileImageUrl: string | null;
   experience: number;
   bio: string | null;

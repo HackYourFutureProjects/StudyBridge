@@ -69,3 +69,26 @@ export type TeacherLoginType = {
   email: string;
   password: string;
 };
+
+type SortDirection = "asc" | "desc";
+type SortBy = "createdAt" | "pricePerHour" | "rating";
+
+export type QueryTeacherInput = {
+  subject: string;
+  minPrice?: number;
+  maxPrice?: number;
+  minRating?: number;
+  maxRating?: number;
+  sortBy?: SortBy;
+  sortDirection?: SortDirection;
+  pageNumber?: number;
+  pageSize?: number;
+};
+
+export type TeacherOutputModel = {
+  pagesCount?: number;
+  page?: number;
+  pageSize?: number;
+  totalCount?: number;
+  items: TeacherViewType[];
+};
