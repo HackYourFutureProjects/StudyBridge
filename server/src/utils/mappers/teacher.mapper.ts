@@ -9,6 +9,7 @@ export const teacherMapper = (
     id: teacher.id,
     firstName: teacher.firstName,
     lastName: teacher.lastName,
+    priceFrom: teacher.priceFrom,
     email: teacher.email,
     profileImageUrl: teacher.profileImageUrl,
     experience: teacher.experience,

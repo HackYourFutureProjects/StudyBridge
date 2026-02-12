@@ -75,7 +75,7 @@ type SortDirection = "asc" | "desc";
 type SortBy = "createdAt" | "pricePerHour" | "rating";
 
 export type QueryTeacherInput = {
-  subjects?: string[];
+  subject?: string;
   minPrice?: number;
   maxPrice?: number;
   minRating?: number;

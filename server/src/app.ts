@@ -2,6 +2,7 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import { authRouter } from "./routes/authRoute.js";
 import { globalErrorMiddleware } from "./middlewares/global.middleware.js";
+import { teacherRouter } from "./routes/teacherRoute.js";
 // Create an express server
 const app = express();
 app.use(cookieParser());
@@ -14,5 +15,6 @@ app.use(express.json());
  * As we also host our client code on heroku we want to separate the API endpoints.
  */
 app.use("/api/auth", authRouter);
+app.use("/api/teachers", teacherRouter);
 app.use(globalErrorMiddleware);
 export default app;

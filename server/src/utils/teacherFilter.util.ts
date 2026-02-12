@@ -1,41 +1,34 @@
-import { QueryTeacherInput } from "../types/teacher/teacher.types.js";
-import { TeacherSchemaType } from "../db/schemes/teacherSchema.js";
-import type { Filter } from "mongodb";
+import type { QueryTeacherInput } from "../types/teacher/teacher.types.js";
 
-type NumRange = { $gte?: number; $lte?: number };
+export const buildTeacherFilter = (query: QueryTeacherInput) => {
+  const filter: Record<string, unknown> = {};
 
-type TeacherFilter = Filter<TeacherSchemaType> & {
-  "subjects.subjectName"?: string | { $in: string[] };
-};
-
-export const buildTeacherFilter = (query: QueryTeacherInput): TeacherFilter => {
-  const filter: TeacherFilter = {};
-
-  if (query.subjects?.length) {
-    filter["subjects.subjectName"] =
-      query.subjects.length === 1 ? query.subjects[0] : { $in: query.subjects };
+  if (query.subject) {
+    filter["subjects.subjectName"] = query.subject;
   }
 
   if (query.minPrice != null || query.maxPrice != null) {
-    const priceRange: NumRange = {};
+    const range: Record<string, number> = {};
     if (query.minPrice != null) {
-      priceRange.$gte = query.minPrice;
+      range.$gte = query.minPrice;
     }
     if (query.maxPrice != null) {
-      priceRange.$lte = query.maxPrice;
+      range.$lte = query.maxPrice;
     }
-    filter.priceFrom = priceRange;
+
+    filter.priceFrom = range;
   }
 
   if (query.minRating != null || query.maxRating != null) {
-    const ratingRange: NumRange = {};
+    const range: Record<string, number> = {};
     if (query.minRating != null) {
-      ratingRange.$gte = query.minRating;
+      range.$gte = query.minRating;
     }
     if (query.maxRating != null) {
-      ratingRange.$lte = query.maxRating;
+      range.$lte = query.maxRating;
     }
-    filter.rating = ratingRange;
+
+    filter.rating = range;
   }
 
   return filter;
