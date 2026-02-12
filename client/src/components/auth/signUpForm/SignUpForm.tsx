@@ -86,7 +86,11 @@ export const SignUpForm = ({
           <div className="auth-actions-inner">
             <Button
               as={NavLink}
-              to={authRoutesVariables.recovery}
+              to={
+                role === "teacher"
+                  ? authRoutesVariables.recoveryTeacher
+                  : authRoutesVariables.recoveryStudent
+              }
               variant="link"
               className="auth-link-underline self-center p-0"
               type="button"

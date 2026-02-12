@@ -8,7 +8,7 @@ import { resetPasswordSchema } from "./resetPassword.validation.ts";
 type ResetPasswordFormProps = {
   loading: boolean;
   title: string;
-  onSubmit: (data: ResetPasswordFormValues) => void;
+  onSubmit: (data: ResetPasswordFormValues) => Promise<void> | void;
 };
 
 export const ResetPasswordForm = ({
@@ -24,9 +24,13 @@ export const ResetPasswordForm = ({
     },
   });
 
-  const onSubmitForm = (data: ResetPasswordFormValues) => {
-    onSubmit(data);
-    reset();
+  const onSubmitForm = async (data: ResetPasswordFormValues) => {
+    try {
+      await onSubmit(data);
+      reset();
+    } catch {
+      // keep form values on submit error; page handles toast
+    }
   };
 
   return (

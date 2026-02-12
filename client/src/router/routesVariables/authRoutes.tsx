@@ -24,7 +24,14 @@ export const authRoutes: RouteObject[] = [
     element: <SignUpPage role="teacher" />,
   },
 
-  { path: `${authRoutesVariables.recovery}`, element: <RecoveryPage /> },
+  {
+    path: `${authRoutesVariables.recoveryStudent}`,
+    element: <RecoveryPage role="student" />,
+  },
+  {
+    path: `${authRoutesVariables.recoveryTeacher}`,
+    element: <RecoveryPage role="teacher" />,
+  },
   {
     path: `${authRoutesVariables.resetPassword}`,
     element: <ResetPasswordPage />,

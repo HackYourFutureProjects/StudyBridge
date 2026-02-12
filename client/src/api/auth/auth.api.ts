@@ -27,3 +27,19 @@ export async function refreshApi() {
   const res = await apiProtected.post("/api/auth/refresh-token");
   return res.data as { accessToken: string };
 }
+
+export async function requestPasswordResetStudentApi(data: { email: string }) {
+  await apiPublic.post("/api/auth/request-password-reset-student", data);
+}
+
+export async function requestPasswordResetTeacherApi(data: { email: string }) {
+  await apiPublic.post("/api/auth/request-password-reset-student", data);
+}
+
+export async function resetPasswordApi(data: {
+  token: string;
+  newPassword: string;
+  confirmPassword: string;
+}) {
+  await apiPublic.post("/api/auth/reset-password", data);
+}

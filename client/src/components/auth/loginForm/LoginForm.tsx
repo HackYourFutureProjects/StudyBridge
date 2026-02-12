@@ -64,7 +64,13 @@ export const LoginForm = ({
         <div className="auth-actions">
           <div className="auth-actions-inner">
             <Button
+              as={NavLink}
               variant="link"
+              to={
+                role === "teacher"
+                  ? authRoutesVariables.recoveryTeacher
+                  : authRoutesVariables.recoveryStudent
+              }
               className="auth-link-underline"
               type="button"
             >

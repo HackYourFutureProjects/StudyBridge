@@ -46,4 +46,23 @@ export class StudentQuery {
       });
     }
   }
+
+  async findUserByResetTokenHash(resetTokenHash: string) {
+    try {
+      const user = await StudentModel.findOne({
+        "passwordReset.tokenHash": resetTokenHash,
+        "passwordReset.expiresAt": { $gt: new Date() },
+      }).lean();
+
+      if (!user) {
+        return null;
+      }
+
+      return user;
+    } catch (err: unknown) {
+      throw new Error("Something went wrong with student search", {
+        cause: err,
+      });
+    }
+  }
 }

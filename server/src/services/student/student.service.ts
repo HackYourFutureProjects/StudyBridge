@@ -42,6 +42,10 @@ export class StudentService {
       email,
       passwordHash,
       passwordSalt,
+      passwordReset: {
+        tokenHash: null,
+        expiresAt: null,
+      },
       address: null,
       createdAt: new Date(),
       profileImageUrl: null,
