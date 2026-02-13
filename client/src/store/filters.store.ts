@@ -1,24 +1,33 @@
-import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type {
-  TeachersQuery,
+import {
   SortBy,
   SortDirection,
-} from "../api/teacher/teacher.type";
+  TeachersQuery,
+} from "../api/teacher/teacher.type.ts";
+import { create } from "zustand";
 
 type TeachersFiltersState = {
   subject?: string;
   minPrice: number;
   maxPrice: number;
   ratings: number[];
+
+  subjectDraft?: string;
+  minPriceDraft: number;
+  maxPriceDraft: number;
+  ratingsDraft: number[];
+
+  setSubjectDraft: (v?: string) => void;
+  setPriceDraft: (min: number, max: number) => void;
+  setRatingsDraft: (v: number[]) => void;
+
+  applyDraft: () => void;
+  resetDraft: () => void;
+
   sortBy: SortBy;
   sortDirection: SortDirection;
   pageNumber: number;
   pageSize: number;
-
-  setSubject: (v?: string) => void;
-  setPrice: (min: number, max: number) => void;
-  setRatings: (v: number[]) => void;
   setSort: (by: SortBy, dir: SortDirection) => void;
   setPage: (page: number) => void;
   setPageSize: (size: number) => void;
@@ -31,6 +40,12 @@ const DEFAULTS = {
   minPrice: 0,
   maxPrice: 500,
   ratings: [] as number[],
+
+  subjectDraft: undefined,
+  minPriceDraft: 0,
+  maxPriceDraft: 500,
+  ratingsDraft: [] as number[],
+
   sortBy: "createdAt" as const,
   sortDirection: "desc" as const,
   pageNumber: 1,
@@ -42,21 +57,42 @@ export const useTeachersFiltersStore = create<TeachersFiltersState>()(
     (set, get) => ({
       ...DEFAULTS,
 
-      setSubject: (v) => set({ subject: v || undefined, pageNumber: 1 }),
+      setSubjectDraft: (v) => set({ subjectDraft: v || undefined }),
+      setPriceDraft: (min, max) =>
+        set({ minPriceDraft: min, maxPriceDraft: max }),
+      setRatingsDraft: (v) => set({ ratingsDraft: v }),
 
-      setPrice: (min, max) =>
-        set({ minPrice: min, maxPrice: max, pageNumber: 1 }),
+      applyDraft: () => {
+        const s = get();
+        set({
+          subject: s.subjectDraft,
+          minPrice: s.minPriceDraft,
+          maxPrice: s.maxPriceDraft,
+          ratings: s.ratingsDraft,
+          pageNumber: 1,
+        });
+      },
 
-      setRatings: (v) => set({ ratings: v, pageNumber: 1 }),
+      resetDraft: () => {
+        const s = get();
+        set({
+          subjectDraft: s.subject,
+          minPriceDraft: s.minPrice,
+          maxPriceDraft: s.maxPrice,
+          ratingsDraft: s.ratings,
+        });
+      },
 
       setSort: (by, dir) =>
         set({ sortBy: by, sortDirection: dir, pageNumber: 1 }),
-
       setPage: (page) => set({ pageNumber: page }),
-
       setPageSize: (size) => set({ pageSize: size, pageNumber: 1 }),
 
-      clear: () => set({ ...DEFAULTS }),
+      clear: () =>
+        set({
+          ...DEFAULTS,
+          pageNumber: 1,
+        }),
 
       getQuery: () => {
         const s = get();
@@ -65,7 +101,6 @@ export const useTeachersFiltersStore = create<TeachersFiltersState>()(
           minPrice: s.minPrice,
           maxPrice: s.maxPrice,
           ratings: s.ratings,
-
           sortBy: s.sortBy,
           sortDirection: s.sortDirection,
           pageNumber: s.pageNumber,

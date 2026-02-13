@@ -1,6 +1,6 @@
 import { RadioGroup } from "../ui/radioGroup/RadioGroup";
 import type { Option } from "../ui/select/Select.tsx";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Button } from "../ui/button/Button";
 import { Rating } from "../rating/Rating";
 import { Checkbox } from "../ui/checkbox/Checkbox";
@@ -18,54 +18,40 @@ const radioOptions: Option[] = [
 
 export const Filters = () => {
   const {
-    subject,
-    minPrice,
-    maxPrice,
-    ratings,
-    setSubject,
-    setPrice,
-    setRatings,
+    subjectDraft,
+    minPriceDraft,
+    maxPriceDraft,
+    ratingsDraft,
+    setSubjectDraft,
+    setPriceDraft,
+    setRatingsDraft,
+    applyDraft,
     clear,
   } = useTeachersFiltersStore(
     useShallow((s) => ({
-      subject: s.subject,
-      minPrice: s.minPrice,
-      maxPrice: s.maxPrice,
-      ratings: s.ratings,
-      setSubject: s.setSubject,
-      setPrice: s.setPrice,
-      setRatings: s.setRatings,
+      subjectDraft: s.subjectDraft,
+      minPriceDraft: s.minPriceDraft,
+      maxPriceDraft: s.maxPriceDraft,
+      ratingsDraft: s.ratingsDraft,
+      setSubjectDraft: s.setSubjectDraft,
+      setPriceDraft: s.setPriceDraft,
+      setRatingsDraft: s.setRatingsDraft,
+      applyDraft: s.applyDraft,
       clear: s.clear,
     })),
   );
 
-  const [priceDraft, setPriceDraft] = useState<[number, number]>([
-    minPrice,
-    maxPrice,
-  ]);
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setPriceDraft([minPrice, maxPrice]);
-  }, [minPrice, maxPrice]);
-
-  const selectedRatings = useMemo(() => new Set(ratings), [ratings]);
+  const selectedRatings = useMemo(() => new Set(ratingsDraft), [ratingsDraft]);
 
   const toggleRating = (rating: number, next: boolean) => {
-    const copy = new Set(ratings);
-
+    const copy = new Set(ratingsDraft);
     if (next) {
       copy.add(rating);
     } else {
       copy.delete(rating);
     }
-    setRatings(Array.from(copy).sort((a, b) => b - a));
-  };
 
-  const applyPrice = () => setPrice(priceDraft[0], priceDraft[1]);
-
-  const clearAll = () => {
-    clear();
-    setPriceDraft([0, 500]);
+    setRatingsDraft(Array.from(copy).sort((a, b) => b - a));
   };
 
   return (
@@ -80,8 +66,8 @@ export const Filters = () => {
         <h5 className="text-light-100 mb-5">Tutors</h5>
         <RadioGroup
           options={radioOptions}
-          value={subject ?? ""}
-          onValueChange={(v: string) => setSubject(v || undefined)}
+          value={subjectDraft ?? ""}
+          onValueChange={(v: string) => setSubjectDraft(v || undefined)}
         />
       </div>
       <div className="flex flex-col items-start gap-5 mb-6">
@@ -89,8 +75,8 @@ export const Filters = () => {
         <SliderRange
           min={0}
           max={500}
-          value={priceDraft}
-          onValueChange={(v) => setPriceDraft([v[0], v[1]])}
+          value={[minPriceDraft, maxPriceDraft]}
+          onValueChange={(v) => setPriceDraft(v[0], v[1])}
         />
       </div>
       <div className="mb-5">
@@ -108,10 +94,10 @@ export const Filters = () => {
           ))}
         </div>
       </div>
-      <Button variant="secondary" onClick={applyPrice}>
+      <Button variant="secondary" onClick={applyDraft}>
         Apply
       </Button>
-      <Button variant="secondary" onClick={clearAll}>
+      <Button variant="secondary" onClick={clear}>
         Clear filters
       </Button>
     </div>
