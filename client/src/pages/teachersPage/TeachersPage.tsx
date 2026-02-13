@@ -69,9 +69,11 @@ export const TeachersPage = () => {
         and professional support. From beginners to advanced learners, our
         clients see real progress and lasting results.
       </h3>
-      <div className="flex flex-col items-center gap-10 lg:flex-row lg:items-start">
-        <Filters />
-        <div className="flex flex-col gap-10">
+      <div className="flex flex-col gap-10 lg:flex-row lg:items-start w-full">
+        <div className="w-full lg:w-75 shrink-0">
+          <Filters />
+        </div>
+        <div className="w-full lg:flex-1 min-w-0">
           {isFetching && !data ? <div>Loading...</div> : null}
 
           {data?.items?.length ? (
@@ -81,9 +83,6 @@ export const TeachersPage = () => {
           )}
 
           <div className="flex flex-col items-center gap-5">
-            <h4 className="text-[18px] md:text-[24px] text-light-100">
-              1,500 profiles found
-            </h4>
             <Pagination
               theme="primary"
               shape="round"
