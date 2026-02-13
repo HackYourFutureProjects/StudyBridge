@@ -28,6 +28,9 @@ export async function refreshApi() {
   return res.data as { accessToken: string };
 }
 
+export async function logoutApi(): Promise<void> {
+  await apiProtected.post("/api/auth/logout");
+}
 export async function requestPasswordResetStudentApi(data: { email: string }) {
   await apiPublic.post("/api/auth/request-password-reset-student", data);
 }
