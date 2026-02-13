@@ -57,3 +57,25 @@ export type TeacherType = {
   createdAt: Date;
   role: Role;
 };
+
+export type TeacherOutputModel = {
+  pagesCount?: number;
+  page?: number;
+  pageSize?: number;
+  totalCount?: number;
+  items: TeacherType[];
+};
+
+export type SortDirection = "asc" | "desc";
+export type SortBy = "createdAt" | "priceFrom" | "rating";
+
+export type TeachersQuery = {
+  subject?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  ratings?: number[];
+  sortBy?: SortBy;
+  sortDirection?: SortDirection;
+  pageNumber?: number;
+  pageSize?: number;
+};
