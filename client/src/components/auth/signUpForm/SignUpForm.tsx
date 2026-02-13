@@ -39,14 +39,14 @@ export const SignUpForm = ({
   const onSubmitForm = async (data: RegisterFormTypes) => {
     try {
       await onSubmit({ ...data, role });
+      reset();
+    } catch {
       reset({
         firstName: data.firstName,
         lastName: data.lastName,
         email: data.email,
         password: "",
       });
-    } catch {
-      // error is handled by react-query onError (toast), keep form values
     }
   };
 
@@ -97,7 +97,12 @@ export const SignUpForm = ({
             >
               Forgot Password?
             </Button>
-            <Button variant="secondary" size="auth" type="submit">
+            <Button
+              variant="secondary"
+              size="auth"
+              type="submit"
+              disabled={loading}
+            >
               Sign Up
             </Button>
             <Button
