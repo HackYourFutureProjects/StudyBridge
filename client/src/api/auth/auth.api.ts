@@ -30,11 +30,9 @@ export async function refreshApi() {
 
 export async function logoutApi(): Promise<void> {
   await apiProtected.post("/api/auth/logout");
-  export async function requestPasswordResetStudentApi(data: {
-    email: string;
-  }) {
-    await apiPublic.post("/api/auth/request-password-reset-student", data);
-  }
+}
+export async function requestPasswordResetStudentApi(data: { email: string }) {
+  await apiPublic.post("/api/auth/request-password-reset-student", data);
 }
 
 export async function requestPasswordResetTeacherApi(data: { email: string }) {
