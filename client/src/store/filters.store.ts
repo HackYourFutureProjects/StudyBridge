@@ -20,7 +20,7 @@ type TeachersFiltersState = {
   setSubjectDraft: (v?: string) => void;
   setPriceDraft: (min: number, max: number) => void;
   setRatingsDraft: (v: number[]) => void;
-
+  setFromExternalQuery: (q: { subject?: string }) => void;
   applyDraft: () => void;
   resetDraft: () => void;
 
@@ -106,6 +106,20 @@ export const useTeachersFiltersStore = create<TeachersFiltersState>()(
           pageNumber: s.pageNumber,
           pageSize: s.pageSize,
         };
+      },
+      setFromExternalQuery: ({ subject }) => {
+        set({
+          subject: subject || undefined,
+          subjectDraft: subject || undefined,
+
+          minPrice: 0,
+          maxPrice: 500,
+          ratings: [],
+          minPriceDraft: 0,
+          maxPriceDraft: 500,
+          ratingsDraft: [],
+          pageNumber: 1,
+        });
       },
     }),
     { name: "teachers-filters" },

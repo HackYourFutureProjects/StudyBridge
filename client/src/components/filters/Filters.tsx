@@ -1,5 +1,4 @@
 import { RadioGroup } from "../ui/radioGroup/RadioGroup";
-import type { Option } from "../ui/select/Select.tsx";
 import { useMemo } from "react";
 import { Button } from "../ui/button/Button";
 import { Rating } from "../rating/Rating";
@@ -7,14 +6,7 @@ import { Checkbox } from "../ui/checkbox/Checkbox";
 import { SliderRange } from "../ui/sliderRange/SliderRange";
 import { useTeachersFiltersStore } from "../../store/filters.store.ts";
 import { useShallow } from "zustand/react/shallow";
-
-const radioOptions: Option[] = [
-  { label: "English", value: "English" },
-  { label: "German", value: "German" },
-  { label: "Russian", value: "Russian" },
-  { label: "French", value: "French" },
-  { label: "Spanish", value: "Spanish" },
-];
+import { Subjects } from "../../constants/subjects.ts";
 
 export const Filters = () => {
   const {
@@ -65,7 +57,7 @@ export const Filters = () => {
       >
         <h5 className="text-light-100 mb-5">Tutors</h5>
         <RadioGroup
-          options={radioOptions}
+          options={Subjects}
           value={subjectDraft ?? ""}
           onValueChange={(v: string) => setSubjectDraft(v || undefined)}
         />

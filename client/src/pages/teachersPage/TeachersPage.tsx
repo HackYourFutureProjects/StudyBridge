@@ -3,10 +3,16 @@ import { CardsList } from "../../components/cardsList/CardsList";
 import { Pagination } from "../../components/ui/pagination/Pagination";
 import { useTeachersQuery } from "../../features/teachers/query/useTeachersQuery.tsx";
 import { useTeachersFiltersStore } from "../../store/filters.store.ts";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { TeachersQuery } from "../../api/teacher/teacher.type.ts";
 import { useShallow } from "zustand/react/shallow";
+import { useSearchParams } from "react-router-dom";
 export const TeachersPage = () => {
+  const [sp] = useSearchParams();
+  const setFromExternalQuery = useTeachersFiltersStore(
+    (s) => s.setFromExternalQuery,
+  );
+
   const {
     subject,
     minPrice,
@@ -55,7 +61,9 @@ export const TeachersPage = () => {
     pageSize,
   ]);
   const { data, isFetching } = useTeachersQuery(params);
-
+  useEffect(() => {
+    setFromExternalQuery({ subject: sp.get("subject") || undefined });
+  }, [sp, setFromExternalQuery]);
   return (
     <div
       className="
