@@ -86,4 +86,20 @@ export class TeacherQuery {
       });
     }
   }
+
+  async findTeacherByResetTokenHash(resetTokenHash: string) {
+    try {
+      const teacher = await TeacherModel.findOne({
+        "passwordReset.tokenHash": resetTokenHash,
+        "passwordReset.expiresAt": { $gt: new Date() },
+      }).lean();
+
+      if (!teacher) return null;
+      return teacher;
+    } catch (err: unknown) {
+      throw new Error("Something went wrong with teacher search", {
+        cause: err,
+      });
+    }
+  }
 }

@@ -77,6 +77,14 @@ authRouter.post(
 );
 
 authRouter.post(
+  "/request-password-reset-teacher",
+  accessCounterMiddleware,
+  passwordResetValidationMiddleware(),
+  errorMiddleware,
+  authController.requestPasswordResetTeacherController.bind(authController),
+);
+
+authRouter.post(
   "/reset-password",
   accessCounterMiddleware,
   sendPasswordResetValidationMiddleware(),

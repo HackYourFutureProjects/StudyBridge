@@ -200,6 +200,21 @@ export class AuthController {
     }
   }
 
+  async requestPasswordResetTeacherController(
+    req: RequestWithBody<{ email: string }>,
+    res: Response,
+    next: NextFunction,
+  ) {
+    const { email } = req.body;
+
+    try {
+      await this.authService.requestPasswordResetForRole(email, "teacher");
+      return res.sendStatus(204);
+    } catch (error) {
+      return next(error);
+    }
+  }
+
   async resetPasswordController(
     req: RequestWithBody<{
       token: string;

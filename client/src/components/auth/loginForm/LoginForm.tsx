@@ -33,9 +33,9 @@ export const LoginForm = ({
   const onSubmitForm = async (data: LoginFormTypes) => {
     try {
       await onSubmit({ ...data, role });
-      reset();
-    } catch {
       reset({ email: data.email, password: "" });
+    } catch {
+      // error is handled by react-query onError (toast), keep form values
     }
   };
 
@@ -76,12 +76,7 @@ export const LoginForm = ({
             >
               Forgot Password?
             </Button>
-            <Button
-              variant="secondary"
-              size="auth"
-              type="submit"
-              disabled={loading}
-            >
+            <Button variant="secondary" size="auth" type="submit">
               Sign In
             </Button>
             <Button

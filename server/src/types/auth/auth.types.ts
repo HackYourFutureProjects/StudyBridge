@@ -10,6 +10,12 @@ export type AccessTokenPayload = {
   role: Role;
 };
 
+export type PasswordResetTokenPayload = {
+  userId: string;
+  role: Role;
+  purpose: "password-reset";
+};
+
 export type RotateArgs = {
   refreshToken: string;
   payload: RefreshTokenPayload;
