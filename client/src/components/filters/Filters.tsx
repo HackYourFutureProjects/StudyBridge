@@ -7,8 +7,10 @@ import { SliderRange } from "../ui/sliderRange/SliderRange";
 import { useTeachersFiltersStore } from "../../store/filters.store.ts";
 import { useShallow } from "zustand/react/shallow";
 import { Subjects } from "../../constants/subjects.ts";
+import { useSearchParams } from "react-router-dom";
 
 export const Filters = () => {
+  const [, setSearchParams] = useSearchParams();
   const {
     subjectDraft,
     minPriceDraft,
@@ -32,6 +34,11 @@ export const Filters = () => {
       clear: s.clear,
     })),
   );
+
+  const onClear = () => {
+    clear();
+    setSearchParams({}, { replace: true });
+  };
 
   const selectedRatings = useMemo(() => new Set(ratingsDraft), [ratingsDraft]);
 
@@ -90,7 +97,7 @@ export const Filters = () => {
         <Button variant="secondary" onClick={applyDraft}>
           Apply
         </Button>
-        <Button variant="secondary" onClick={clear}>
+        <Button variant="secondary" onClick={onClear}>
           Clear filters
         </Button>
       </div>

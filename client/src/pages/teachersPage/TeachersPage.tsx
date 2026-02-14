@@ -7,6 +7,7 @@ import { useEffect, useMemo } from "react";
 import { TeachersQuery } from "../../api/teacher/teacher.type.ts";
 import { useShallow } from "zustand/react/shallow";
 import { useSearchParams } from "react-router-dom";
+import { TeachersCardsSkeletonList } from "../../components/skeletons/TeachersCardsSkeletonList.tsx";
 export const TeachersPage = () => {
   const [sp] = useSearchParams();
   const setFromExternalQuery = useTeachersFiltersStore(
@@ -86,13 +87,15 @@ export const TeachersPage = () => {
           <Filters />
         </div>
         <div className="w-full lg:flex-1 min-w-0">
-          {isFetching && !data ? <div>Loading...</div> : null}
+          {isFetching && !data ? (
+            <TeachersCardsSkeletonList count={10} />
+          ) : null}
 
-          {data?.items?.length ? (
+          {!isFetching && data?.items?.length ? (
             <CardsList cards={data.items} />
-          ) : (
-            <div>No teachers</div>
-          )}
+          ) : !isFetching ? (
+            <div className="text-light-100 text-center">No teachers</div>
+          ) : null}
 
           <div className="flex flex-col items-center gap-5 mt-10">
             <Pagination
