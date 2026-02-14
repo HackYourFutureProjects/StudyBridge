@@ -48,6 +48,7 @@ export class TeacherController {
         pageSize: req.query.pageSize,
         minPrice: req.query.minPrice,
         maxPrice: req.query.maxPrice,
+        minRating: req.query.minRating,
         maxRating: req.query.maxRating,
       };
 
