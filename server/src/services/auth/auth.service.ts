@@ -30,7 +30,6 @@ export class AuthService {
     @inject(TYPES.RefreshSessionRepository)
     protected refreshSessionRepository: RefreshSessionRepository,
   ) {}
-
   async checkAuthStudentCredentials(email: string, password: string) {
     const student = await this.studentQuery.findUserByEmailWithHash(email);
 
