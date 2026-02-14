@@ -13,6 +13,7 @@ export const ResetPasswordPage = () => {
   const token = searchParams.get("token") ?? "";
   const role = searchParams.get("role");
   const isTeacher = role === "teacher";
+  const isRoleValid = role === "student" || role === "teacher";
 
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -51,12 +52,17 @@ export const ResetPasswordPage = () => {
       return;
     }
 
-    if (role !== "student" && role !== "teacher") {
+    if (!isRoleValid) {
       notifyError("Invalid reset link");
       return;
     }
+
     await mutateAsync(data);
   };
+
+  if (!isRoleValid) {
+    return <p>Invalid reset link.</p>;
+  }
 
   return (
     <div className="auth-page">
