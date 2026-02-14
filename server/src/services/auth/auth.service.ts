@@ -6,14 +6,16 @@ import { studentMapper } from "../../utils/mappers/student.mapper.js";
 import bcrypt from "bcryptjs";
 import { TeacherQuery } from "../../repositories/queryRepositories/teacher.query.js";
 import { teacherMapper } from "../../utils/mappers/teacher.mapper.js";
-import { createHash, randomUUID, randomBytes } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import { JwtService } from "../jwt/jwt.service.js";
 import { RefreshSessionRepository } from "../../repositories/commandRepositories/refreshSession.repository.js";
 import {
   RefreshTokenPayload,
   RotateArgs,
+  PasswordResetTokenPayload,
 } from "../../types/auth/auth.types.js";
 import { StudentCommand } from "../../repositories/commandRepositories/student.command.js";
+import { TeacherCommand } from "../../repositories/commandRepositories/teacher.command.js";
 import { sendPasswordResetEmail } from "../email/mailSender.js";
 import { logWarning, logError } from "../../utils/logging.js";
 
@@ -23,6 +25,7 @@ export class AuthService {
     @inject(TYPES.StudentQuery) private studentQuery: StudentQuery,
     @inject(TYPES.TeacherQuery) private teacherQuery: TeacherQuery,
     @inject(TYPES.StudentCommand) private studentCommand: StudentCommand,
+    @inject(TYPES.TeacherCommand) private teacherCommand: TeacherCommand,
     @inject(TYPES.JwtService) protected jwtService: JwtService,
     @inject(TYPES.RefreshSessionRepository)
     protected refreshSessionRepository: RefreshSessionRepository,
@@ -174,39 +177,50 @@ export class AuthService {
     email: string,
     role: "student" | "teacher",
   ) {
-    if (role !== "student") return; //  teacher reset flow
-    // const user =
-    //   role === "student"
-    //     ? await this.studentQuery.findUserByEmailWithHash(email)
-    //     : await this.teacherQuery.findTeacherByEmailWithHash(email);
+    // if (role !== "student") return; //  teacher reset flow
+    const user =
+      role === "student"
+        ? await this.studentQuery.findUserByEmailWithHash(email)
+        : await this.teacherQuery.findTeacherByEmailWithHash(email);
 
-    // if (!user) return; //if no email found , then stop
-
-    const user = await this.studentQuery.findUserByEmailWithHash(email);
     if (!user) return;
 
-    // if (role !== "student") {
-    //   throw new HttpError(501, "Teacher password reset is not implemented yet");
-    // }
-    //generate token and save hash of it in db with expiration date
-    const token = randomBytes(32).toString("hex");
+    //Creates a signed reset token with identity + role
+    const token = this.jwtService.createPasswordResetToken({
+      userId: user.id,
+      role,
+      purpose: "password-reset",
+    });
     const tokenHash = this.sha256(token);
+
     const expiresAt = new Date(Date.now() + 3 * 60 * 60 * 1000); //expires in 3 hours
 
-    const updated = await this.studentCommand.updatePasswordResetToken(
-      user.id,
-      tokenHash,
-      expiresAt,
-    );
+    const updated =
+      role === "student"
+        ? await this.studentCommand.updatePasswordResetToken(
+            user.id,
+            tokenHash,
+            expiresAt,
+          )
+        : await this.teacherCommand.updatePasswordResetToken(
+            user.id,
+            tokenHash,
+            expiresAt,
+          );
 
     if (!updated) {
-      logWarning(`Password reset token was not saved for userId=${user.id}`);
+      logWarning(
+        `Password reset token was not saved for role=${role}, userId=${user.id}`,
+      );
       return; //if token was not saved, then stop
     }
 
     const appBaseUrl = process.env.APP_BASE_URL ?? "http://localhost:5173";
 
-    const resetLink = `${appBaseUrl}/reset-password?token=${token}`;
+    const resetUrl = new URL("/reset-password", appBaseUrl);
+    resetUrl.searchParams.set("token", token);
+    resetUrl.searchParams.set("role", role);
+    const resetLink = resetUrl.toString();
 
     try {
       //send email with the reset link
@@ -218,26 +232,72 @@ export class AuthService {
   }
 
   // reset password confirm
-  async resetPasswordWithToken(token: string, newPassword: string) {
-    const tokenHash = this.sha256(token);
 
-    const user = await this.studentQuery.findUserByResetTokenHash(tokenHash);
-    if (!user) {
+  async resetPasswordWithToken(token: string, newPassword: string) {
+    let payload: PasswordResetTokenPayload;
+
+    try {
+      payload = this.jwtService.verifyPasswordResetToken(token);
+    } catch {
       throw new HttpError(400, "Invalid or expired reset token");
     }
 
-    const passwordSalt = await bcrypt.genSalt(10);
-    const passwordHash = await this._generateHash(newPassword, passwordSalt);
-
-    const updated = await this.studentCommand.updatePasswordAndClearResetToken(
-      user.id,
-      passwordHash,
-      passwordSalt,
-    );
-
-    if (!updated) {
-      throw new HttpError(500, "Password was not updated");
+    if (payload.purpose !== "password-reset") {
+      throw new HttpError(400, "Invalid or expired reset token");
     }
-    await this.refreshSessionRepository.revokeAllForUser(user.id, "student");
+
+    const tokenHash = this.sha256(token);
+
+    if (payload.role === "student") {
+      const student =
+        await this.studentQuery.findUserByResetTokenHash(tokenHash);
+      if (!student || student.id !== payload.userId) {
+        throw new HttpError(400, "Invalid or expired reset token");
+      }
+
+      const passwordSalt = await bcrypt.genSalt(10);
+      const passwordHash = await this._generateHash(newPassword, passwordSalt);
+
+      const updated =
+        await this.studentCommand.updatePasswordAndClearResetToken(
+          student.id,
+          passwordHash,
+          passwordSalt,
+        );
+      if (!updated) throw new HttpError(500, "Password was not updated");
+
+      await this.refreshSessionRepository.revokeAllForUser(
+        student.id,
+        "student",
+      );
+      return;
+    }
+
+    if (payload.role === "teacher") {
+      const teacher =
+        await this.teacherQuery.findTeacherByResetTokenHash(tokenHash);
+      if (!teacher || teacher.id !== payload.userId) {
+        throw new HttpError(400, "Invalid or expired reset token");
+      }
+
+      const passwordSalt = await bcrypt.genSalt(10);
+      const passwordHash = await this._generateHash(newPassword, passwordSalt);
+
+      const updated =
+        await this.teacherCommand.updatePasswordAndClearResetToken(
+          teacher.id,
+          passwordHash,
+          passwordSalt,
+        );
+      if (!updated) throw new HttpError(500, "Password was not updated");
+
+      await this.refreshSessionRepository.revokeAllForUser(
+        teacher.id,
+        "teacher",
+      );
+      return;
+    }
+
+    throw new HttpError(400, "Invalid or expired reset token");
   }
 }

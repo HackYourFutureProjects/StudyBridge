@@ -43,6 +43,10 @@ export class TeacherService {
       email,
       passwordHash,
       passwordSalt,
+      passwordReset: {
+        tokenHash: null,
+        expiresAt: null,
+      },
       priceFrom: 0,
       rating: 0,
       profileImageUrl: null,
