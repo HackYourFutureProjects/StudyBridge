@@ -67,21 +67,22 @@ export const SelectComponent = <TValue extends string = string>({
         onPointerDown={() => (pointerRef.current = true)}
         onKeyDown={() => (pointerRef.current = false)}
         className="
-                    group
-                    w-[400px] h-[52px]
-                    px-[40px] py-[8px]
-                    rounded-[60px]
-                    border border-[#FFFFFF26]
-                    flex items-center justify-center
-                    cursor-pointer
-                    gap-[10px]
-                    bg-light-100 text-dark-900
-                    transition
-                    hover:border-purple-500
-
-                    outline-none
-                    focus:outline-none focus:ring-0
-                    focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2
+                      group
+                      w-[60%] sm:w-100
+                      h-9 sm:h-13
+                      px-6 sm:px-10
+                      py-1.5 sm:py-2
+                      gap-1.5 sm:gap-2.5
+                      rounded-[60px]
+                      border border-[#FFFFFF26]
+                      flex items-center justify-center
+                      cursor-pointer
+                      bg-light-100 text-dark-900
+                      transition
+                      hover:border-purple-500
+                      outline-none
+                      focus:outline-none focus:ring-0
+                      focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2
                 "
       >
         <Select.Value defaultValue={defaultValue} placeholder={defaultValue} />

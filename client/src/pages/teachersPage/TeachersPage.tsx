@@ -59,8 +59,12 @@ export const TeachersPage = () => {
   return (
     <div
       className="
-            flex items-center
-            flex-col justify-center w-full max-w-360 mx-auto mt-20 py-20 px-20
+           flex flex-col items-center justify-center
+            w-full mx-auto
+            max-w-360
+            mt-10 md:mt-20
+            px-4 sm:px-6 md:px-10 lg:px-20
+            py-10 md:py-16 lg:py-20
             "
     >
       <h1 className="auth-title">OUR TEACHERS</h1>
@@ -70,7 +74,7 @@ export const TeachersPage = () => {
         clients see real progress and lasting results.
       </h3>
       <div className="flex flex-col gap-10 lg:flex-row lg:items-start w-full">
-        <div className="w-full lg:w-75 shrink-0">
+        <div className="flex justify-center w-full lg:w-75 shrink-0">
           <Filters />
         </div>
         <div className="w-full lg:flex-1 min-w-0">
@@ -82,7 +86,7 @@ export const TeachersPage = () => {
             <div>No teachers</div>
           )}
 
-          <div className="flex flex-col items-center gap-5">
+          <div className="flex flex-col items-center gap-5 mt-10">
             <Pagination
               theme="primary"
               shape="round"

@@ -94,12 +94,14 @@ export const Filters = () => {
           ))}
         </div>
       </div>
-      <Button variant="secondary" onClick={applyDraft}>
-        Apply
-      </Button>
-      <Button variant="secondary" onClick={clear}>
-        Clear filters
-      </Button>
+      <div className="flex flex-col items-start gap-5 mb-6">
+        <Button variant="secondary" onClick={applyDraft}>
+          Apply
+        </Button>
+        <Button variant="secondary" onClick={clear}>
+          Clear filters
+        </Button>
+      </div>
     </div>
   );
 };
