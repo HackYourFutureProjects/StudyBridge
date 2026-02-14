@@ -65,6 +65,7 @@ export const TeachersPage = () => {
   useEffect(() => {
     setFromExternalQuery({ subject: sp.get("subject") || undefined });
   }, [sp, setFromExternalQuery]);
+  const showSkeleton = isFetching;
   return (
     <div
       className="
@@ -87,15 +88,13 @@ export const TeachersPage = () => {
           <Filters />
         </div>
         <div className="w-full lg:flex-1 min-w-0">
-          {isFetching && !data ? (
+          {showSkeleton ? (
             <TeachersCardsSkeletonList count={10} />
-          ) : null}
-
-          {!isFetching && data?.items?.length ? (
+          ) : data?.items?.length ? (
             <CardsList cards={data.items} />
-          ) : !isFetching ? (
+          ) : (
             <div className="text-light-100 text-center">No teachers</div>
-          ) : null}
+          )}
 
           <div className="flex flex-col items-center gap-5 mt-10">
             <Pagination
