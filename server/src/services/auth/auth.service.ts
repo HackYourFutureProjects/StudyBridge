@@ -176,7 +176,6 @@ export class AuthService {
     email: string,
     role: "student" | "teacher",
   ) {
-    // if (role !== "student") return; //  teacher reset flow
     const user =
       role === "student"
         ? await this.studentQuery.findUserByEmailWithHash(email)
