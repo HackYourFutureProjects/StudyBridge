@@ -1,6 +1,10 @@
 import { injectable } from "inversify";
 import jwt from "jsonwebtoken";
-import { RefreshTokenPayload } from "../../types/auth/auth.types.js";
+import {
+  RefreshTokenPayload,
+  PasswordResetTokenPayload,
+} from "../../types/auth/auth.types.js";
+
 type AccessTokenPayload = {
   userId: string;
   role: "student" | "teacher";
@@ -27,6 +31,14 @@ export class JwtService {
       this.secret,
       { expiresIn: "2h" },
     );
+  }
+
+  createPasswordResetToken(payload: PasswordResetTokenPayload) {
+    return jwt.sign(payload, this.secret, { expiresIn: "3h" });
+  }
+
+  verifyPasswordResetToken(token: string): PasswordResetTokenPayload {
+    return jwt.verify(token, this.secret) as PasswordResetTokenPayload;
   }
 
   verifyAccessToken(token: string): AccessTokenPayload {
