@@ -22,14 +22,7 @@ const SelectItem = forwardRef<
 >(({ children, ...props }, forwardedRef) => {
   return (
     <Select.Item
-      className="
-                px-4 py-2
-                rounded-md
-                cursor-pointer
-                outline-none
-                select-none
-                hover:bg-pink-600
-      "
+      className="px-4 py-2 rounded-md cursor-pointer outline-none select-none hover:bg-pink-600"
       {...props}
       ref={forwardedRef}
     >
@@ -66,31 +59,10 @@ export const SelectComponent = <TValue extends string = string>({
       <Select.Trigger
         onPointerDown={() => (pointerRef.current = true)}
         onKeyDown={() => (pointerRef.current = false)}
-        className="
-                    group
-                    w-[400px] h-[52px]
-                    px-[40px] py-[8px]
-                    rounded-[60px]
-                    border border-[#FFFFFF26]
-                    flex items-center justify-center
-                    cursor-pointer
-                    gap-[10px]
-                    bg-light-100 text-dark-900
-                    transition
-                    hover:border-purple-500
-
-                    outline-none
-                    focus:outline-none focus:ring-0
-                    focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2
-                "
+        className="group w-[400px] h-[52px] px-[40px] py-[8px] rounded-[60px] border border-[#FFFFFF26] flex items-center justify-center cursor-pointer gap-[10px] bg-light-100 text-dark-900 transition hover:border-purple-500 outline-none focus:outline-none focus:ring-0 focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2"
       >
         <Select.Value defaultValue={defaultValue} placeholder={defaultValue} />
-        <Select.Icon
-          className="
-                      transition-transform duration-200
-                      group-data-[state=open]:rotate-180
-                    "
-        >
+        <Select.Icon className="transition-transform duration-200 group-data-[state=open]:rotate-180">
           <ArrowDown className="w-4 h-4" />
         </Select.Icon>
       </Select.Trigger>
@@ -101,14 +73,7 @@ export const SelectComponent = <TValue extends string = string>({
           sideOffset={20}
           position="popper"
           avoidCollisions={false}
-          className="
-                        z-50
-                        w-[var(--radix-select-trigger-width)]
-                        rounded-[10px]
-                        shadow-lg
-                        overflow-hidden
-                        bg-purple-800 text-light-100
-                      "
+          className="z-50 w-[var(--radix-select-trigger-width)] rounded-[10px] shadow-lg overflow-hidden bg-purple-800 text-light-100"
           onCloseAutoFocus={(e: OnCloseAutoFocusEvent) => {
             if (pointerRef.current) {
               e.preventDefault();

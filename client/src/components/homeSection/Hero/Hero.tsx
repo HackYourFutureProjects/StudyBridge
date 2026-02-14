@@ -1,5 +1,5 @@
 import heroImage from "../../../assets/images/hero.png";
-import { SelectComponent } from "../../ui/select/Select";
+import { SelectComponent } from "../../ui/select/select";
 import { Button } from "../../ui/button/Button";
 import { subjects } from "../../../constants/subjects";
 

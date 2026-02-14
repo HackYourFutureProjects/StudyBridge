@@ -1,5 +1,5 @@
 import { RadioGroup } from "../ui/radioGroup/RadioGroup";
-import type { Option } from "../ui/select/Select.tsx";
+import type { Option } from "../ui/select/select";
 import { useState } from "react";
 import { Button } from "../ui/button/Button";
 import { Rating } from "../rating/Rating";
@@ -19,7 +19,6 @@ export const Filters = () => {
   const [selectedRatings, setSelectedRatings] = useState<Set<number>>(
     () => new Set(),
   );
-  // const ratings = Array.from(selectedRatings);
   const toggleRating = (rating: number, next: boolean) => {
     setSelectedRatings((prev) => {
       const copy = new Set(prev);
