@@ -21,6 +21,6 @@ export const privateRoutes: RouteObject[] = [
   { path: "/teacher/my-classes", element: <ClientsClasses /> },
   { path: "/teacher/my-students", element: <ClientsClasses /> },
   { path: "/teacher/my-billings", element: <ClientsBilling /> },
-  { path: "/teacher-appointments", element: <TeacherAppointments /> },
   { path: "/teacher/profile", element: <TeacherProfile /> },
+  { path: "/teacher-appointments", element: <TeacherAppointments /> },
 ];

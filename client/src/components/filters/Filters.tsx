@@ -19,6 +19,7 @@ export const Filters = () => {
   const [selectedRatings, setSelectedRatings] = useState<Set<number>>(
     () => new Set(),
   );
+  // const ratings = Array.from(selectedRatings);
   const toggleRating = (rating: number, next: boolean) => {
     setSelectedRatings((prev) => {
       const copy = new Set(prev);

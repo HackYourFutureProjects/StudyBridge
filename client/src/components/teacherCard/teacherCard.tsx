@@ -1,22 +1,35 @@
 import { Button } from "../ui/button/Button";
 import { Rating } from "../rating/Rating";
-import { TeacherType } from "../../api/teacher/teacher.type";
+import type { TeacherType as TeacherDetailType } from "../../types/teacher.types";
+import type { TeacherType as TeacherApiType } from "../../api/teacher/teacher.type";
 import ImageNotFount from "../../assets/images/image-not-found.png";
+
 type TeacherCardType = {
-  teacher: TeacherType;
+  teacher: TeacherDetailType | TeacherApiType;
 };
 
+function isApiTeacher(
+  t: TeacherDetailType | TeacherApiType,
+): t is TeacherApiType {
+  return "firstName" in t && "lastName" in t;
+}
+
 export const TeacherCard = ({ teacher }: TeacherCardType) => {
-  const {
-    firstName,
-    lastName,
-    subjects,
-    profileImageUrl,
-    experience,
-    education,
-    priceFrom,
-    bio,
-  } = teacher;
+  const name = isApiTeacher(teacher)
+    ? `${teacher.firstName} ${teacher.lastName}`
+    : teacher.name;
+  const image = isApiTeacher(teacher) ? teacher.profileImageUrl : teacher.image;
+  const subjectLabel = isApiTeacher(teacher)
+    ? teacher.subjects.map((s) => s.subjectName).join(", ")
+    : teacher.subject;
+  const experience = isApiTeacher(teacher)
+    ? String(teacher.experience)
+    : teacher.experience;
+  const education = isApiTeacher(teacher)
+    ? teacher.education.map((e) => e.institution).join(", ")
+    : teacher.education;
+  const price = isApiTeacher(teacher) ? teacher.priceFrom : teacher.price;
+  const bio = isApiTeacher(teacher) ? (teacher.bio ?? "") : teacher.approaching;
 
   return (
     <div className="flex flex-col md:flex-row border bg-[#15141D80] border-blue-500 px-9 py-9 rounded-[25px]">
@@ -29,14 +42,12 @@ export const TeacherCard = ({ teacher }: TeacherCardType) => {
           >
             <img
               className="w-full h-full object-cover"
-              src={profileImageUrl ?? ImageNotFount}
+              src={image ?? ImageNotFount}
               alt="person"
             />
           </div>
           <div className="pb-2.25 border-b border-light-200">
-            <p className="text-light-100 text-[18px]">
-              {firstName} {lastName}
-            </p>
+            <p className="text-light-100 text-[18px]">{name}</p>
           </div>
         </div>
         <div className="flex flex-col gap-5">
@@ -45,19 +56,14 @@ export const TeacherCard = ({ teacher }: TeacherCardType) => {
                         shrink-0 border border-light-300 text-[12px] md:text-[12px] text-light-100 rounded-full bg-dark-900
                         px-8.75 py-0.5"
           >
-            {subjects.map((subject) => (
-              <span key={subject._id}>{subject.subjectName} teacher</span>
-            ))}
+            {subjectLabel} teacher
           </span>
           <div className="flex flex-col gap-5 w-full max-w-116.25">
             <p className="text-[14px] text-light-100">
               Experience — {experience}
             </p>
             <p className="text-[14px] text-light-100">
-              Education —{" "}
-              {education.map((item) => (
-                <span key={item.degree}>{item.institution}</span>
-              ))}
+              Education — {education}
             </p>
             <p
               className="text-[14px] text-light-100
@@ -74,7 +80,7 @@ export const TeacherCard = ({ teacher }: TeacherCardType) => {
       </div>
       <div className="flex flex-col items-center justify-center gap-3.75 md:pl-9.25">
         <span className="text-[26px] md:text-[36px] text-light-100">
-          {priceFrom} euro
+          {price} euro
         </span>
         <span className="text-[15px] md:text-[20px] text-dark-400">1 hour</span>
         <Rating rating={5} />
