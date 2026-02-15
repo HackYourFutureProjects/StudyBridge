@@ -31,7 +31,7 @@ export const dayQueryValidationMiddleware = () => [
       "sunday",
       "all",
     ])
-    .withMessage("Day must be a valid day of the week"),
+    .withMessage("Day must be a valid day of the week or 'all'"),
 ];
 
 export const slotsValidationMiddleware = () => [
