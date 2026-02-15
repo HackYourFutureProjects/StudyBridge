@@ -16,8 +16,9 @@ export const TeacherCard = ({ teacher }: TeacherCardType) => {
     education,
     priceFrom,
     bio,
+    rating,
   } = teacher;
-
+  console.log(priceFrom);
   return (
     <div
       className="flex flex-col items-center xl:flex-row border bg-[#15141D80] border-blue-500
@@ -88,12 +89,12 @@ export const TeacherCard = ({ teacher }: TeacherCardType) => {
       </div>
       <div className="w-full md:w-50 flex flex-col items-center justify-center gap-3.75 md:pl-9.25">
         <span className="text-[22px] md:text-[30px] lg:text-[34px] xl:text-[36px] text-light-100">
-          {priceFrom ?? 0} euro
+          {priceFrom} euro
         </span>
         <span className="text-[13px] md:text-[16px] lg:text-[18px] xl:text-[20px] text-dark-400">
           1 hour
         </span>
-        <Rating rating={0} />
+        <Rating rating={rating} />
         <Button variant="secondary">Book</Button>
         <span className="text-[14px] text-dark-400">First lesson - free</span>
       </div>

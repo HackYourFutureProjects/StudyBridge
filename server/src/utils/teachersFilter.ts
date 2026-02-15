@@ -4,7 +4,10 @@ export const buildTeacherFilter = (query: QueryTeacherInput) => {
   const filter: Record<string, unknown> = {};
 
   if (query.subject) {
-    filter["subjects.subjectName"] = query.subject;
+    filter["subjects.subjectName"] = {
+      $regex: `^${query.subject}$`,
+      $options: "i",
+    };
   }
 
   if (query.minPrice != null || query.maxPrice != null) {
