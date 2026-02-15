@@ -19,6 +19,7 @@ export const dayParamValidationMiddleware = () => [
 export const dayQueryValidationMiddleware = () => [
   query("day")
     .exists()
+    .bail()
     .withMessage("Day is needed")
     .toLowerCase()
     .isIn([
