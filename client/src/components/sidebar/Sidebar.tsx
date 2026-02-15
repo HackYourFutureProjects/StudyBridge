@@ -51,61 +51,60 @@ export const Sidebar = ({ items }: SidebarProps) => {
   const menuItems = items ?? defaultStudentMenuItems;
 
   return (
-    <aside
-      /*Now there is 2 Views: Mobile View (Bottom Navigation Bsr) which is base, and md: which is for larger screens  */
+    <>
+      {/* 
+ New Updated Responsive Sidebar:
+  - On mobile, it is fixed at the bottom as a horizontal bar.
+  - On larger screens, it becomes a vertical sidebar on the left.
+*/}
 
-      className="fixed  bottom-0 left-0 z-50 w-full h-[70px] flex  flex-row items-center bg-[#211c27]
-      md:top-0 md:bottom-auto md:h-screen md:w-[218px] md:flex-col md:pt-[30px] md:gap-[30px] 
-       transition-all duration-300"
-    >
-      <div className="hidden md:flex pt-[30px] pb-[30px] px-6">
-        <span className=" font-bold text-[24px] text-white">studyBridge</span>
-      </div>
-
-      <ul
-        className="
-        flex flex-row md:flex-col 
-        w-full h-full md:h-auto
-        items-center md:items-start 
-        justify-around md:justify-start
-      "
+      <aside
+        className="md:top-0 bottom-0 md:bottom-auto left-0 z-50 fixed flex
+          flex-row md:flex-col items-center md:gap-[30px] bg-[#211c27]
+          md:pt-[30px] w-full md:w-[218px] h-[70px] md:h-screen transition-all
+          duration-300"
       >
-        {menuItems.map((item) => {
-          const Icon = item.icon;
+        <div className="hidden md:flex px-6 pt-[30px] pb-[30px]">
+          <span className="font-bold text-[24px] text-white">studyBridge</span>
+        </div>
 
-          const isActive = pathname === item.link;
+        <ul
+          className="flex flex-row md:flex-col justify-around md:justify-start
+            items-center md:items-start w-full h-full md:h-auto"
+        >
+          {menuItems.map((item) => {
+            const Icon = item.icon;
 
-          return (
-            <li key={item.name} className="flex-1 md:w-full md:px-3">
-              <Link
-                to={item.link}
-                className={`
-                  flex flex-col md:flex-row items-center 
-                  gap-1 md:gap-[10px] 
-                  py-2 md:py-[13px] md:px-[12px]
-                  rounded-[5px] transition-all
-                  ${isActive ? "bg-[#F1EEFE] text-[#7839CD]" : "text-[#474747] md:text-gray-400 hover:bg-[#2A2433]"}
-                `}
-              >
-                <Icon
-                  className={`w-5 h-5 shrink-0 ${isActive ? "text-[#7839CD]" : "text-current"}`}
-                />
+            const isActive = pathname === item.link;
 
-                <span
-                  className={`
-                  font-raleway font-medium 
-                  text-[10px] md:text-[16px] 
-                  leading-tight md:leading-[24px]
-                  ${isActive ? "text-[#7839CD]" : "text-current"}
-                `}
+            return (
+              <li key={item.name} className="flex-1 md:px-3 md:w-full">
+                <Link
+                  to={item.link}
+                  className={` flex flex-col md:flex-row items-center gap-1
+                  md:gap-[10px] py-2 md:py-[13px] md:px-[12px] rounded-[5px]
+                  transition-all
+                  ${isActive ? "bg-[#F1EEFE] text-[#7839CD]" : "text-[#474747] hover:bg-[#2A2433]"}
+                  `}
                 >
-                  {item.name}
-                </span>
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
-    </aside>
+                  <Icon
+                    className={`w-5 h-5 shrink-0
+                    ${isActive ? "text-[#7839CD]" : "text-current"}`}
+                  />
+
+                  <span
+                    className={` font-raleway font-medium text-[12px]
+                    md:text-[16px] leading-tight md:leading-[24px]
+                    ${isActive ? "text-[#7839CD]" : "text-current"} `}
+                  >
+                    {item.name}
+                  </span>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </aside>
+    </>
   );
 };

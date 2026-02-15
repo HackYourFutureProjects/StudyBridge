@@ -9,44 +9,51 @@ export const TopBar = () => {
   return (
     <>
       <header
-        className="fixed top-0 left-0 z-50 w-full h-[70px] px-4 flex flex-row items-center justify-between bg-[#211c27] border-b border-[#0F0E13] 
-md:left-[218px] md:w-[calc(100%-218px)] md:px-10"
+        className="top-0 left-0 md:left-[218px] z-50 fixed flex flex-row
+          justify-between items-center bg-[#211c27] px-4 md:px-10
+          border-[#0F0E13] border-b w-full md:w-[calc(100%-218px)] h-[70px]"
       >
-        <div className="flex-1 max-w-[200px] md:max-w-[350px] md:w-[350px] h-[48px] px-[18px] gap-[12px] rounded-[10px] border-[1.4px] border-[#E4E4E4] flex items-center">
+        <div
+          className="flex flex-1 items-center gap-[12px] px-[18px]
+            border-[#E4E4E4] border-[1.4px] rounded-[10px] md:w-[350px]
+            max-w-[200px] md:max-w-[350px] h-[48px]"
+        >
           <SearchIcon className="w-4 h-4 text-[#959595] shrink-0" />
 
           <input
             type="text"
             placeholder="Global Search"
-            className="
-                    w-full h-full
-                    text-[#F2F2F2] bg-transparent caret-[#F2F2F2]
-                    placeholder:font-inter
-                    placeholder:font-normal
-                    placeholder:text-[16px]
-                    placeholder:leading-[100%]
-                    placeholder:tracking-normal
-                    placeholder:text-[#959595]  
-                    outline-none border-none p-0
-                    "
+            className="bg-transparent p-0 border-none outline-none w-full h-full
+              placeholder:font-inter placeholder:font-normal text-[#F2F2F2]
+              placeholder:text-[#959595] placeholder:text-[16px]
+              placeholder:leading-[100%] placeholder:tracking-normal
+              caret-[#F2F2F2]"
           />
         </div>
         <div className="flex flex-row items-center gap-4 md:gap-[32px]">
-          <button className="cursor-pointer text-[#474747] hover:text-[#8A8A8A] transition-colors">
+          <button
+            aria-label="Help"
+            className="text-[#474747] hover:text-[#8A8A8A] transition-colors
+              cursor-pointer"
+          >
             <HelpIcon className="w-[19.5px] h-[19.5px]" />
           </button>
 
           {/* Vertical Divider */}
-          <div className="w-px h-[33px] bg-[#E4E4E4]" />
+          <div className="bg-[#E4E4E4] w-px h-[33px]" />
 
           {/* Logout Button */}
           <button
             onClick={() => setIsLogoutModalOpen(true)}
-            className=" cursor-pointer flex items-center gap-2 md:gap-5  text-[#474747] hover:text-[#8A8A8A] transition-colors"
+            className="flex items-center gap-2 md:gap-5 text-[#474747]
+              hover:text-[#8A8A8A] transition-colors cursor-pointer"
           >
             <LogoutIcon className="w-[20px] h-[20px]" />
-            <span className=" hidden font-semibold text-[16px] leading-[100%] md:block">
-              {/* On smaller screens, Logout word is hiiden */}
+            <span
+              className="hidden md:block font-semibold text-[16px]
+                leading-[100%]"
+            >
+              {/* On smaller screens, Logout word is hidden */}
               Logout
             </span>
           </button>
