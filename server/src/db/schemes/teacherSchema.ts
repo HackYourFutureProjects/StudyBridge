@@ -2,13 +2,10 @@ import mongoose from "mongoose";
 import { TeacherTypeDB } from "./types/teacher.types.js";
 import { WithId } from "mongodb";
 
-const TimeSlotSchema = new mongoose.Schema(
-  {
-    start: { type: String, required: true },
-    end: { type: String, required: true },
-  },
-  { _id: false },
-);
+const TimeSlotSchema = new mongoose.Schema({
+  start: { type: String, required: true },
+  end: { type: String, required: true },
+});
 
 export const TeacherSchema = new mongoose.Schema<TeacherTypeDB>(
   {
