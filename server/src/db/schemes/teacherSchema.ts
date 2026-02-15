@@ -2,6 +2,14 @@ import mongoose from "mongoose";
 import { TeacherTypeDB } from "./types/teacher.types.js";
 import { WithId } from "mongodb";
 
+const TimeSlotSchema = new mongoose.Schema(
+  {
+    start: { type: String, required: true },
+    end: { type: String, required: true },
+  },
+  { _id: false },
+);
+
 export const TeacherSchema = new mongoose.Schema<TeacherTypeDB>(
   {
     id: { type: String, required: true },
@@ -47,14 +55,16 @@ export const TeacherSchema = new mongoose.Schema<TeacherTypeDB>(
       default: [],
     },
 
+    timezone: { type: String, required: true, default: "Europe/Amsterdam" },
+
     availability: {
-      monday: { type: [{ start: String, end: String }], default: [] },
-      tuesday: { type: [{ start: String, end: String }], default: [] },
-      wednesday: { type: [{ start: String, end: String }], default: [] },
-      thursday: { type: [{ start: String, end: String }], default: [] },
-      friday: { type: [{ start: String, end: String }], default: [] },
-      saturday: { type: [{ start: String, end: String }], default: [] },
-      sunday: { type: [{ start: String, end: String }], default: [] },
+      monday: { type: [TimeSlotSchema], default: [] },
+      tuesday: { type: [TimeSlotSchema], default: [] },
+      wednesday: { type: [TimeSlotSchema], default: [] },
+      thursday: { type: [TimeSlotSchema], default: [] },
+      friday: { type: [TimeSlotSchema], default: [] },
+      saturday: { type: [TimeSlotSchema], default: [] },
+      sunday: { type: [TimeSlotSchema], default: [] },
     },
 
     address: {

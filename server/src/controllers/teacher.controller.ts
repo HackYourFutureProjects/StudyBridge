@@ -4,12 +4,15 @@ import {
   RequestWithParams,
   RequestWithQuery,
   ResponseWithData,
+  RequestWithBody,
 } from "../types/common.types.js";
 import { NextFunction, Response } from "express";
 import { TYPES } from "../composition/composition.types.js";
 import { TeacherService } from "../services/teacher/teacher.service.js";
 import { TeacherQuery } from "../repositories/queryRepositories/teacher.query.js";
 import {
+  AddSlotsBody,
+  DayParam,
   QueryTeacherInput,
   TeacherOutputModel,
 } from "../types/teacher/teacher.types.js";
@@ -55,6 +58,36 @@ export class TeacherController {
       const teachers = await this.teacherQuery.getAllTeachers(sortData);
 
       return res.status(200).send(teachers);
+    } catch (err) {
+      return next(err);
+    }
+  }
+
+  async addSlotsToSchedule(
+    req: RequestWithParams<DayParam> & RequestWithBody<AddSlotsBody>, // user can send 1 slot, 2 slots, or more in one request.
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const teacherId = req.auth?.userId;
+
+      if (!teacherId) {
+        return res.status(401).send({ message: "Unauthorized" });
+      }
+
+      const { slots, timezone } = req.body;
+      const day = req.params.day;
+
+      const addedTimeslot = await this.teacherQuery.addSlotsToSchedule(
+        teacherId,
+        day,
+        slots,
+        timezone,
+      );
+
+      if (!addedTimeslot) return res.sendStatus(404);
+
+      return res.status(200).send(addedTimeslot);
     } catch (err) {
       return next(err);
     }
