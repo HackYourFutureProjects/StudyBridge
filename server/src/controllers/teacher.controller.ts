@@ -102,7 +102,9 @@ export class TeacherController {
   ) {
     try {
       const teacherId = req.auth?.userId;
-      if (!teacherId) return res.sendStatus(401);
+      if (!teacherId) {
+        return res.status(401).send({ message: "Unauthorized" });
+      }
 
       const day = req.query.day;
 
