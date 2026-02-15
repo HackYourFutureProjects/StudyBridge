@@ -1,4 +1,4 @@
-import { body, param } from "express-validator";
+import { body, param, query } from "express-validator";
 
 export const dayParamValidationMiddleware = () => [
   param("day")
@@ -12,6 +12,24 @@ export const dayParamValidationMiddleware = () => [
       "friday",
       "saturday",
       "sunday",
+    ])
+    .withMessage("Day must be a valid day of the week"),
+];
+
+export const dayQueryValidationMiddleware = () => [
+  query("day")
+    .exists()
+    .withMessage("Day is needed")
+    .toLowerCase()
+    .isIn([
+      "monday",
+      "tuesday",
+      "wednesday",
+      "thursday",
+      "friday",
+      "saturday",
+      "sunday",
+      "all",
     ])
     .withMessage("Day must be a valid day of the week"),
 ];

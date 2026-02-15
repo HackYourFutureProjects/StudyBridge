@@ -136,4 +136,25 @@ export class TeacherQuery {
       });
     }
   }
+
+  async getTeacherAvailability(
+    teacherId: string,
+    day: keyof AvailabilityView | "all",
+  ): Promise<TimeSlotView[] | AvailabilityView | null> {
+    try {
+      const teacherTimeslots = await TeacherModel.findOne(
+        { id: teacherId },
+        { availability: 1, _id: 0 },
+      ).lean();
+
+      if (!teacherTimeslots) return null;
+      if (day === "all") return teacherTimeslots.availability;
+
+      return teacherTimeslots.availability[day];
+    } catch (err: unknown) {
+      throw new Error("Something went wrong with teacher time slots fetch", {
+        cause: err,
+      });
+    }
+  }
 }
