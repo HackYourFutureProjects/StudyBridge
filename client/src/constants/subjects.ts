@@ -1,4 +1,6 @@
-export const subjects = [
+import type { Option } from "../components/ui/select/Select.tsx";
+
+export const Subjects: Option[] = [
   { label: "English", value: "english" },
   { label: "Dutch", value: "dutch" },
   { label: "French", value: "french" },

@@ -3,6 +3,8 @@ import {
   QueryTeacherInput,
   TeacherOutputModel,
   TeacherViewType,
+  AvailabilityView,
+  TimeSlotView,
 } from "../../types/teacher/teacher.types.js";
 import { TeacherModel } from "../../db/schemes/teacherSchema.js";
 import { teacherMapper } from "../../utils/mappers/teacher.mapper.js";
@@ -98,6 +100,38 @@ export class TeacherQuery {
       return teacher;
     } catch (err: unknown) {
       throw new Error("Something went wrong with teacher search", {
+        cause: err,
+      });
+    }
+  }
+
+  async addSlotsToSchedule(
+    teacherId: string,
+    day: keyof AvailabilityView,
+    slots: TimeSlotView[],
+    timezone?: string,
+  ): Promise<TimeSlotView[] | null> {
+    try {
+      const updatedTeacher = await TeacherModel.findOneAndUpdate(
+        { id: teacherId },
+        {
+          $set: {
+            [`availability.${day}`]: slots,
+            ...(timezone ? { timezone } : {}),
+          },
+        },
+        {
+          new: true,
+          projection: { availability: 1, _id: 0 },
+          lean: true,
+        },
+      );
+
+      if (!updatedTeacher) return null;
+
+      return updatedTeacher.availability[day];
+    } catch (err: unknown) {
+      throw new Error("Something went wrong with adding slots to schedule", {
         cause: err,
       });
     }

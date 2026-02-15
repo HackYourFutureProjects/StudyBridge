@@ -1,9 +1,9 @@
 import { SubjectCard } from "./SubjectCard";
 import { Button } from "../../ui/button/Button";
 import bgImage from "../../../assets/images/bg-popular-subjects.png";
-import { subjects } from "../../../constants/subjects";
+import { Subjects } from "../../../constants/subjects";
 
-const subjectLabels = subjects.map((subject) => subject.label);
+const subjectLabels = Subjects.map((subject) => subject.label);
 
 export const PopularSubjects = () => {
   return (

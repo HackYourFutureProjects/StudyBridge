@@ -1,5 +1,4 @@
 import { RadioGroup } from "../ui/radioGroup/RadioGroup";
-import type { Option } from "../ui/select/Select.tsx";
 import { useMemo } from "react";
 import { Button } from "../ui/button/Button";
 import { Rating } from "../rating/Rating";
@@ -7,16 +6,11 @@ import { Checkbox } from "../ui/checkbox/Checkbox";
 import { SliderRange } from "../ui/sliderRange/SliderRange";
 import { useTeachersFiltersStore } from "../../store/filters.store.ts";
 import { useShallow } from "zustand/react/shallow";
-
-const radioOptions: Option[] = [
-  { label: "English", value: "English" },
-  { label: "German", value: "German" },
-  { label: "Russian", value: "Russian" },
-  { label: "French", value: "French" },
-  { label: "Spanish", value: "Spanish" },
-];
+import { Subjects } from "../../constants/subjects.ts";
+import { useSearchParams } from "react-router-dom";
 
 export const Filters = () => {
+  const [, setSearchParams] = useSearchParams();
   const {
     subjectDraft,
     minPriceDraft,
@@ -40,6 +34,11 @@ export const Filters = () => {
       clear: s.clear,
     })),
   );
+
+  const onClear = () => {
+    clear();
+    setSearchParams({}, { replace: true });
+  };
 
   const selectedRatings = useMemo(() => new Set(ratingsDraft), [ratingsDraft]);
 
@@ -65,7 +64,7 @@ export const Filters = () => {
       >
         <h5 className="text-light-100 mb-5">Tutors</h5>
         <RadioGroup
-          options={radioOptions}
+          options={Subjects}
           value={subjectDraft ?? ""}
           onValueChange={(v: string) => setSubjectDraft(v || undefined)}
         />
@@ -94,12 +93,14 @@ export const Filters = () => {
           ))}
         </div>
       </div>
-      <Button variant="secondary" onClick={applyDraft}>
-        Apply
-      </Button>
-      <Button variant="secondary" onClick={clear}>
-        Clear filters
-      </Button>
+      <div className="flex flex-col items-start gap-5 mb-6">
+        <Button variant="secondary" onClick={applyDraft}>
+          Apply
+        </Button>
+        <Button variant="secondary" onClick={onClear}>
+          Clear filters
+        </Button>
+      </div>
     </div>
   );
 };
