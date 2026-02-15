@@ -33,6 +33,7 @@ export const slotsValidationMiddleware = () => [
 
 export const slotRangeValidationMiddleware = () => [
   body("slots").custom((slots: { start: string; end: string }[]) => {
+    if (!Array.isArray(slots)) return true;
     for (const slot of slots) {
       if (slot.start >= slot.end) {
         throw new Error("Slot start time must be before end time");
@@ -43,27 +44,31 @@ export const slotRangeValidationMiddleware = () => [
 ];
 
 export const duplicateOrOverlapSlotsValidationMiddleware = () => [
-  body("slots").custom((slots: { start: string; end: string }[]) => {
-    const unique = new Set<string>();
+  body("slots")
+    .isArray({ min: 1 })
+    .withMessage("Time slots are required")
+    .bail() // if validator failed, stop running next validators
+    .custom((slots: { start: string; end: string }[]) => {
+      const unique = new Set<string>();
 
-    for (const slot of slots) {
-      const key = `${slot.start}-${slot.end}`;
-      if (unique.has(key)) {
-        throw new Error("Duplicate slots are not allowed");
+      for (const slot of slots) {
+        const key = `${slot.start}-${slot.end}`;
+        if (unique.has(key)) {
+          throw new Error("Duplicate slots are not allowed");
+        }
+        unique.add(key);
       }
-      unique.add(key);
-    }
 
-    const sorted = [...slots].sort((a, b) => a.start.localeCompare(b.start));
+      const sorted = [...slots].sort((a, b) => a.start.localeCompare(b.start));
 
-    for (let i = 1; i < sorted.length; i++) {
-      const prev = sorted[i - 1];
-      const current = sorted[i];
+      for (let i = 1; i < sorted.length; i++) {
+        const prev = sorted[i - 1];
+        const current = sorted[i];
 
-      if (current.start < prev.end) {
-        throw new Error("Overlapping slots are not allowed");
+        if (current.start < prev.end) {
+          throw new Error("Overlapping slots are not allowed");
+        }
       }
-    }
-    return true;
-  }),
+      return true;
+    }),
 ];

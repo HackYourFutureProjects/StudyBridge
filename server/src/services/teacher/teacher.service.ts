@@ -60,6 +60,7 @@ export class TeacherService {
 
       education: [],
       subjects: [],
+      timezone: "Europe/Amsterdam",
       availability: {
         monday: [],
         tuesday: [],
