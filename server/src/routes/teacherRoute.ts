@@ -13,7 +13,6 @@ import {
   slotRangeValidationMiddleware,
   slotsValidationMiddleware,
 } from "../validation/availabilitySchedule/teacher/teacherScheduleValidationMiddleware.js";
-import { teacherIdParamValidationMiddleware } from "../validation/appointment/appointmentValidationMiddleware.js";
 
 export const teacherRouter = Router();
 const teacherController = container.get<TeacherController>(
