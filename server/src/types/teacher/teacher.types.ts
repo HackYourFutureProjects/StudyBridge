@@ -56,6 +56,8 @@ export type TeacherViewType = {
   headline: string | null;
   phoneNumber: string | null;
   dateOfBirth: Date | null;
+  priceFrom: number;
+  rating: number;
   gender: string | null;
   mainLanguage: string | null;
   education: EducationViewItem[];

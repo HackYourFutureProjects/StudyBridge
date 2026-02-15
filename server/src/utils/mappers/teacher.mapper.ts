@@ -19,6 +19,8 @@ export const teacherMapper = (
     gender: teacher.gender,
     mainLanguage: teacher.mainLanguage,
     education: teacher.education,
+    priceFrom: teacher.priceFrom,
+    rating: teacher.rating,
     subjects: teacher.subjects.map((subject) => ({
       id: subject._id.toString(),
       subjectName: subject.subjectName,
