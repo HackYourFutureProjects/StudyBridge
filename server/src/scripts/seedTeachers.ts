@@ -190,4 +190,6 @@ export const seedTeachers = async () => {
   }
 };
 
-void seedTeachers();
+if (process.argv[1]?.includes("seedTeachers.ts")) {
+  void seedTeachers();
+}
