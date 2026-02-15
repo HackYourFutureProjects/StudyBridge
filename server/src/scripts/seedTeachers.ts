@@ -132,6 +132,16 @@ const createTeacherDoc = async (index: number): Promise<TeacherTypeDB> => {
 
 export const seedTeachers = async () => {
   try {
+    if (process.env.NODE_ENV === "production") {
+      throw new Error("Refusing to run teacher seed in production");
+    }
+
+    if (process.env.SEED_TEACHERS_CONFIRM !== "yes") {
+      throw new Error(
+        "Set SEED_TEACHERS_CONFIRM=yes to run teacher seeding intentionally",
+      );
+    }
+
     await connectDB();
 
     const teachersToSeed = await Promise.all(
@@ -180,7 +190,10 @@ export const seedTeachers = async () => {
     logInfo(
       `Seed complete. Upserted: ${result.upsertedCount ?? 0}, Modified: ${result.modifiedCount ?? 0}, Matched: ${result.matchedCount ?? 0}.`,
     );
-    logInfo(`Default seed password for all teachers: ${seedPassword}`);
+
+    logInfo(
+      `Default seed password for newly inserted teachers only: ${seedPassword}`,
+    );
   } catch (error) {
     logError("Seeding teachers failed");
     logError(error);
