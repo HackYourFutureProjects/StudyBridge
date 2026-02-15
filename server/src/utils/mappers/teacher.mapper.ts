@@ -26,6 +26,7 @@ export const teacherMapper = (
       experienceYears: subject.experienceYears,
       hourlyRate: subject.hourlyRate,
     })),
+    timezone: teacher.timezone,
     availability: teacher.availability,
     address: teacher.address,
     createdAt: teacher.createdAt,
