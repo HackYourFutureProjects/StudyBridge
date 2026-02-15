@@ -5,8 +5,6 @@ import { Button } from "../ui/button/Button";
 import { Rating } from "../rating/Rating";
 import { Checkbox } from "../ui/checkbox/Checkbox";
 import { SliderRange } from "../ui/sliderRange/SliderRange";
-import { useTeachersFiltersStore } from "../../store/filters.store.ts";
-import { useShallow } from "zustand/react/shallow";
 
 const radioOptions: Option[] = [
   { label: "English", value: "English" },
@@ -17,41 +15,25 @@ const radioOptions: Option[] = [
 ];
 
 export const Filters = () => {
-  const {
-    subjectDraft,
-    minPriceDraft,
-    maxPriceDraft,
-    ratingsDraft,
-    setSubjectDraft,
-    setPriceDraft,
-    setRatingsDraft,
-    applyDraft,
-    clear,
-  } = useTeachersFiltersStore(
-    useShallow((s) => ({
-      subjectDraft: s.subjectDraft,
-      minPriceDraft: s.minPriceDraft,
-      maxPriceDraft: s.maxPriceDraft,
-      ratingsDraft: s.ratingsDraft,
-      setSubjectDraft: s.setSubjectDraft,
-      setPriceDraft: s.setPriceDraft,
-      setRatingsDraft: s.setRatingsDraft,
-      applyDraft: s.applyDraft,
-      clear: s.clear,
-    })),
+  const [value, setValue] = useState([0, 500]);
+  const [selectedRatings, setSelectedRatings] = useState<Set<number>>(
+    () => new Set(),
   );
-
-  const selectedRatings = useMemo(() => new Set(ratingsDraft), [ratingsDraft]);
-
+  // const ratings = Array.from(selectedRatings);
   const toggleRating = (rating: number, next: boolean) => {
-    const copy = new Set(ratingsDraft);
-    if (next) {
-      copy.add(rating);
-    } else {
-      copy.delete(rating);
-    }
+    setSelectedRatings((prev) => {
+      const copy = new Set(prev);
+      if (next) {
+        copy.add(rating);
+      } else {
+        copy.delete(rating);
+      }
+      return copy;
+    });
+  };
 
-    setRatingsDraft(Array.from(copy).sort((a, b) => b - a));
+  const handleSliderCommitted = (value: number[]) => {
+    setValue(value);
   };
 
   return (
@@ -64,42 +46,35 @@ export const Filters = () => {
                     "
       >
         <h5 className="text-light-100 mb-5">Tutors</h5>
-        <RadioGroup
-          options={radioOptions}
-          value={subjectDraft ?? ""}
-          onValueChange={(v: string) => setSubjectDraft(v || undefined)}
-        />
+        <RadioGroup options={radioOptions} />
       </div>
       <div className="flex flex-col items-start gap-5 mb-6">
         <h4 className="text-light-100 text-[12px]">FILTER BY PRICE</h4>
         <SliderRange
           min={0}
           max={500}
-          value={[minPriceDraft, maxPriceDraft]}
-          onValueChange={(v) => setPriceDraft(v[0], v[1])}
+          value={value}
+          onValueChange={setValue}
+          onValueCommit={handleSliderCommitted}
         />
+        <Button variant="secondary">Apply</Button>
       </div>
       <div className="mb-5">
         <h4 className="text-light-100 text-[12px] mb-5 py-[20] b">
           FILTER BY REVIEWS
         </h4>
         <div className="flex flex-col items-start gap-4 py-5 border-light-100 border-b border-t">
-          {[5, 4, 3, 2, 1].map((r) => (
+          {[5, 4, 3, 2, 1].map((rating) => (
             <Checkbox
-              key={r}
-              checked={selectedRatings.has(r)}
-              onValueChange={(next) => toggleRating(r, next)}
-              label={<Rating rating={r} />}
+              key={rating}
+              checked={selectedRatings.has(rating)}
+              onValueChange={(next) => toggleRating(rating, next)}
+              label={<Rating rating={rating} />}
             />
           ))}
         </div>
       </div>
-      <Button variant="secondary" onClick={applyDraft}>
-        Apply
-      </Button>
-      <Button variant="secondary" onClick={clear}>
-        Clear filters
-      </Button>
+      <Button variant="secondary">Clear filters</Button>
     </div>
   );
 };
