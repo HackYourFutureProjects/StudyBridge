@@ -71,7 +71,7 @@ export type TeacherLoginType = {
 };
 
 type SortDirection = "asc" | "desc";
-type SortBy = "createdAt" | "pricePerHour" | "rating";
+type SortBy = "createdAt" | "priceFrom" | "rating";
 
 export type QueryTeacherInput = {
   subject: string;
