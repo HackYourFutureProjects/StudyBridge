@@ -152,9 +152,12 @@ export class TeacherQuery {
 
       return teacherTimeslots.availability[day];
     } catch (err: unknown) {
-      throw new Error("Something went wrong with teacher time slots fetch", {
-        cause: err,
-      });
+      throw new Error(
+        "Something went wrong while fetching teacher availability",
+        {
+          cause: err,
+        },
+      );
     }
   }
 }
