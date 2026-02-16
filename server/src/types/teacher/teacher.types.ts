@@ -28,12 +28,8 @@ export type AvailabilityView = {
   sunday: TimeSlotView[];
 };
 
-export type DayParam = {
-  day: keyof AvailabilityView;
-};
-
-export type AddSlotsBody = {
-  slots: TimeSlotView[];
+export type ReplaceWeekAvailabilityBody = {
+  availability: AvailabilityView;
   timezone?: string;
 };
 
