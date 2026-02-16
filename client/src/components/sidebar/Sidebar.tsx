@@ -51,85 +51,60 @@ export const Sidebar = ({ items }: SidebarProps) => {
   const menuItems = items ?? defaultStudentMenuItems;
 
   return (
-    <aside className="fixed top-0 left-0 flex flex-col w-[218px] h-screen items-center gap-[30px] pt-[30px] pb-0 px-0 bg-[#211c27]">
-      <div className="pt-[30px] pb-[30px]">
-        <span className="w-[93px] h-[30px] font-rubic font-bold text-[25.2px] leading-[100%] tracking-[-0.14px] text-[#FFFFFF]">
-          studyBridge
-        </span>
-      </div>
+    <>
+      {/* 
+ New Updated Responsive Sidebar:
+  - On mobile, it is fixed at the bottom as a horizontal bar.
+  - On larger screens, it becomes a vertical sidebar on the left.
+*/}
 
-      <ul className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto]">
-        {menuItems.map((item) => {
-          const Icon = item.icon;
+      <aside
+        className="md:top-0 bottom-0 md:bottom-auto left-0 z-50 fixed flex
+          flex-row md:flex-col items-center md:gap-[30px] bg-[#211c27]
+          md:pt-[30px] w-full md:w-[218px] h-[70px] md:h-screen transition-all
+          duration-300"
+      >
+        <div className="hidden md:flex px-6 pt-[30px] pb-[30px]">
+          <span className="font-bold text-[24px] text-white">studyBridge</span>
+        </div>
 
-          const isActive = pathname === item.link;
+        <ul
+          className="flex flex-row md:flex-col justify-around md:justify-start
+            items-center md:items-start w-full h-full md:h-auto"
+        >
+          {menuItems.map((item) => {
+            const Icon = item.icon;
 
-          return (
-            <li
-              key={item.name}
-              className="flex flex-col h-[60px] items-start justify-center gap-2.5 px-3 py-0 relative self-stretch w-full"
-            >
-              <Link
-                to={item.link}
-                className={`
-                  group
-                  ml-[12px]
-                  mr-[12px]
-                  w-[194px]
-                  h-[50px]
-                  pt-[13px]
-                  pr-[12px]
-                  pb-[13px]
-                  pl-[12px]
-                  gap-[10px]
-                  rounded-[5px]
-                  flex items-center transition-colors
-                  whitespace-nowrap
-                  ${
-                    isActive
-                      ? "bg-[#F1EEFE] opacity-100 hover:bg-[#E6D9FF]"
-                      : "hover:bg-[#2A2433]"
-                  }
-                `}
-              >
-                <Icon
-                  className={`
-                    w-[20px]
-                    h-[20.8001708984375px]
-                    shrink-0
-                    transition-colors
-                    ${
-                      isActive
-                        ? "text-[#7839CD] group-hover:text-[#6B2FC2]"
-                        : "text-[#474747] group-hover:text-[#E6D9FF]"
-                    }
-                  `}
-                />
+            const isActive = pathname === item.link;
 
-                <span
-                  className={`
-                    h-[24px]
-                    opacity-100
-                    font-raleway
-                    font-medium
-                    text-[16px]
-                    leading-[24px]
-                    tracking-[0px]
-                    transition-colors
-                    ${
-                      isActive
-                        ? "text-[#7839CD] group-hover:text-[#6B2FC2]"
-                        : "text-[#474747] group-hover:text-[#E6D9FF]"
-                    }
+            return (
+              <li key={item.name} className="flex-1 md:px-3 md:w-full">
+                <Link
+                  to={item.link}
+                  className={` flex flex-col md:flex-row items-center gap-1
+                  md:gap-[10px] py-2 md:py-[13px] md:px-[12px] rounded-[5px]
+                  transition-all
+                  ${isActive ? "bg-[#F1EEFE] text-[#7839CD]" : "text-[#474747] hover:bg-[#2A2433]"}
                   `}
                 >
-                  {item.name}
-                </span>
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
-    </aside>
+                  <Icon
+                    className={`w-5 h-5 shrink-0
+                    ${isActive ? "text-[#7839CD]" : "text-current"}`}
+                  />
+
+                  <span
+                    className={` font-raleway font-medium text-[12px]
+                    md:text-[16px] leading-tight md:leading-[24px]
+                    ${isActive ? "text-[#7839CD]" : "text-current"} `}
+                  >
+                    {item.name}
+                  </span>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </aside>
+    </>
   );
 };
