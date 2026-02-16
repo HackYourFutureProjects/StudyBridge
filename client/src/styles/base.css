@@ -16,7 +16,9 @@
   body {
     height: 100%;
   }
-
+  html {
+    scrollbar-gutter: stable;
+  }
   body {
     margin: 0;
     background-color: var(--color-bg-main);
