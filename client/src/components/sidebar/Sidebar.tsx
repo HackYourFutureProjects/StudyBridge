@@ -37,9 +37,9 @@ export const defaultTeacherMenuItems: MenuItem[] = [
   },
   { name: "My Classes", link: "/teacher/my-classes", icon: LessonsIcon },
   { name: "My Students", link: "/teacher/my-students", icon: UsersIcon },
+  { name: "My Profile", link: "/teacher/profile", icon: UsersIcon },
   { name: "Billings", link: "/teacher/my-billings", icon: BillingIcon },
   { name: "Video call", link: "/video-call", icon: VideoCallIcon },
-  { name: "Settings", link: "/settings", icon: SettingsIcon },
 ];
 
 type SidebarProps = {

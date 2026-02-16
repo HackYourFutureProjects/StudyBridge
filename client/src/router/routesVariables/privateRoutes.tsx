@@ -6,6 +6,7 @@ import { ClientsBilling } from "../../pages/clientsBilling/ClientsBilling";
 import { TeacherDashboard } from "../../pages/teacherDashboard/TeacherDashboard";
 import { ClientsAppointments } from "../../pages/clientsAppointments/ClientsAppointments";
 import { TeacherAppointments } from "../../pages/teacherAppointments/TeacherAppointments";
+import { TeacherProfile } from "../../pages/teacherProfile/TeacherProfile";
 
 export const privateRoutes: RouteObject[] = [
   {
@@ -15,11 +16,11 @@ export const privateRoutes: RouteObject[] = [
   { path: "/clients-dashboard", element: <ClientsDashboard /> },
   { path: "/student-classes", element: <ClientsClasses /> },
   { path: "/clients-appointments", element: <ClientsAppointments /> },
-
   { path: "/clients-billing", element: <ClientsBilling /> },
   { path: "/teacher/my-dashboard", element: <TeacherDashboard /> },
   { path: "/teacher/my-classes", element: <ClientsClasses /> },
   { path: "/teacher/my-students", element: <ClientsClasses /> },
   { path: "/teacher/my-billings", element: <ClientsBilling /> },
+  { path: "/teacher/profile", element: <TeacherProfile /> },
   { path: "/teacher-appointments", element: <TeacherAppointments /> },
 ];
