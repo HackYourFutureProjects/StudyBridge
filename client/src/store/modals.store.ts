@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { lockScroll, unlockScroll } from "../util/modalScroll.util.ts";
 
-export type ModalName = null | "signup";
+export type ModalName = null | "logout";
 
 type ModalState = {
   activeModal: ModalName;

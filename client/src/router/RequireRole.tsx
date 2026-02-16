@@ -23,7 +23,7 @@ export const RequireRole = ({
     return <Navigate to="/" replace state={{ from: location }} />;
   }
 
-  const role = user.role as Role;
+  const role = user.role;
 
   if (!allow.includes(role)) {
     return <Navigate to="/forbidden" replace state={{ from: location }} />;

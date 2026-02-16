@@ -48,7 +48,7 @@ export const ModalHost = () => {
       onClick={opened ? close : undefined}
     >
       <div onClick={(e) => e.stopPropagation()} key={activeModal}>
-        {activeModal === "signup" && (
+        {activeModal === "logout" && (
           <LogoutConfirmation isOpen={opened} onClose={close} />
         )}
       </div>

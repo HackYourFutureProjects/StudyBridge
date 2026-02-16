@@ -31,7 +31,7 @@ export const ProfileIndicator = () => {
 
         <Button
           variant="link"
-          onClick={() => open("signup")}
+          onClick={() => open("logout")}
           className="flex items-center gap-2 md:gap-5 text-[#474747]
               hover:text-[#8A8A8A] transition-colors cursor-pointer"
         >
