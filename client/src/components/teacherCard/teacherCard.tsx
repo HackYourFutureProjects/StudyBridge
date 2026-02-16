@@ -2,12 +2,14 @@ import { Button } from "../ui/button/Button";
 import { Rating } from "../rating/Rating";
 import { TeacherType } from "../../api/teacher/teacher.type";
 import ImageNotFount from "../../assets/images/image-not-found.png";
+import { NavLink } from "react-router-dom";
 type TeacherCardType = {
   teacher: TeacherType;
 };
 
 export const TeacherCard = ({ teacher }: TeacherCardType) => {
   const {
+    id,
     firstName,
     lastName,
     subjects,
@@ -18,7 +20,6 @@ export const TeacherCard = ({ teacher }: TeacherCardType) => {
     bio,
     rating,
   } = teacher;
-  console.log(priceFrom);
   return (
     <div
       className="flex flex-col items-center xl:flex-row border bg-[#15141D80] border-blue-500
@@ -95,7 +96,9 @@ export const TeacherCard = ({ teacher }: TeacherCardType) => {
           1 hour
         </span>
         <Rating rating={rating} />
-        <Button variant="secondary">Book</Button>
+        <Button as={NavLink} to={`/teacher/${id}`} variant="secondary">
+          Book
+        </Button>
         <span className="text-[14px] text-dark-400">First lesson - free</span>
       </div>
     </div>
