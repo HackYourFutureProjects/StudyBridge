@@ -8,6 +8,7 @@ import LessonsIcon from "../icons/Lessons";
 import SettingsIcon from "../icons/Settings";
 import VideoCallIcon from "../icons/VideoCall";
 import UsersIcon from "../icons/UsersIcon";
+import { Logo } from "../logo/Logo.tsx";
 
 export type MenuItem = {
   name: string;
@@ -65,7 +66,7 @@ export const Sidebar = ({ items }: SidebarProps) => {
           duration-300"
       >
         <div className="hidden md:flex px-6 pt-[30px] pb-[30px]">
-          <span className="font-bold text-[24px] text-white">studyBridge</span>
+          <Logo />
         </div>
 
         <ul
