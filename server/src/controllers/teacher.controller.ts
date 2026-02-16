@@ -12,6 +12,7 @@ import { TeacherService } from "../services/teacher/teacher.service.js";
 import { TeacherQuery } from "../repositories/queryRepositories/teacher.query.js";
 import {
   AddSlotsBody,
+  AvailabilityView,
   DayParam,
   QueryTeacherInput,
   TeacherOutputModel,
@@ -90,6 +91,34 @@ export class TeacherController {
       return res.status(200).send(addedTimeslot);
     } catch (err) {
       return next(err);
+    }
+  }
+
+  //get teacher availability for a specific day, if day query is "all", get availability for all days of the week
+  async getTeacherAvailability(
+    req: RequestWithQuery<{ day: keyof AvailabilityView | "all" }>,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const teacherId = req.auth?.userId;
+      if (!teacherId) {
+        return res.status(401).send({ message: "Unauthorized" });
+      }
+
+      const day = req.query.day;
+
+      const availability = await this.teacherQuery.getTeacherAvailability(
+        teacherId,
+        day,
+      );
+
+      if (!availability)
+        return res.status(404).json({ message: "Teacher not found" });
+
+      return res.status(200).json(availability);
+    } catch (error) {
+      return next(error);
     }
   }
 }

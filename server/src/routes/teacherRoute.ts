@@ -8,6 +8,7 @@ import { AuthMiddleware } from "../middlewares/authMiddlewareWithBearer.js";
 import { errorMiddleware } from "../middlewares/error.middleware.js";
 import {
   dayParamValidationMiddleware,
+  dayQueryValidationMiddleware,
   duplicateOrOverlapSlotsValidationMiddleware,
   slotRangeValidationMiddleware,
   slotsValidationMiddleware,
@@ -41,4 +42,13 @@ teacherRouter.put(
   authMiddleware.handle,
   requireRole("teacher"),
   teacherController.addSlotsToSchedule.bind(teacherController),
+);
+
+teacherRouter.get(
+  "/me/availability",
+  dayQueryValidationMiddleware(),
+  errorMiddleware,
+  authMiddleware.handle,
+  requireRole("teacher"),
+  teacherController.getTeacherAvailability.bind(teacherController),
 );
