@@ -82,7 +82,7 @@ export class TeacherController {
   }
 
   async upsertDaySlots(
-    req: RequestWithParams<DayParam> & RequestWithBody<AddSlotsBody>, // client must send the full slots array for the selected day (edited + unchanged); server replaces that day's slots.can send 1 slot, 2 slots, or more in one request.
+    req: RequestWithParams<DayParam> & RequestWithBody<AddSlotsBody>, // client must send the full slots array for the selected day (edited + unchanged); server replaces that day's slots.
     res: Response,
     next: NextFunction,
   ) {
