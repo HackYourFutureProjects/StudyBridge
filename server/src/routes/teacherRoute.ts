@@ -24,6 +24,11 @@ teacherRouter.get(
   teacherController.getAllTeachers.bind(teacherController),
 );
 
+teacherRouter.get(
+  "/:id",
+  teacherController.getTeacherById.bind(teacherController),
+);
+
 teacherRouter.delete(
   "/:id",
   authMiddleware.handle,
