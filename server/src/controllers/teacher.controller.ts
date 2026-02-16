@@ -63,6 +63,23 @@ export class TeacherController {
       return next(err);
     }
   }
+  async getTeacherById(
+    req: RequestWithParams<ParamsType>,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const teacher = await this.teacherQuery.getTeacherById(req.params.id);
+
+      if (!teacher) {
+        return res.status(404).json({ message: "Teacher not found" });
+      }
+
+      return res.status(200).json(teacher);
+    } catch (err) {
+      return next(err);
+    }
+  }
 
   async addSlotsToSchedule(
     req: RequestWithParams<DayParam> & RequestWithBody<AddSlotsBody>, // user can send 1 slot, 2 slots, or more in one request.
