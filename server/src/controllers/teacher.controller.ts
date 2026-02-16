@@ -64,8 +64,8 @@ export class TeacherController {
     }
   }
 
-  async addSlotsToSchedule(
-    req: RequestWithParams<DayParam> & RequestWithBody<AddSlotsBody>, // user can send 1 slot, 2 slots, or more in one request.
+  async upsertDaySlots(
+    req: RequestWithParams<DayParam> & RequestWithBody<AddSlotsBody>, // client must send the full slots array for the selected day (edited + unchanged); server replaces that day's slots.can send 1 slot, 2 slots, or more in one request.
     res: Response,
     next: NextFunction,
   ) {
@@ -79,16 +79,16 @@ export class TeacherController {
       const { slots, timezone } = req.body;
       const day = req.params.day;
 
-      const addedTimeslot = await this.teacherQuery.addSlotsToSchedule(
+      const daySlots = await this.teacherQuery.upsertDaySlots(
         teacherId,
         day,
         slots,
         timezone,
       );
 
-      if (!addedTimeslot) return res.sendStatus(404);
+      if (!daySlots) return res.sendStatus(404);
 
-      return res.status(200).send(addedTimeslot);
+      return res.status(200).send(daySlots);
     } catch (err) {
       return next(err);
     }

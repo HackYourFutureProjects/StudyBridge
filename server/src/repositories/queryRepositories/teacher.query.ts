@@ -105,7 +105,7 @@ export class TeacherQuery {
     }
   }
 
-  async addSlotsToSchedule(
+  async upsertDaySlots(
     teacherId: string,
     day: keyof AvailabilityView,
     slots: TimeSlotView[],
@@ -131,7 +131,7 @@ export class TeacherQuery {
 
       return updatedTeacher.availability[day];
     } catch (err: unknown) {
-      throw new Error("Something went wrong with adding slots to schedule", {
+      throw new Error("Something went wrong with upserting day slots", {
         cause: err,
       });
     }

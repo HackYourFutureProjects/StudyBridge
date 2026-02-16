@@ -41,7 +41,7 @@ teacherRouter.put(
   errorMiddleware,
   authMiddleware.handle,
   requireRole("teacher"),
-  teacherController.addSlotsToSchedule.bind(teacherController),
+  teacherController.upsertDaySlots.bind(teacherController),
 );
 
 teacherRouter.get(
