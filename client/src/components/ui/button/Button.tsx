@@ -22,7 +22,7 @@ const buttonStyles = cva(
         info: "bg-blue-500 text-white hover:brightness-95",
         tertiary:
           "bg-dark-700 border border-dark-500 text-white hover:brightness-95",
-        link: "bg-transparent text-light-100",
+        link: "bg-transparent text-light-100 p-0",
       },
       size: {
         default: "min-h-10 px-[55px] py-3.5",

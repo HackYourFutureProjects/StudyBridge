@@ -14,7 +14,6 @@ import { ProfileIndicator } from "../profileIndicator/ProfileIndicator.tsx";
 export const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const isAuth = useAuthSessionStore((s) => s.user !== null);
-  const user = useAuthSessionStore((s) => s.user);
   const handleMobileMenuToggle = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
@@ -55,7 +54,6 @@ export const Header = () => {
           </div>
           {isAuth ? (
             <>
-              <div className="text-light-100">{user?.email}</div>
               <ProfileIndicator />
             </>
           ) : (

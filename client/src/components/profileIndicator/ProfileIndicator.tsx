@@ -1,24 +1,34 @@
 import LogoutIcon from "../icons/LogoutIcon.tsx";
-import HelpIcon from "../icons/QuestionMark.tsx";
 import { Button } from "../ui/button/Button.tsx";
 import { useModalStore } from "../../store/modals.store.ts";
+import imageNotFound from "../../assets/images/image-not-found.png";
+import { NavLink } from "react-router-dom";
+import { useAuthSessionStore } from "../../store/authSession.store.ts";
 
 export const ProfileIndicator = () => {
   const { open } = useModalStore();
+  const user = useAuthSessionStore((s) => s.user);
 
   return (
     <>
-      <div className="flex flex-row items-center gap-4 md:gap-8">
-        <button
-          aria-label="Help"
-          className="text-[#474747] hover:text-[#8A8A8A] transition-colors
-              cursor-pointer"
+      <div className="flex flex-row items-center gap-2 md:gap-3">
+        <Button
+          as={NavLink}
+          to="/app"
+          className="flex gap-3 text-light-300
+              hover:text-light-100 transition-colors cursor-pointer"
+          variant="link"
         >
-          <HelpIcon className="w-[19.5px] h-[19.5px]" />
-        </button>
+          <div className="w-9.5 h-9.5 rounded-full overflow-hidden">
+            <img
+              className="w-full h-full"
+              src={user?.profileImageUrl ? user.profileImageUrl : imageNotFound}
+              alt="userPhoto"
+            />
+          </div>
+          <div>{user?.firstName ? user.firstName : user?.email}</div>
+        </Button>
 
-        {/* Vertical Divider */}
-        <div className="bg-[#E4E4E4] w-px h-8.25" />
         <Button
           variant="link"
           onClick={() => open("signup")}

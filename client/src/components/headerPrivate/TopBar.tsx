@@ -1,8 +1,8 @@
 import { useState } from "react";
 import SearchIcon from "../icons/Search";
 import HelpIcon from "../icons/QuestionMark";
-import LogoutIcon from "../icons/LogoutIcon";
 import { LogoutConfirmation } from "../auth/logoutConfirmation/LogoutConfirmation";
+import { ProfileIndicator } from "../profileIndicator/ProfileIndicator.tsx";
 
 export const TopBar = () => {
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
@@ -43,20 +43,7 @@ export const TopBar = () => {
           <div className="bg-[#E4E4E4] w-px h-[33px]" />
 
           {/* Logout Button */}
-          <button
-            onClick={() => setIsLogoutModalOpen(true)}
-            className="flex items-center gap-2 md:gap-5 text-[#474747]
-              hover:text-[#8A8A8A] transition-colors cursor-pointer"
-          >
-            <LogoutIcon className="w-[20px] h-[20px]" />
-            <span
-              className="hidden md:block font-semibold text-[16px]
-                leading-[100%]"
-            >
-              {/* On smaller screens, Logout word is hidden */}
-              Logout
-            </span>
-          </button>
+          <ProfileIndicator />
         </div>
       </header>
 
