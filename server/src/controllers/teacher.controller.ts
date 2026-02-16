@@ -63,6 +63,23 @@ export class TeacherController {
       return next(err);
     }
   }
+  async getTeacherById(
+    req: RequestWithParams<ParamsType>,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const teacher = await this.teacherQuery.getTeacherById(req.params.id);
+
+      if (!teacher) {
+        return res.status(404).json({ message: "Teacher not found" });
+      }
+
+      return res.status(200).json(teacher);
+    } catch (err) {
+      return next(err);
+    }
+  }
 
   async upsertDaySlots(
     req: RequestWithParams<DayParam> & RequestWithBody<AddSlotsBody>, // client must send the full slots array for the selected day (edited + unchanged); server replaces that day's slots.can send 1 slot, 2 slots, or more in one request.
