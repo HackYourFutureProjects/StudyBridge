@@ -11,8 +11,14 @@ import { ProfileContactFields } from "../../components/teacherProfileSection/Pro
 import { LessonsSection } from "../../components/teacherProfileSection/LessonsSection";
 import { ProfileExperienceEducation } from "../../components/teacherProfileSection/ProfileExperienceEducation";
 import { ProfileAboutMe } from "../../components/teacherProfileSection/ProfileAboutMe";
+import { LessonSchedule } from "../../components/teacherProfileSection/LessonSchedule";
 
 export type { LessonPrice } from "../../components/teacherProfileSection/types";
+
+export interface TimeSlot {
+  day: string;
+  hour: number;
+}
 
 export const TeacherProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -31,6 +37,8 @@ export const TeacherProfile = () => {
   const [editingLessonIndex, setEditingLessonIndex] = useState<number | null>(
     null,
   );
+  const [isScheduleOpen, setIsScheduleOpen] = useState(false);
+  const [schedule, setSchedule] = useState<TimeSlot[]>([]);
 
   const handleAddLesson = () => {
     if (newSubject && newLevel && newPrice) {
@@ -142,6 +150,7 @@ export const TeacherProfile = () => {
               onExperienceChange={setExperience}
               onEducationChange={setEducation}
               onRowClick={() => setIsEditing(true)}
+              onScheduleClick={() => setIsScheduleOpen(true)}
             />
           </div>
 
@@ -155,6 +164,13 @@ export const TeacherProfile = () => {
           </div>
         </div>
       </div>
+
+      <LessonSchedule
+        isOpen={isScheduleOpen}
+        onClose={() => setIsScheduleOpen(false)}
+        onSave={setSchedule}
+        initialSlots={schedule}
+      />
     </div>
   );
 };

@@ -8,6 +8,7 @@ type ProfileExperienceEducationProps = {
   onExperienceChange: (value: string) => void;
   onEducationChange: (value: string) => void;
   onRowClick: () => void;
+  onScheduleClick?: () => void;
 };
 
 const selectRowClass = (isEditing: boolean) =>
@@ -20,6 +21,7 @@ export const ProfileExperienceEducation = ({
   onExperienceChange,
   onEducationChange,
   onRowClick,
+  onScheduleClick,
 }: ProfileExperienceEducationProps) => (
   <>
     <div
@@ -62,6 +64,7 @@ export const ProfileExperienceEducation = ({
 
     <button
       type="button"
+      onClick={onScheduleClick}
       className="text-purple-400 underline hover:text-purple-300 transition-colors ml-32"
     >
       Lesson schedule
