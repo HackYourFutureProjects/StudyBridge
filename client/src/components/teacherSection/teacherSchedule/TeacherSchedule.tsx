@@ -49,8 +49,23 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
 
     const slots: string[] = [];
     dayAvailability.forEach((slot) => {
-      const startHour = parseInt(slot.start.split(":")[0]);
-      const endHour = parseInt(slot.end.split(":")[0]);
+      const timeRegex = /^(\d{1,2}):(\d{2})$/;
+      const startMatch = slot.start.match(timeRegex);
+      const endMatch = slot.end.match(timeRegex);
+
+      if (!startMatch || !endMatch) {
+        console.warn(`Invalid time format: ${slot.start} - ${slot.end}`);
+        return;
+      }
+
+      const startHour = parseInt(startMatch[1], 10);
+      const endHour = parseInt(endMatch[1], 10);
+
+      if (startHour < 0 || startHour > 23 || endHour < 0 || endHour > 23) {
+        console.warn(`Invalid hour range: ${startHour} - ${endHour}`);
+        return;
+      }
+
       for (let hour = startHour; hour < endHour; hour++) {
         slots.push(`${hour.toString().padStart(2, "0")}:00`);
       }
@@ -65,6 +80,11 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
         <div className="flex flex-col items-center justify-center h-full sm:items-start sm:justify-start">
           <div className="text-left w-full">
             <h2 className="text-5xl font-bold text-[#7186FF]">Schedule</h2>
+            {teacher?.timezone && (
+              <p className="text-sm text-gray-400 mt-2">
+                All times shown in teachers timezone: {teacher.timezone}
+              </p>
+            )}
 
             <div className="mt-8 sm:mx-0">
               <Calendar
@@ -107,13 +127,19 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
           </p>
           <p>
             <strong>Subject:</strong>{" "}
-            {teacher?.subjects[0]?.subjectName || "N/A"}
+            {teacher?.subjects?.[0]?.subjectName || "N/A"}
           </p>
           <p>
             <strong>Date:</strong> {selectedDate?.toLocaleDateString()}
           </p>
           <p>
             <strong>Time:</strong> {selectedTime}
+            {teacher?.timezone && (
+              <span className="text-sm text-gray-600">
+                {" "}
+                ({teacher.timezone})
+              </span>
+            )}
           </p>
           <p>
             <strong>Price:</strong> €{teacher?.priceFrom}

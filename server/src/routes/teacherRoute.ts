@@ -24,19 +24,6 @@ teacherRouter.get(
   teacherController.getAllTeachers.bind(teacherController),
 );
 
-teacherRouter.get(
-  "/:id",
-  teacherController.getTeacherById.bind(teacherController),
-);
-
-teacherRouter.delete(
-  "/:id",
-  authMiddleware.handle,
-  requireRole("teacher"),
-  requireSelf("id"),
-  teacherController.deleteTeacher.bind(teacherController),
-);
-
 teacherRouter.put(
   "/me/schedule/:day/slots",
   dayParamValidationMiddleware(),
@@ -56,4 +43,17 @@ teacherRouter.get(
   authMiddleware.handle,
   requireRole("teacher"),
   teacherController.getTeacherAvailability.bind(teacherController),
+);
+
+teacherRouter.get(
+  "/:id",
+  teacherController.getTeacherById.bind(teacherController),
+);
+
+teacherRouter.delete(
+  "/:id",
+  authMiddleware.handle,
+  requireRole("teacher"),
+  requireSelf("id"),
+  teacherController.deleteTeacher.bind(teacherController),
 );

@@ -8,6 +8,7 @@ import TeacherSchedule from "../../components/teacherSection/teacherSchedule/Tea
 import { useState } from "react";
 import { ReviewsTeacher } from "../../components/teacherSection/Reviews/ReviewsTeacher";
 import { useTeacherQuery } from "../../features/teachers/query/useTeacherQuery";
+import { TeacherCardSkeleton } from "../../components/skeletons/TeacherCardSkeleton";
 
 type TabType = "about" | "subjects" | "schedule";
 
@@ -37,10 +38,19 @@ export const TeacherDetail = () => {
 
   if (isLoading) {
     return (
-      <div className="h-auto">
+      <div className="h-auto min-h-screen">
         <div className="pt-20 container-centered mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
           <div className="section-spacing">
-            <div className="text-white text-center">Loading teacher...</div>
+            <Button variant="secondary" onClick={handleBack} className="h-auto">
+              Back
+            </Button>
+          </div>
+          <TeacherCardSkeleton />
+          <div className="section-spacing">
+            <div className="h-12 bg-[#15141D80] rounded-lg animate-pulse"></div>
+          </div>
+          <div className="section-spacing">
+            <div className="h-96 bg-[#15141D80] rounded-3xl animate-pulse"></div>
           </div>
         </div>
       </div>
@@ -49,7 +59,7 @@ export const TeacherDetail = () => {
 
   if (error || !teacher) {
     return (
-      <div className="h-auto">
+      <div className="h-auto min-h-screen">
         <div className="pt-20 container-centered mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
           <div className="section-spacing">
             <Button variant="secondary" onClick={handleBack} className="h-auto">
@@ -65,7 +75,7 @@ export const TeacherDetail = () => {
   }
 
   return (
-    <div className="h-auto">
+    <div className="h-auto min-h-screen">
       <div className="pt-20 container-centered mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
         <div className="section-spacing">
           <Button variant="secondary" onClick={handleBack} className="h-auto">

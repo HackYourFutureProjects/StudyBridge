@@ -53,6 +53,7 @@ export type TeacherType = {
   mainLanguage: string | null;
   education: EducationItem[];
   subjects: SubjectItem[];
+  timezone: string;
   availability: AvailabilityItem;
   address: AddressItem;
   createdAt: Date;
