@@ -5,6 +5,13 @@ import { TeacherController } from "../controllers/teacher.controller.js";
 import { requireRole } from "../middlewares/requireRole.middleware.js";
 import { requireSelf } from "../middlewares/requireSelf.middleware.js";
 import { AuthMiddleware } from "../middlewares/authMiddlewareWithBearer.js";
+import { errorMiddleware } from "../middlewares/error.middleware.js";
+import {
+  dayParamValidationMiddleware,
+  duplicateOrOverlapSlotsValidationMiddleware,
+  slotRangeValidationMiddleware,
+  slotsValidationMiddleware,
+} from "../validation/availabilitySchedule/teacher/teacherScheduleValidationMiddleware.js";
 
 export const teacherRouter = Router();
 const teacherController = container.get<TeacherController>(
@@ -15,10 +22,23 @@ teacherRouter.get(
   "/",
   teacherController.getAllTeachers.bind(teacherController),
 );
+
 teacherRouter.delete(
   "/:id",
   authMiddleware.handle,
   requireRole("teacher"),
   requireSelf("id"),
   teacherController.deleteTeacher.bind(teacherController),
+);
+
+teacherRouter.put(
+  "/me/schedule/:day/slots",
+  dayParamValidationMiddleware(),
+  slotsValidationMiddleware(),
+  slotRangeValidationMiddleware(),
+  duplicateOrOverlapSlotsValidationMiddleware(),
+  errorMiddleware,
+  authMiddleware.handle,
+  requireRole("teacher"),
+  teacherController.addSlotsToSchedule.bind(teacherController),
 );

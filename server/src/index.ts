@@ -6,6 +6,7 @@ dotenv.config();
 import connectDB from "./db/connectDB.js";
 import app from "./app.js";
 import { logError, logInfo } from "./utils/logging.js";
+import { TeacherModel } from "./db/schemes/teacherSchema.js";
 
 // The environment should set the port
 const port = process.env.PORT || 3000;
@@ -13,6 +14,17 @@ const port = process.env.PORT || 3000;
 const startServer = async () => {
   try {
     await connectDB();
+
+    // 1. find all teacher documents where `timezone` does not exist.
+    // 2. set `timezone` to "Europe/Amsterdam" for those old records.
+    // 3. keep existing timezone values unchanged for all other teachers.
+    const result = await TeacherModel.updateMany(
+      { timezone: { $exists: false } },
+      { $set: { timezone: "Europe/Amsterdam" } },
+    );
+
+    logInfo(`Timezone backfill updated ${result.modifiedCount} teacher(s)`);
+
     app.listen(port, () => {
       logInfo(`Server started on port ${port}`);
     });

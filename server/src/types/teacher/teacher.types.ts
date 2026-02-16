@@ -28,6 +28,15 @@ export type AvailabilityView = {
   sunday: TimeSlotView[];
 };
 
+export type DayParam = {
+  day: keyof AvailabilityView;
+};
+
+export type AddSlotsBody = {
+  slots: TimeSlotView[];
+  timezone?: string;
+};
+
 export type AddressView = {
   street: string | null;
   city: string | null;
@@ -47,10 +56,13 @@ export type TeacherViewType = {
   headline: string | null;
   phoneNumber: string | null;
   dateOfBirth: Date | null;
+  priceFrom: number;
+  rating: number;
   gender: string | null;
   mainLanguage: string | null;
   education: EducationViewItem[];
   subjects: SubjectViewItem[];
+  timezone: string;
   availability: AvailabilityView;
   address: AddressView;
   createdAt: Date;
