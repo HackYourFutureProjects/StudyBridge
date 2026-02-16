@@ -9,6 +9,7 @@ import {
 } from "../../router/routesVariables/pathVariables";
 import { Logo } from "../logo/Logo";
 import { useAuthSessionStore } from "../../store/authSession.store";
+import { ProfileIndicator } from "../profileIndicator/ProfileIndicator.tsx";
 
 export const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -53,9 +54,12 @@ export const Header = () => {
             </Button>
           </div>
           {isAuth ? (
-            <div className="text-light-100">{user?.email}</div>
+            <>
+              <div className="text-light-100">{user?.email}</div>
+              <ProfileIndicator />
+            </>
           ) : (
-            <ControlPanel classNames="" />
+            <ControlPanel />
           )}
           <MenuButton
             onClick={handleMobileMenuToggle}
