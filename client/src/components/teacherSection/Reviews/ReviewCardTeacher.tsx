@@ -26,7 +26,7 @@ export const ReviewCardTeacher = ({
         {/* Header Part (Avatar , Name, Icon ) */}
         <div className="flex items-center gap-[10px] md:gap-[16px] mb-[12px] md:mb-[20px]">
           <img
-            src={avatar || "/default-avatar.png"}
+            src={avatar}
             alt={name}
             className="flex-shrink-0 rounded-full w-[28px] md:w-[40px] h-[28px] md:h-[40px] object-cover"
           />
