@@ -1,14 +1,8 @@
-import LessonsTable from "../../components/table/LessonsTable";
+import LessonsTable from "../../../components/table/LessonsTable";
 import { useState } from "react";
-import {
-  Sidebar,
-  defaultStudentMenuItems,
-  defaultTeacherMenuItems,
-} from "../../components/sidebar/Sidebar";
-import { TopBar } from "../../components/headerPrivate/TopBar";
-import { Pagination } from "../../components/ui/pagination/Pagination";
-import { BillingHeader } from "../../components/clientsBillings/BillingHeader";
-import { useAuthSessionStore } from "../../store/authSession.store";
+import { Pagination } from "../../../components/ui/pagination/Pagination";
+import { BillingHeader } from "../../../components/clientsBillings/BillingHeader";
+import { useAuthSessionStore } from "../../../store/authSession.store";
 import { useLocation } from "react-router-dom";
 
 export const ClientsBilling = () => {
@@ -19,9 +13,6 @@ export const ClientsBilling = () => {
   const inferredType =
     accountType ?? (pathname.startsWith("/teacher") ? "teacher" : "student");
   const isTeacher = inferredType === "teacher";
-  const sidebarItems = isTeacher
-    ? defaultTeacherMenuItems
-    : defaultStudentMenuItems;
   const columns = isTeacher
     ? [
         { key: "index", label: "Index#", width: "120px" },
@@ -39,12 +30,8 @@ export const ClientsBilling = () => {
       ];
 
   return (
-    <div className="min-h-screen pl-[218px]">
-      <Sidebar items={sidebarItems} />
-
+    <div className="min-h-screen">
       <div className="px-6 lg:px-10 min-h-screen flex flex-col">
-        <TopBar />
-
         <div className="pt-[40px] mb-4 flex flex-col flex-1">
           <BillingHeader />
         </div>
@@ -56,7 +43,6 @@ export const ClientsBilling = () => {
         </div>
         <br />
         <LessonsTable
-          width={1065}
           headerHeight={66}
           rowHeight={66}
           columns={columns}

@@ -69,7 +69,7 @@ const LessonRow = ({
       {columns.map((column, columnIndex) => (
         <td
           key={`${String(data.id ?? index)}-${column.key}`}
-          className={`font-inter text-[14px] text-[#B9B9B9] border-b border-[#E1E1E1] ${
+          className={`font-inter p-2 text-[14px] text-[#B9B9B9] border-b border-[#E1E1E1] ${
             columnIndex === columns.length - 1 && column.key !== "status"
               ? "underline"
               : ""

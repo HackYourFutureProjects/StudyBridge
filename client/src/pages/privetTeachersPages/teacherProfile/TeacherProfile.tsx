@@ -1,17 +1,12 @@
 import { useState } from "react";
-import {
-  Sidebar,
-  defaultTeacherMenuItems,
-} from "../../components/sidebar/Sidebar";
-import { TopBar } from "../../components/headerPrivate/TopBar";
-import type { LessonPrice } from "../../components/teacherProfileSection/types";
-import { ProfileAvatar } from "../../components/teacherProfileSection/ProfileAvatar";
-import { ProfileHeader } from "../../components/teacherProfileSection/ProfileHeader";
-import { ProfileContactFields } from "../../components/teacherProfileSection/ProfileContactFields";
-import { LessonsSection } from "../../components/teacherProfileSection/LessonsSection";
-import { ProfileExperienceEducation } from "../../components/teacherProfileSection/ProfileExperienceEducation";
-import { ProfileAboutMe } from "../../components/teacherProfileSection/ProfileAboutMe";
-import { LessonSchedule } from "../../components/teacherProfileSection/LessonSchedule";
+import type { LessonPrice } from "../../../components/teacherProfileSection/types";
+import { ProfileAvatar } from "../../../components/teacherProfileSection/ProfileAvatar";
+import { ProfileHeader } from "../../../components/teacherProfileSection/ProfileHeader";
+import { ProfileContactFields } from "../../../components/teacherProfileSection/ProfileContactFields";
+import { LessonsSection } from "../../../components/teacherProfileSection/LessonsSection";
+import { ProfileExperienceEducation } from "../../../components/teacherProfileSection/ProfileExperienceEducation";
+import { ProfileAboutMe } from "../../../components/teacherProfileSection/ProfileAboutMe";
+import { LessonSchedule } from "../../../components/teacherProfileSection/LessonSchedule";
 import {
   mapUiSlotsToMergedWeekAvailability,
   mapWeekAvailabilityToUiSlots,
@@ -19,9 +14,9 @@ import {
 import {
   updateMyWeeklyScheduleApi,
   getMyWeeklyScheduleApi,
-} from "../../api/teacher/teacher.api";
+} from "../../../api/teacher/teacher.api";
 
-export type { LessonPrice } from "../../components/teacherProfileSection/types";
+export type { LessonPrice } from "../../../components/teacherProfileSection/types";
 
 export interface TimeSlot {
   day: string;
@@ -122,11 +117,7 @@ export const TeacherProfile = () => {
 
   return (
     <div className="min-h-screen pl-[218px] bg-[#15141D]">
-      <Sidebar items={defaultTeacherMenuItems} />
-
       <div className="px-6 lg:px-10 min-h-screen flex flex-col">
-        <TopBar />
-
         <div className="pt-10 flex-1">
           <h1 className="text-5xl font-bold bg-gradient-to-r from-[#7C86F7] to-[#E879F9] bg-clip-text text-transparent mb-12">
             My profile
