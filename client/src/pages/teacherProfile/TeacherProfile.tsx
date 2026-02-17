@@ -12,6 +12,14 @@ import { LessonsSection } from "../../components/teacherProfileSection/LessonsSe
 import { ProfileExperienceEducation } from "../../components/teacherProfileSection/ProfileExperienceEducation";
 import { ProfileAboutMe } from "../../components/teacherProfileSection/ProfileAboutMe";
 import { LessonSchedule } from "../../components/teacherProfileSection/LessonSchedule";
+import {
+  mapUiSlotsToMergedWeekAvailability,
+  mapWeekAvailabilityToUiSlots,
+} from "./scheduleMappers";
+import {
+  updateMyWeeklyScheduleApi,
+  getMyWeeklyScheduleApi,
+} from "../../api/teacher/teacher.api";
 
 export type { LessonPrice } from "../../components/teacherProfileSection/types";
 
@@ -91,6 +99,27 @@ export const TeacherProfile = () => {
     setEditingLessonIndex(null);
   };
 
+  // Saves selected slots in state and sends weekly availability to the backend.
+  const handleScheduleSave = async (slots: TimeSlot[]) => {
+    setSchedule(slots); // keep local UI state
+    const availability = mapUiSlotsToMergedWeekAvailability(slots);
+    await updateMyWeeklyScheduleApi({ availability });
+  };
+
+  // Loads the saved weekly availability from backend, maps it to grid cells, then opens the schedule popup.
+  const handleOpenSchedule = async () => {
+    try {
+      const availability = await getMyWeeklyScheduleApi();
+
+      // convert backend weekly ranges to UI day/hour cells -{ day: "Monday", hour: 10 }- so saved slots are highlighted in the grid.
+      setSchedule(mapWeekAvailabilityToUiSlots(availability));
+    } catch (error) {
+      console.error("Failed to load weekly availability", error);
+    } finally {
+      setIsScheduleOpen(true);
+    }
+  };
+
   return (
     <div className="min-h-screen pl-[218px] bg-[#15141D]">
       <Sidebar items={defaultTeacherMenuItems} />
@@ -150,7 +179,7 @@ export const TeacherProfile = () => {
               onExperienceChange={setExperience}
               onEducationChange={setEducation}
               onRowClick={() => setIsEditing(true)}
-              onScheduleClick={() => setIsScheduleOpen(true)}
+              onScheduleClick={handleOpenSchedule}
             />
           </div>
 
@@ -165,10 +194,12 @@ export const TeacherProfile = () => {
         </div>
       </div>
 
+      {/* When teacher clicks Save in this popup, we send the selected times to the backend */}
       <LessonSchedule
+        key={JSON.stringify(schedule)} //  Re-create this popup when schedule changes, so the new saved times show correctly
         isOpen={isScheduleOpen}
         onClose={() => setIsScheduleOpen(false)}
-        onSave={setSchedule}
+        onSave={handleScheduleSave}
         initialSlots={schedule}
       />
     </div>

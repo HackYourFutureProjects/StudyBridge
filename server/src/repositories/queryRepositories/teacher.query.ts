@@ -4,7 +4,6 @@ import {
   TeacherOutputModel,
   TeacherViewType,
   AvailabilityView,
-  TimeSlotView,
 } from "../../types/teacher/teacher.types.js";
 import { TeacherModel } from "../../db/schemes/teacherSchema.js";
 import { teacherMapper } from "../../utils/mappers/teacher.mapper.js";
@@ -105,18 +104,17 @@ export class TeacherQuery {
     }
   }
 
-  async upsertDaySlots(
+  async replaceAvailabilityForWeek(
     teacherId: string,
-    day: keyof AvailabilityView,
-    slots: TimeSlotView[],
+    availability: AvailabilityView,
     timezone?: string,
-  ): Promise<TimeSlotView[] | null> {
+  ): Promise<AvailabilityView | null> {
     try {
       const updatedTeacher = await TeacherModel.findOneAndUpdate(
         { id: teacherId },
         {
           $set: {
-            [`availability.${day}`]: slots,
+            availability,
             ...(timezone ? { timezone } : {}),
           },
         },
@@ -129,18 +127,20 @@ export class TeacherQuery {
 
       if (!updatedTeacher) return null;
 
-      return updatedTeacher.availability[day];
+      return updatedTeacher.availability;
     } catch (err: unknown) {
-      throw new Error("Something went wrong with upserting day slots", {
-        cause: err,
-      });
+      throw new Error(
+        "Something went wrong with replacing weekly availability",
+        {
+          cause: err,
+        },
+      );
     }
   }
 
-  async getTeacherAvailability(
+  async findTeacherWeeklyAvailability(
     teacherId: string,
-    day: keyof AvailabilityView | "all",
-  ): Promise<TimeSlotView[] | AvailabilityView | null> {
+  ): Promise<AvailabilityView | null> {
     try {
       const teacherTimeslots = await TeacherModel.findOne(
         { id: teacherId },
@@ -148,9 +148,7 @@ export class TeacherQuery {
       ).lean();
 
       if (!teacherTimeslots) return null;
-      if (day === "all") return teacherTimeslots.availability;
-
-      return teacherTimeslots.availability[day];
+      return teacherTimeslots.availability;
     } catch (err: unknown) {
       throw new Error(
         "Something went wrong while fetching teacher availability",

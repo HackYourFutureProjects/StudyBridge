@@ -10,7 +10,7 @@ interface TimeSlot {
 interface LessonScheduleProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (slots: TimeSlot[]) => void;
+  onSave: (slots: TimeSlot[]) => Promise<void> | void;
   initialSlots?: TimeSlot[];
 }
 
@@ -51,12 +51,13 @@ export const LessonSchedule = ({
     });
   };
 
-  const handleSave = () => {
+  // Take selected times, save them, then close this popup.
+  const handleSave = async () => {
     const slots: TimeSlot[] = Array.from(selectedSlots).map((key) => {
       const [day, hour] = key.split("-");
-      return { day, hour: parseInt(hour) };
+      return { day, hour: parseInt(hour, 10) };
     });
-    onSave(slots);
+    await onSave(slots);
     onClose();
   };
 

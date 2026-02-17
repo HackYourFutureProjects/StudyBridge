@@ -6,14 +6,12 @@ import {
   ResponseWithData,
   RequestWithBody,
 } from "../types/common.types.js";
-import { NextFunction, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { TYPES } from "../composition/composition.types.js";
 import { TeacherService } from "../services/teacher/teacher.service.js";
 import { TeacherQuery } from "../repositories/queryRepositories/teacher.query.js";
 import {
-  AddSlotsBody,
-  AvailabilityView,
-  DayParam,
+  ReplaceWeekAvailabilityBody,
   QueryTeacherInput,
   TeacherOutputModel,
 } from "../types/teacher/teacher.types.js";
@@ -81,39 +79,8 @@ export class TeacherController {
     }
   }
 
-  async upsertDaySlots(
-    req: RequestWithParams<DayParam> & RequestWithBody<AddSlotsBody>, // client must send the full slots array for the selected day (edited + unchanged); server replaces that day's slots.
-    res: Response,
-    next: NextFunction,
-  ) {
-    try {
-      const teacherId = req.auth?.userId;
-
-      if (!teacherId) {
-        return res.status(401).send({ message: "Unauthorized" });
-      }
-
-      const { slots, timezone } = req.body;
-      const day = req.params.day;
-
-      const daySlots = await this.teacherQuery.upsertDaySlots(
-        teacherId,
-        day,
-        slots,
-        timezone,
-      );
-
-      if (!daySlots) return res.sendStatus(404);
-
-      return res.status(200).send(daySlots);
-    } catch (err) {
-      return next(err);
-    }
-  }
-
-  //get teacher availability for a specific day, if day query is "all", get availability for all days of the week
-  async getTeacherAvailability(
-    req: RequestWithQuery<{ day: keyof AvailabilityView | "all" }>,
+  async getMyWeeklyAvailability(
+    req: Request,
     res: Response,
     next: NextFunction,
   ) {
@@ -123,12 +90,8 @@ export class TeacherController {
         return res.status(401).send({ message: "Unauthorized" });
       }
 
-      const day = req.query.day;
-
-      const availability = await this.teacherQuery.getTeacherAvailability(
-        teacherId,
-        day,
-      );
+      const availability =
+        await this.teacherQuery.findTeacherWeeklyAvailability(teacherId);
 
       if (!availability)
         return res.status(404).json({ message: "Teacher not found" });
@@ -136,6 +99,29 @@ export class TeacherController {
       return res.status(200).json(availability);
     } catch (error) {
       return next(error);
+    }
+  }
+
+  async replaceAvailabilityForWeek(
+    req: RequestWithBody<ReplaceWeekAvailabilityBody>,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const teacherId = req.auth?.userId;
+      if (!teacherId) return res.status(401).send({ message: "Unauthorized" });
+
+      const { availability, timezone } = req.body;
+      const updated = await this.teacherQuery.replaceAvailabilityForWeek(
+        teacherId,
+        availability,
+        timezone,
+      );
+
+      if (!updated) return res.sendStatus(404);
+      return res.status(200).json(updated);
+    } catch (err) {
+      return next(err);
     }
   }
 }
