@@ -7,11 +7,8 @@ import { requireSelf } from "../middlewares/requireSelf.middleware.js";
 import { AuthMiddleware } from "../middlewares/authMiddlewareWithBearer.js";
 import { errorMiddleware } from "../middlewares/error.middleware.js";
 import {
-  dayParamValidationMiddleware,
-  dayQueryValidationMiddleware,
-  duplicateOrOverlapSlotsValidationMiddleware,
-  slotRangeValidationMiddleware,
-  slotsValidationMiddleware,
+  validateWeekSlotRules,
+  validateWeekAvailabilityPayload,
 } from "../validation/availabilitySchedule/teacher/teacherScheduleValidationMiddleware.js";
 
 export const teacherRouter = Router();
@@ -25,24 +22,20 @@ teacherRouter.get(
 );
 
 teacherRouter.put(
-  "/me/schedule/:day/slots",
-  dayParamValidationMiddleware(),
-  slotsValidationMiddleware(),
-  slotRangeValidationMiddleware(),
-  duplicateOrOverlapSlotsValidationMiddleware(),
-  errorMiddleware,
+  "/me/schedule/week",
   authMiddleware.handle,
   requireRole("teacher"),
-  teacherController.upsertDaySlots.bind(teacherController),
+  validateWeekAvailabilityPayload(),
+  validateWeekSlotRules(),
+  errorMiddleware,
+  teacherController.replaceAvailabilityForWeek.bind(teacherController),
 );
 
 teacherRouter.get(
-  "/me/availability",
-  dayQueryValidationMiddleware(),
-  errorMiddleware,
+  "/me/schedule/week",
   authMiddleware.handle,
   requireRole("teacher"),
-  teacherController.getTeacherAvailability.bind(teacherController),
+  teacherController.getMyWeeklyAvailability.bind(teacherController),
 );
 
 teacherRouter.get(

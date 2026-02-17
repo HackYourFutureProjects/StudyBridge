@@ -5,20 +5,24 @@ import avatar2 from "../../../assets/images/Avatar2.png";
 import avatar3 from "../../../assets/images/Avatar3.png";
 import shapeImage from "../../../assets/images/Shape.png";
 
+// TODO: Fetch reviews data from API instead of using hardcoded data.
+// Temporary hardcoded reviews data
+
 const reviews = [
   {
-    avatar: avatar1,
+    avatar: null,
     name: "Cameron Williamson",
     course: "English",
     review:
       "The classes are engaging and focused on real communication. Students see noticeable improvement.",
+    rating: 3.4,
   },
   {
     avatar: avatar2,
     name: "Esther Howard",
     course: "Dutch",
-    review:
-      "The classes are engaging and focused on real communication. Students see noticeable improvement.",
+
+    rating: 4.0,
   },
   {
     avatar: avatar3,
@@ -26,6 +30,7 @@ const reviews = [
     course: "QA / Software Testing",
     review:
       "The classes are engaging and focused on real communication. Students see noticeable improvement.",
+    rating: 4.8,
   },
   {
     avatar: avatar1,
@@ -33,6 +38,7 @@ const reviews = [
     course: "Spanish",
     review:
       "The classes are engaging and focused on real communication. Students see noticeable improvement.",
+    rating: 4.2,
   },
   {
     avatar: avatar2,
@@ -40,18 +46,19 @@ const reviews = [
     course: "French",
     review:
       "The classes are engaging and focused on real communication. Students see noticeable improvement.",
+    rating: 3,
   },
 ];
 
 export const ReviewsTeacher = () => {
   return (
-    <section className="section-spacing py-12 sm:py-16 lg:py-20">
-      <div className="container-centered mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-12 sm:py-16 lg:py-20 section-spacing">
+      <div className="mx-auto px-4 sm:px-6 lg:px-8 container-centered">
         <div className="text-center">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-[56px] font-bold text-white mb-6 sm:mb-8 lg:mb-10">
+          <h2 className="mb-6 sm:mb-8 lg:mb-10 font-bold text-white xl:text-[56px] text-3xl sm:text-4xl lg:text-5xl">
             What our clients say
           </h2>
-          <p className="text-white/70 text-sm sm:text-base lg:text-lg max-w-3xl mx-auto leading-relaxed mb-12 sm:mb-16 lg:mb-20 px-4">
+          <p className="mx-auto mb-12 sm:mb-16 lg:mb-20 px-4 max-w-3xl text-white/70 text-sm sm:text-base lg:text-lg leading-relaxed">
             Students appreciate the practical approach, supportive instructors,
             and clear learning structure across all courses. Many international
             students highlight fast progress, increased confidence, and a
@@ -63,23 +70,16 @@ export const ReviewsTeacher = () => {
           {reviews.map((review, index) => (
             <div
               key={index}
-              className="relative flex justify-center w-full px-[15px] sm:px-[10px] md:px-[5px]"
+              className="relative flex justify-center px-[15px] sm:px-[10px] md:px-[5px] w-full"
             >
-              <div className="relative z-10 w-full">
+              <div className="z-10 relative w-full">
                 <ReviewCardTeacher {...review} />
               </div>
 
               <img
                 src={shapeImage}
                 alt=""
-                className="
-        absolute -bottom-[3px] sm:-bottom-[5px] md:-bottom-[7px] lg:-bottom-[5px] -left-[0px] sm:-left-[2px] md:-left-[5px] lg:-left-[0px] -right-[30px] sm:-right-[25px] md:-right-[20px] lg:-right-[50px]
-        top-[8px] sm:top-[6px] md:top-[4px] lg:top-[10px]
-        w-[calc(100%+30px)] sm:w-[calc(100%+27px)] md:w-[calc(100%+25px)] lg:w-[calc(100%+50px)]
-        h-[calc(100%+11px)] sm:h-[calc(100%+11px)] md:h-[calc(100%+11px)] lg:h-[calc(100%+15px)]
-        object-cover rounded-2xl
-        z-0 pointer-events-none
-      "
+                className="top-[8px] sm:top-[6px] md:top-[4px] lg:top-[10px] -right-[30px] sm:-right-[25px] md:-right-[20px] lg:-right-[50px] -bottom-[3px] sm:-bottom-[5px] md:-bottom-[7px] lg:-bottom-[5px] -left-[0px] sm:-left-[2px] md:-left-[5px] lg:-left-[0px] z-0 absolute rounded-2xl w-[calc(100%+30px)] sm:w-[calc(100%+27px)] md:w-[calc(100%+25px)] lg:w-[calc(100%+50px)] h-[calc(100%+11px)] sm:h-[calc(100%+11px)] md:h-[calc(100%+11px)] lg:h-[calc(100%+15px)] object-cover pointer-events-none"
               />
             </div>
           ))}
