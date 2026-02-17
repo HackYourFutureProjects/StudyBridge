@@ -37,9 +37,9 @@ async function getTransporter() {
   const testAccount = await nodemailer.createTestAccount();
   transporter = nodemailer.createTransport({
     /*
-  the mailsender is created using Ethereal (test email service)
-  A preview URL will be logged in the console.
-*/
+     the mailsender is created using Ethereal (test email service)
+     A preview URL will be logged in the console.
+    */
 
     host: "smtp.ethereal.email",
     port: 587,
