@@ -25,7 +25,7 @@ const MobileMenuItem: React.FC<MobileMenuItemProps> = ({
   children,
   onClick,
 }) => (
-  <div
+  <button
     onClick={onClick}
     className="
       w-full text-left px-6 py-4
@@ -36,7 +36,7 @@ const MobileMenuItem: React.FC<MobileMenuItemProps> = ({
     "
   >
     {children}
-  </div>
+  </button>
 );
 
 export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose }) => {
