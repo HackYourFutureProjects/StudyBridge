@@ -2,10 +2,8 @@ import { useState } from "react";
 import { Calendar } from "./Calendar/Calendar";
 import { Time } from "./Time/Time";
 import { Button } from "../../ui/button/Button";
-import { Modal } from "../../ui/modal/Modal";
 import { TeacherType } from "../../../api/teacher/teacher.type";
-import { useCreateAppointmentMutation } from "../../../features/appointments/mutations/useCreateAppointmentMutation";
-import { useAuthSessionStore } from "../../../store/authSession.store";
+import { useModalStore } from "../../../store/modals.store";
 
 interface TeacherScheduleProps {
   teacher?: TeacherType;
@@ -15,11 +13,8 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [showTimeAndBook, setShowTimeAndBook] = useState<boolean>(false);
-  const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
 
-  const { mutate: createAppointment, isPending } =
-    useCreateAppointmentMutation();
-  const user = useAuthSessionStore((state) => state.user);
+  const { open: openModal } = useModalStore();
 
   const handleDateSelection = (date: Date): void => {
     setSelectedDate(date);
@@ -32,38 +27,17 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
 
   const handleBook = (): void => {
     if (selectedDate && selectedTime && teacher) {
-      setShowConfirmModal(true);
+      openModal("bookingConfirm", {
+        teacher,
+        selectedDate,
+        selectedTime,
+        onSuccess: () => {
+          setSelectedDate(null);
+          setSelectedTime(null);
+          setShowTimeAndBook(false);
+        },
+      });
     }
-  };
-
-  const handleConfirmBooking = (): void => {
-    if (!teacher || !selectedDate || !selectedTime || !user) {
-      console.error("Missing required data for booking");
-      return;
-    }
-
-    const appointmentData = {
-      teacherId: teacher.id,
-      studentId: user.id,
-      date: selectedDate.toISOString().split("T")[0],
-      time: selectedTime,
-      lesson: teacher.subjects?.[0]?.subjectName || "General Lesson",
-      price: teacher.priceFrom?.toString() || "0",
-    };
-
-    createAppointment(appointmentData, {
-      onSuccess: () => {
-        setShowConfirmModal(false);
-        setSelectedDate(null);
-        setSelectedTime(null);
-        setShowTimeAndBook(false);
-        alert("Booking successful! The teacher will review your request.");
-      },
-      onError: (error) => {
-        console.error("Booking failed:", error);
-        alert("Booking failed. Please try again.");
-      },
-    });
   };
 
   const getAvailableTimeSlots = (): string[] => {
@@ -92,7 +66,6 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
       const endMatch = slot.end.match(timeRegex);
 
       if (!startMatch || !endMatch) {
-        console.warn(`Invalid time format: ${slot.start} - ${slot.end}`);
         return;
       }
 
@@ -100,7 +73,6 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
       const endHour = parseInt(endMatch[1], 10);
 
       if (startHour < 0 || startHour > 23 || endHour < 0 || endHour > 23) {
-        console.warn(`Invalid hour range: ${startHour} - ${endHour}`);
         return;
       }
 
@@ -150,43 +122,6 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
           </div>
         </div>
       </div>
-
-      <Modal
-        isOpen={showConfirmModal}
-        onClose={() => setShowConfirmModal(false)}
-        title="Confirm Booking"
-        onConfirm={handleConfirmBooking}
-        confirmText={isPending ? "Booking..." : "Book Now"}
-        cancelText="Cancel"
-      >
-        <div className="space-y-2">
-          <p>
-            <strong>Teacher:</strong> {teacher?.firstName} {teacher?.lastName}
-          </p>
-          <p>
-            <strong>Subject:</strong>{" "}
-            {teacher?.subjects?.[0]?.subjectName || "N/A"}
-          </p>
-          <p>
-            <strong>Date:</strong> {selectedDate?.toLocaleDateString()}
-          </p>
-          <p>
-            <strong>Time:</strong> {selectedTime}
-            {teacher?.timezone && (
-              <span className="text-sm text-gray-600">
-                {" "}
-                ({teacher.timezone})
-              </span>
-            )}
-          </p>
-          <p>
-            <strong>Price:</strong> €{teacher?.priceFrom}
-          </p>
-          <p className="text-sm text-gray-600 mt-4">
-            The lesson request will be sent to the teacher.
-          </p>
-        </div>
-      </Modal>
     </div>
   );
 }

@@ -11,7 +11,7 @@ export const ProfileIndicator = () => {
 
   return (
     <>
-      <div className="flex flex-row items-center gap-2 md:gap-3">
+      <div className="hidden md:flex flex-row items-center gap-2 md:gap-3">
         <Button
           as={NavLink}
           to="/app"

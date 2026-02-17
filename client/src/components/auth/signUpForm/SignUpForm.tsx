@@ -12,6 +12,7 @@ import {
   RegisterFormTypes,
   Role,
 } from "../../../api/auth/types";
+import { Loader } from "../../loader/Loader.tsx";
 
 type SignUpFormTypes = {
   loading: boolean;
@@ -132,7 +133,7 @@ export const SignUpForm = ({
         </div>
       </div>
 
-      {loading && <div>Loading...</div>}
+      {loading && <Loader />}
     </form>
   );
 };

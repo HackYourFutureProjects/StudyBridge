@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
 import { Button } from "../ui/button/Button";
 import ArrowDown from "../icons/ArrowDown";
+import { authRoutesVariables } from "../../router/routesVariables/pathVariables.ts";
 
 type ControlPanelTypes = {
   classNames?: string;
@@ -63,7 +64,7 @@ export const ControlPanel = ({ classNames }: ControlPanelTypes) => {
           className="flex justify-start gap-[10px] w-full rounded-[40px] p-[10px] transition-none
                         hover:text-[var(--color-dark-900)] hover:bg-[var(--color-purple-500)]
                         "
-          to="/login/student"
+          to={authRoutesVariables.loginStudent}
           variant="link"
           onClick={() => setOpenMenu((prev) => !prev)}
         >
@@ -74,7 +75,7 @@ export const ControlPanel = ({ classNames }: ControlPanelTypes) => {
           className="flex justify-start gap-[10px]  w-full rounded-[40px] p-[10px] transition-none
                                 hover:text-[var(--color-dark-900)] hover:bg-[var(--color-purple-500)]
                                "
-          to="/login/tutor"
+          to={authRoutesVariables.loginTutor}
           variant="link"
           onClick={() => setOpenMenu((prev) => !prev)}
         >
