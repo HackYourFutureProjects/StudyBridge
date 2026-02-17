@@ -8,6 +8,8 @@ import {
 } from "../../types/appointment/appointment.types.js";
 import { AppointmentCommand } from "../../repositories/commandRepositories/appointment.command.js";
 import { AppointmentQuery } from "../../repositories/queryRepositories/appointment.query.js";
+import { StudentModel } from "../../db/schemes/studentSchema.js";
+import { TeacherModel } from "../../db/schemes/teacherSchema.js";
 
 @injectable()
 export class AppointmentService {
@@ -19,6 +21,20 @@ export class AppointmentService {
   ) {}
 
   async createAppointment(data: CreateAppointmentType) {
+    const student = await StudentModel.findOne({ id: data.studentId });
+    if (!student) {
+      throw new Error("Student not found");
+    }
+
+    const teacher = await TeacherModel.findOne({ id: data.teacherId });
+    if (!teacher) {
+      throw new Error("Teacher not found");
+    }
+
+    if (data.teacherId === data.studentId) {
+      throw new Error("Teachers cannot book appointments with themselves");
+    }
+
     const appointment = {
       id: randomUUID(),
       studentId: data.studentId,

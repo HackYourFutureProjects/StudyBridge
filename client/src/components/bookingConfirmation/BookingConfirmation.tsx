@@ -40,9 +40,12 @@ export const BookingConfirmation = ({
       price: teacher.priceFrom?.toString() || "0",
     };
 
-    createAppointment(appointmentData);
-    onClose();
-    onSuccessCallback?.();
+    createAppointment(appointmentData, {
+      onSuccess: () => {
+        onClose();
+        onSuccessCallback?.();
+      },
+    });
   };
 
   return (

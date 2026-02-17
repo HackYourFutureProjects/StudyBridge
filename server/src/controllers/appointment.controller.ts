@@ -26,14 +26,6 @@ export class AppointmentController {
     next: NextFunction,
   ) {
     try {
-      const { teacherId, studentId } = req.body;
-
-      if (teacherId === studentId) {
-        return res.status(400).json({
-          message: "Teachers cannot book appointments with themselves",
-        });
-      }
-
       const appointment = await this.appointmentService.createAppointment(
         req.body,
       );

@@ -19,7 +19,6 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
   const user = useAuthSessionStore((state) => state.user);
 
   const isOwnProfile = user?.id === teacher?.id;
-  const isTeacher = user?.role === "teacher";
 
   const handleDateSelection = (date: Date): void => {
     setSelectedDate(date);
@@ -117,7 +116,7 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
               </div>
             )}
 
-            {showTimeAndBook && selectedTime && !isOwnProfile && !isTeacher && (
+            {showTimeAndBook && selectedTime && !isOwnProfile && (
               <div className="mt-8">
                 <Button variant="secondary" onClick={handleBook}>
                   Book Lesson - €{teacher?.priceFrom || 0}
@@ -128,12 +127,6 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
             {isOwnProfile && (
               <div className="mt-8 text-center text-gray-400">
                 You cannot book lessons with yourself
-              </div>
-            )}
-
-            {isTeacher && !isOwnProfile && (
-              <div className="mt-8 text-center text-gray-400">
-                Only students can book lessons
               </div>
             )}
           </div>
