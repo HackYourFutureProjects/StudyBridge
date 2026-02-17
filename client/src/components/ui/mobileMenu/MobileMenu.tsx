@@ -21,8 +21,11 @@ interface MobileMenuItemProps {
   onClick?: () => void;
 }
 
-const MobileMenuItem = ({ children }: MobileMenuItemProps) => (
-  <div className="w-full px-6 py-4 border-b border-[#ffffff15] hover:bg-[#ffffff08]">
+const MobileMenuItem = ({ children, onClick }: MobileMenuItemProps) => (
+  <div
+    className="w-full px-6 py-4 border-b border-[#ffffff15] hover:bg-[#ffffff08]"
+    onClick={onClick}
+  >
     {children}
   </div>
 );
@@ -37,8 +40,8 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose }) => {
         <Dialog.Content
           className="
           fixed top-0 right-0 h-full w-80 max-w-[80vw]
-          bg-[#15141D] backdrop-blur-[12px]
-          z-1000 transform transition-transform duration-300 ease-in-out
+          bg-[#15141D] backdrop-blur-md
+          z-50 transform transition-transform duration-300 ease-in-out
           md:hidden
           shadow-2xl
         "
