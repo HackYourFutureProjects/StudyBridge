@@ -16,7 +16,6 @@ async function getTransporter() {
 
   if (process.env.NODE_ENV === "production") {
     // For production,  a real email service like SendGrid, Mailgun, etc.
-    // Production: real SMTP (Gmail / provider)
     const host = getRequiredEnv("SMTP_HOST");
     const port = Number(process.env.SMTP_PORT || 465);
     const secure = process.env.SMTP_SECURE === "true";
