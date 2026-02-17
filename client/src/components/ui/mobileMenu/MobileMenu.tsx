@@ -8,6 +8,8 @@ import {
   authRoutesVariables,
   publicRoutesVariables,
 } from "../../../router/routesVariables/pathVariables.ts";
+import LogoutIcon from "../../icons/LogoutIcon.tsx";
+import { useModalStore } from "../../../store/modals.store.ts";
 interface MobileMenuProps {
   isOpen: boolean;
   onClose: () => void;
@@ -22,7 +24,7 @@ const MobileMenuItem: React.FC<MobileMenuItemProps> = ({
   children,
   onClick,
 }) => (
-  <button
+  <div
     onClick={onClick}
     className="
       w-full text-left px-6 py-4
@@ -33,10 +35,12 @@ const MobileMenuItem: React.FC<MobileMenuItemProps> = ({
     "
   >
     {children}
-  </button>
+  </div>
 );
 
 export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose }) => {
+  const { open } = useModalStore();
+
   return (
     <Dialog.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <Dialog.Portal>
@@ -106,6 +110,22 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose }) => {
                 className="font-medium"
               >
                 Sign in as a teacher
+              </Button>
+            </MobileMenuItem>
+            <MobileMenuItem>
+              <Button
+                variant="link"
+                onClick={() => open("logout")}
+                className="flex items-center gap-2 md:gap-5 text-[#474747]
+              hover:text-[#8A8A8A] transition-colors cursor-pointer"
+              >
+                <LogoutIcon className="w-5 h-5" />
+                <span
+                  className="hidden md:block font-semibold text-[16px]
+                leading-[100%]"
+                >
+                  Logout
+                </span>
               </Button>
             </MobileMenuItem>
           </nav>
