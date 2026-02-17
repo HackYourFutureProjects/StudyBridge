@@ -2,7 +2,12 @@ import React from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import MenuIcon from "../../icons/Menu-button";
 import CrossIcon from "../../icons/Cross";
-
+import { Button } from "../button/Button.tsx";
+import { NavLink } from "react-router-dom";
+import {
+  authRoutesVariables,
+  publicRoutesVariables,
+} from "../../../router/routesVariables/pathVariables.ts";
 interface MobileMenuProps {
   isOpen: boolean;
   onClose: () => void;
@@ -64,13 +69,44 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose }) => {
 
           <nav className="py-4">
             <MobileMenuItem onClick={onClose}>
-              <span className="font-medium">Tutors</span>
+              <Button
+                variant="link"
+                as={NavLink}
+                to={publicRoutesVariables.teachers}
+                className="font-medium"
+              >
+                Teachers
+              </Button>
             </MobileMenuItem>
             <MobileMenuItem onClick={onClose}>
-              <span className="font-medium">I want be tutor</span>
+              <Button
+                variant="link"
+                as={NavLink}
+                to={authRoutesVariables.registerTutor}
+                className="font-medium"
+              >
+                I want to be a teacher
+              </Button>
             </MobileMenuItem>
             <MobileMenuItem onClick={onClose}>
-              <span className="font-medium">Sign in</span>
+              <Button
+                variant="link"
+                as={NavLink}
+                to={authRoutesVariables.loginStudent}
+                className="font-medium"
+              >
+                Sign in as a student
+              </Button>
+            </MobileMenuItem>
+            <MobileMenuItem onClick={onClose}>
+              <Button
+                variant="link"
+                as={NavLink}
+                to={authRoutesVariables.loginTutor}
+                className="font-medium"
+              >
+                Sign in as a teacher
+              </Button>
             </MobileMenuItem>
           </nav>
         </Dialog.Content>
