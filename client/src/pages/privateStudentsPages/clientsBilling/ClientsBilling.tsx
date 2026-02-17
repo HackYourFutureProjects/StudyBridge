@@ -43,7 +43,6 @@ export const ClientsBilling = () => {
         </div>
         <br />
         <LessonsTable
-          width={1065}
           headerHeight={66}
           rowHeight={66}
           columns={columns}

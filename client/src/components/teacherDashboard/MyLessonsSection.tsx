@@ -7,7 +7,7 @@ export const MyLessonsSection = () => {
   return (
     <div>
       <PageTitle title="General" />
-      <div className="mt-[24px] flex items-start justify-between gap-[40px]">
+      <div className="flex flex-col items-center justify-center mt-6 lg:flex-row lg:justify-between gap-[40px]">
         <NumberOfStudentsCard count={789} />
         <Calendar />
       </div>

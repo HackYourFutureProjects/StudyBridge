@@ -86,7 +86,6 @@ export const TeacherAppointments = () => {
           <div className="mt-6" />
 
           <LessonsTable
-            width={1200}
             headerHeight={66}
             rowHeight={66}
             columns={columns}

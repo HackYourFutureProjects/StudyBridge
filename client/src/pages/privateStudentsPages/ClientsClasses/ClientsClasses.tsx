@@ -44,7 +44,6 @@ export const ClientsClasses = () => {
           <PageTitle title={isMyStudents ? "My Students" : "My Classes"} />
           <div className="mt-6" />
           <LessonsTable
-            width={isMyStudents ? 718 : 1065}
             headerHeight={66}
             rowHeight={66}
             columns={columns}

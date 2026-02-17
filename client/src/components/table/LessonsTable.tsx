@@ -29,7 +29,7 @@ const TABLE_CLASS =
 const LessonsTable = ({
   rows: sourceRows,
   columns,
-  width = 718,
+  width = "100%",
   height,
   headerHeight = 58,
   rowHeight = 58,
@@ -59,7 +59,11 @@ const LessonsTable = ({
 
   return (
     <div
-      className={twMerge(TABLE_CLASS, className)}
+      className={twMerge(
+        TABLE_CLASS,
+        "w-full min-w-0 overflow-x-auto",
+        className,
+      )}
       style={{
         width: tableWidthValue,
         ...(hasFixedHeight ? { height: tableHeightValue } : {}),

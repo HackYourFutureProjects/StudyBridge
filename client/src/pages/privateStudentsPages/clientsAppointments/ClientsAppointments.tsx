@@ -1,10 +1,4 @@
 import { useState } from "react";
-import {
-  Sidebar,
-  defaultStudentMenuItems,
-  defaultTeacherMenuItems,
-} from "../../../components/sidebar/Sidebar";
-import { TopBar } from "../../../components/headerPrivate/TopBar";
 import { PageTitle } from "../../../components/pageTitle/PageTitle";
 import LessonsTable from "../../../components/table/LessonsTable";
 import { Pagination } from "../../../components/ui/pagination/Pagination";
@@ -26,9 +20,6 @@ export const ClientsAppointments = () => {
     accountType ?? (pathname.startsWith("/teacher") ? "teacher" : "student");
 
   const isTeacher = inferredType === "teacher";
-  const sidebarItems = isTeacher
-    ? defaultTeacherMenuItems
-    : defaultStudentMenuItems;
 
   const {
     data: studentAppointments = [],
@@ -108,10 +99,8 @@ export const ClientsAppointments = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen pl-[218px]">
-        <Sidebar items={sidebarItems} />
+      <div className="min-h-screen">
         <div className="px-6 lg:px-10 min-h-screen flex flex-col">
-          <TopBar />
           <div className="pt-[40px] flex flex-col flex-1">
             <div className="text-white text-center">
               Error loading appointments
@@ -123,15 +112,10 @@ export const ClientsAppointments = () => {
   }
 
   return (
-    <div className="min-h-screen pl-[218px]">
-      <Sidebar items={sidebarItems} />
-
+    <div className="min-h-screen">
       <div className="px-6 lg:px-10 min-h-screen flex flex-col">
-        <TopBar />
-
         <div className="pt-[40px] flex flex-col flex-1">
           <PageTitle title="My Appointments" />
-
           <div className="mt-6" />
 
           {appointments.length === 0 ? (
@@ -140,7 +124,6 @@ export const ClientsAppointments = () => {
             </div>
           ) : (
             <LessonsTable
-              width={1200}
               headerHeight={66}
               rowHeight={66}
               columns={columns}

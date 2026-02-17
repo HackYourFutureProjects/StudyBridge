@@ -20,7 +20,7 @@ const LessonsTableHeader = ({
         {columns.map((column) => (
           <th
             key={column.key}
-            className="font-inter text-[14px] font-semibold text-[#F2F2F2] text-left"
+            className="font-inter p-2 text-[14px] font-semibold text-[#F2F2F2] text-left"
           >
             {column.label}
           </th>
