@@ -1,14 +1,16 @@
 import { create } from "zustand";
 import { lockScroll, unlockScroll } from "../util/modalScroll.util.ts";
+import { TeacherType } from "../api/teacher/teacher.type.ts";
 
 export type ModalName = null | "logout" | "bookingConfirm";
 
 type ModalPayload = {
   logout?: never;
   bookingConfirm?: {
-    teacherId: string;
-    date: string;
-    time: string;
+    teacher: TeacherType;
+    selectedDate: Date;
+    selectedTime: string;
+    onSuccess?: () => void;
   };
 };
 

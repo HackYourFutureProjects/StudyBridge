@@ -31,6 +31,11 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
         teacher,
         selectedDate,
         selectedTime,
+        onSuccess: () => {
+          setSelectedDate(null);
+          setSelectedTime(null);
+          setShowTimeAndBook(false);
+        },
       });
     }
   };
@@ -61,7 +66,6 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
       const endMatch = slot.end.match(timeRegex);
 
       if (!startMatch || !endMatch) {
-        console.warn(`Invalid time format: ${slot.start} - ${slot.end}`);
         return;
       }
 
@@ -69,7 +73,6 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
       const endHour = parseInt(endMatch[1], 10);
 
       if (startHour < 0 || startHour > 23 || endHour < 0 || endHour > 23) {
-        console.warn(`Invalid hour range: ${startHour} - ${endHour}`);
         return;
       }
 
