@@ -8,7 +8,6 @@ import LessonsIcon from "../icons/Lessons";
 import SettingsIcon from "../icons/Settings";
 import VideoCallIcon from "../icons/VideoCall";
 import UsersIcon from "../icons/UsersIcon";
-import { Logo } from "../logo/Logo.tsx";
 
 export type MenuItem = {
   name: string;
@@ -45,67 +44,65 @@ export const defaultTeacherMenuItems: MenuItem[] = [
 
 type SidebarProps = {
   items?: MenuItem[];
+  variant: "mobile" | "desktop";
 };
 
-export const Sidebar = ({ items }: SidebarProps) => {
+export const Sidebar = ({ items, variant }: SidebarProps) => {
   const { pathname } = useLocation();
   const menuItems = items ?? defaultStudentMenuItems;
 
-  return (
-    <>
-      {/* 
- New Updated Responsive Sidebar:
-  - On mobile, it is fixed at the bottom as a horizontal bar.
-  - On larger screens, it becomes a vertical sidebar on the left.
-*/}
+  if (variant === "mobile") {
+    return (
+      <aside className="fixed bottom-0 left-0 z-50 w-full bg-[#211c27] h-17.5 border-t border-[#0F0E13]">
+        <div className="mx-auto max-w-360 h-full">
+          <ul className="flex h-full items-center justify-around">
+            {menuItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = pathname === item.link;
 
-      <aside
-        className="md:top-0 bottom-0 md:bottom-auto left-0 z-50 fixed flex
-          flex-row md:flex-col items-center md:gap-[30px] bg-[#211c27]
-          md:pt-[30px] w-full md:w-[218px] h-[70px] md:h-screen transition-all
-          duration-300"
-      >
-        <div className="hidden md:flex px-6 pt-[30px] pb-[30px]">
-          <Logo />
-        </div>
-
-        <ul
-          className="flex flex-row md:flex-col justify-around md:justify-start
-            items-center md:items-start w-full h-full md:h-auto"
-        >
-          {menuItems.map((item) => {
-            const Icon = item.icon;
-
-            const isActive = pathname === item.link;
-
-            return (
-              <li key={item.name} className="flex-1 md:px-3 md:w-full">
-                <Link
-                  to={item.link}
-                  className={` flex flex-col md:flex-row items-center gap-1
-                  md:gap-[10px] py-2 md:py-[13px] md:px-[12px] rounded-[5px]
-                  transition-all
-                  ${isActive ? "bg-[#F1EEFE] text-[#7839CD]" : "text-[#474747] hover:bg-[#2A2433]"}
-                  `}
-                >
-                  <Icon
-                    className={`w-5 h-5 shrink-0
-                    ${isActive ? "text-[#7839CD]" : "text-current"}`}
-                  />
-
-                  <span
-                    className={` font-raleway font-medium text-[12px]
-                    md:text-[16px] leading-tight md:leading-[24px]
-                    ${isActive ? "text-[#7839CD]" : "text-current"} `}
+              return (
+                <li key={item.name} className="flex-1">
+                  <Link
+                    to={item.link}
+                    className={`flex flex-col items-center justify-center gap-1 h-full transition-all
+                      ${isActive ? "text-[#7839CD]" : "text-light-100"}
+                    `}
                   >
-                    {item.name}
-                  </span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+                    <Icon className="w-5 h-5" />
+                    <span className="text-[12px] font-medium">{item.name}</span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       </aside>
-    </>
+    );
+  }
+
+  // desktop
+  return (
+    <aside className="w-[218px] h-full bg-[#211c27] pt-[30px]">
+      <ul className="flex flex-col gap-[10px]">
+        {menuItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = pathname === item.link;
+
+          return (
+            <li key={item.name} className="px-3">
+              <Link
+                to={item.link}
+                className={`flex items-center gap-[10px] py-[13px] px-[12px] rounded-[5px] transition-all
+                  ${isActive ? "bg-[#F1EEFE] text-[#7839CD]" : "text-[#474747] hover:bg-[#2A2433]"}
+                `}
+              >
+                <Icon className="w-5 h-5 shrink-0" />
+                <span className="text-[16px] font-medium">{item.name}</span>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </aside>
   );
 };

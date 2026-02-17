@@ -1,14 +1,8 @@
 import { useState } from "react";
-import {
-  Sidebar,
-  defaultStudentMenuItems,
-  defaultTeacherMenuItems,
-} from "../../components/sidebar/Sidebar";
-import { TopBar } from "../../components/headerPrivate/TopBar";
-import { Pagination } from "../../components/ui/pagination/Pagination";
-import LessonsTable from "../../components/table/LessonsTable";
-import { PageTitle } from "../../components/pageTitle/PageTitle";
-import { useAuthSessionStore } from "../../store/authSession.store";
+import { Pagination } from "../../../components/ui/pagination/Pagination";
+import LessonsTable from "../../../components/table/LessonsTable";
+import { PageTitle } from "../../../components/pageTitle/PageTitle";
+import { useAuthSessionStore } from "../../../store/authSession.store";
 import { useLocation } from "react-router-dom";
 
 export const ClientsClasses = () => {
@@ -20,9 +14,6 @@ export const ClientsClasses = () => {
     accountType ?? (pathname.startsWith("/teacher") ? "teacher" : "student");
   const isTeacher = inferredType === "teacher";
   const isMyStudents = pathname === "/teacher/my-students";
-  const sidebarItems = isTeacher
-    ? defaultTeacherMenuItems
-    : defaultStudentMenuItems;
 
   const columns = isMyStudents
     ? [
@@ -47,15 +38,10 @@ export const ClientsClasses = () => {
         ];
 
   return (
-    <div className="min-h-screen pl-[218px]">
-      <Sidebar items={sidebarItems} />
-
+    <div className="min-h-screen">
       <div className="px-6 lg:px-10 min-h-screen flex flex-col">
-        <TopBar />
-
         <div className="pt-[40px] flex flex-col flex-1">
           <PageTitle title={isMyStudents ? "My Students" : "My Classes"} />
-
           <div className="mt-6" />
           <LessonsTable
             width={isMyStudents ? 718 : 1065}

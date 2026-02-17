@@ -1,16 +1,11 @@
 import { useState } from "react";
-import {
-  Sidebar,
-  defaultTeacherMenuItems,
-} from "../../components/sidebar/Sidebar";
-import { TopBar } from "../../components/headerPrivate/TopBar";
-import { PageTitle } from "../../components/pageTitle/PageTitle";
-import LessonsTable from "../../components/table/LessonsTable";
-import { Pagination } from "../../components/ui/pagination/Pagination";
-import { useTeacherAppointmentsQuery } from "../../features/appointments/query/useTeacherAppointmentsQuery";
-import { useUpdateAppointmentMutation } from "../../features/appointments/mutations/useUpdateAppointmentMutation";
-import { AppointmentStatus } from "../../types/appointments.types";
-import { LessonRowData } from "../../components/table/LessonRow";
+import { PageTitle } from "../../../components/pageTitle/PageTitle";
+import LessonsTable from "../../../components/table/LessonsTable";
+import { Pagination } from "../../../components/ui/pagination/Pagination";
+import { useTeacherAppointmentsQuery } from "../../../features/appointments/query/useTeacherAppointmentsQuery";
+import { useUpdateAppointmentMutation } from "../../../features/appointments/mutations/useUpdateAppointmentMutation";
+import { AppointmentStatus } from "../../../types/appointments.types";
+import { LessonRowData } from "../../../components/table/LessonRow";
 
 export const TeacherAppointments = () => {
   const [page, setPage] = useState(1);
@@ -56,10 +51,8 @@ export const TeacherAppointments = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen pl-[218px]">
-        <Sidebar items={defaultTeacherMenuItems} />
+      <div className="min-h-screen">
         <div className="px-6 lg:px-10 min-h-screen flex flex-col">
-          <TopBar />
           <div className="pt-[40px] flex flex-col flex-1">
             <div className="text-white text-center">
               Loading appointments...
@@ -72,10 +65,8 @@ export const TeacherAppointments = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen pl-[218px]">
-        <Sidebar items={defaultTeacherMenuItems} />
+      <div className="min-h-screen">
         <div className="px-6 lg:px-10 min-h-screen flex flex-col">
-          <TopBar />
           <div className="pt-[40px] flex flex-col flex-1">
             <div className="text-white text-center">
               Error loading appointments
@@ -87,12 +78,8 @@ export const TeacherAppointments = () => {
   }
 
   return (
-    <div className="min-h-screen pl-[218px]">
-      <Sidebar items={defaultTeacherMenuItems} />
-
+    <div className="min-h-screen">
       <div className="px-6 lg:px-10 min-h-screen flex flex-col">
-        <TopBar />
-
         <div className="pt-[40px] flex flex-col flex-1">
           <PageTitle title="My Appointments" />
 

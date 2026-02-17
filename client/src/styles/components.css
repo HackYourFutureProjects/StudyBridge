@@ -67,6 +67,11 @@
     cursor: pointer;
   }
 
+  .container {
+    margin: 0 auto;
+    max-width: 1440px;
+  }
+
   @layer utilities {
     @keyframes toast-fadeout {
       0% {

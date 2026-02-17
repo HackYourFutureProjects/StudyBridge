@@ -3,18 +3,18 @@ import {
   Sidebar,
   defaultStudentMenuItems,
   defaultTeacherMenuItems,
-} from "../../components/sidebar/Sidebar";
-import { TopBar } from "../../components/headerPrivate/TopBar";
-import { PageTitle } from "../../components/pageTitle/PageTitle";
-import LessonsTable from "../../components/table/LessonsTable";
-import { Pagination } from "../../components/ui/pagination/Pagination";
-import { useAuthSessionStore } from "../../store/authSession.store";
+} from "../../../components/sidebar/Sidebar";
+import { TopBar } from "../../../components/headerPrivate/TopBar";
+import { PageTitle } from "../../../components/pageTitle/PageTitle";
+import LessonsTable from "../../../components/table/LessonsTable";
+import { Pagination } from "../../../components/ui/pagination/Pagination";
+import { useAuthSessionStore } from "../../../store/authSession.store";
 import { useLocation } from "react-router-dom";
-import { useStudentAppointmentsQuery } from "../../features/appointments/query/useAppointmentsQuery";
-import { useTeacherAppointmentsQuery } from "../../features/appointments/query/useTeacherAppointmentsQuery";
-import { useUpdateAppointmentMutation } from "../../features/appointments/mutations/useUpdateAppointmentMutation";
-import { AppointmentStatus } from "../../types/appointments.types";
-import { LessonRowData } from "../../components/table/LessonRow";
+import { useStudentAppointmentsQuery } from "../../../features/appointments/query/useAppointmentsQuery";
+import { useTeacherAppointmentsQuery } from "../../../features/appointments/query/useTeacherAppointmentsQuery";
+import { useUpdateAppointmentMutation } from "../../../features/appointments/mutations/useUpdateAppointmentMutation";
+import { AppointmentStatus } from "../../../types/appointments.types";
+import { LessonRowData } from "../../../components/table/LessonRow";
 
 export const ClientsAppointments = () => {
   const [page, setPage] = useState(1);
@@ -94,10 +94,8 @@ export const ClientsAppointments = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen pl-[218px]">
-        <Sidebar items={sidebarItems} />
+      <div className="min-h-screen">
         <div className="px-6 lg:px-10 min-h-screen flex flex-col">
-          <TopBar />
           <div className="pt-[40px] flex flex-col flex-1">
             <div className="text-white text-center">
               Loading appointments...

@@ -1,9 +1,9 @@
 import { RouteObject } from "react-router-dom";
-import { ClientsDashboard } from "../../pages/ClientsDashboard/ClientsDashboard.tsx";
-import { ClientsClasses } from "../../pages/ClientsClasses/ClientsClasses.tsx";
-import { ClientsAppointments } from "../../pages/clientsAppointments/ClientsAppointments.tsx";
-import { ClientsBilling } from "../../pages/clientsBilling/ClientsBilling.tsx";
 import { studentPrivatesRoutesVariables } from "./pathVariables.ts";
+import { ClientsDashboard } from "../../pages/privateStudentsPages/ClientsDashboard/ClientsDashboard.tsx";
+import { ClientsClasses } from "../../pages/privateStudentsPages/ClientsClasses/ClientsClasses.tsx";
+import { ClientsAppointments } from "../../pages/privateStudentsPages/clientsAppointments/ClientsAppointments.tsx";
+import { ClientsBilling } from "../../pages/privateStudentsPages/clientsBilling/ClientsBilling.tsx";
 
 export const studentPrivateRoutes: RouteObject[] = [
   {
