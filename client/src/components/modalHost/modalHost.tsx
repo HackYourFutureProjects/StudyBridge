@@ -2,6 +2,7 @@ import * as React from "react";
 import { createPortal } from "react-dom";
 
 import { LogoutConfirmation } from "../auth/logoutConfirmation/LogoutConfirmation.tsx";
+import { BookingConfirmation } from "../bookingConfirmation/BookingConfirmation.tsx";
 import { useModalStore } from "../../store/modals.store.ts";
 import { cva } from "class-variance-authority";
 import { twMerge } from "tailwind-merge";
@@ -50,6 +51,9 @@ export const ModalHost = () => {
       <div onClick={(e) => e.stopPropagation()} key={activeModal}>
         {activeModal === "logout" && (
           <LogoutConfirmation isOpen={opened} onClose={close} />
+        )}
+        {activeModal === "bookingConfirm" && (
+          <BookingConfirmation isOpen={opened} onClose={close} />
         )}
       </div>
     </div>,
