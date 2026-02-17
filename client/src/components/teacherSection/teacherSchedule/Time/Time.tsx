@@ -31,9 +31,6 @@ export function Time({ onTimeSelect, availableSlots }: TimeProps) {
       ? availableSlots
       : defaultTimeSlots;
 
-  console.log("Time component - availableSlots:", availableSlots);
-  console.log("Time component - timeSlots:", timeSlots);
-
   const handleTimeClick = (time: string): void => {
     setSelectedTime(time);
     onTimeSelect(time);
