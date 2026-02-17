@@ -40,16 +40,9 @@ export const BookingConfirmation = ({
       price: teacher.priceFrom?.toString() || "0",
     };
 
-    createAppointment(appointmentData, {
-      onSuccess: () => {
-        onClose();
-        alert("Booking successful! The teacher will review your request.");
-        onSuccessCallback?.();
-      },
-      onError: () => {
-        alert("Booking failed. Please try again.");
-      },
-    });
+    createAppointment(appointmentData);
+    onClose();
+    onSuccessCallback?.();
   };
 
   return (
