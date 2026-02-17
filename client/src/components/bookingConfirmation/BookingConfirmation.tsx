@@ -19,11 +19,15 @@ export const BookingConfirmation = ({
 
   if (!payload || !isOpen) return null;
 
-  const { teacher, selectedDate, selectedTime } = payload;
+  const {
+    teacher,
+    selectedDate,
+    selectedTime,
+    onSuccess: onSuccessCallback,
+  } = payload;
 
   const handleConfirm = () => {
     if (!teacher || !selectedDate || !selectedTime || !user) {
-      console.error("Missing required data for booking");
       return;
     }
 
@@ -39,10 +43,10 @@ export const BookingConfirmation = ({
     createAppointment(appointmentData, {
       onSuccess: () => {
         onClose();
+        onSuccessCallback?.();
         alert("Booking successful! The teacher will review your request.");
       },
-      onError: (error) => {
-        console.error("Booking failed:", error);
+      onError: () => {
         alert("Booking failed. Please try again.");
       },
     });
