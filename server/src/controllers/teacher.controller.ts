@@ -12,6 +12,7 @@ import { TeacherService } from "../services/teacher/teacher.service.js";
 import { TeacherQuery } from "../repositories/queryRepositories/teacher.query.js";
 import {
   AddSlotsBody,
+  AvailabilityView,
   DayParam,
   QueryTeacherInput,
   TeacherOutputModel,
@@ -62,9 +63,26 @@ export class TeacherController {
       return next(err);
     }
   }
+  async getTeacherById(
+    req: RequestWithParams<ParamsType>,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const teacher = await this.teacherQuery.getTeacherById(req.params.id);
 
-  async addSlotsToSchedule(
-    req: RequestWithParams<DayParam> & RequestWithBody<AddSlotsBody>, // user can send 1 slot, 2 slots, or more in one request.
+      if (!teacher) {
+        return res.status(404).json({ message: "Teacher not found" });
+      }
+
+      return res.status(200).json(teacher);
+    } catch (err) {
+      return next(err);
+    }
+  }
+
+  async upsertDaySlots(
+    req: RequestWithParams<DayParam> & RequestWithBody<AddSlotsBody>, // client must send the full slots array for the selected day (edited + unchanged); server replaces that day's slots.
     res: Response,
     next: NextFunction,
   ) {
@@ -78,18 +96,46 @@ export class TeacherController {
       const { slots, timezone } = req.body;
       const day = req.params.day;
 
-      const addedTimeslot = await this.teacherQuery.addSlotsToSchedule(
+      const daySlots = await this.teacherQuery.upsertDaySlots(
         teacherId,
         day,
         slots,
         timezone,
       );
 
-      if (!addedTimeslot) return res.sendStatus(404);
+      if (!daySlots) return res.sendStatus(404);
 
-      return res.status(200).send(addedTimeslot);
+      return res.status(200).send(daySlots);
     } catch (err) {
       return next(err);
+    }
+  }
+
+  //get teacher availability for a specific day, if day query is "all", get availability for all days of the week
+  async getTeacherAvailability(
+    req: RequestWithQuery<{ day: keyof AvailabilityView | "all" }>,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const teacherId = req.auth?.userId;
+      if (!teacherId) {
+        return res.status(401).send({ message: "Unauthorized" });
+      }
+
+      const day = req.query.day;
+
+      const availability = await this.teacherQuery.getTeacherAvailability(
+        teacherId,
+        day,
+      );
+
+      if (!availability)
+        return res.status(404).json({ message: "Teacher not found" });
+
+      return res.status(200).json(availability);
+    } catch (error) {
+      return next(error);
     }
   }
 }

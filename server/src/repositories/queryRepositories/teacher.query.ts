@@ -105,7 +105,7 @@ export class TeacherQuery {
     }
   }
 
-  async addSlotsToSchedule(
+  async upsertDaySlots(
     teacherId: string,
     day: keyof AvailabilityView,
     slots: TimeSlotView[],
@@ -131,9 +131,33 @@ export class TeacherQuery {
 
       return updatedTeacher.availability[day];
     } catch (err: unknown) {
-      throw new Error("Something went wrong with adding slots to schedule", {
+      throw new Error("Something went wrong with upserting day slots", {
         cause: err,
       });
+    }
+  }
+
+  async getTeacherAvailability(
+    teacherId: string,
+    day: keyof AvailabilityView | "all",
+  ): Promise<TimeSlotView[] | AvailabilityView | null> {
+    try {
+      const teacherTimeslots = await TeacherModel.findOne(
+        { id: teacherId },
+        { availability: 1, _id: 0 },
+      ).lean();
+
+      if (!teacherTimeslots) return null;
+      if (day === "all") return teacherTimeslots.availability;
+
+      return teacherTimeslots.availability[day];
+    } catch (err: unknown) {
+      throw new Error(
+        "Something went wrong while fetching teacher availability",
+        {
+          cause: err,
+        },
+      );
     }
   }
 }

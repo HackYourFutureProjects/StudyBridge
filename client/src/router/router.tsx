@@ -6,7 +6,10 @@ import { authRoutes } from "./routesVariables/authRoutes";
 import { publicRoutes } from "./routesVariables/publicRoutes";
 import { RequireAuth } from "./RequireAuth";
 import { PrivateLayout } from "../layouts/PrivadeLayout";
-import { privateRoutes } from "./routesVariables/privateRoutes";
+import { studentPrivateRoutes } from "./routesVariables/studentPrivateRoutes.tsx";
+import { RequireRole } from "./RequireRole.tsx";
+import { RoleIndexRedirect } from "./RoleIndexRedirect.tsx";
+import { teacherPrivateRoutes } from "./routesVariables/teacherPrivateRoutes.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -22,13 +25,36 @@ export const router = createBrowserRouter([
         children: [...publicRoutes],
       },
       {
+        path: "/app",
         element: (
           <RequireAuth>
-            <PrivateLayout />
+            <RoleIndexRedirect />
           </RequireAuth>
         ),
-        children: [...privateRoutes],
       },
+      {
+        element: (
+          <RequireAuth>
+            <RequireRole allow={["student"]}>
+              <PrivateLayout />
+            </RequireRole>
+          </RequireAuth>
+        ),
+        children: [...studentPrivateRoutes],
+      },
+
+      {
+        element: (
+          <RequireAuth>
+            <RequireRole allow={["teacher"]}>
+              <PrivateLayout />
+            </RequireRole>
+          </RequireAuth>
+        ),
+        children: [...teacherPrivateRoutes],
+      },
+
+      { path: "/forbidden", element: <div>403 Forbidden</div> },
     ],
   },
 ]);

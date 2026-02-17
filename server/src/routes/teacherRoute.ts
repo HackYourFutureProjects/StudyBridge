@@ -8,6 +8,7 @@ import { AuthMiddleware } from "../middlewares/authMiddlewareWithBearer.js";
 import { errorMiddleware } from "../middlewares/error.middleware.js";
 import {
   dayParamValidationMiddleware,
+  dayQueryValidationMiddleware,
   duplicateOrOverlapSlotsValidationMiddleware,
   slotRangeValidationMiddleware,
   slotsValidationMiddleware,
@@ -23,14 +24,6 @@ teacherRouter.get(
   teacherController.getAllTeachers.bind(teacherController),
 );
 
-teacherRouter.delete(
-  "/:id",
-  authMiddleware.handle,
-  requireRole("teacher"),
-  requireSelf("id"),
-  teacherController.deleteTeacher.bind(teacherController),
-);
-
 teacherRouter.put(
   "/me/schedule/:day/slots",
   dayParamValidationMiddleware(),
@@ -40,5 +33,27 @@ teacherRouter.put(
   errorMiddleware,
   authMiddleware.handle,
   requireRole("teacher"),
-  teacherController.addSlotsToSchedule.bind(teacherController),
+  teacherController.upsertDaySlots.bind(teacherController),
+);
+
+teacherRouter.get(
+  "/me/availability",
+  dayQueryValidationMiddleware(),
+  errorMiddleware,
+  authMiddleware.handle,
+  requireRole("teacher"),
+  teacherController.getTeacherAvailability.bind(teacherController),
+);
+
+teacherRouter.get(
+  "/:id",
+  teacherController.getTeacherById.bind(teacherController),
+);
+
+teacherRouter.delete(
+  "/:id",
+  authMiddleware.handle,
+  requireRole("teacher"),
+  requireSelf("id"),
+  teacherController.deleteTeacher.bind(teacherController),
 );
