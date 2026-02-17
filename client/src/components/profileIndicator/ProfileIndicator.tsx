@@ -11,7 +11,7 @@ type Props = {
   variant?: ProfileIndicatorVariant;
 };
 
-export const ProfileIndicator = ({ variant = "main" }: Props) => {
+export const ProfileIndicator = ({ variant = "private" }: Props) => {
   const { open } = useModalStore();
   const user = useAuthSessionStore((s) => s.user);
 

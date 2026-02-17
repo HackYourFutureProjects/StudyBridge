@@ -9,7 +9,7 @@ import { triggerLogout } from "../../../api/auth/logoutBus";
 export function useLogoutMutation() {
   return useMutation({
     mutationFn: logoutApi,
-    onSettled: () => {
+    onSuccess: () => {
       localStorage.removeItem("hadSession");
       triggerLogout();
     },
