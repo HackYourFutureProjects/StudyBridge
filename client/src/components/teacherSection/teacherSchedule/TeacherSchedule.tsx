@@ -4,6 +4,7 @@ import { Time } from "./Time/Time";
 import { Button } from "../../ui/button/Button";
 import { TeacherType } from "../../../api/teacher/teacher.type";
 import { useModalStore } from "../../../store/modals.store";
+import { useAuthSessionStore } from "../../../store/authSession.store";
 
 interface TeacherScheduleProps {
   teacher?: TeacherType;
@@ -15,6 +16,10 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
   const [showTimeAndBook, setShowTimeAndBook] = useState<boolean>(false);
 
   const { open: openModal } = useModalStore();
+  const user = useAuthSessionStore((state) => state.user);
+
+  const isOwnProfile = user?.id === teacher?.id;
+  const isTeacher = user?.role === "teacher";
 
   const handleDateSelection = (date: Date): void => {
     setSelectedDate(date);
@@ -112,11 +117,23 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
               </div>
             )}
 
-            {showTimeAndBook && selectedTime && (
+            {showTimeAndBook && selectedTime && !isOwnProfile && !isTeacher && (
               <div className="mt-8">
                 <Button variant="secondary" onClick={handleBook}>
                   Book Lesson - €{teacher?.priceFrom || 0}
                 </Button>
+              </div>
+            )}
+
+            {isOwnProfile && (
+              <div className="mt-8 text-center text-gray-400">
+                You cannot book lessons with yourself
+              </div>
+            )}
+
+            {isTeacher && !isOwnProfile && (
+              <div className="mt-8 text-center text-gray-400">
+                Only students can book lessons
               </div>
             )}
           </div>
