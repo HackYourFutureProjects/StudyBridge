@@ -43,8 +43,8 @@ export const BookingConfirmation = ({
     createAppointment(appointmentData, {
       onSuccess: () => {
         onClose();
-        onSuccessCallback?.();
         alert("Booking successful! The teacher will review your request.");
+        onSuccessCallback?.();
       },
       onError: () => {
         alert("Booking failed. Please try again.");
