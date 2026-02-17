@@ -4,6 +4,8 @@ import { Time } from "./Time/Time";
 import { Button } from "../../ui/button/Button";
 import { Modal } from "../../ui/modal/Modal";
 import { TeacherType } from "../../../api/teacher/teacher.type";
+import { useCreateAppointmentMutation } from "../../../features/appointments/mutations/useCreateAppointmentMutation";
+import { useAuthSessionStore } from "../../../store/authSession.store";
 
 interface TeacherScheduleProps {
   teacher?: TeacherType;
@@ -14,6 +16,10 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [showTimeAndBook, setShowTimeAndBook] = useState<boolean>(false);
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
+
+  const { mutate: createAppointment, isPending } =
+    useCreateAppointmentMutation();
+  const user = useAuthSessionStore((state) => state.user);
 
   const handleDateSelection = (date: Date): void => {
     setSelectedDate(date);
@@ -31,21 +37,60 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
   };
 
   const handleConfirmBooking = (): void => {
-    setShowConfirmModal(false);
-    setSelectedDate(null);
-    setSelectedTime(null);
-    setShowTimeAndBook(false);
+    if (!teacher || !selectedDate || !selectedTime || !user) {
+      console.error("Missing required data for booking");
+      return;
+    }
+
+    const appointmentData = {
+      teacherId: teacher.id,
+      studentId: user.id,
+      date: selectedDate.toISOString().split("T")[0],
+      time: selectedTime,
+      lesson: teacher.subjects?.[0]?.subjectName || "General Lesson",
+      price: teacher.priceFrom?.toString() || "0",
+    };
+
+    createAppointment(appointmentData, {
+      onSuccess: () => {
+        setShowConfirmModal(false);
+        setSelectedDate(null);
+        setSelectedTime(null);
+        setShowTimeAndBook(false);
+        alert("Booking successful! The teacher will review your request.");
+      },
+      onError: (error) => {
+        console.error("Booking failed:", error);
+        alert("Booking failed. Please try again.");
+      },
+    });
   };
 
   const getAvailableTimeSlots = (): string[] => {
-    if (!teacher || !selectedDate) return [];
+    if (!teacher || !selectedDate) {
+      console.log("No teacher or selected date");
+      return [];
+    }
 
     const dayName = selectedDate
       .toLocaleDateString("en-US", { weekday: "long" })
       .toLowerCase() as keyof typeof teacher.availability;
 
-    const dayAvailability = teacher.availability[dayName];
-    if (!dayAvailability || dayAvailability.length === 0) return [];
+    console.log("Day name:", dayName);
+    console.log("Teacher availability:", teacher.availability);
+
+    const dayAvailability = teacher.availability?.[dayName];
+    console.log("Day availability:", dayAvailability);
+
+    if (!dayAvailability || dayAvailability.length === 0) {
+      console.log("No availability for this day - showing default slots");
+      //to do  Return default time slots if no availability set
+      const defaultSlots: string[] = [];
+      for (let hour = 9; hour < 18; hour++) {
+        defaultSlots.push(`${hour.toString().padStart(2, "0")}:00`);
+      }
+      return defaultSlots;
+    }
 
     const slots: string[] = [];
     dayAvailability.forEach((slot) => {
@@ -71,6 +116,7 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
       }
     });
 
+    console.log("Generated slots:", slots);
     return slots;
   };
 
@@ -118,7 +164,7 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
         onClose={() => setShowConfirmModal(false)}
         title="Confirm Booking"
         onConfirm={handleConfirmBooking}
-        confirmText="Book Now"
+        confirmText={isPending ? "Booking..." : "Book Now"}
         cancelText="Cancel"
       >
         <div className="space-y-2">
