@@ -68,7 +68,6 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
 
   const getAvailableTimeSlots = (): string[] => {
     if (!teacher || !selectedDate) {
-      console.log("No teacher or selected date");
       return [];
     }
 
@@ -76,15 +75,9 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
       .toLocaleDateString("en-US", { weekday: "long" })
       .toLowerCase() as keyof typeof teacher.availability;
 
-    console.log("Day name:", dayName);
-    console.log("Teacher availability:", teacher.availability);
-
     const dayAvailability = teacher.availability?.[dayName];
-    console.log("Day availability:", dayAvailability);
 
     if (!dayAvailability || dayAvailability.length === 0) {
-      console.log("No availability for this day - showing default slots");
-      //to do  Return default time slots if no availability set
       const defaultSlots: string[] = [];
       for (let hour = 9; hour < 18; hour++) {
         defaultSlots.push(`${hour.toString().padStart(2, "0")}:00`);
@@ -116,7 +109,6 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
       }
     });
 
-    console.log("Generated slots:", slots);
     return slots;
   };
 
