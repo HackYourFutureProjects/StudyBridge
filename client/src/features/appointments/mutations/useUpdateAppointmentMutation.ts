@@ -4,6 +4,7 @@ import {
   Appointment,
   AppointmentStatus,
 } from "../../../types/appointments.types";
+import { apiProtected } from "../../../api/api";
 
 interface UpdateAppointmentRequest {
   appointmentId: string;
@@ -13,19 +14,11 @@ interface UpdateAppointmentRequest {
 const updateAppointmentStatus = async (
   data: UpdateAppointmentRequest,
 ): Promise<Appointment> => {
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
-  return {
-    id: data.appointmentId,
-    lesson: "English",
-    teacher: "1",
-    student: "Anna Tkachuk",
-    price: "25 euro",
-    date: "5/27/15",
-    time: "2:00 PM",
-    status: data.status,
-    videoCall: `https://meet.google.com/1-anna-${data.appointmentId}`,
-  };
+  const response = await apiProtected.put<Appointment>(
+    `/api/appointments/${data.appointmentId}/status`,
+    { status: data.status },
+  );
+  return response.data;
 };
 
 export const useUpdateAppointmentMutation = () => {

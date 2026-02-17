@@ -22,6 +22,11 @@ export const Modal = ({
 }: ModalProps) => {
   if (!isOpen) return null;
 
+  const onHandelClose = () => {
+    onClose();
+    onConfirm?.();
+  };
+
   return (
     <div className="relative bg-white rounded-lg p-6 max-w-md w-full mx-4 shadow-xl z-10">
       <h2 className="text-lg font-semibold text-gray-900 mb-4">{title}</h2>
@@ -32,7 +37,7 @@ export const Modal = ({
         <Button variant="secondary" onClick={onClose}>
           {cancelText}
         </Button>
-        {onConfirm && <Button onClick={onConfirm}>{confirmText}</Button>}
+        {onConfirm && <Button onClick={onHandelClose}>{confirmText}</Button>}
       </div>
     </div>
   );

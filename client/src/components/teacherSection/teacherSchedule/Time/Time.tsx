@@ -26,7 +26,10 @@ export function Time({ onTimeSelect, availableSlots }: TimeProps) {
     "21:00",
   ];
 
-  const timeSlots = availableSlots || defaultTimeSlots;
+  const timeSlots =
+    availableSlots && availableSlots.length > 0
+      ? availableSlots
+      : defaultTimeSlots;
 
   const handleTimeClick = (time: string): void => {
     setSelectedTime(time);

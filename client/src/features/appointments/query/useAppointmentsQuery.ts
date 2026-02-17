@@ -1,19 +1,23 @@
 import { useQuery } from "@tanstack/react-query";
 import { queryKeys } from "../../queryKeys";
 import { Appointment } from "../../../types/appointments.types";
-import { api } from "../../../api/api";
+import { apiProtected } from "../../../api/api";
 
 const fetchAppointmentsByTeacher = async (
   teacherId: string,
 ): Promise<Appointment[]> => {
-  const response = await api.get(`/api/appointments/teacher/${teacherId}`);
+  const response = await apiProtected.get(
+    `/api/appointments/teacher/${teacherId}`,
+  );
   return response.data;
 };
 
 const fetchAppointmentsByStudent = async (
   studentId: string,
 ): Promise<Appointment[]> => {
-  const response = await api.get(`/api/appointments/student/${studentId}`);
+  const response = await apiProtected.get(
+    `/api/appointments/student/${studentId}`,
+  );
   return response.data;
 };
 
