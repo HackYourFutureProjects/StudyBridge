@@ -1,6 +1,8 @@
 // Load our .env variables
 import dotenv from "dotenv";
 import express from "express";
+import { initEmailTransporter } from "./services/email/mailSender.js";
+
 dotenv.config();
 
 import connectDB from "./db/connectDB.js";
@@ -8,7 +10,7 @@ import app from "./app.js";
 import { logError, logInfo } from "./utils/logging.js";
 import { TeacherModel } from "./db/schemes/teacherSchema.js";
 
-// The environment should set the port
+// he environment should set the port
 const port = process.env.PORT || 3000;
 
 const startServer = async () => {
@@ -25,6 +27,7 @@ const startServer = async () => {
 
     logInfo(`Timezone backfill updated ${result.modifiedCount} teacher(s)`);
 
+    await initEmailTransporter();
     app.listen(port, () => {
       logInfo(`Server started on port ${port}`);
     });
