@@ -10,7 +10,7 @@ import shapeImage from "../../../assets/images/Shape.png";
 
 const reviews = [
   {
-    avatar: avatar1,
+    avatar: null,
     name: "Cameron Williamson",
     course: "English",
     review:
