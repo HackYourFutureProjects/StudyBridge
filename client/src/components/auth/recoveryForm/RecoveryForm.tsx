@@ -4,6 +4,7 @@ import { ControlledTextField } from "../../ui/controlled/controlledTextField/Con
 import { Button } from "../../ui/button/Button.tsx";
 import type { FormValues } from "./recoveryFormTypes.ts";
 import { recoverySchema } from "./recoveryForm.validation.ts";
+import { Loader } from "../../loader/Loader.tsx";
 
 type RecoveryFormProps = {
   loading: boolean;
@@ -57,7 +58,7 @@ export const RecoveryForm = ({
         </div>
       </div>
 
-      {loading && <div>Loading...</div>}
+      {loading && <Loader />}
     </form>
   );
 };
