@@ -29,7 +29,7 @@ export const ChatDialogPage = () => {
   );
 
   if (!conversation || !peer) {
-    return <div className="p-3">Not found messages</div>;
+    return <div className="p-3">Conversation not found</div>;
   }
 
   return (

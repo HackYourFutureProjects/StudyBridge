@@ -10,13 +10,11 @@ export const ChatSidebar = () => {
       <div className="p-3 space-y-2">
         {mockConversations.map((c) => {
           const peer = chatPeopleList.find((u) => u.id === c.peerId);
-
+          if (!peer) {
+            return null;
+          }
           return (
-            <ChatSidebarItemLink
-              key={peer?.id}
-              conversationId={c.id}
-              user={peer!}
-            />
+            <ChatSidebarItemLink key={c.id} conversationId={c.id} user={peer} />
           );
         })}
       </div>

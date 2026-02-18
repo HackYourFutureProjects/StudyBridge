@@ -1,6 +1,6 @@
 import { RouteObject } from "react-router-dom";
 
-import { teacherPrivatesRoutesVariables } from "./pathVariables.ts";
+import { chatRoutes, teacherPrivatesRoutesVariables } from "./pathVariables.ts";
 import { TeacherDashboard } from "../../pages/privetTeachersPages/teacherDashboard/TeacherDashboard.tsx";
 import { ClientsClasses } from "../../pages/privateStudentsPages/ClientsClasses/ClientsClasses.tsx";
 import { ClientsBilling } from "../../pages/privateStudentsPages/clientsBilling/ClientsBilling.tsx";
@@ -26,11 +26,11 @@ export const teacherPrivateRoutes: RouteObject[] = [
   },
   { path: teacherPrivatesRoutesVariables.profile, element: <TeacherProfile /> },
   {
-    path: "/chat",
+    path: chatRoutes.root,
     element: <ChatPage />,
     children: [
       { index: true, element: <EmptyChat /> },
-      { path: ":id", element: <ChatDialogPage /> },
+      { path: chatRoutes.dialog, element: <ChatDialogPage /> },
     ],
   },
   {

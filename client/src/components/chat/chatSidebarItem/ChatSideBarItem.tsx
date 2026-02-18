@@ -15,7 +15,7 @@ export const ChatSideBarItem = ({ imageUrl, name }: ChatSidebarItemType) => {
         src={imageUrl ? imageUrl : imageNotFound}
         alt="user avatar"
       />
-      <span className="text-light-100 text-5">{name}</span>
+      <span className="text-light-100 text-base">{name}</span>
     </div>
   );
 };
