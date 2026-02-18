@@ -6,6 +6,9 @@ import { ClientsClasses } from "../../pages/privateStudentsPages/ClientsClasses/
 import { ClientsBilling } from "../../pages/privateStudentsPages/clientsBilling/ClientsBilling.tsx";
 import { TeacherProfile } from "../../pages/privetTeachersPages/teacherProfile/TeacherProfile.tsx";
 import { TeacherAppointments } from "../../pages/privetTeachersPages/teacherAppointments/TeacherAppointments.tsx";
+import { ChatDialogPage } from "../../pages/chat/chatDialogPage/ChatDialogPage.tsx";
+import { ChatPage } from "../../pages/chat/chatPage/ChatPage.tsx";
+import { EmptyChat } from "../../pages/chat/EmptyChat/EmptyChat.tsx";
 
 export const teacherPrivateRoutes: RouteObject[] = [
   {
@@ -22,6 +25,14 @@ export const teacherPrivateRoutes: RouteObject[] = [
     element: <ClientsBilling />,
   },
   { path: teacherPrivatesRoutesVariables.profile, element: <TeacherProfile /> },
+  {
+    path: "/chat",
+    element: <ChatPage />,
+    children: [
+      { index: true, element: <EmptyChat /> },
+      { path: ":id", element: <ChatDialogPage /> },
+    ],
+  },
   {
     path: teacherPrivatesRoutesVariables.appointments,
     element: <TeacherAppointments />,
