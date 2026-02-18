@@ -12,7 +12,11 @@ interface Props {
 }
 
 export const LogoutConfirmation: React.FC<Props> = ({ isOpen, onClose }) => {
-  const { mutate: logout, isPending } = useLogoutMutation();
+  const { mutateAsync: logout, isPending } = useLogoutMutation();
+
+  const onLogoutHandler = async () => {
+    logout().then(() => onClose());
+  };
 
   if (!isOpen) return null;
 
@@ -30,7 +34,7 @@ export const LogoutConfirmation: React.FC<Props> = ({ isOpen, onClose }) => {
         <Button variant="secondary" onClick={onClose}>
           Cancel
         </Button>
-        <Button onClick={() => logout()} disabled={isPending}>
+        <Button onClick={onLogoutHandler} disabled={isPending}>
           {isPending ? "Logging out..." : "Log out"}
         </Button>
       </div>
