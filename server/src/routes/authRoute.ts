@@ -91,3 +91,10 @@ authRouter.post(
   errorMiddleware,
   authController.resetPasswordController.bind(authController),
 );
+
+// Logout route
+authRouter.post(
+  "/logout",
+  authMiddleware.handle,
+  authController.logoutController.bind(authController),
+);
