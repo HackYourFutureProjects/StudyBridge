@@ -19,8 +19,14 @@ export type LessonRowData = {
   onStatusChange?: (status: AppointmentStatus) => void;
   onDelete?: () => void;
   canDelete?: boolean;
-} & {
-  [key: string]: ReactNode | string | number | boolean | undefined;
+  [key: string]:
+    | ReactNode
+    | string
+    | number
+    | boolean
+    | ((status: AppointmentStatus) => void)
+    | (() => void)
+    | undefined;
 };
 
 type LessonRowProps = {

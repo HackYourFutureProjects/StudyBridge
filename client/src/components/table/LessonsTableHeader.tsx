@@ -24,7 +24,9 @@ const LessonsTableHeader = ({
       >
         <th className="pl-[18px] text-left">
           <button
+            type="button"
             onClick={onSelectAll}
+            aria-label="Select all past appointments"
             className="h-[24px] w-[24px] rounded-[8px] border border-[#E1E1E1] hover:bg-[#7B3FF2] transition-colors cursor-pointer"
           />
         </th>

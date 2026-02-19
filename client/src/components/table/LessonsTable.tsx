@@ -1,6 +1,6 @@
 import LessonsTableHeader from "./LessonsTableHeader";
 import LessonRow, { type LessonRowData } from "./LessonRow";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 
 export type LessonsTableColumn = {
@@ -42,63 +42,54 @@ const LessonsTable = ({
   onBulkDelete,
   isPastAppointment,
 }: LessonsTableProps) => {
-  const [rows, setRows] = useState<LessonRowData[]>(sourceRows);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
-  useEffect(() => {
-    setRows(sourceRows);
-  }, [sourceRows]);
-
-  const handleToggleRow = (rowIndex: number) => {
-    setRows((prev) => {
-      const newRows = prev.map((row, index) =>
-        index === rowIndex ? { ...row, checked: !row.checked } : row,
-      ) as LessonRowData[];
-
-      if (onSelectionChange) {
-        const selectedIds = newRows
-          .filter((row) => row.checked && row.id)
-          .map((row) => String(row.id));
-        onSelectionChange(selectedIds);
+  const handleToggleRow = (rowId: string) => {
+    setSelectedIds((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(rowId)) {
+        newSet.delete(rowId);
+      } else {
+        newSet.add(rowId);
       }
 
-      return newRows;
+      if (onSelectionChange) {
+        onSelectionChange(Array.from(newSet));
+      }
+
+      return newSet;
     });
   };
 
   const handleSelectAll = () => {
-    setRows((prev) => {
-      const pastRows = prev.filter((row) => {
-        if (!isPastAppointment || !row.date || !row.time) return true;
-        return isPastAppointment(String(row.date), String(row.time));
-      });
+    const pastRows = sourceRows.filter((row) => {
+      if (!isPastAppointment || !row.date || !row.time || !row.id) return false;
+      return isPastAppointment(String(row.date), String(row.time));
+    });
 
-      const allPastChecked = pastRows.every((row) => row.checked);
+    const pastIds = new Set(pastRows.map((row) => String(row.id)));
+    const allPastSelected = pastRows.every((row) =>
+      selectedIds.has(String(row.id)),
+    );
 
-      const newRows = prev.map((row) => {
-        const isPast =
-          !isPastAppointment ||
-          !row.date ||
-          !row.time ||
-          isPastAppointment(String(row.date), String(row.time));
+    setSelectedIds((prev) => {
+      const newSet = new Set(prev);
 
-        if (isPast) {
-          return { ...row, checked: !allPastChecked };
-        }
-        return row;
-      }) as LessonRowData[];
-
-      if (onSelectionChange) {
-        const selectedIds = newRows
-          .filter((row) => row.checked && row.id)
-          .map((row) => String(row.id));
-        onSelectionChange(selectedIds);
+      if (allPastSelected) {
+        pastIds.forEach((id) => newSet.delete(id));
+      } else {
+        pastIds.forEach((id) => newSet.add(id));
       }
 
-      return newRows;
+      if (onSelectionChange) {
+        onSelectionChange(Array.from(newSet));
+      }
+
+      return newSet;
     });
   };
 
-  const hasSelection = rows.some((row) => row.checked);
+  const hasSelection = selectedIds.size > 0;
 
   const columnWidths = [
     DEFAULT_CHECKBOX_COL,
@@ -141,19 +132,24 @@ const LessonsTable = ({
             hasFixedHeight ? { height: `calc(100% - ${headerHeight}px)` } : {}
           }
         >
-          {rows.map((row, index) => {
+          {sourceRows.map((row, index) => {
             const canSelect =
               !isPastAppointment ||
               !row.date ||
               !row.time ||
               isPastAppointment(String(row.date), String(row.time));
 
+            const rowWithChecked: LessonRowData = {
+              ...row,
+              checked: row.id ? selectedIds.has(String(row.id)) : false,
+            };
+
             return (
               <LessonRow
                 key={row.id ?? index}
-                data={row}
+                data={rowWithChecked}
                 index={index}
-                onToggle={() => handleToggleRow(index)}
+                onToggle={() => row.id && handleToggleRow(String(row.id))}
                 columns={columns}
                 rowHeight={rowHeight}
                 useStatusButtons={useStatusButtons}

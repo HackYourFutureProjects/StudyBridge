@@ -46,7 +46,14 @@ export const TeacherAppointments = () => {
   };
 
   const isPastAppointment = (date: string, time: string): boolean => {
-    const appointmentDateTime = new Date(`${date}T${time}`);
+    const [hours, minutes] = time.split(":").map(Number);
+    if (isNaN(hours) || isNaN(minutes)) {
+      return false;
+    }
+
+    const appointmentDateTime = new Date(date);
+    appointmentDateTime.setHours(hours, minutes, 0, 0);
+
     const now = new Date();
     return appointmentDateTime < now;
   };

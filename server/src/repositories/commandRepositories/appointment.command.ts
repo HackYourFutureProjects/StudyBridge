@@ -2,6 +2,7 @@ import { injectable } from "inversify";
 import { AppointmentModel } from "../../db/schemes/appointmentSchema.js";
 import { AppointmentTypeDB } from "../../db/schemes/types/appointment.types.js";
 import { WithId } from "mongodb";
+import { HttpError } from "../../utils/error.util.js";
 
 @injectable()
 export class AppointmentCommand {
@@ -22,6 +23,13 @@ export class AppointmentCommand {
   }
 
   async deleteAppointment(id: string): Promise<void> {
-    await AppointmentModel.findOneAndDelete({ id }).exec();
+    try {
+      await AppointmentModel.findOneAndDelete({ id }).exec();
+    } catch (err: unknown) {
+      throw new HttpError(500, "Appointment was not deleted", {
+        cause: err,
+        id,
+      });
+    }
   }
 }

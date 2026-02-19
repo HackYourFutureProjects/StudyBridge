@@ -98,9 +98,14 @@ export class AppointmentService {
       throw new Error("Unauthorized to delete this appointment");
     }
 
-    const appointmentDateTime = new Date(
-      `${appointment.date}T${appointment.time}`,
-    );
+    const [hours, minutes] = appointment.time.split(":").map(Number);
+    if (isNaN(hours) || isNaN(minutes)) {
+      throw new Error("Invalid appointment time format");
+    }
+
+    const appointmentDateTime = new Date(appointment.date);
+    appointmentDateTime.setHours(hours, minutes, 0, 0);
+
     const now = new Date();
 
     if (appointmentDateTime >= now) {

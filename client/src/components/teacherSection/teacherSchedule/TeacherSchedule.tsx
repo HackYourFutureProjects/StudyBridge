@@ -20,8 +20,11 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
   const user = useAuthSessionStore((state) => state.user);
 
   const isOwnProfile = user?.id === teacher?.id;
+  const isAuthenticated = !!user;
 
-  const { data: appointments = [] } = useTeacherAppointmentsQuery(teacher?.id);
+  const { data: appointments = [] } = useTeacherAppointmentsQuery(
+    isAuthenticated ? teacher?.id : undefined,
+  );
 
   const handleDateSelection = (date: Date): void => {
     setSelectedDate(date);
