@@ -40,7 +40,7 @@ export const TeacherAppointments = () => {
     id: appointment.id,
     checked: false,
     lesson: appointment.lesson,
-    student: appointment.student,
+    student: appointment.studentId,
     price: appointment.price,
     date: appointment.date,
     time: appointment.time,

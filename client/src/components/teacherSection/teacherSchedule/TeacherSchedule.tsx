@@ -5,6 +5,10 @@ import { Button } from "../../ui/button/Button";
 import { TeacherType } from "../../../api/teacher/teacher.type";
 import { useModalStore } from "../../../store/modals.store";
 import { useAuthSessionStore } from "../../../store/authSession.store";
+import { useQuery } from "@tanstack/react-query";
+import { queryKeys } from "../../../features/queryKeys";
+import { Appointment } from "../../../types/appointments.types";
+import { apiProtected } from "../../../api/api";
 
 interface TeacherScheduleProps {
   teacher?: TeacherType;
@@ -19,6 +23,17 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
   const user = useAuthSessionStore((state) => state.user);
 
   const isOwnProfile = user?.id === teacher?.id;
+
+  const { data: appointments = [] } = useQuery<Appointment[]>({
+    queryKey: queryKeys.teacherAppointments(teacher?.id || ""),
+    queryFn: async () => {
+      const response = await apiProtected.get(
+        `/api/appointments/teacher/${teacher?.id}`,
+      );
+      return response.data;
+    },
+    enabled: !!teacher?.id,
+  });
 
   const handleDateSelection = (date: Date): void => {
     setSelectedDate(date);
@@ -56,11 +71,7 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
     const dayAvailability = teacher.availability?.[dayName];
 
     if (!dayAvailability || dayAvailability.length === 0) {
-      const defaultSlots: string[] = [];
-      for (let hour = 9; hour < 18; hour++) {
-        defaultSlots.push(`${hour.toString().padStart(2, "0")}:00`);
-      }
-      return defaultSlots;
+      return [];
     }
 
     const slots: string[] = [];
@@ -85,7 +96,20 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
       }
     });
 
-    return slots;
+    const year = selectedDate.getFullYear();
+    const month = String(selectedDate.getMonth() + 1).padStart(2, "0");
+    const day = String(selectedDate.getDate()).padStart(2, "0");
+    const formattedDate = `${year}-${month}-${day}`;
+
+    const approvedAppointments = appointments.filter(
+      (apt) => apt.status === "approved" && apt.date === formattedDate,
+    );
+
+    const bookedTimes = new Set(
+      approvedAppointments.map((apt) => apt.time.substring(0, 5)),
+    );
+
+    return slots.filter((slot) => !bookedTimes.has(slot));
   };
 
   return (

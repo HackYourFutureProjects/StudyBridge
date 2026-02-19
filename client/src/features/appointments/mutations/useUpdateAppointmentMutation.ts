@@ -26,13 +26,13 @@ export const useUpdateAppointmentMutation = () => {
 
   return useMutation({
     mutationFn: updateAppointmentStatus,
-    onSuccess: () => {
+    onSuccess: (appointment) => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.appointments,
       });
-    },
-    onError: (error) => {
-      console.error("Failed to update appointment status:", error);
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.teacherAppointments(appointment.teacherId),
+      });
     },
   });
 };

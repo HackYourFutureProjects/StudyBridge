@@ -31,9 +31,12 @@ export const useCreateAppointmentMutation = () => {
 
   return useMutation({
     mutationFn: createAppointment,
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.appointments,
+      });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.teacherAppointments(variables.teacherId),
       });
       notifySuccess(
         "Booking successful! The teacher will review your request.",
