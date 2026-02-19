@@ -5,36 +5,26 @@ interface TimeProps {
   availableSlots?: string[];
 }
 
-export function Time({ onTimeSelect, availableSlots }: TimeProps) {
+export function Time({ onTimeSelect, availableSlots = [] }: TimeProps) {
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
-
-  const defaultTimeSlots = [
-    "7:00",
-    "8:00",
-    "9:00",
-    "10:00",
-    "11:00",
-    "12:00",
-    "13:00",
-    "14:00",
-    "15:00",
-    "16:00",
-    "17:00",
-    "18:00",
-    "19:00",
-    "20:00",
-    "21:00",
-  ];
-
-  const timeSlots =
-    availableSlots && availableSlots.length > 0
-      ? availableSlots
-      : defaultTimeSlots;
 
   const handleTimeClick = (time: string): void => {
     setSelectedTime(time);
     onTimeSelect(time);
   };
+
+  if (availableSlots.length === 0) {
+    return (
+      <div className="bg-[#2C2436] rounded-xl p-4 sm:p-6 shadow-sm">
+        <h3 className="text-lg sm:text-xl font-semibold text-white mb-4 sm:mb-6">
+          Pick a time
+        </h3>
+        <p className="text-gray-400 text-center">
+          No available time slots for this day
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-[#2C2436] rounded-xl p-4 sm:p-6 shadow-sm">
@@ -42,7 +32,7 @@ export function Time({ onTimeSelect, availableSlots }: TimeProps) {
         Pick a time
       </h3>
       <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2 sm:gap-3">
-        {timeSlots.map((timeSlot) => (
+        {availableSlots.map((timeSlot) => (
           <button
             key={timeSlot}
             onClick={() => handleTimeClick(timeSlot)}

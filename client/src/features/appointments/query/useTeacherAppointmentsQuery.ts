@@ -13,12 +13,13 @@ const fetchTeacherAppointments = async (
   return response.data;
 };
 
-export const useTeacherAppointmentsQuery = () => {
+export const useTeacherAppointmentsQuery = (teacherId?: string) => {
   const user = useAuthSessionStore((state) => state.user);
+  const resolvedTeacherId = teacherId || user?.id || "";
 
   return useQuery({
-    queryKey: queryKeys.teacherAppointments(user?.id || ""),
-    queryFn: () => fetchTeacherAppointments(user?.id || ""),
-    enabled: !!user?.id,
+    queryKey: queryKeys.teacherAppointments(resolvedTeacherId),
+    queryFn: () => fetchTeacherAppointments(resolvedTeacherId),
+    enabled: !!resolvedTeacherId,
   });
 };

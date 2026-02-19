@@ -31,10 +31,15 @@ export const BookingConfirmation = ({
       return;
     }
 
+    const year = selectedDate.getFullYear();
+    const month = String(selectedDate.getMonth() + 1).padStart(2, "0");
+    const day = String(selectedDate.getDate()).padStart(2, "0");
+    const dateString = `${year}-${month}-${day}`;
+
     const appointmentData = {
       teacherId: teacher.id,
       studentId: user.id,
-      date: new Date(selectedDate).toISOString().split("T")[0],
+      date: dateString,
       time: selectedTime,
       lesson: teacher.subjects?.[0]?.subjectName || "General Lesson",
       price: teacher.priceFrom?.toString() || "0",

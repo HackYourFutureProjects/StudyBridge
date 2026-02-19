@@ -109,8 +109,8 @@ export class AppointmentService {
     return {
       id: apt.id,
       lesson: apt.lesson,
-      teacher: apt.teacherId,
-      student: apt.studentId,
+      teacherId: apt.teacherId,
+      studentId: apt.studentId,
       price: apt.price.toString(),
       date: apt.date,
       time: apt.time,

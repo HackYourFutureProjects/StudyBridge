@@ -3,8 +3,8 @@ export type AppointmentStatus = "pending" | "approved" | "rejected";
 export interface Appointment {
   id: string;
   lesson: string;
-  teacher?: string;
-  student?: string;
+  teacherId: string;
+  studentId: string;
   price: string;
   date: string;
   time: string;

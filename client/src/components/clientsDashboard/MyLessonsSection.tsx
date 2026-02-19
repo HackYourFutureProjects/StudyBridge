@@ -13,7 +13,6 @@ export const MyLessonsSection = () => {
     error,
   } = useStudentAppointmentsQuery(user?.id || "");
 
-  // Filter today's appointments
   const today = new Date().toISOString().split("T")[0];
   const todayAppointments = appointments.filter(
     (appointment) => appointment.date === today,
@@ -23,7 +22,7 @@ export const MyLessonsSection = () => {
     id: appointment.id,
     checked: appointment.status === "approved",
     lesson: appointment.lesson,
-    teacher: appointment.teacher || "N/A",
+    teacher: appointment.teacherId || "N/A",
     price: appointment.price,
     videoCall: appointment.videoCall || "Join",
   }));
