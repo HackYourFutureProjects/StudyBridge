@@ -82,7 +82,7 @@ export const TeacherDetail = () => {
             Back
           </Button>
         </div>
-        <TeacherCard teacher={teacher} />
+        <TeacherCard teacher={teacher} showBookButton={false} />
         <div className="section-spacing">
           <TeacherNavigation activeTab={activeTab} onTabChange={setActiveTab} />
         </div>

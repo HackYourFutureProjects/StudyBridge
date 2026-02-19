@@ -10,6 +10,7 @@ import { useUpdateAppointmentMutation } from "../../../features/appointments/mut
 import { useDeleteAppointmentMutation } from "../../../features/appointments/mutations/useDeleteAppointmentMutation";
 import { AppointmentStatus } from "../../../types/appointments.types";
 import { LessonRowData } from "../../../components/table/LessonRow";
+import { useModalStore } from "../../../store/modals.store";
 
 export const ClientsAppointments = () => {
   const [page, setPage] = useState(1);
@@ -17,6 +18,8 @@ export const ClientsAppointments = () => {
   const { pathname } = useLocation();
   const user = useAuthSessionStore((state) => state.user);
   const accountType = useAuthSessionStore((s) => s.accountType ?? s.user?.role);
+
+  const { open: openModal } = useModalStore();
 
   const inferredType =
     accountType ?? (pathname.startsWith("/teacher") ? "teacher" : "student");
@@ -71,9 +74,13 @@ export const ClientsAppointments = () => {
   };
 
   const handleDelete = (appointmentId: string) => {
-    if (window.confirm("Are you sure you want to delete this appointment?")) {
-      deleteAppointmentMutation.mutate(appointmentId);
-    }
+    openModal("confirmDelete", {
+      title: "Delete Appointment",
+      message: "Are you sure you want to delete this appointment?",
+      onConfirm: () => {
+        deleteAppointmentMutation.mutate(appointmentId);
+      },
+    });
   };
 
   const isPastAppointment = (date: string, time: string): boolean => {
@@ -105,16 +112,16 @@ export const ClientsAppointments = () => {
       return;
     }
 
-    if (
-      window.confirm(
-        `Are you sure you want to delete ${selectedIds.length} appointment(s)?`,
-      )
-    ) {
-      selectedIds.forEach((id) => {
-        deleteAppointmentMutation.mutate(id);
-      });
-      setSelectedIds([]);
-    }
+    openModal("confirmDelete", {
+      title: "Delete Appointments",
+      message: `Are you sure you want to delete ${selectedIds.length} appointment(s)?`,
+      onConfirm: () => {
+        selectedIds.forEach((id) => {
+          deleteAppointmentMutation.mutate(id);
+        });
+        setSelectedIds([]);
+      },
+    });
   };
 
   const tableRows = appointments.map((appointment) => ({
