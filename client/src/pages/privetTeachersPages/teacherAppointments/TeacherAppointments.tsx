@@ -4,11 +4,13 @@ import LessonsTable from "../../../components/table/LessonsTable";
 import { Pagination } from "../../../components/ui/pagination/Pagination";
 import { useTeacherAppointmentsQuery } from "../../../features/appointments/query/useTeacherAppointmentsQuery";
 import { useUpdateAppointmentMutation } from "../../../features/appointments/mutations/useUpdateAppointmentMutation";
+import { useDeleteAppointmentMutation } from "../../../features/appointments/mutations/useDeleteAppointmentMutation";
 import { AppointmentStatus } from "../../../types/appointments.types";
 import { LessonRowData } from "../../../components/table/LessonRow";
 
 export const TeacherAppointments = () => {
   const [page, setPage] = useState(1);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const {
     data: appointments = [],
@@ -16,6 +18,7 @@ export const TeacherAppointments = () => {
     error,
   } = useTeacherAppointmentsQuery();
   const updateAppointmentMutation = useUpdateAppointmentMutation();
+  const deleteAppointmentMutation = useDeleteAppointmentMutation();
 
   const columns = [
     { key: "lesson", label: "Lessons", width: "130px" },
@@ -36,6 +39,53 @@ export const TeacherAppointments = () => {
     });
   };
 
+  const handleDelete = (appointmentId: string) => {
+    if (window.confirm("Are you sure you want to delete this appointment?")) {
+      deleteAppointmentMutation.mutate(appointmentId);
+    }
+  };
+
+  const isPastAppointment = (date: string, time: string): boolean => {
+    const [hours, minutes] = time.split(":").map(Number);
+    if (isNaN(hours) || isNaN(minutes)) {
+      return false;
+    }
+
+    const appointmentDateTime = new Date(date);
+    appointmentDateTime.setHours(hours, minutes, 0, 0);
+
+    const now = new Date();
+    return appointmentDateTime < now;
+  };
+
+  const handleBulkDelete = () => {
+    if (selectedIds.length === 0) return;
+
+    const selectedAppointments = appointments.filter((apt) =>
+      selectedIds.includes(apt.id),
+    );
+
+    const futureAppointments = selectedAppointments.filter(
+      (apt) => !isPastAppointment(apt.date, apt.time),
+    );
+
+    if (futureAppointments.length > 0) {
+      alert("You cannot delete future lesson");
+      return;
+    }
+
+    if (
+      window.confirm(
+        `Are you sure you want to delete ${selectedIds.length} appointment(s)?`,
+      )
+    ) {
+      selectedIds.forEach((id) => {
+        deleteAppointmentMutation.mutate(id);
+      });
+      setSelectedIds([]);
+    }
+  };
+
   const tableRows = appointments.map((appointment) => ({
     id: appointment.id,
     checked: false,
@@ -47,6 +97,10 @@ export const TeacherAppointments = () => {
     status: appointment.status,
     onStatusChange: (newStatus: AppointmentStatus) =>
       handleStatusChange(appointment.id, newStatus),
+    canDelete: isPastAppointment(appointment.date, appointment.time),
+    onDelete: isPastAppointment(appointment.date, appointment.time)
+      ? () => handleDelete(appointment.id)
+      : undefined,
   })) as LessonRowData[];
 
   if (isLoading) {
@@ -91,6 +145,9 @@ export const TeacherAppointments = () => {
             columns={columns}
             useStatusButtons={true}
             rows={tableRows}
+            onSelectionChange={setSelectedIds}
+            onBulkDelete={handleBulkDelete}
+            isPastAppointment={isPastAppointment}
           />
 
           <div className="mt-auto pt-4 mb-6 flex justify-center">

@@ -20,6 +20,6 @@ export const useTeacherAppointmentsQuery = (teacherId?: string) => {
   return useQuery({
     queryKey: queryKeys.teacherAppointments(resolvedTeacherId),
     queryFn: () => fetchTeacherAppointments(resolvedTeacherId),
-    enabled: !!resolvedTeacherId,
+    enabled: !!resolvedTeacherId && !!user,
   });
 };

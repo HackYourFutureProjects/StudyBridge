@@ -7,11 +7,13 @@ import { useLocation } from "react-router-dom";
 import { useStudentAppointmentsQuery } from "../../../features/appointments/query/useAppointmentsQuery";
 import { useTeacherAppointmentsQuery } from "../../../features/appointments/query/useTeacherAppointmentsQuery";
 import { useUpdateAppointmentMutation } from "../../../features/appointments/mutations/useUpdateAppointmentMutation";
+import { useDeleteAppointmentMutation } from "../../../features/appointments/mutations/useDeleteAppointmentMutation";
 import { AppointmentStatus } from "../../../types/appointments.types";
 import { LessonRowData } from "../../../components/table/LessonRow";
 
 export const ClientsAppointments = () => {
   const [page, setPage] = useState(1);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const { pathname } = useLocation();
   const user = useAuthSessionStore((state) => state.user);
   const accountType = useAuthSessionStore((s) => s.accountType ?? s.user?.role);
@@ -34,6 +36,7 @@ export const ClientsAppointments = () => {
   } = useTeacherAppointmentsQuery();
 
   const updateAppointmentMutation = useUpdateAppointmentMutation();
+  const deleteAppointmentMutation = useDeleteAppointmentMutation();
 
   const appointments = isTeacher ? teacherAppointments : studentAppointments;
   const isLoading = isTeacher ? isTeacherLoading : isStudentLoading;
@@ -67,6 +70,53 @@ export const ClientsAppointments = () => {
     });
   };
 
+  const handleDelete = (appointmentId: string) => {
+    if (window.confirm("Are you sure you want to delete this appointment?")) {
+      deleteAppointmentMutation.mutate(appointmentId);
+    }
+  };
+
+  const isPastAppointment = (date: string, time: string): boolean => {
+    const [hours, minutes] = time.split(":").map(Number);
+    if (isNaN(hours) || isNaN(minutes)) {
+      return false;
+    }
+
+    const appointmentDateTime = new Date(date);
+    appointmentDateTime.setHours(hours, minutes, 0, 0);
+
+    const now = new Date();
+    return appointmentDateTime < now;
+  };
+
+  const handleBulkDelete = () => {
+    if (selectedIds.length === 0) return;
+
+    const selectedAppointments = appointments.filter((apt) =>
+      selectedIds.includes(apt.id),
+    );
+
+    const futureAppointments = selectedAppointments.filter(
+      (apt) => !isPastAppointment(apt.date, apt.time),
+    );
+
+    if (futureAppointments.length > 0) {
+      alert("You cannot delete future lesson");
+      return;
+    }
+
+    if (
+      window.confirm(
+        `Are you sure you want to delete ${selectedIds.length} appointment(s)?`,
+      )
+    ) {
+      selectedIds.forEach((id) => {
+        deleteAppointmentMutation.mutate(id);
+      });
+      setSelectedIds([]);
+    }
+  };
+
   const tableRows = appointments.map((appointment) => ({
     id: appointment.id,
     checked: false,
@@ -80,6 +130,10 @@ export const ClientsAppointments = () => {
     onStatusChange: isTeacher
       ? (newStatus: AppointmentStatus) =>
           handleStatusChange(appointment.id, newStatus)
+      : undefined,
+    canDelete: isPastAppointment(appointment.date, appointment.time),
+    onDelete: isPastAppointment(appointment.date, appointment.time)
+      ? () => handleDelete(appointment.id)
       : undefined,
   })) as LessonRowData[];
 
@@ -129,6 +183,9 @@ export const ClientsAppointments = () => {
               columns={columns}
               useStatusButtons={isTeacher}
               rows={tableRows}
+              onSelectionChange={setSelectedIds}
+              onBulkDelete={handleBulkDelete}
+              isPastAppointment={isPastAppointment}
             />
           )}
 

@@ -17,17 +17,26 @@ export type LessonRowData = {
   time?: string;
   status?: AppointmentStatus;
   onStatusChange?: (status: AppointmentStatus) => void;
-} & {
-  [key: string]: ReactNode | string | number | boolean | undefined;
+  onDelete?: () => void;
+  canDelete?: boolean;
+  [key: string]:
+    | ReactNode
+    | string
+    | number
+    | boolean
+    | ((status: AppointmentStatus) => void)
+    | (() => void)
+    | undefined;
 };
 
 type LessonRowProps = {
-  data: LessonRowData; // data for this row
-  index: number; // row index (used for striping)
-  onToggle: () => void; // checkbox toggle handler
-  columns: { key: string; label: string }[]; // columns to render in order
-  rowHeight: number; // row height in px
+  data: LessonRowData;
+  index: number;
+  onToggle: () => void;
+  columns: { key: string; label: string }[];
+  rowHeight: number;
   useStatusButtons?: boolean;
+  canSelect?: boolean;
 };
 
 const LessonRow = ({
@@ -37,6 +46,7 @@ const LessonRow = ({
   columns,
   rowHeight,
   useStatusButtons = false,
+  canSelect = true,
 }: LessonRowProps) => {
   const rowBgClass = index % 2 === 0 ? "bg-[#0F0E13]" : "bg-[#211C27]";
 
@@ -52,10 +62,11 @@ const LessonRow = ({
           <Button
             as="button"
             variant="link"
-            onClick={onToggle}
+            onClick={canSelect ? onToggle : undefined}
+            disabled={!canSelect}
             className={`flex h-[24px] w-[24px] min-h-0 min-w-0 items-center justify-center rounded-[8px] px-0 py-0 ${
               data.checked ? "bg-[#7B3FF2] text-white" : "text-[#D9D9D9]"
-            }`}
+            } ${!canSelect ? "opacity-30 cursor-not-allowed" : ""}`}
           >
             {data.checked ? (
               <Check className="h-[12px] w-[12px]" />
@@ -93,13 +104,26 @@ const LessonRow = ({
 
       <td className="border-b border-[#E1E1E1]">
         <div className="flex justify-center">
-          <Button
-            as="button"
-            variant="link"
-            className="h-[24px] w-[24px] min-h-0 min-w-0 px-0 py-0 text-[#EDEDED] hover:text-white"
-          >
-            <KebabVerticalIcon className="h-[16px] w-[16px]" />
-          </Button>
+          {data.canDelete && data.onDelete ? (
+            <Button
+              as="button"
+              variant="link"
+              onClick={data.onDelete}
+              className="h-[24px] w-[24px] min-h-0 min-w-0 px-0 py-0 text-[#EDEDED] hover:text-red-500"
+              title="Delete past appointment"
+            >
+              <KebabVerticalIcon className="h-[16px] w-[16px]" />
+            </Button>
+          ) : (
+            <Button
+              as="button"
+              variant="link"
+              className="h-[24px] w-[24px] min-h-0 min-w-0 px-0 py-0 text-[#EDEDED] opacity-30 cursor-not-allowed"
+              disabled
+            >
+              <KebabVerticalIcon className="h-[16px] w-[16px]" />
+            </Button>
+          )}
         </div>
       </td>
     </tr>

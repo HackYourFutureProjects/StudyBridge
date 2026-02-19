@@ -87,6 +87,34 @@ export class AppointmentService {
     return updated ? this.formatAppointmentResponse(updated) : null;
   }
 
+  async deleteAppointment(id: string, userId: string) {
+    const appointment = await this.appointmentQuery.getAppointmentById(id);
+
+    if (!appointment) {
+      throw new Error("Appointment not found");
+    }
+
+    if (appointment.teacherId !== userId && appointment.studentId !== userId) {
+      throw new Error("Unauthorized to delete this appointment");
+    }
+
+    const [hours, minutes] = appointment.time.split(":").map(Number);
+    if (isNaN(hours) || isNaN(minutes)) {
+      throw new Error("Invalid appointment time format");
+    }
+
+    const appointmentDateTime = new Date(appointment.date);
+    appointmentDateTime.setHours(hours, minutes, 0, 0);
+
+    const now = new Date();
+
+    if (appointmentDateTime >= now) {
+      throw new Error("You cannot delete future lesson");
+    }
+
+    await this.appointmentCommand.deleteAppointment(id);
+  }
+
   async getPendingAppointmentsByTeacher(teacherId: string) {
     const appointments =
       await this.appointmentQuery.getPendingAppointmentsByTeacher(teacherId);
