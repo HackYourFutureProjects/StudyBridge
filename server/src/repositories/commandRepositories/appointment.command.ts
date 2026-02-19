@@ -20,4 +20,8 @@ export class AppointmentCommand {
       new: true,
     }).exec();
   }
+
+  async deleteAppointment(id: string): Promise<void> {
+    await AppointmentModel.findOneAndDelete({ id }).exec();
+  }
 }

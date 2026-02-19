@@ -83,3 +83,11 @@ appointmentRouter.put(
     appointmentController,
   ),
 );
+
+appointmentRouter.delete(
+  "/:id",
+  idParamValidationMiddleware(),
+  errorMiddleware,
+  authMiddleware.handle,
+  appointmentController.deleteAppointmentController.bind(appointmentController),
+);
