@@ -5,10 +5,7 @@ import { Button } from "../../ui/button/Button";
 import { TeacherType } from "../../../api/teacher/teacher.type";
 import { useModalStore } from "../../../store/modals.store";
 import { useAuthSessionStore } from "../../../store/authSession.store";
-import { useQuery } from "@tanstack/react-query";
-import { queryKeys } from "../../../features/queryKeys";
-import { Appointment } from "../../../types/appointments.types";
-import { apiProtected } from "../../../api/api";
+import { useTeacherAppointmentsQuery } from "../../../features/appointments/query/useTeacherAppointmentsQuery";
 
 interface TeacherScheduleProps {
   teacher?: TeacherType;
@@ -24,16 +21,7 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
 
   const isOwnProfile = user?.id === teacher?.id;
 
-  const { data: appointments = [] } = useQuery<Appointment[]>({
-    queryKey: queryKeys.teacherAppointments(teacher?.id || ""),
-    queryFn: async () => {
-      const response = await apiProtected.get(
-        `/api/appointments/teacher/${teacher?.id}`,
-      );
-      return response.data;
-    },
-    enabled: !!teacher?.id,
-  });
+  const { data: appointments = [] } = useTeacherAppointmentsQuery(teacher?.id);
 
   const handleDateSelection = (date: Date): void => {
     setSelectedDate(date);

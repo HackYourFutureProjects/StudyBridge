@@ -5,6 +5,8 @@ import {
   AppointmentStatus,
 } from "../../../types/appointments.types";
 import { apiProtected } from "../../../api/api";
+import { useNotificationStore } from "../../../store/notification.store";
+import { getErrorMessage } from "../../../util/ErrorUtil";
 
 interface UpdateAppointmentRequest {
   appointmentId: string;
@@ -23,6 +25,8 @@ const updateAppointmentStatus = async (
 
 export const useUpdateAppointmentMutation = () => {
   const queryClient = useQueryClient();
+  const notifySuccess = useNotificationStore((s) => s.success);
+  const notifyError = useNotificationStore((s) => s.error);
 
   return useMutation({
     mutationFn: updateAppointmentStatus,
@@ -33,6 +37,14 @@ export const useUpdateAppointmentMutation = () => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.teacherAppointments(appointment.teacherId),
       });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.studentAppointments(appointment.studentId),
+      });
+      notifySuccess("Appointment status updated successfully");
+    },
+    onError: (error) => {
+      const msg = getErrorMessage(error);
+      notifyError(msg ?? "Failed to update appointment status");
     },
   });
 };
