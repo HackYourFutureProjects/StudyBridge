@@ -9,7 +9,7 @@ export const TopBar = () => {
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   return (
     <>
-      <header className="fixed top-0 left-0 z-50 h-[var(--header-height)] w-full bg-[#211c27] border-b border-[#0F0E13]">
+      <header className="fixed top-0 left-0 z-50 h-[var(--header-height)] w-full bg-[#15141D]">
         <div className="mx-auto h-full max-w-[1440px] px-4 md:px-8">
           <div className="flex justify-between items-center h-full">
             <div className="flex items-center gap-10">

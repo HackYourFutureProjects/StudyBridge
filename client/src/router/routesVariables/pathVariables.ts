@@ -16,6 +16,11 @@ export const authRoutesVariables = {
   resetPassword: "/reset-password",
 };
 
+export const chatRoutes = {
+  root: "/chat",
+  dialog: ":id",
+};
+
 export const studentPrivatesRoutesVariables = {
   dashboard: "/clients-dashboard",
   classes: "/student-classes",

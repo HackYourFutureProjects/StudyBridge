@@ -8,6 +8,7 @@ import LessonsIcon from "../icons/Lessons";
 import SettingsIcon from "../icons/Settings";
 import VideoCallIcon from "../icons/VideoCall";
 import UsersIcon from "../icons/UsersIcon";
+import Chat from "../icons/Chat";
 
 export type MenuItem = {
   name: string;
@@ -26,6 +27,7 @@ export const defaultStudentMenuItems: MenuItem[] = [
   { name: "Billings", link: "/clients-billing", icon: BillingIcon },
   { name: "Video call", link: "/video-call", icon: VideoCallIcon },
   { name: "Settings", link: "/settings", icon: SettingsIcon },
+  { name: "Chat", link: "/chat", icon: Chat },
 ];
 
 export const defaultTeacherMenuItems: MenuItem[] = [
@@ -40,6 +42,7 @@ export const defaultTeacherMenuItems: MenuItem[] = [
   { name: "My Profile", link: "/teacher/profile", icon: UsersIcon },
   { name: "Billings", link: "/teacher/my-billings", icon: BillingIcon },
   { name: "Video call", link: "/video-call", icon: VideoCallIcon },
+  { name: "Chat", link: "/chat", icon: Chat },
 ];
 
 type SidebarProps = {
@@ -82,7 +85,7 @@ export const Sidebar = ({ items, variant }: SidebarProps) => {
 
   // desktop
   return (
-    <aside className="w-[218px] h-full bg-[#211c27] pt-[30px]">
+    <aside className="w-[218px] h-full  pt-[30px]">
       <ul className="flex flex-col gap-[10px]">
         {menuItems.map((item) => {
           const Icon = item.icon;
