@@ -10,6 +10,7 @@ import { useUpdateAppointmentMutation } from "../../../features/appointments/mut
 import { useDeleteAppointmentMutation } from "../../../features/appointments/mutations/useDeleteAppointmentMutation";
 import { AppointmentStatus } from "../../../types/appointments.types";
 import { LessonRowData } from "../../../components/table/LessonRow";
+import { useModalStore } from "../../../store/modals.store";
 
 export const ClientsAppointments = () => {
   const [page, setPage] = useState(1);
@@ -17,6 +18,8 @@ export const ClientsAppointments = () => {
   const { pathname } = useLocation();
   const user = useAuthSessionStore((state) => state.user);
   const accountType = useAuthSessionStore((s) => s.accountType ?? s.user?.role);
+
+  const { open: openModal } = useModalStore();
 
   const inferredType =
     accountType ?? (pathname.startsWith("/teacher") ? "teacher" : "student");
@@ -71,9 +74,13 @@ export const ClientsAppointments = () => {
   };
 
   const handleDelete = (appointmentId: string) => {
-    if (window.confirm("Are you sure you want to delete this appointment?")) {
-      deleteAppointmentMutation.mutate(appointmentId);
-    }
+    openModal("confirmDelete", {
+      title: "Delete Appointment",
+      message: "Are you sure you want to delete this appointment?",
+      onConfirm: () => {
+        deleteAppointmentMutation.mutate(appointmentId);
+      },
+    });
   };
 
   const isPastAppointment = (date: string, time: string): boolean => {
@@ -101,20 +108,37 @@ export const ClientsAppointments = () => {
     );
 
     if (futureAppointments.length > 0) {
-      alert("You cannot delete future lesson");
+      openModal("alert", {
+        title: "Cannot Delete",
+        message: "You cannot delete future lesson",
+      });
       return;
     }
 
-    if (
-      window.confirm(
-        `Are you sure you want to delete ${selectedIds.length} appointment(s)?`,
-      )
-    ) {
-      selectedIds.forEach((id) => {
-        deleteAppointmentMutation.mutate(id);
-      });
-      setSelectedIds([]);
-    }
+    openModal("confirmDelete", {
+      title: "Delete Appointments",
+      message: `Are you sure you want to delete ${selectedIds.length} appointment(s)?`,
+      onConfirm: async () => {
+        const deletePromises = selectedIds.map((id) =>
+          deleteAppointmentMutation.mutateAsync(id),
+        );
+
+        const results = await Promise.allSettled(deletePromises);
+
+        const failures = results.filter(
+          (result) => result.status === "rejected",
+        );
+
+        if (failures.length === 0) {
+          setSelectedIds([]);
+        } else {
+          openModal("alert", {
+            title: "Delete Failed",
+            message: `Failed to delete ${failures.length} appointment(s). Please try again.`,
+          });
+        }
+      },
+    });
   };
 
   const tableRows = appointments.map((appointment) => ({

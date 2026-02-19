@@ -3,14 +3,16 @@ import { Rating } from "../rating/Rating";
 import { TeacherType } from "../../api/teacher/teacher.type";
 import ImageNotFount from "../../assets/images/image-not-found.png";
 import { useNavigate } from "react-router-dom";
-import { useAuthSessionStore } from "../../store/authSession.store";
-import { useModalStore } from "../../store/modals.store";
-import { MouseEvent } from "react";
+
 type TeacherCardType = {
   teacher: TeacherType;
+  showBookButton?: boolean;
 };
 
-export const TeacherCard = ({ teacher }: TeacherCardType) => {
+export const TeacherCard = ({
+  teacher,
+  showBookButton = true,
+}: TeacherCardType) => {
   const {
     id,
     firstName,
@@ -25,17 +27,8 @@ export const TeacherCard = ({ teacher }: TeacherCardType) => {
   } = teacher;
 
   const navigate = useNavigate();
-  const user = useAuthSessionStore((state) => state.user);
-  const { open: openModal } = useModalStore();
 
-  const handleBookClick = (e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-
-    if (!user) {
-      openModal("signIn");
-      return;
-    }
-
+  const handleBookClick = () => {
     navigate(`/teacher/${id}`);
   };
   return (
@@ -114,9 +107,11 @@ export const TeacherCard = ({ teacher }: TeacherCardType) => {
           1 hour
         </span>
         <Rating rating={rating} />
-        <Button onClick={handleBookClick} variant="secondary">
-          Book
-        </Button>
+        {showBookButton && (
+          <Button onClick={handleBookClick} variant="secondary">
+            Book
+          </Button>
+        )}
         <span className="text-[14px] text-dark-400">First lesson - free</span>
       </div>
     </div>

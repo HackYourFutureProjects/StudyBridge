@@ -2,7 +2,13 @@ import { create } from "zustand";
 import { lockScroll, unlockScroll } from "../util/modalScroll.util.ts";
 import { TeacherType } from "../api/teacher/teacher.type.ts";
 
-export type ModalName = null | "logout" | "bookingConfirm" | "signIn";
+export type ModalName =
+  | null
+  | "logout"
+  | "bookingConfirm"
+  | "signIn"
+  | "confirmDelete"
+  | "alert";
 
 type ModalPayload = {
   logout?: never;
@@ -13,6 +19,15 @@ type ModalPayload = {
     onSuccess?: () => void;
   };
   signIn?: never;
+  confirmDelete?: {
+    title: string;
+    message: string;
+    onConfirm: () => void;
+  };
+  alert?: {
+    title: string;
+    message: string;
+  };
 };
 
 type ModalState = {
