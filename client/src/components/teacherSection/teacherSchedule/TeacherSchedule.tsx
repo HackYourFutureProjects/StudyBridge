@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Calendar } from "./Calendar/Calendar";
 import { Time } from "./Time/Time";
-import { Button } from "../../ui/button/Button";
 import { TeacherType } from "../../../api/teacher/teacher.type";
 import { useModalStore } from "../../../store/modals.store";
 import { useAuthSessionStore } from "../../../store/authSession.store";
@@ -13,7 +12,6 @@ interface TeacherScheduleProps {
 
 export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [showTimeAndBook, setShowTimeAndBook] = useState<boolean>(false);
 
   const { open: openModal } = useModalStore();
@@ -37,8 +35,6 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
       return;
     }
 
-    setSelectedTime(time);
-
     if (selectedDate && teacher) {
       openModal("bookingConfirm", {
         teacher,
@@ -46,22 +42,6 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
         selectedTime: time,
         onSuccess: () => {
           setSelectedDate(null);
-          setSelectedTime(null);
-          setShowTimeAndBook(false);
-        },
-      });
-    }
-  };
-
-  const handleBook = (): void => {
-    if (selectedDate && selectedTime && teacher) {
-      openModal("bookingConfirm", {
-        teacher,
-        selectedDate,
-        selectedTime,
-        onSuccess: () => {
-          setSelectedDate(null);
-          setSelectedTime(null);
           setShowTimeAndBook(false);
         },
       });
@@ -146,14 +126,6 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
                   onTimeSelect={handleTimeSelection}
                   availableSlots={getAvailableTimeSlots()}
                 />
-              </div>
-            )}
-
-            {showTimeAndBook && selectedTime && !isOwnProfile && (
-              <div className="mt-8">
-                <Button variant="secondary" onClick={handleBook}>
-                  Book Lesson - €{teacher?.priceFrom || 0}
-                </Button>
               </div>
             )}
 

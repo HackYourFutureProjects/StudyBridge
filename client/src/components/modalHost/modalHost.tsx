@@ -5,6 +5,7 @@ import { LogoutConfirmation } from "../auth/logoutConfirmation/LogoutConfirmatio
 import { BookingConfirmation } from "../bookingConfirmation/BookingConfirmation.tsx";
 import { SignInConfirmation } from "../auth/signInConfirmation/SignInConfirmation.tsx";
 import { ConfirmDialog } from "../confirmDialog/ConfirmDialog.tsx";
+import { AlertDialog } from "../alertDialog/AlertDialog.tsx";
 import { useModalStore } from "../../store/modals.store.ts";
 import { cva } from "class-variance-authority";
 import { twMerge } from "tailwind-merge";
@@ -76,6 +77,14 @@ export const ModalHost = () => {
               onCancel={close}
             />
           )}
+        {activeModal === "alert" && payload && "title" in payload && (
+          <AlertDialog
+            isOpen={opened}
+            title={payload.title}
+            message={payload.message}
+            onClose={close}
+          />
+        )}
       </div>
     </div>,
     document.body,

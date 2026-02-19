@@ -7,7 +7,8 @@ export type ModalName =
   | "logout"
   | "bookingConfirm"
   | "signIn"
-  | "confirmDelete";
+  | "confirmDelete"
+  | "alert";
 
 type ModalPayload = {
   logout?: never;
@@ -22,6 +23,10 @@ type ModalPayload = {
     title: string;
     message: string;
     onConfirm: () => void;
+  };
+  alert?: {
+    title: string;
+    message: string;
   };
 };
 

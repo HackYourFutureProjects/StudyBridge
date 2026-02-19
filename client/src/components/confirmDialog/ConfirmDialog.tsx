@@ -23,10 +23,10 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="bg-white rounded-2xl p-6 w-[500px] mx-4 shadow-[0px_12px_16px_0px_#10182814,0px_4px_6px_0px_#10182808] relative">
+    <div className="bg-white rounded-2xl p-6 w-[90vw] max-w-[500px] mx-4 shadow-lg relative">
       <button
         onClick={onCancel}
-        className="absolute top-4 right-4 w-12 h-12 flex items-center justify-center bg-white rounded-lg shadow-[0px_1px_2px_0px_#1018280D] hover:bg-gray-50 transition-colors"
+        className="absolute top-4 right-4 w-12 h-12 flex items-center justify-center bg-white rounded-lg shadow-sm hover:bg-gray-50 transition-colors"
         aria-label="Close"
       >
         <Cross className="w-5 h-5 text-[#344054]" />
