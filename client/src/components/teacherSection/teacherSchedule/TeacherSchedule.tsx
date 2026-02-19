@@ -36,6 +36,11 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
   };
 
   const handleBook = (): void => {
+    if (!isAuthenticated) {
+      openModal("signIn");
+      return;
+    }
+
     if (selectedDate && selectedTime && teacher) {
       openModal("bookingConfirm", {
         teacher,

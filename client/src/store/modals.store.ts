@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { lockScroll, unlockScroll } from "../util/modalScroll.util.ts";
 import { TeacherType } from "../api/teacher/teacher.type.ts";
 
-export type ModalName = null | "logout" | "bookingConfirm";
+export type ModalName = null | "logout" | "bookingConfirm" | "signIn";
 
 type ModalPayload = {
   logout?: never;
@@ -12,6 +12,7 @@ type ModalPayload = {
     selectedTime: string;
     onSuccess?: () => void;
   };
+  signIn?: never;
 };
 
 type ModalState = {
