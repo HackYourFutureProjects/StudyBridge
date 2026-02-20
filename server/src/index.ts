@@ -1,22 +1,21 @@
 // Load our .env variables
 import dotenv from "dotenv";
 import express from "express";
-import { initEmailTransporter } from "./services/email/mailSender.js";
-
+import http from "http";
 dotenv.config();
 
 import connectDB from "./db/connectDB.js";
 import app from "./app.js";
 import { logError, logInfo } from "./utils/logging.js";
 import { TeacherModel } from "./db/schemes/teacherSchema.js";
-
+import { initSocketServer } from "./socket/socket.server.js";
 // he environment should set the port
 const port = process.env.PORT || 3000;
 
 const startServer = async () => {
   try {
     await connectDB();
-
+    const server = http.createServer(app);
     // 1. find all teacher documents where `timezone` does not exist.
     // 2. set `timezone` to "Europe/Amsterdam" for those old records.
     // 3. keep existing timezone values unchanged for all other teachers.
@@ -26,8 +25,8 @@ const startServer = async () => {
     );
 
     logInfo(`Timezone backfill updated ${result.modifiedCount} teacher(s)`);
-
-    await initEmailTransporter();
+    initSocketServer(server);
+    // await initEmailTransporter();
     app.listen(port, () => {
       logInfo(`Server started on port ${port}`);
     });

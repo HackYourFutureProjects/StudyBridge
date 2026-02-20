@@ -4,6 +4,7 @@ import { authRouter } from "./routes/authRoute.js";
 import { appointmentRouter } from "./routes/appointmentRoute.js";
 import { globalErrorMiddleware } from "./middlewares/global.middleware.js";
 import { teacherRouter } from "./routes/teacherRoute.js";
+import { chatRouter } from "./routes/chatRoute.js";
 // Create an express server
 const app = express();
 app.use(cookieParser());
@@ -18,5 +19,6 @@ app.use(express.json());
 app.use("/api/auth", authRouter);
 app.use("/api/appointments", appointmentRouter);
 app.use("/api/teachers", teacherRouter);
+app.use("/api/chat", chatRouter);
 app.use(globalErrorMiddleware);
 export default app;

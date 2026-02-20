@@ -19,6 +19,11 @@ import { AppointmentService } from "../services/appointment/appointment.service.
 import { AppointmentController } from "../controllers/appointment.controller.js";
 import { AppointmentCommand } from "../repositories/commandRepositories/appointment.command.js";
 import { AppointmentQuery } from "../repositories/queryRepositories/appointment.query.js";
+import { ChatQuery } from "../repositories/queryRepositories/chat.query.js";
+import { ChatCommand } from "../repositories/commandRepositories/chat.command.js";
+import { ChatController } from "../controllers/chat.controller.js";
+import { ChatService } from "../services/chat/chat.service.js";
+import { ConversationCommand } from "../repositories/commandRepositories/conversation.command.js";
 
 export const container = new Container();
 
@@ -64,3 +69,10 @@ container.bind<AppointmentQuery>(TYPES.AppointmentQuery).to(AppointmentQuery);
 container
   .bind<AppointmentCommand>(TYPES.AppointmentCommand)
   .to(AppointmentCommand);
+
+//chat
+container.bind(TYPES.ChatService).to(ChatService);
+container.bind(TYPES.ChatQuery).to(ChatQuery);
+container.bind(TYPES.ChatCommand).to(ChatCommand);
+container.bind(TYPES.ChatController).to(ChatController);
+container.bind(TYPES.ConversationCommand).to(ConversationCommand);

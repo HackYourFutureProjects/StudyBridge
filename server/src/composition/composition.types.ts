@@ -25,4 +25,10 @@ export const TYPES = {
   AppointmentController: Symbol.for("AppointmentController"),
   AppointmentQuery: Symbol.for("AppointmentQuery"),
   AppointmentCommand: Symbol.for("AppointmentCommand"),
+  //chat
+  ChatService: Symbol.for("ChatService"),
+  ChatQuery: Symbol.for("ChatQuery"),
+  ChatCommand: Symbol.for("ChatCommand"),
+  ChatController: Symbol.for("ChatController"),
+  ConversationCommand: Symbol.for("ConversationCommand"),
 };

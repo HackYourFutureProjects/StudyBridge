@@ -22,3 +22,8 @@ export class UnauthorizedError extends HttpError {
     this.name = "UnauthorizedError";
   }
 }
+export class ForbiddenError extends HttpError {
+  constructor(message = "Forbidden") {
+    super(403, message);
+  }
+}
