@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
-import { WithId } from "mongodb";
-import { ReviewTypeDB } from "./types/review.types";
+import { ReviewTypeDB } from "./types/review.types.js";
 
 export const ReviewSchema = new mongoose.Schema<ReviewTypeDB>(
   {
@@ -18,7 +17,4 @@ export const ReviewSchema = new mongoose.Schema<ReviewTypeDB>(
 
 ReviewSchema.index({ teacherId: 1, createdAt: -1 });
 
-export const ReviewModel = mongoose.model<WithId<ReviewTypeDB>>(
-  "review",
-  ReviewSchema,
-);
+export const ReviewModel = mongoose.model<ReviewTypeDB>("review", ReviewSchema);
