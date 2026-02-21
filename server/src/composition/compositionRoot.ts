@@ -24,6 +24,7 @@ import { ChatCommand } from "../repositories/commandRepositories/chat.command.js
 import { ChatController } from "../controllers/chat.controller.js";
 import { ChatService } from "../services/chat/chat.service.js";
 import { ConversationCommand } from "../repositories/commandRepositories/conversation.command.js";
+import { StreamController } from "../controllers/stream.controller.js";
 
 export const container = new Container();
 
@@ -76,3 +77,6 @@ container.bind(TYPES.ChatQuery).to(ChatQuery);
 container.bind(TYPES.ChatCommand).to(ChatCommand);
 container.bind(TYPES.ChatController).to(ChatController);
 container.bind(TYPES.ConversationCommand).to(ConversationCommand);
+
+//videoCalls
+container.bind<StreamController>(TYPES.StreamController).to(StreamController);

@@ -31,4 +31,6 @@ export const TYPES = {
   ChatCommand: Symbol.for("ChatCommand"),
   ChatController: Symbol.for("ChatController"),
   ConversationCommand: Symbol.for("ConversationCommand"),
+
+  StreamController: Symbol.for("StreamController"),
 };

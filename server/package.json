@@ -50,6 +50,7 @@
     "typescript": "5.9.3"
   },
   "dependencies": {
+    "@stream-io/node-sdk": "0.7.42",
     "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
