@@ -8,12 +8,12 @@ type LessonsSectionProps = {
   showAddForm: boolean;
   editingLessonIndex: number | null;
   newSubject: string;
-  newLevel: string;
-  newPrice: string;
+  newDescription: string;
+  newLevels: Array<{ level: string; price: string }>;
   onShowAddForm: (show: boolean) => void;
   onNewSubjectChange: (value: string) => void;
-  onNewLevelChange: (value: string) => void;
-  onNewPriceChange: (value: string) => void;
+  onNewDescriptionChange: (value: string) => void;
+  onNewLevelsChange: (levels: Array<{ level: string; price: string }>) => void;
   onAddLesson: () => void;
   onUpdateLesson: () => void;
   onEditLesson: (index: number) => void;
@@ -26,12 +26,12 @@ export const LessonsSection = ({
   showAddForm,
   editingLessonIndex,
   newSubject,
-  newLevel,
-  newPrice,
+  newDescription,
+  newLevels,
   onShowAddForm,
   onNewSubjectChange,
-  onNewLevelChange,
-  onNewPriceChange,
+  onNewDescriptionChange,
+  onNewLevelsChange,
   onAddLesson,
   onUpdateLesson,
   onEditLesson,
@@ -41,30 +41,40 @@ export const LessonsSection = ({
   const handleSubmit = () =>
     editingLessonIndex !== null ? onUpdateLesson() : onAddLesson();
 
+  const canAddMore = lessons.length < 5;
+
   return (
     <div>
-      <div className="flex items-center justify-between mb-4">
-        <label className="text-white text-base">Lessons and Price:</label>
-        {!showAddForm && (
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-4">
+        <label className="text-white text-sm sm:text-base">
+          Lessons and Price: {lessons.length > 0 && `(${lessons.length}/5)`}
+        </label>
+        {!showAddForm && canAddMore && (
           <Button
             type="button"
             onClick={() => onShowAddForm(true)}
             variant="secondary"
+            className="w-full sm:w-auto"
           >
             + Add Lesson
           </Button>
+        )}
+        {!showAddForm && !canAddMore && (
+          <span className="text-xs sm:text-sm text-gray-400 italic">
+            Maximum 5 subjects reached
+          </span>
         )}
       </div>
 
       {showAddForm && (
         <LessonForm
           subject={newSubject}
-          level={newLevel}
-          price={newPrice}
+          description={newDescription}
+          levels={newLevels}
           isEditingLesson={editingLessonIndex !== null}
           onSubjectChange={onNewSubjectChange}
-          onLevelChange={onNewLevelChange}
-          onPriceChange={onNewPriceChange}
+          onDescriptionChange={onNewDescriptionChange}
+          onLevelsChange={onNewLevelsChange}
           onSubmit={handleSubmit}
           onCancel={onCancelForm}
         />
