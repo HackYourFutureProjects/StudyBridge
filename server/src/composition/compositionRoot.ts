@@ -19,6 +19,7 @@ import { AppointmentService } from "../services/appointment/appointment.service.
 import { AppointmentController } from "../controllers/appointment.controller.js";
 import { AppointmentCommand } from "../repositories/commandRepositories/appointment.command.js";
 import { AppointmentQuery } from "../repositories/queryRepositories/appointment.query.js";
+import { StreamController } from "../controllers/stream.controller.js";
 
 export const container = new Container();
 
@@ -64,3 +65,6 @@ container.bind<AppointmentQuery>(TYPES.AppointmentQuery).to(AppointmentQuery);
 container
   .bind<AppointmentCommand>(TYPES.AppointmentCommand)
   .to(AppointmentCommand);
+
+//videoCalls
+container.bind<StreamController>(TYPES.StreamController).to(StreamController);

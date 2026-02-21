@@ -25,4 +25,6 @@ export const TYPES = {
   AppointmentController: Symbol.for("AppointmentController"),
   AppointmentQuery: Symbol.for("AppointmentQuery"),
   AppointmentCommand: Symbol.for("AppointmentCommand"),
+
+  StreamController: Symbol.for("StreamController"),
 };
