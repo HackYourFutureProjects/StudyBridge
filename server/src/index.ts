@@ -15,7 +15,6 @@ const port = process.env.PORT || 3000;
 const startServer = async () => {
   try {
     await connectDB();
-    const server = http.createServer(app);
     // 1. find all teacher documents where `timezone` does not exist.
     // 2. set `timezone` to "Europe/Amsterdam" for those old records.
     // 3. keep existing timezone values unchanged for all other teachers.
@@ -25,9 +24,10 @@ const startServer = async () => {
     );
 
     logInfo(`Timezone backfill updated ${result.modifiedCount} teacher(s)`);
-    initSocketServer(server);
+    const httpServer = http.createServer(app);
+    initSocketServer(httpServer);
     // await initEmailTransporter();
-    app.listen(port, () => {
+    httpServer.listen(port, () => {
       logInfo(`Server started on port ${port}`);
     });
   } catch (error) {

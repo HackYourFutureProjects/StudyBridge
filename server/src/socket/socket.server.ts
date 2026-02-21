@@ -23,8 +23,6 @@ type SocketData = {
 export let io: Server | null = null;
 
 export function initSocketServer(httpServer: http.Server): Server {
-  // const clientOrigin = process.env.APP_BASE_URL ?? "http://localhost:5173";
-
   const _io = new Server(httpServer, {
     cors: {
       origin: true,
@@ -80,6 +78,48 @@ function registerChatHandlers(_io: Server, socket: Socket) {
   socket.on("chat:leave", ({ conversationId }: LeavePayload) => {
     socket.leave(conversationId);
   });
+
+  socket.on(
+    "chat:typing:start",
+    async ({ conversationId }: { conversationId: string }) => {
+      const { userId, role } = socket.data as SocketData;
+
+      const can = await chatService.canAccessConversation(
+        userId,
+        conversationId,
+      );
+      if (!can) {
+        return;
+      }
+
+      socket.to(conversationId).emit("chat:typing", {
+        conversationId,
+        userId,
+        role,
+      });
+    },
+  );
+
+  socket.on(
+    "chat:typing:stop",
+    async ({ conversationId }: { conversationId: string }) => {
+      const { userId, role } = socket.data as SocketData;
+
+      const can = await chatService.canAccessConversation(
+        userId,
+        conversationId,
+      );
+      if (!can) {
+        return;
+      }
+
+      socket.to(conversationId).emit("chat:typing:stop", {
+        conversationId,
+        userId,
+        role,
+      });
+    },
+  );
 
   socket.on(
     "chat:sendMessage",
