@@ -1,22 +1,11 @@
-import { useState } from "react";
+import { TeacherType } from "../../../api/teacher/teacher.type";
 
-export type AboutType = {
-  id: string;
-  description: string;
+type TeacherAboutProps = {
+  teacher?: TeacherType;
 };
 
-const about: AboutType[] = [
-  {
-    id: "about",
-    description:
-      "I am a dedicated language tutor specializing in the Dutch language, English language, and French language. I have a strong passion for teaching and helping students achieve confidence in using foreign languages. My lessons are well-structured, clear, and adapted to each student's learning style and goals. I focus on developing all core skills, including speaking, listening, grammar, and vocabulary. Practical language use is a key part of my teaching approach. I believe that learning a language should be engaging, supportive, and motivating. I work with beginners as well as intermediate learners. I carefully explain complex topics in a simple and understandable way. My goal is to help students overcome language barriers and feel comfortable communicating. I always strive to create a positive and encouraging learning environment.",
-  },
-];
-
-export default function TeacherAbout() {
-  const [activeAbout] = useState("about");
-
-  const currentAbout = about.find((item) => item.id === activeAbout);
+export default function TeacherAbout({ teacher }: TeacherAboutProps) {
+  const bio = teacher?.bio || "No information available";
 
   return (
     <div>
@@ -26,11 +15,9 @@ export default function TeacherAbout() {
             <h2 className="text-5xl font-bold text-[#7186FF]">About</h2>
 
             <div className="mt-8">
-              {currentAbout && (
-                <div className="text-white space-y-4">
-                  <p>{currentAbout.description}</p>
-                </div>
-              )}
+              <div className="text-white space-y-4">
+                <p>{bio}</p>
+              </div>
             </div>
           </div>
         </div>
