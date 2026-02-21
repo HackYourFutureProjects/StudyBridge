@@ -1,13 +1,13 @@
-export type Peer = { id: string; name: string; imageUrl: string | null };
-export type ConversationListItemDTO = {
+export type ConversationListItemDB = {
   id: string;
-  peer: Peer;
+  participantIds: [string, string];
+  appointmentStatus: "approved" | "pending" | "rejected";
   lastMessage?: { text: string; senderId: string; createdAt: string };
   updatedAt: string;
   lastMessageAt?: string;
 };
 
-export type MessageDTO = {
+export type MessageDB = {
   id: string;
   conversationId: string;
   senderId: string;
