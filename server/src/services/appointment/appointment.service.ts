@@ -11,6 +11,7 @@ import { AppointmentQuery } from "../../repositories/queryRepositories/appointme
 import { StudentModel } from "../../db/schemes/studentSchema.js";
 import { TeacherModel } from "../../db/schemes/teacherSchema.js";
 import { ConversationCommand } from "../../repositories/commandRepositories/conversation.command.js";
+import { logError, logWarning } from "../../utils/logging.js";
 
 @injectable()
 export class AppointmentService {
@@ -92,12 +93,21 @@ export class AppointmentService {
       return null;
     }
 
-    await this.conversationCommand.upsertForAppointment({
-      appointmentId: updated.id,
-      studentId: updated.studentId,
-      teacherId: updated.teacherId,
-      status: updated.status,
-    });
+    try {
+      const ok = await this.conversationCommand.upsertForAppointment({
+        appointmentId: updated.id,
+        studentId: updated.studentId,
+        teacherId: updated.teacherId,
+        status: updated.status,
+      });
+
+      if (!ok) {
+        logWarning("Conversation upsert returned false");
+      }
+    } catch (err) {
+      logError(err);
+      logWarning("Conversation upsert failed");
+    }
 
     return this.formatAppointmentResponse(updated);
 

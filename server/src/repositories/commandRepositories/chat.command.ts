@@ -12,7 +12,7 @@ export class ChatCommand {
     text: string;
   }): Promise<ChatMessageDTO> {
     if (!Types.ObjectId.isValid(args.conversationId)) {
-      throw new Error("INVALID_CONVERSATION_ID");
+      throw new Error("Invalid conversation id: " + args.conversationId);
     }
 
     const doc = await MessageModel.create({
@@ -41,12 +41,12 @@ export class ChatCommand {
     lastMessage: { text: string; senderId: string; createdAt: string },
   ): Promise<void> {
     if (!Types.ObjectId.isValid(conversationId)) {
-      throw new Error("INVALID_CONVERSATION_ID");
+      throw new Error("Invalid conversation id");
     }
 
     const createdAtDate = new Date(lastMessage.createdAt);
     if (Number.isNaN(createdAtDate.getTime())) {
-      throw new Error("INVALID_CREATED_AT");
+      throw new Error("Invalid conversation id");
     }
 
     await ConversationModel.updateOne(

@@ -9,7 +9,7 @@ import app from "./app.js";
 import { logError, logInfo } from "./utils/logging.js";
 import { TeacherModel } from "./db/schemes/teacherSchema.js";
 import { initSocketServer } from "./socket/socket.server.js";
-// he environment should set the port
+// The environment should set the port
 const port = process.env.PORT || 3000;
 
 const startServer = async () => {

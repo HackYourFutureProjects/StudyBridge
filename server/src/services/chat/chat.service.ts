@@ -7,7 +7,7 @@ import { HttpError } from "../../utils/error.util.js";
 import { StudentQuery } from "../../repositories/queryRepositories/student.query.js";
 import { TeacherQuery } from "../../repositories/queryRepositories/teacher.query.js";
 import { ConversationListItemDTO } from "../../types/chat/chat.types.js";
-import { mapPeer } from "../../utils/mappers/peer.maper.js";
+import { mapPeer } from "../../utils/mappers/peer.mapper.js";
 
 @injectable()
 export class ChatService {
@@ -59,7 +59,10 @@ export class ChatService {
 
     return await Promise.all(
       conversations.map(async (c) => {
-        const peerId = c.participantIds.find((id) => id !== userId)!;
+        const peerId = c.participantIds.find((id) => id !== userId);
+        if (!peerId) {
+          throw new HttpError(500, "Invalid conversation participants");
+        }
 
         const peer =
           role === "student"

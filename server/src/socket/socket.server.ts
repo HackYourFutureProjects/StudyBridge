@@ -14,6 +14,8 @@ import type {
 } from "./chat.socket.types.js";
 import { errorToMessage } from "../utils/errorToMessage.js";
 import { ChatService } from "../services/chat/chat.service.js";
+import { validateChatText } from "./validators/chatText.validator.js";
+import { validateConversationId } from "./validators/conversationId.validator.js";
 
 type SocketData = {
   userId: string;
@@ -36,7 +38,9 @@ export function initSocketServer(httpServer: http.Server): Server {
       const jwtService = container.get<JwtService>(TYPES.JwtService);
 
       const token = socket.handshake.auth?.token as string | undefined;
-      if (!token) return next(new Error("NO_TOKEN"));
+      if (!token) {
+        return next(new Error("No token provided"));
+      }
 
       const payload = jwtService.verifyAccessToken(token) as {
         userId: string;
@@ -48,7 +52,7 @@ export function initSocketServer(httpServer: http.Server): Server {
 
       return next();
     } catch {
-      return next(new Error("BAD_TOKEN"));
+      return next(new Error("Bad token"));
     }
   });
 
@@ -65,10 +69,13 @@ function registerChatHandlers(_io: Server, socket: Socket) {
 
   socket.on("chat:join", async ({ conversationId }: JoinPayload) => {
     const { userId } = socket.data as SocketData;
-
+    const idCheck = validateConversationId(conversationId);
+    if (!idCheck.ok) {
+      return;
+    }
     const can = await chatService.canAccessConversation(userId, conversationId);
     if (!can) {
-      socket.emit("chat:error", { message: "FORBIDDEN" });
+      socket.emit("chat:error", { message: "Access denied" });
       return;
     }
 
@@ -83,7 +90,10 @@ function registerChatHandlers(_io: Server, socket: Socket) {
     "chat:typing:start",
     async ({ conversationId }: { conversationId: string }) => {
       const { userId, role } = socket.data as SocketData;
-
+      const idCheck = validateConversationId(conversationId);
+      if (!idCheck.ok) {
+        return;
+      }
       const can = await chatService.canAccessConversation(
         userId,
         conversationId,
@@ -104,7 +114,10 @@ function registerChatHandlers(_io: Server, socket: Socket) {
     "chat:typing:stop",
     async ({ conversationId }: { conversationId: string }) => {
       const { userId, role } = socket.data as SocketData;
-
+      const idCheck = validateConversationId(conversationId);
+      if (!idCheck.ok) {
+        return;
+      }
       const can = await chatService.canAccessConversation(
         userId,
         conversationId,
@@ -124,6 +137,11 @@ function registerChatHandlers(_io: Server, socket: Socket) {
   socket.on(
     "chat:sendMessage",
     async (payload: SendMessagePayload, cb?: (ack: SendAck) => void) => {
+      const validation = validateChatText(payload?.text, { maxLen: 1000 });
+      if (!validation.ok) {
+        cb?.({ ok: false, error: validation.error });
+        return;
+      }
       try {
         const { userId } = socket.data as SocketData;
 
