@@ -184,8 +184,9 @@ export class TeacherQuery {
         updateFields.subjects = updates.subjects;
 
       if (updates.subjects) {
-        const minPrice = Math.min(...updates.subjects.map((s) => s.hourlyRate));
-        updateFields.priceFrom = minPrice;
+        updateFields.priceFrom = Math.min(
+          ...updates.subjects.map((s) => s.hourlyRate),
+        );
       }
 
       const updatedTeacher = await TeacherModel.findOneAndUpdate(

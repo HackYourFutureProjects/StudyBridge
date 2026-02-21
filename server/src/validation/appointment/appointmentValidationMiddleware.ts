@@ -13,8 +13,8 @@ export const updateAppointmentStatusValidationMiddleware = () => [
   body("status")
     .exists()
     .withMessage("Status is needed")
-    .isIn(["approved", "rejected"])
-    .withMessage("Status must be either approved or rejected"),
+    .isIn(["pending", "approved", "rejected"])
+    .withMessage("Status must be pending, approved, or rejected"),
 ];
 
 export const idParamValidationMiddleware = () => [
