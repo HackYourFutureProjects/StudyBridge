@@ -22,8 +22,9 @@ export const teacherMapper = (
     priceFrom: teacher.priceFrom,
     rating: teacher.rating,
     subjects: teacher.subjects.map((subject) => ({
-      id: subject._id.toString(),
+      _id: subject._id.toString(),
       subjectName: subject.subjectName,
+      description: subject.description,
       levels: subject.levels,
       experienceYears: subject.experienceYears,
       hourlyRate: subject.hourlyRate,

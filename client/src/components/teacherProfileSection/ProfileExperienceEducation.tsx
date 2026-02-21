@@ -11,9 +11,6 @@ type ProfileExperienceEducationProps = {
   onScheduleClick?: () => void;
 };
 
-const selectRowClass = (isEditing: boolean) =>
-  `flex items-center gap-4 ${!isEditing ? "cursor-pointer" : ""}`;
-
 export const ProfileExperienceEducation = ({
   experience,
   education,
@@ -24,40 +21,36 @@ export const ProfileExperienceEducation = ({
   onScheduleClick,
 }: ProfileExperienceEducationProps) => (
   <>
-    <div
-      className={selectRowClass(isEditing)}
-      role={!isEditing ? "button" : undefined}
-      tabIndex={!isEditing ? 0 : undefined}
-      onClick={() => !isEditing && onRowClick()}
-      onKeyDown={(e) => !isEditing && e.key === "Enter" && onRowClick()}
-    >
-      <label className="text-white text-base w-32 shrink-0">Experience:</label>
+    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+      <label className="text-white text-sm sm:text-base w-full sm:w-32 shrink-0">
+        Experience:
+      </label>
       <div className="flex-1 max-w-md">
         <SelectComponent
           key={`experience-${experience}`}
           options={EXPERIENCE_OPTIONS}
-          defaultValue={experience}
-          onChange={onExperienceChange}
-          disabled={!isEditing}
+          value={experience}
+          onChange={(value) => {
+            onExperienceChange(value);
+            if (!isEditing) onRowClick();
+          }}
         />
       </div>
     </div>
 
-    <div
-      className={selectRowClass(isEditing)}
-      role={!isEditing ? "button" : undefined}
-      tabIndex={!isEditing ? 0 : undefined}
-      onClick={() => !isEditing && onRowClick()}
-      onKeyDown={(e) => !isEditing && e.key === "Enter" && onRowClick()}
-    >
-      <label className="text-white text-base w-32 shrink-0">Education:</label>
+    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+      <label className="text-white text-sm sm:text-base w-full sm:w-32 shrink-0">
+        Education:
+      </label>
       <div className="flex-1 max-w-md">
         <SelectComponent
           key={`education-${education}`}
           options={EDUCATION_OPTIONS}
-          defaultValue={education}
-          onChange={onEducationChange}
-          disabled={!isEditing}
+          value={education}
+          onChange={(value) => {
+            onEducationChange(value);
+            if (!isEditing) onRowClick();
+          }}
         />
       </div>
     </div>
@@ -65,7 +58,7 @@ export const ProfileExperienceEducation = ({
     <button
       type="button"
       onClick={onScheduleClick}
-      className="text-purple-400 underline hover:text-purple-300 transition-colors ml-32"
+      className="text-purple-400 underline hover:text-purple-300 transition-colors sm:ml-32 text-sm sm:text-base"
     >
       Lesson schedule
     </button>

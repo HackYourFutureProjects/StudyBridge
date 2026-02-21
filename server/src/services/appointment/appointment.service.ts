@@ -43,6 +43,7 @@ export class AppointmentService {
       studentId: data.studentId,
       teacherId: data.teacherId,
       lesson: data.lesson,
+      level: data.level || "",
       teacher: data.teacherId,
       student: data.studentId,
       price: data.price,
@@ -145,21 +146,26 @@ export class AppointmentService {
     const apt = appointment as {
       id: string;
       lesson: string;
+      level?: string;
       teacherId: string;
       studentId: string;
-      price: number;
+      price: string | number;
       date: string;
       time: string;
       status: string;
       videoCall?: string;
     };
 
+    const priceStr =
+      typeof apt.price === "string" ? apt.price : String(apt.price);
+
     return {
       id: apt.id,
       lesson: apt.lesson,
+      level: apt.level,
       teacherId: apt.teacherId,
       studentId: apt.studentId,
-      price: apt.price.toString(),
+      price: priceStr,
       date: apt.date,
       time: apt.time,
       status: apt.status,

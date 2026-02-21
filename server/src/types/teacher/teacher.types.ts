@@ -6,9 +6,10 @@ export type EducationViewItem = {
 };
 
 export type SubjectViewItem = {
-  id: string;
+  _id: string;
   subjectName: string;
-  levels: string[];
+  description: string | null;
+  levels: Array<{ level: string; price: number }>;
   experienceYears: number;
   hourlyRate: number;
 };
@@ -99,4 +100,21 @@ export type TeacherOutputModel = {
   pageSize?: number;
   totalCount?: number;
   items: TeacherViewType[];
+};
+
+export type UpdateTeacherProfileInput = {
+  firstName?: string;
+  lastName?: string;
+  phoneNumber?: string;
+  experience?: number;
+  bio?: string;
+  profileImageUrl?: string;
+  education?: EducationViewItem[];
+  subjects?: Array<{
+    subjectName: string;
+    description?: string;
+    levels: Array<{ level: string; price: number }>;
+    experienceYears: number;
+    hourlyRate: number;
+  }>;
 };

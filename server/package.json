@@ -62,6 +62,7 @@
     "mongoose": "^9.1.5",
     "nodemailer": "^8.0.1",
     "socket.io": "^4.8.3",
-    "uuid": "^13.0.0"
+    "uuid": "^13.0.0",
+    "resend": "^6.9.2"
   }
 }

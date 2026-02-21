@@ -14,6 +14,7 @@ import {
   ReplaceWeekAvailabilityBody,
   QueryTeacherInput,
   TeacherOutputModel,
+  UpdateTeacherProfileInput,
 } from "../types/teacher/teacher.types.js";
 
 @injectable()
@@ -120,6 +121,51 @@ export class TeacherController {
 
       if (!updated) return res.sendStatus(404);
       return res.status(200).json(updated);
+    } catch (err) {
+      return next(err);
+    }
+  }
+
+  async getMyProfile(req: Request, res: Response, next: NextFunction) {
+    try {
+      const teacherId = req.auth?.userId;
+      if (!teacherId) {
+        return res.status(401).send({ message: "Unauthorized" });
+      }
+
+      const teacher = await this.teacherQuery.getTeacherById(teacherId);
+
+      if (!teacher) {
+        return res.status(404).json({ message: "Teacher not found" });
+      }
+
+      return res.status(200).json(teacher);
+    } catch (err) {
+      return next(err);
+    }
+  }
+
+  async updateMyProfile(
+    req: RequestWithBody<UpdateTeacherProfileInput>,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const teacherId = req.auth?.userId;
+      if (!teacherId) {
+        return res.status(401).send({ message: "Unauthorized" });
+      }
+
+      const updatedTeacher = await this.teacherQuery.updateMyProfile(
+        teacherId,
+        req.body,
+      );
+
+      if (!updatedTeacher) {
+        return res.status(404).json({ message: "Teacher not found" });
+      }
+
+      return res.status(200).json(updatedTeacher);
     } catch (err) {
       return next(err);
     }

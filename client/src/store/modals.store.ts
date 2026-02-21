@@ -16,6 +16,9 @@ type ModalPayload = {
     teacher: TeacherType;
     selectedDate: Date;
     selectedTime: string;
+    selectedSubject?: string;
+    selectedLevel?: string;
+    selectedPrice?: number;
     onSuccess?: () => void;
   };
   signIn?: never;
