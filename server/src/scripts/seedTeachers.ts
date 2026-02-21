@@ -111,7 +111,11 @@ const createTeacherDoc = async (index: number): Promise<TeacherTypeDB> => {
       {
         _id: new ObjectId(),
         subjectName: teacher.subject,
-        levels: ["beginner", "intermediate"],
+        levels: [
+          { level: "A1", price: 25 + index * 5 },
+          { level: "A2", price: 30 + index * 5 },
+        ],
+        description: `${teacher.firstName} is an experienced ${teacher.subject} tutor with ${3 + index} years of experience.`,
         experienceYears: 3 + index,
         hourlyRate: 25 + index * 5,
       },
