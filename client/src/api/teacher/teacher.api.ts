@@ -3,6 +3,7 @@ import {
   TeacherOutputModel,
   TeachersQuery,
   TeacherType,
+  UpdateTeacherProfileInput,
 } from "./teacher.type.ts";
 
 export async function getAllTeachersApi(query: TeachersQuery) {
@@ -29,7 +30,6 @@ type ApiAvailability = {
   sunday: ApiSlot[];
 };
 
-// sends the teacher's weekly availability to the backend and replaces the stored week.
 export async function updateMyWeeklyScheduleApi(payload: {
   availability: ApiAvailability;
   timezone?: string;
@@ -41,10 +41,19 @@ export async function updateMyWeeklyScheduleApi(payload: {
   return res.data;
 }
 
-// requests the teacher's saved weekly availability from the backend for UI prefill/highlighting
 export async function getMyWeeklyScheduleApi() {
   const res = await apiProtected.get<ApiAvailability>(
     "/api/teachers/me/schedule/week",
   );
+  return res.data;
+}
+
+export async function getMyProfileApi() {
+  const res = await apiProtected.get<TeacherType>("/api/teachers/me");
+  return res.data;
+}
+
+export async function updateMyProfileApi(data: UpdateTeacherProfileInput) {
+  const res = await apiProtected.put<TeacherType>("/api/teachers/me", data);
   return res.data;
 }

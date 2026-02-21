@@ -8,7 +8,8 @@ type EducationItem = {
 type SubjectItem = {
   _id: string;
   subjectName: string;
-  levels: string[];
+  description: string | null;
+  levels: Array<{ level: string; price: number }> | string[];
   experienceYears: number;
   hourlyRate: number;
 };
@@ -80,4 +81,22 @@ export type TeachersQuery = {
   sortDirection?: SortDirection;
   pageNumber?: number;
   pageSize?: number;
+};
+
+export type UpdateTeacherProfileInput = {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phoneNumber?: string;
+  experience?: number;
+  bio?: string;
+  profileImageUrl?: string;
+  education?: EducationItem[];
+  subjects?: Array<{
+    subjectName: string;
+    description?: string;
+    levels: Array<{ level: string; price: number }>;
+    experienceYears: number;
+    hourlyRate: number;
+  }>;
 };
