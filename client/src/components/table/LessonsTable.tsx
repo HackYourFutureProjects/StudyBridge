@@ -24,7 +24,7 @@ type LessonsTableProps = {
 };
 
 const DEFAULT_CHECKBOX_COL = "62px";
-const DEFAULT_ACTION_COL = "50px";
+const DEFAULT_ACTION_COL = "80px";
 
 const TABLE_CLASS =
   "overflow-hidden rounded-[12px] border border-[#E1E1E133] bg-[#16131D] shadow-[0_12px_40px_rgba(0,0,0,0.35)]";

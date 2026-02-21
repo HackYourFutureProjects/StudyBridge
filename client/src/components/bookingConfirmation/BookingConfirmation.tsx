@@ -19,10 +19,15 @@ export const BookingConfirmation = ({
 
   if (!payload || !isOpen) return null;
 
+  if (!("teacher" in payload)) return null;
+
   const {
     teacher,
     selectedDate,
     selectedTime,
+    selectedSubject,
+    selectedLevel,
+    selectedPrice,
     onSuccess: onSuccessCallback,
   } = payload;
 
@@ -41,8 +46,12 @@ export const BookingConfirmation = ({
       studentId: user.id,
       date: dateString,
       time: selectedTime,
-      lesson: teacher.subjects?.[0]?.subjectName || "General Lesson",
-      price: teacher.priceFrom?.toString() || "0",
+      lesson:
+        selectedSubject ||
+        teacher.subjects?.[0]?.subjectName ||
+        "General Lesson",
+      price: selectedPrice?.toString() || teacher.priceFrom?.toString() || "0",
+      level: selectedLevel || "",
     };
 
     createAppointment(appointmentData, {
@@ -65,8 +74,13 @@ export const BookingConfirmation = ({
         </p>
         <p>
           <strong>Subject:</strong>{" "}
-          {teacher?.subjects?.[0]?.subjectName || "N/A"}
+          {selectedSubject || teacher?.subjects?.[0]?.subjectName || "N/A"}
         </p>
+        {selectedLevel && (
+          <p>
+            <strong>Level:</strong> {selectedLevel}
+          </p>
+        )}
         <p>
           <strong>Date:</strong> {new Date(selectedDate).toLocaleDateString()}
         </p>
@@ -77,7 +91,7 @@ export const BookingConfirmation = ({
           )}
         </p>
         <p>
-          <strong>Price:</strong> €{teacher?.priceFrom}
+          <strong>Price:</strong> €{selectedPrice || teacher?.priceFrom}
         </p>
         <p className="text-sm text-gray-600 mt-4">
           The lesson request will be sent to the teacher.
