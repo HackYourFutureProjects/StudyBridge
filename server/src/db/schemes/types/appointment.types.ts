@@ -3,6 +3,7 @@ export interface AppointmentTypeDB {
   studentId: string;
   teacherId: string;
   lesson: string;
+  level?: string;
   teacher: string;
   student: string;
   price: string;
