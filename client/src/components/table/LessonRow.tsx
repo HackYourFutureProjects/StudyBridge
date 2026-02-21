@@ -85,6 +85,11 @@ const LessonRow = ({
               ? "underline"
               : ""
           }`}
+          onClick={(e) => {
+            if (column.key === "status") {
+              e.stopPropagation();
+            }
+          }}
         >
           {column.key === "status" && useStatusButtons ? (
             <StatusButtons
@@ -102,13 +107,17 @@ const LessonRow = ({
         </td>
       ))}
 
-      <td className="border-b border-[#E1E1E1]">
+      <td className="border-b border-[#E1E1E1] pl-6">
         <div className="flex justify-center">
           {data.canDelete && data.onDelete ? (
             <Button
               as="button"
               variant="link"
-              onClick={data.onDelete}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                data.onDelete?.();
+              }}
               className="h-[24px] w-[24px] min-h-0 min-w-0 px-0 py-0 text-[#EDEDED] hover:text-red-500"
               title="Delete past appointment"
             >
