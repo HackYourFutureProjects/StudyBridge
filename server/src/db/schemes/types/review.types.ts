@@ -4,5 +4,9 @@ export interface ReviewTypeDB {
   bookingId: string;
   rating: number;
   review?: string;
-  createdAt: string;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+  subject: string;
+  studentName: string;
+  studentAvatar?: string;
 }
