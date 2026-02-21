@@ -3,6 +3,7 @@ import type { ChatMessageDTO } from "../../socket/chat.socket.types.js";
 import { MessageModel } from "../../db/schemes/message.schema.js";
 import { Types } from "mongoose";
 import { ConversationModel } from "../../db/schemes/conversation.schema.js";
+import { logError } from "../../utils/logging.js";
 
 @injectable()
 export class ChatCommand {
@@ -21,11 +22,15 @@ export class ChatCommand {
       text: args.text,
     });
 
-    await this.updateConversationLastMessage(args.conversationId, {
-      text: doc.text,
-      senderId: doc.senderId,
-      createdAt: doc.createdAt.toISOString(),
-    });
+    try {
+      await this.updateConversationLastMessage(args.conversationId, {
+        text: doc.text,
+        senderId: doc.senderId,
+        createdAt: doc.createdAt.toISOString(),
+      });
+    } catch (error) {
+      logError(error);
+    }
 
     return {
       id: doc._id.toString(),

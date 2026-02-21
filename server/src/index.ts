@@ -9,6 +9,7 @@ import app from "./app.js";
 import { logError, logInfo } from "./utils/logging.js";
 import { TeacherModel } from "./db/schemes/teacherSchema.js";
 import { initSocketServer } from "./socket/socket.server.js";
+import { initEmailTransporter } from "./services/email/mailSender.js";
 // The environment should set the port
 const port = process.env.PORT || 3000;
 
@@ -26,7 +27,7 @@ const startServer = async () => {
     logInfo(`Timezone backfill updated ${result.modifiedCount} teacher(s)`);
     const httpServer = http.createServer(app);
     initSocketServer(httpServer);
-    // await initEmailTransporter();
+    await initEmailTransporter();
     httpServer.listen(port, () => {
       logInfo(`Server started on port ${port}`);
     });

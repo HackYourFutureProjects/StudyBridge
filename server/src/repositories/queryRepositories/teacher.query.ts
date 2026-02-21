@@ -75,6 +75,20 @@ export class TeacherQuery {
     }
   }
 
+  async getTeachersByIds(ids: string[]) {
+    try {
+      if (ids.length === 0) {
+        return [];
+      }
+      const teachers = await TeacherModel.find({ id: { $in: ids } }).lean();
+      return teachers.map(teacherMapper);
+    } catch (err: unknown) {
+      throw new Error("Something went wrong with getting teachersByIds", {
+        cause: err,
+      });
+    }
+  }
+
   async findTeacherByEmailWithHash(email: string) {
     try {
       const teacher = await TeacherModel.findOne({ email }).lean();

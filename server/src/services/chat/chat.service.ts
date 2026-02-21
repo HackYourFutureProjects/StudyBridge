@@ -57,26 +57,37 @@ export class ChatService {
 
     const conversations = await this.chatQuery.getConversationsForUser(userId);
 
-    return await Promise.all(
-      conversations.map(async (c) => {
-        const peerId = c.participantIds.find((id) => id !== userId);
-        if (!peerId) {
-          throw new HttpError(500, "Invalid conversation participants");
-        }
-
-        const peer =
-          role === "student"
-            ? await this.teacherQuery.getTeacherById(peerId)
-            : await this.studentQuery.getStudentById(peerId);
-
-        return {
-          id: c.id,
-          peer: mapPeer(peerId, peer),
-          lastMessage: c.lastMessage,
-          updatedAt: c.updatedAt,
-          lastMessageAt: c.lastMessageAt,
-        };
-      }),
+    const peerIds = Array.from(
+      new Set(
+        conversations
+          .map((conversation) =>
+            conversation.participantIds.find((id) => id !== userId),
+          )
+          .filter((x): x is string => Boolean(x)),
+      ),
     );
+    const peers =
+      role === "student"
+        ? await this.teacherQuery.getTeachersByIds(peerIds)
+        : await this.studentQuery.getStudentsByIds(peerIds);
+
+    const peerMap = new Map(peers.map((peer) => [peer.id, peer] as const));
+
+    return conversations.map((conversation) => {
+      const peerId = conversation.participantIds.find((id) => id !== userId);
+      if (!peerId) {
+        throw new HttpError(500, "Invalid conversation participants");
+      }
+
+      const peer = peerMap.get(peerId) ?? null;
+
+      return {
+        id: conversation.id,
+        peer: mapPeer(peerId, peer),
+        lastMessage: conversation.lastMessage,
+        updatedAt: conversation.updatedAt,
+        lastMessageAt: conversation.lastMessageAt,
+      };
+    });
   }
 }
