@@ -9,7 +9,8 @@ type EducationItem = {
 type SubjectItem = {
   _id: ObjectId;
   subjectName: string;
-  levels: string[];
+  description: string | null;
+  levels: Array<{ level: string; price: number }>;
   experienceYears: number;
   hourlyRate: number;
 };
