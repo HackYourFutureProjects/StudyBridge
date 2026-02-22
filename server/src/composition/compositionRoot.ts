@@ -82,10 +82,8 @@ container.bind(TYPES.ChatCommand).to(ChatCommand);
 container.bind(TYPES.ChatController).to(ChatController);
 container.bind(TYPES.ConversationCommand).to(ConversationCommand);
 
-//videoCalls
-container.bind<StreamController>(TYPES.StreamController).to(StreamController);
-
 //video call
+container.bind<StreamController>(TYPES.StreamController).to(StreamController);
 container.bind<VideoCallService>(TYPES.VideoCallService).to(VideoCallService);
 container
   .bind<VideoCallController>(TYPES.VideoCallController)

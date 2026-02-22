@@ -1,6 +1,7 @@
 import { injectable } from "inversify";
 import { VideoCallModel } from "../../db/schemes/videoCallSchema.js";
 import { VideoCallViewType } from "../../types/video/video.types.js";
+import { HttpError } from "../../utils/error.util.js";
 
 @injectable()
 export class VideoCallQuery {
@@ -13,9 +14,30 @@ export class VideoCallQuery {
 
       return video as VideoCallViewType;
     } catch (err: unknown) {
-      throw new Error("Something went wrong with video call search", {
+      throw new HttpError(500, "Something went wrong with video call search", {
         cause: err,
       });
     }
   }
-}
+
+  // returns the newest active incoming call for a student (ringing and not expired).
+  async getIncomingCallForStudent(
+    studentId: string,
+  ): Promise<VideoCallViewType | null> {
+    const now = new Date();
+
+    try {
+      return await VideoCallModel.findOne({
+        studentId,
+        status: "ringing",
+        expiresAt: { $gt: now },
+      })
+        .sort({ createdAt: -1 })
+        .lean();
+    } catch (err: unknown) {
+      throw new HttpError(500, "Something went wrong with video call search", {
+        cause: err,
+      });
+    }
+  }
+} //end of class

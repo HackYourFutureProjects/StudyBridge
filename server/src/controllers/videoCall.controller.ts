@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify";
 import { RequestWithBody } from "../types/common.types.js";
 import { VideoCallService } from "../services/video/videoCall.service.js";
-import { NextFunction, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { TYPES } from "../composition/composition.types.js";
 import { CreateVideoCallType } from "../types/video/video.types.js";
 
@@ -31,4 +31,24 @@ export class VideoCallController {
       return next(error);
     }
   }
-}
+
+  async incomingCall(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userId = req.auth?.userId;
+      const role = req.auth?.role;
+
+      if (!userId || !role) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const incoming = await this.videoCallService.incomingCall({
+        authUserId: userId,
+        authRole: role,
+      });
+
+      return res.status(200).json(incoming);
+    } catch (error) {
+      return next(error);
+    }
+  }
+} // end class

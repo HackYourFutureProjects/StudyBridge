@@ -32,8 +32,8 @@ export const TYPES = {
   ChatController: Symbol.for("ChatController"),
   ConversationCommand: Symbol.for("ConversationCommand"),
 
-  StreamController: Symbol.for("StreamController"),
   //video call
+  StreamController: Symbol.for("StreamController"),
   VideoCallCommand: Symbol.for("VideoCallCommand"),
   VideoCallQuery: Symbol.for("VideoCallQuery"),
   VideoCallService: Symbol.for("VideoCallService"),

@@ -20,3 +20,9 @@ videoCallRouter.post(
   errorMiddleware,
   videoCallController.startVideoCallController.bind(videoCallController),
 );
+
+videoCallRouter.get(
+  "/incoming",
+  authMiddleware.handle,
+  videoCallController.incomingCall.bind(videoCallController),
+);

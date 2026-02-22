@@ -8,7 +8,10 @@ import { StudentModel } from "../../db/schemes/studentSchema.js";
 import { TeacherModel } from "../../db/schemes/teacherSchema.js";
 import { AppointmentModel } from "../../db/schemes/appointmentSchema.js";
 import { VideoCallModel } from "../../db/schemes/videoCallSchema.js";
-import { StartVideoCallInput } from "../../types/video/video.types.js";
+import {
+  StartVideoCallInput,
+  VideoCallViewType,
+} from "../../types/video/video.types.js";
 import { randomUUID } from "node:crypto";
 
 @injectable()
@@ -90,6 +93,7 @@ export class VideoCallService {
       streamCallId: streamCallId,
       status: "ringing",
       expiresAt: new Date(Date.now() + 60 * 1000), // if student doesn’t accept within 60s, it is considered expired/missed.
+      // expiresAt: new Date(Date.now() + 6 * 60 * 1000),
       startedAt: null,
       endedAt: null,
       createdAt: now,
@@ -98,5 +102,22 @@ export class VideoCallService {
 
     const call = await this.videoCallCommand.startVideoCall(newVideo);
     return call;
+  }
+
+  // Checks if the logged-in student has an active incoming ringing call right now.
+  async incomingCall({
+    authUserId,
+    authRole,
+  }: {
+    authUserId: string;
+    authRole: "teacher" | "student";
+  }): Promise<VideoCallViewType | null> {
+    if (authRole !== "student")
+      throw new HttpError(403, "This endpoint is for students only");
+
+    const incoming =
+      await this.videoCallQuery.getIncomingCallForStudent(authUserId);
+
+    return incoming ?? null;
   }
 }

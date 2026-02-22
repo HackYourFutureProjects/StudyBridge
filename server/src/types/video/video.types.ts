@@ -6,6 +6,7 @@ export type VideoCallStatus =
   | "missed";
 
 export type VideoCallViewType = {
+  id: string;
   teacherId: string;
   studentId: string;
   appointmentId?: string | null;
