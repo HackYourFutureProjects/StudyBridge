@@ -20,29 +20,41 @@ export const defaultStudentMenuItems: MenuItem[] = [
   { name: "Dashboard", link: "/clients-dashboard", icon: DashboardIcon },
   {
     name: "Appointments",
-    link: "/clients-appointments",
+    link: "/clients-dashboard/clients-appointments",
     icon: AppointmentsIcon,
   },
-  { name: "My Classes", link: "/student-classes", icon: LessonsIcon },
-  { name: "Billings", link: "/clients-billing", icon: BillingIcon },
-  { name: "Video call", link: "/video-call", icon: VideoCallIcon },
-  { name: "Settings", link: "/settings", icon: SettingsIcon },
-  { name: "Chat", link: "/chat", icon: Chat },
+  {
+    name: "My Classes",
+    link: "/clients-dashboard/student-classes",
+    icon: LessonsIcon,
+  },
+  {
+    name: "Billings",
+    link: "/clients-dashboard/clients-billing",
+    icon: BillingIcon,
+  },
+  {
+    name: "Video call",
+    link: "/clients-dashboard/video-call",
+    icon: VideoCallIcon,
+  },
+  { name: "Settings", link: "/clients-dashboard/settings", icon: SettingsIcon },
+  { name: "Chat", link: "/clients-dashboard/chat", icon: Chat },
 ];
 
 export const defaultTeacherMenuItems: MenuItem[] = [
   { name: "Dashboard", link: "/teacher/my-dashboard", icon: DashboardIcon },
   {
     name: "Appointments",
-    link: "/teacher-appointments",
+    link: "/teacher/teacher-appointments",
     icon: AppointmentsIcon,
   },
   { name: "My Classes", link: "/teacher/my-classes", icon: LessonsIcon },
   { name: "My Students", link: "/teacher/my-students", icon: UsersIcon },
   { name: "My Profile", link: "/teacher/profile", icon: UsersIcon },
   { name: "Billings", link: "/teacher/my-billings", icon: BillingIcon },
-  { name: "Video call", link: "/video-call", icon: VideoCallIcon },
-  { name: "Chat", link: "/chat", icon: Chat },
+  { name: "Video call", link: "/teacher/video-call", icon: VideoCallIcon },
+  { name: "Chat", link: "/teacher/chat", icon: Chat },
 ];
 
 type SidebarProps = {

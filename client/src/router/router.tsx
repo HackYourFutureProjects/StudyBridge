@@ -33,6 +33,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
+        path: "/clients-dashboard",
         element: (
           <RequireAuth>
             <RequireRole allow={["student"]}>
@@ -40,10 +41,10 @@ export const router = createBrowserRouter([
             </RequireRole>
           </RequireAuth>
         ),
-        children: [...studentPrivateRoutes],
+        children: studentPrivateRoutes,
       },
-
       {
+        path: "/teacher",
         element: (
           <RequireAuth>
             <RequireRole allow={["teacher"]}>
@@ -51,7 +52,7 @@ export const router = createBrowserRouter([
             </RequireRole>
           </RequireAuth>
         ),
-        children: [...teacherPrivateRoutes],
+        children: teacherPrivateRoutes,
       },
 
       { path: "/forbidden", element: <div>403 Forbidden</div> },

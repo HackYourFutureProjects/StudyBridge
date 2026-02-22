@@ -9,14 +9,8 @@ import { ChatDialogPage } from "../../pages/chat/chatDialogPage/ChatDialogPage.t
 import { EmptyChat } from "../../pages/chat/EmptyChat/EmptyChat.tsx";
 
 export const studentPrivateRoutes: RouteObject[] = [
-  {
-    path: studentPrivatesRoutesVariables.dashboard,
-    element: <ClientsDashboard />,
-  },
-  {
-    path: studentPrivatesRoutesVariables.classes,
-    element: <ClientsClasses />,
-  },
+  { index: true, element: <ClientsDashboard /> },
+  { path: studentPrivatesRoutesVariables.classes, element: <ClientsClasses /> },
   {
     path: studentPrivatesRoutesVariables.appointments,
     element: <ClientsAppointments />,
