@@ -1,0 +1,102 @@
+import { inject, injectable } from "inversify";
+import { VideoCallCommand } from "../../repositories/commandRepositories/videoCall.command.js";
+import { TYPES } from "../../composition/composition.types.js";
+import { VideoCallQuery } from "../../repositories/queryRepositories/videoCall.query.js";
+import { HttpError } from "../../utils/error.util.js";
+import { VideoCallDB } from "../../db/schemes/types/videoCall.types.js";
+import { StudentModel } from "../../db/schemes/studentSchema.js";
+import { TeacherModel } from "../../db/schemes/teacherSchema.js";
+import { AppointmentModel } from "../../db/schemes/appointmentSchema.js";
+import { VideoCallModel } from "../../db/schemes/videoCallSchema.js";
+import { StartVideoCallInput } from "../../types/video/video.types.js";
+import { randomUUID } from "node:crypto";
+
+@injectable()
+export class VideoCallService {
+  constructor(
+    @inject(TYPES.VideoCallCommand) private videoCallCommand: VideoCallCommand,
+    @inject(TYPES.VideoCallQuery) private videoCallQuery: VideoCallQuery,
+  ) {}
+
+  async startCall({
+    teacherId,
+    studentId,
+    appointmentId,
+    streamCallType,
+    streamCallId,
+    authUserId,
+    authRole,
+  }: StartVideoCallInput) {
+    if (authRole !== "teacher")
+      throw new HttpError(403, "Only teachers can start calls");
+
+    //// Safety check: a teacher can only start a call using their own logged-in ID.
+    if (authUserId !== teacherId)
+      throw new HttpError(403, "You can only start calls as yourself");
+
+    const videoAlreadyActive =
+      await this.videoCallQuery.getVideoByStreamCallId(streamCallId);
+
+    if (videoAlreadyActive) {
+      throw new HttpError(409, "This call already exists");
+    }
+
+    const teacher = await TeacherModel.findOne({ id: teacherId }).lean();
+    if (!teacher) throw new HttpError(404, "Teacher not found");
+
+    const student = await StudentModel.findOne({ id: studentId }).lean();
+    if (!student) throw new HttpError(404, "Student not found");
+
+    //if appointmentId is sent, validate it exists
+    if (appointmentId) {
+      const appointment = await AppointmentModel.findOne({
+        id: appointmentId,
+      }).lean();
+      if (!appointment) throw new HttpError(404, "Appointment not found");
+
+      //if appointmentId is provided, verify that appointment belongs to the same teacherId and studentId.
+      if (appointment.teacherId !== teacherId)
+        throw new HttpError(
+          404,
+          "This appointment does not belong to this teacher",
+        );
+
+      if (appointment.studentId !== studentId)
+        throw new HttpError(
+          404,
+          "This appointment does not belong to this student",
+        );
+    }
+
+    const now = new Date();
+
+    //prevent duplicate active ringing call
+    const active = await VideoCallModel.findOne({
+      teacherId,
+      studentId,
+      status: "ringing",
+      expiresAt: { $gt: now },
+    }).lean();
+
+    if (active)
+      throw new HttpError(409, "There is already an active ringing call");
+
+    const newVideo: VideoCallDB = {
+      id: randomUUID(),
+      teacherId: teacherId,
+      studentId: studentId,
+      appointmentId: appointmentId ?? null,
+      streamCallType: streamCallType ?? "default",
+      streamCallId: streamCallId,
+      status: "ringing",
+      expiresAt: new Date(Date.now() + 60 * 1000), // if student doesn’t accept within 60s, it is considered expired/missed.
+      startedAt: null,
+      endedAt: null,
+      createdAt: now,
+      updatedAt: now,
+    };
+
+    const call = await this.videoCallCommand.startVideoCall(newVideo);
+    return call;
+  }
+}

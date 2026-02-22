@@ -25,4 +25,9 @@ export const TYPES = {
   AppointmentController: Symbol.for("AppointmentController"),
   AppointmentQuery: Symbol.for("AppointmentQuery"),
   AppointmentCommand: Symbol.for("AppointmentCommand"),
+  //video call
+  VideoCallCommand: Symbol.for("VideoCallCommand"),
+  VideoCallQuery: Symbol.for("VideoCallQuery"),
+  VideoCallService: Symbol.for("VideoCallService"),
+  VideoCallController: Symbol.for("VideoCallController"),
 };
