@@ -14,6 +14,7 @@ import { useSendChatMessage } from "../../../hooks/useSendChatMessage.ts";
 import { useTypingEmitter } from "../../../hooks/useTypingEmitter.ts";
 import { useTypingIndicator } from "../../../hooks/useTypingIndicator.ts";
 import { useChatRealtime } from "../../../hooks/useChatRealtime.ts";
+import { usePresenceStore } from "../../../store/presence.store.ts";
 
 export const ChatDialogPage = () => {
   const { id: conversationId } = useParams();
@@ -22,7 +23,6 @@ export const ChatDialogPage = () => {
 
   const { data: messages = [] } = useChatMessagesQuery(conversationId);
   const { data: conversations = [] } = useChatConversationsQuery();
-
   const conversation = useMemo(
     () => conversations.find((c) => c.id === conversationId),
     [conversations, conversationId],
@@ -31,6 +31,7 @@ export const ChatDialogPage = () => {
 
   useChatRealtime({ socket, conversationId });
 
+  const isOnline = usePresenceStore((s) => s.isOnline(peer?.id));
   const { typingUserId } = useTypingIndicator({
     socket,
     conversationId,
@@ -49,14 +50,20 @@ export const ChatDialogPage = () => {
     onSuccess: () => setText(""),
   });
   return (
-    <div className="h-210.5 flex flex-col">
+    <div className="max-h-210.5 flex flex-col">
       <div className="p-3 mb-5">
-        <ChatSideBarItem name={peer?.name} imageUrl={peer?.imageUrl} />
-        {typingUserId ? (
-          <div className="mt-1 text-xs text-white/50">
-            {peer?.name} is typing…
-          </div>
-        ) : null}
+        <div className="flex items-center gap-4">
+          <ChatSideBarItem name={peer?.name} imageUrl={peer?.imageUrl} />
+          <div
+            className={[
+              "h-2 w-2 rounded-full",
+              isOnline ? "bg-green-400" : "bg-light-100",
+            ].join(" ")}
+          ></div>
+        </div>
+        <div className="mt-1 text-xs h-2.5 text-light-500">
+          {typingUserId && peer?.name + "is typing…"}
+        </div>
       </div>
 
       <div className="flex-1 overflow-auto px-7.75 py-2 bg-[#211C27] scrollbar-thin">

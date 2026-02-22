@@ -8,6 +8,7 @@ import { TopBar } from "../components/headerPrivate/TopBar.tsx";
 import { useAuthSessionStore } from "../store/authSession.store.ts";
 import { useEffect } from "react";
 import { useSocketStore } from "../store/socket.store.ts";
+import { usePresenceSubscribe } from "../hooks/usePresenceSubscribe.ts";
 
 export const PrivateLayout = () => {
   const user = useAuthSessionStore((s) => s.user);
@@ -19,7 +20,12 @@ export const PrivateLayout = () => {
       ? defaultTeacherMenuItems
       : defaultStudentMenuItems;
 
+  usePresenceSubscribe();
+
   useEffect(() => {
+    if (!accessToken) {
+      return;
+    }
     if (accessToken) {
       connect(accessToken);
     }
