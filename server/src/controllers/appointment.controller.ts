@@ -61,6 +61,17 @@ export class AppointmentController {
     next: NextFunction,
   ) {
     try {
+      const userId = req.auth?.userId;
+      if (!userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      if (userId !== req.params.studentId) {
+        return res.status(403).json({
+          message: "Forbidden: You can only view your own appointments",
+        });
+      }
+
       const appointments =
         await this.appointmentService.getAppointmentsByStudent(
           req.params.studentId,
@@ -77,6 +88,17 @@ export class AppointmentController {
     next: NextFunction,
   ) {
     try {
+      const userId = req.auth?.userId;
+      if (!userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      if (userId !== req.params.teacherId) {
+        return res.status(403).json({
+          message: "Forbidden: You can only view your own appointments",
+        });
+      }
+
       const appointments =
         await this.appointmentService.getAppointmentsByTeacher(
           req.params.teacherId,
@@ -93,6 +115,17 @@ export class AppointmentController {
     next: NextFunction,
   ) {
     try {
+      const userId = req.auth?.userId;
+      if (!userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      if (userId !== req.params.teacherId) {
+        return res.status(403).json({
+          message: "Forbidden: You can only view your own appointments",
+        });
+      }
+
       const appointments =
         await this.appointmentService.getPendingAppointmentsByTeacher(
           req.params.teacherId,

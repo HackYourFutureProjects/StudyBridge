@@ -142,12 +142,20 @@ export const useAppointmentsLogic = (
   );
 
   const totalPages = Math.ceil(appointments.length / ITEMS_PER_PAGE);
-  const startIndex = (page - 1) * ITEMS_PER_PAGE;
+
+  const validPage = useMemo(() => {
+    if (page > totalPages && totalPages > 0) {
+      return totalPages;
+    }
+    return page;
+  }, [page, totalPages]);
+
+  const startIndex = (validPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const paginatedRows = tableRows.slice(startIndex, endIndex);
 
   return {
-    page,
+    page: validPage,
     setPage,
     selectedIds,
     setSelectedIds,

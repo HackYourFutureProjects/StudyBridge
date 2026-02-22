@@ -73,27 +73,37 @@ export class AppointmentQuery {
   private async populateNames(
     appointments: WithId<AppointmentTypeDB>[],
   ): Promise<WithId<AppointmentTypeDB>[]> {
-    return await Promise.all(
-      appointments.map(async (apt) => {
-        const teacher = await TeacherModel.findOne(
-          { id: apt.teacherId },
-          { firstName: 1, lastName: 1 },
-        ).lean();
-        const student = await StudentModel.findOne(
-          { id: apt.studentId },
-          { firstName: 1, lastName: 1 },
-        ).lean();
+    if (appointments.length === 0) return appointments;
 
-        return {
-          ...apt,
-          teacher: teacher
-            ? `${teacher.firstName} ${teacher.lastName}`
-            : apt.teacher,
-          student: student
-            ? `${student.firstName} ${student.lastName}`
-            : apt.student,
-        };
-      }),
+    const uniqueTeacherIds = [
+      ...new Set(appointments.map((apt) => apt.teacherId)),
+    ];
+    const uniqueStudentIds = [
+      ...new Set(appointments.map((apt) => apt.studentId)),
+    ];
+
+    const [teachers, students] = await Promise.all([
+      TeacherModel.find(
+        { id: { $in: uniqueTeacherIds } },
+        { id: 1, firstName: 1, lastName: 1 },
+      ).lean(),
+      StudentModel.find(
+        { id: { $in: uniqueStudentIds } },
+        { id: 1, firstName: 1, lastName: 1 },
+      ).lean(),
+    ]);
+
+    const teacherMap = new Map(
+      teachers.map((t) => [t.id, `${t.firstName} ${t.lastName}`]),
     );
+    const studentMap = new Map(
+      students.map((s) => [s.id, `${s.firstName} ${s.lastName}`]),
+    );
+
+    return appointments.map((apt) => ({
+      ...apt,
+      teacher: teacherMap.get(apt.teacherId) || apt.teacher,
+      student: studentMap.get(apt.studentId) || apt.student,
+    }));
   }
 }

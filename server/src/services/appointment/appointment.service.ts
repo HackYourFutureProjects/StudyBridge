@@ -157,6 +157,8 @@ export class AppointmentService {
       id: string;
       lesson: string;
       level?: string;
+      teacherId: string;
+      studentId: string;
       teacher: string;
       student: string;
       price: string | number;
@@ -173,6 +175,8 @@ export class AppointmentService {
       id: apt.id,
       lesson: apt.lesson,
       level: apt.level,
+      teacherId: apt.teacherId,
+      studentId: apt.studentId,
       teacher: apt.teacher,
       student: apt.student,
       price: priceStr,
