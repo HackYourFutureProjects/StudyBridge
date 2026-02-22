@@ -20,6 +20,7 @@ app.use(express.json());
 app.use("/api/auth", authRouter);
 app.use("/api/appointments", appointmentRouter);
 app.use("/api/teachers", teacherRouter);
-app.use(globalErrorMiddleware);
 app.use("/api/reviews", reviewRouter);
+app.use(globalErrorMiddleware);
+
 export default app;

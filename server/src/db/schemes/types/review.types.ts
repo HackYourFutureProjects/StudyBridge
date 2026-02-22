@@ -1,7 +1,8 @@
+import { Types } from "mongoose";
 export interface ReviewTypeDB {
-  teacherId: string;
-  studentId: string;
-  bookingId: string;
+  teacherId: Types.ObjectId | string;
+  studentId: Types.ObjectId | string;
+  bookingId: Types.ObjectId | string;
   rating: number;
   review?: string;
   createdAt: Date | string;

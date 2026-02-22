@@ -15,7 +15,7 @@ export class ReviewController {
   // POST - Review. Let Student to create a review
   async createReview(req: Request, res: Response, next: NextFunction) {
     try {
-      const studentId = (req as any).user.id;
+      const studentId = (req as any).auth.userId;
       const review = await this.reviewService.createReview(
         studentId,
         req.body as ReviewInputType,

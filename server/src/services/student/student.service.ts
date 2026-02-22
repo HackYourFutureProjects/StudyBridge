@@ -16,6 +16,7 @@ export class StudentService {
     @inject(TYPES.StudentCommand) private studentCommand: StudentCommand,
     @inject(TYPES.StudentQuery) private studentQuery: StudentQuery,
     @inject(TYPES.TeacherQuery) private teacherQuery: TeacherQuery,
+    @inject(TYPES.TeacherCommand) private teacherCommand: TeacherCommand,
   ) {}
 
   async createStudent({

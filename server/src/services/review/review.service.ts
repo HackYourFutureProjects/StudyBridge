@@ -11,6 +11,8 @@ import {
 } from "../../types/review/review.types.js";
 import { reviewMapper } from "../../utils/mappers/review.mapper.js";
 import { HttpError, NotFoundError } from "../../utils/error.util.js";
+import { TeacherCommand } from "../../repositories/commandRepositories/teacher.command.js";
+import { TeacherQuery } from "../../repositories/queryRepositories/teacher.query.js";
 
 @injectable()
 export class ReviewService {
@@ -19,6 +21,8 @@ export class ReviewService {
     @inject(TYPES.ReviewQuery) private reviewQuery: ReviewQuery,
     @inject(TYPES.StudentQuery) private studentQuery: StudentQuery,
     @inject(TYPES.AppointmentQuery) private appointmentQuery: AppointmentQuery,
+    @inject(TYPES.TeacherCommand) private teacherCommand: TeacherCommand,
+    @inject(TYPES.TeacherQuery) private teacherQuery: TeacherQuery,
   ) {}
 
   async createReview(
@@ -30,8 +34,13 @@ export class ReviewService {
       const appointment = await this.appointmentQuery.getAppointmentById(
         reviewInput.bookingId,
       );
+
       if (!appointment) {
         throw new NotFoundError("Appointment not found");
+      }
+
+      if (appointment.status !== "approved") {
+        throw new HttpError(400, "You can only review completed appointments");
       }
 
       //Check the student reviewing his own appointment
@@ -69,14 +78,26 @@ export class ReviewService {
         review: reviewInput.review,
         subject: reviewInput.subject,
         studentName: `${student.firstName} ${student.lastName}`,
-        studentAvatar: student.profileImageUrl || null,
+        studentAvatar: student.profileImageUrl || undefined,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
       // Save the review in the database
       const createdReview = await this.reviewCommand.createReview(newReview);
+      //Updat the average rating for the teacher after creating the review
+      const teacherRating = await this.reviewQuery.getTeacherAverageRating(
+        reviewInput.teacherId,
+      );
+      await this.teacherCommand.updateTeacherAverageRating(
+        reviewInput.teacherId,
+        teacherRating.averageRating,
+      );
+
       return reviewMapper(createdReview);
-    } catch (err: unknown) {
+    } catch (err: any) {
+      if (err.statusCode && err.message) {
+        throw err;
+      }
       throw new HttpError(500, "Could not create review", { cause: err });
     }
   }
