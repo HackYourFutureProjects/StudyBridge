@@ -8,8 +8,6 @@ import {
 } from "../../types/appointment/appointment.types.js";
 import { AppointmentCommand } from "../../repositories/commandRepositories/appointment.command.js";
 import { AppointmentQuery } from "../../repositories/queryRepositories/appointment.query.js";
-import { StudentModel } from "../../db/schemes/studentSchema.js";
-import { TeacherModel } from "../../db/schemes/teacherSchema.js";
 
 @injectable()
 export class AppointmentService {
@@ -21,28 +19,13 @@ export class AppointmentService {
   ) {}
 
   async createAppointment(data: CreateAppointmentType) {
-    const student = await StudentModel.findOne({ id: data.studentId });
-    if (!student) {
-      throw new Error("Student not found");
-    }
-
-    const teacher = await TeacherModel.findOne({ id: data.teacherId });
-    if (!teacher) {
-      throw new Error("Teacher not found");
-    }
-
-    if (data.teacherId === data.studentId) {
-      throw new Error("Teachers cannot book appointments with themselves");
-    }
-
     const appointment = {
       id: randomUUID(),
       studentId: data.studentId,
       teacherId: data.teacherId,
       lesson: data.lesson,
-      level: data.level || "",
-      teacher: `${teacher.firstName} ${teacher.lastName}`,
-      student: `${student.firstName} ${student.lastName}`,
+      teacher: data.teacherId,
+      student: data.studentId,
       price: data.price,
       date: data.date,
       time: data.time,
@@ -88,34 +71,6 @@ export class AppointmentService {
     return updated ? this.formatAppointmentResponse(updated) : null;
   }
 
-  async deleteAppointment(id: string, userId: string) {
-    const appointment = await this.appointmentQuery.getAppointmentById(id);
-
-    if (!appointment) {
-      throw new Error("Appointment not found");
-    }
-
-    if (appointment.teacherId !== userId && appointment.studentId !== userId) {
-      throw new Error("Unauthorized to delete this appointment");
-    }
-
-    const [hours, minutes] = appointment.time.split(":").map(Number);
-    if (isNaN(hours) || isNaN(minutes)) {
-      throw new Error("Invalid appointment time format");
-    }
-
-    const appointmentDateTime = new Date(appointment.date);
-    appointmentDateTime.setHours(hours, minutes, 0, 0);
-
-    const now = new Date();
-
-    if (appointmentDateTime >= now) {
-      throw new Error("You cannot delete future lesson");
-    }
-
-    await this.appointmentCommand.deleteAppointment(id);
-  }
-
   async getPendingAppointmentsByTeacher(teacherId: string) {
     const appointments =
       await this.appointmentQuery.getPendingAppointmentsByTeacher(teacherId);
@@ -126,30 +81,21 @@ export class AppointmentService {
     const apt = appointment as {
       id: string;
       lesson: string;
-      level?: string;
       teacherId: string;
       studentId: string;
-      teacher: string;
-      student: string;
-      price: string | number;
+      price: number;
       date: string;
       time: string;
       status: string;
       videoCall?: string;
     };
 
-    const priceStr =
-      typeof apt.price === "string" ? apt.price : String(apt.price);
-
     return {
       id: apt.id,
       lesson: apt.lesson,
-      level: apt.level,
-      teacherId: apt.teacherId,
-      studentId: apt.studentId,
-      teacher: apt.teacher,
-      student: apt.student,
-      price: priceStr,
+      teacher: apt.teacherId,
+      student: apt.studentId,
+      price: apt.price.toString(),
       date: apt.date,
       time: apt.time,
       status: apt.status,

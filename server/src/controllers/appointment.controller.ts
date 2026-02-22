@@ -124,22 +124,4 @@ export class AppointmentController {
       return next(error);
     }
   }
-
-  async deleteAppointmentController(
-    req: RequestWithParams<ParamsType>,
-    res: Response,
-    next: NextFunction,
-  ) {
-    try {
-      const userId = req.auth?.userId;
-      if (!userId) {
-        return res.status(401).json({ message: "Unauthorized" });
-      }
-
-      await this.appointmentService.deleteAppointment(req.params.id, userId);
-      return res.status(204).send();
-    } catch (error) {
-      return next(error);
-    }
-  }
 }
