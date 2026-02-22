@@ -4,6 +4,7 @@ export type ReviewInputType = {
   rating: number;
   review?: string;
   bookingId: string;
+  subject: string;
 };
 
 // The following is used to check if a student is eligible to review a teacher.

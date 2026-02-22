@@ -8,5 +8,5 @@ export interface ReviewTypeDB {
   updatedAt: Date | string;
   subject: string;
   studentName: string;
-  studentAvatar?: string;
+  studentAvatar?: string | null;
 }

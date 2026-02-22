@@ -25,4 +25,9 @@ export const TYPES = {
   AppointmentController: Symbol.for("AppointmentController"),
   AppointmentQuery: Symbol.for("AppointmentQuery"),
   AppointmentCommand: Symbol.for("AppointmentCommand"),
+  //review
+  ReviewService: Symbol.for("ReviewService"),
+  ReviewController: Symbol.for("ReviewController"),
+  ReviewQuery: Symbol.for("ReviewQuery"),
+  ReviewCommand: Symbol.for("ReviewCommand"),
 };

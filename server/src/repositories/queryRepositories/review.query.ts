@@ -49,4 +49,53 @@ export class ReviewQuery {
       );
     }
   }
+
+  //
+  async getTeacherAverageRating(
+    teacherId: string,
+  ): Promise<TeacherAverageRatingResponse> {
+    try {
+      const result = await ReviewModel.aggregate([
+        { $match: { teacherId } },
+        {
+          $group: {
+            _id: "$teacherId",
+            averageRating: { $avg: "$rating" },
+            totalReviews: { $sum: 1 },
+          },
+        },
+      ]);
+      if (result.length === 0) {
+        return {
+          teacherId,
+          averageRating: 0,
+          totalReviews: 0,
+        };
+      }
+      return {
+        teacherId: result[0]._id,
+        averageRating: Math.round(result[0].averageRating * 2) / 2, // Round to the nearest 0.5
+        totalReviews: result[0].totalReviews,
+      };
+    } catch (err: unknown) {
+      throw new Error("Could not fetch average rating for the teacher", {
+        cause: err,
+      });
+    }
+  }
+
+  // Check if the student has already reviewed the appointment
+  async hasStudentReviewedAppointment(bookingId: string): Promise<boolean> {
+    try {
+      const existingReview = await ReviewModel.findOne({ bookingId }).lean();
+      return !!existingReview; // Return true if a review exists, false otherwise
+    } catch (err: unknown) {
+      throw new Error(
+        "Could not check if the student has already reviewed the appointment",
+        {
+          cause: err,
+        },
+      );
+    }
+  }
 }
