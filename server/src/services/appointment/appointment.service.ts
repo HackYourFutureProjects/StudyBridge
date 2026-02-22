@@ -45,8 +45,8 @@ export class AppointmentService {
       teacherId: data.teacherId,
       lesson: data.lesson,
       level: data.level || "",
-      teacher: data.teacherId,
-      student: data.studentId,
+      teacher: `${teacher.firstName} ${teacher.lastName}`,
+      student: `${student.firstName} ${student.lastName}`,
       price: data.price,
       date: data.date,
       time: data.time,
@@ -157,8 +157,8 @@ export class AppointmentService {
       id: string;
       lesson: string;
       level?: string;
-      teacherId: string;
-      studentId: string;
+      teacher: string;
+      student: string;
       price: string | number;
       date: string;
       time: string;
@@ -173,8 +173,8 @@ export class AppointmentService {
       id: apt.id,
       lesson: apt.lesson,
       level: apt.level,
-      teacherId: apt.teacherId,
-      studentId: apt.studentId,
+      teacher: apt.teacher,
+      student: apt.student,
       price: priceStr,
       date: apt.date,
       time: apt.time,

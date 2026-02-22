@@ -1,11 +1,11 @@
 import { RouteObject } from "react-router-dom";
 
 import { chatRoutes, teacherPrivatesRoutesVariables } from "./pathVariables.ts";
-import { TeacherDashboard } from "../../pages/privetTeachersPages/teacherDashboard/TeacherDashboard.tsx";
+import { TeacherDashboard } from "../../pages/privateTeachersPages/teacherDashboard/TeacherDashboard.tsx";
 import { ClientsClasses } from "../../pages/privateStudentsPages/ClientsClasses/ClientsClasses.tsx";
 import { ClientsBilling } from "../../pages/privateStudentsPages/clientsBilling/ClientsBilling.tsx";
-import { TeacherProfile } from "../../pages/privetTeachersPages/teacherProfile/TeacherProfile.tsx";
-import { TeacherAppointments } from "../../pages/privetTeachersPages/teacherAppointments/TeacherAppointments.tsx";
+import { TeacherProfile } from "../../pages/privateTeachersPages/teacherProfile/TeacherProfile.tsx";
+import { TeacherAppointments } from "../../pages/privateTeachersPages/teacherAppointments/TeacherAppointments.tsx";
 import { ChatDialogPage } from "../../pages/chat/chatDialogPage/ChatDialogPage.tsx";
 import { ChatPage } from "../../pages/chat/chatPage/ChatPage.tsx";
 import { EmptyChat } from "../../pages/chat/EmptyChat/EmptyChat.tsx";
