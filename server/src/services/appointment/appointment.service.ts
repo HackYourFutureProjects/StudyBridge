@@ -10,8 +10,6 @@ import { AppointmentCommand } from "../../repositories/commandRepositories/appoi
 import { AppointmentQuery } from "../../repositories/queryRepositories/appointment.query.js";
 import { StudentModel } from "../../db/schemes/studentSchema.js";
 import { TeacherModel } from "../../db/schemes/teacherSchema.js";
-import { ConversationCommand } from "../../repositories/commandRepositories/conversation.command.js";
-import { logError, logWarning } from "../../utils/logging.js";
 
 @injectable()
 export class AppointmentService {
@@ -20,8 +18,6 @@ export class AppointmentService {
     protected appointmentCommand: AppointmentCommand,
     @inject(TYPES.AppointmentQuery)
     protected appointmentQuery: AppointmentQuery,
-    @inject(TYPES.ConversationCommand)
-    protected conversationCommand: ConversationCommand,
   ) {}
 
   async createAppointment(data: CreateAppointmentType) {
@@ -89,33 +85,7 @@ export class AppointmentService {
       id,
       updateData,
     );
-    if (!updated) {
-      return null;
-    }
-
-    try {
-      const ok = await this.conversationCommand.upsertForAppointment({
-        appointmentId: updated.id,
-        studentId: updated.studentId,
-        teacherId: updated.teacherId,
-        status: updated.status,
-      });
-
-      if (!ok) {
-        logWarning("Conversation upsert returned false");
-      }
-    } catch (err) {
-      logError(err);
-      logWarning("Conversation upsert failed");
-    }
-
-    return this.formatAppointmentResponse(updated);
-
-    // const updated = await this.appointmentCommand.updateAppointment(
-    //   id,
-    //   updateData,
-    // );
-    // return updated ? this.formatAppointmentResponse(updated) : null;
+    return updated ? this.formatAppointmentResponse(updated) : null;
   }
 
   async deleteAppointment(id: string, userId: string) {
