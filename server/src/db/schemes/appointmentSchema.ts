@@ -8,6 +8,7 @@ export const AppointmentSchema = new mongoose.Schema<AppointmentTypeDB>(
     studentId: { type: String, required: true, index: true },
     teacherId: { type: String, required: true, index: true },
     lesson: { type: String, required: true },
+    level: { type: String, default: "" },
     teacher: { type: String, required: true },
     student: { type: String, required: true },
     price: { type: String, required: true },

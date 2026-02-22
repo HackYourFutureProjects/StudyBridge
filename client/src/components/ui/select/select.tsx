@@ -44,22 +44,30 @@ export type SelectComponentType<TValue extends string = string> = Omit<
   "children" | "value" | "defaultValue" | "onValueChange"
 > & {
   onChange: (item: TValue) => void;
-  defaultValue: TValue;
+  value?: TValue;
+  defaultValue?: TValue;
   options: readonly Option<TValue>[];
   errorMessage?: string;
   className?: string;
+  placeholder?: string;
 };
 
 export const SelectComponent = <TValue extends string = string>({
   onChange,
+  value,
   defaultValue,
   options,
+  placeholder,
   ...props
 }: SelectComponentType<TValue>) => {
   const pointerRef = React.useRef(false);
+  const currentValue = value || defaultValue || "";
+  const selectedOption = options.find((opt) => opt.value === currentValue);
+
   return (
     <Select.Root
       {...props}
+      value={value}
       defaultValue={defaultValue}
       onValueChange={(value) => onChange(value as TValue)}
     >
@@ -70,7 +78,7 @@ export const SelectComponent = <TValue extends string = string>({
                       group
                       w-[60%] sm:w-100
                       h-9 sm:h-13
-                      px-6 sm:px-10
+                      px-4 sm:px-6 lg:px-10
                       py-1.5 sm:py-2
                       gap-1.5 sm:gap-2.5
                       rounded-[60px]
@@ -78,6 +86,7 @@ export const SelectComponent = <TValue extends string = string>({
                       flex items-center justify-center
                       cursor-pointer
                       bg-light-100 text-dark-900
+                      text-xs sm:text-sm lg:text-base
                       transition
                       hover:border-purple-500
                       outline-none
@@ -85,7 +94,9 @@ export const SelectComponent = <TValue extends string = string>({
                       focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2
                 "
       >
-        <Select.Value defaultValue={defaultValue} placeholder={defaultValue} />
+        <Select.Value placeholder={placeholder}>
+          {selectedOption?.label || currentValue || placeholder}
+        </Select.Value>
         <Select.Icon
           className="
                       transition-transform duration-200
@@ -105,6 +116,7 @@ export const SelectComponent = <TValue extends string = string>({
           className="
                         z-50
                         w-[var(--radix-select-trigger-width)]
+                        max-h-[300px]
                         rounded-[10px]
                         shadow-lg
                         overflow-hidden
@@ -117,8 +129,10 @@ export const SelectComponent = <TValue extends string = string>({
             }
           }}
         >
-          <Select.ScrollUpButton></Select.ScrollUpButton>
-          <Select.Viewport>
+          <Select.ScrollUpButton className="flex items-center justify-center h-6 bg-purple-800 text-light-100 cursor-default">
+            Up
+          </Select.ScrollUpButton>
+          <Select.Viewport className="p-1 max-h-[280px] overflow-y-auto">
             <Select.Group>
               {options.map((item) => {
                 return (
@@ -129,7 +143,9 @@ export const SelectComponent = <TValue extends string = string>({
               })}
             </Select.Group>
           </Select.Viewport>
-          <Select.ScrollDownButton></Select.ScrollDownButton>
+          <Select.ScrollDownButton className="flex items-center justify-center h-6 bg-purple-800 text-light-100 cursor-default">
+            Down
+          </Select.ScrollDownButton>
         </Select.Content>
       </Select.Portal>
     </Select.Root>

@@ -15,6 +15,8 @@ export const LEVELS = [
   { label: "B2 - Upper Intermediate", value: "B2" },
   { label: "C1 - Advanced", value: "C1" },
   { label: "C2 - Proficiency", value: "C2" },
+  { label: "For children", value: "For children" },
+  { label: "Others", value: "Others" },
 ];
 
 export const EXPERIENCE_OPTIONS = [

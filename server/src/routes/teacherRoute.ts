@@ -21,6 +21,20 @@ teacherRouter.get(
   teacherController.getAllTeachers.bind(teacherController),
 );
 
+teacherRouter.get(
+  "/me",
+  authMiddleware.handle,
+  requireRole("teacher"),
+  teacherController.getMyProfile.bind(teacherController),
+);
+
+teacherRouter.put(
+  "/me",
+  authMiddleware.handle,
+  requireRole("teacher"),
+  teacherController.updateMyProfile.bind(teacherController),
+);
+
 teacherRouter.put(
   "/me/schedule/week",
   authMiddleware.handle,

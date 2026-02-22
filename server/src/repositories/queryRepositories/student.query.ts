@@ -33,6 +33,20 @@ export class StudentQuery {
     }
   }
 
+  async getStudentsByIds(ids: string[]) {
+    try {
+      if (ids.length === 0) {
+        return [];
+      }
+      const students = await StudentModel.find({ id: { $in: ids } }).lean();
+      return students.map(studentMapper);
+    } catch (err: unknown) {
+      throw new Error("Something went wrong with getting studentsByIds", {
+        cause: err,
+      });
+    }
+  }
+
   async findUserByEmailWithHash(email: string) {
     try {
       const user = await StudentModel.findOne({ email }).lean();

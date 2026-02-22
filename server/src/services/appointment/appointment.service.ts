@@ -10,6 +10,8 @@ import { AppointmentCommand } from "../../repositories/commandRepositories/appoi
 import { AppointmentQuery } from "../../repositories/queryRepositories/appointment.query.js";
 import { StudentModel } from "../../db/schemes/studentSchema.js";
 import { TeacherModel } from "../../db/schemes/teacherSchema.js";
+import { ConversationCommand } from "../../repositories/commandRepositories/conversation.command.js";
+import { logError, logWarning } from "../../utils/logging.js";
 
 @injectable()
 export class AppointmentService {
@@ -18,6 +20,8 @@ export class AppointmentService {
     protected appointmentCommand: AppointmentCommand,
     @inject(TYPES.AppointmentQuery)
     protected appointmentQuery: AppointmentQuery,
+    @inject(TYPES.ConversationCommand)
+    protected conversationCommand: ConversationCommand,
   ) {}
 
   async createAppointment(data: CreateAppointmentType) {
@@ -40,6 +44,7 @@ export class AppointmentService {
       studentId: data.studentId,
       teacherId: data.teacherId,
       lesson: data.lesson,
+      level: data.level || "",
       teacher: data.teacherId,
       student: data.studentId,
       price: data.price,
@@ -84,7 +89,33 @@ export class AppointmentService {
       id,
       updateData,
     );
-    return updated ? this.formatAppointmentResponse(updated) : null;
+    if (!updated) {
+      return null;
+    }
+
+    try {
+      const ok = await this.conversationCommand.upsertForAppointment({
+        appointmentId: updated.id,
+        studentId: updated.studentId,
+        teacherId: updated.teacherId,
+        status: updated.status,
+      });
+
+      if (!ok) {
+        logWarning("Conversation upsert returned false");
+      }
+    } catch (err) {
+      logError(err);
+      logWarning("Conversation upsert failed");
+    }
+
+    return this.formatAppointmentResponse(updated);
+
+    // const updated = await this.appointmentCommand.updateAppointment(
+    //   id,
+    //   updateData,
+    // );
+    // return updated ? this.formatAppointmentResponse(updated) : null;
   }
 
   async deleteAppointment(id: string, userId: string) {
@@ -125,21 +156,26 @@ export class AppointmentService {
     const apt = appointment as {
       id: string;
       lesson: string;
+      level?: string;
       teacherId: string;
       studentId: string;
-      price: number;
+      price: string | number;
       date: string;
       time: string;
       status: string;
       videoCall?: string;
     };
 
+    const priceStr =
+      typeof apt.price === "string" ? apt.price : String(apt.price);
+
     return {
       id: apt.id,
       lesson: apt.lesson,
+      level: apt.level,
       teacherId: apt.teacherId,
       studentId: apt.studentId,
-      price: apt.price.toString(),
+      price: priceStr,
       date: apt.date,
       time: apt.time,
       status: apt.status,

@@ -50,6 +50,7 @@
     "typescript": "5.9.3"
   },
   "dependencies": {
+    "@stream-io/node-sdk": "0.7.42",
     "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
@@ -61,7 +62,8 @@
     "mongodb-memory-server": "^11.0.1",
     "mongoose": "^9.1.5",
     "nodemailer": "^8.0.1",
-    "resend": "^6.9.2",
-    "uuid": "^13.0.0"
+    "socket.io": "^4.8.3",
+    "uuid": "^13.0.0",
+    "resend": "^6.9.2"
   }
 }

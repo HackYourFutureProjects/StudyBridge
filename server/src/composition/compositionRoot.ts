@@ -23,6 +23,12 @@ import { ReviewQuery } from "../repositories/queryRepositories/review.query.js";
 import { ReviewService } from "../services/review/review.service.js";
 import { ReviewController } from "../controllers/review.controller.js";
 import { ReviewCommand } from "../repositories/commandRepositories/review.command.js";
+import { ChatQuery } from "../repositories/queryRepositories/chat.query.js";
+import { ChatCommand } from "../repositories/commandRepositories/chat.command.js";
+import { ChatController } from "../controllers/chat.controller.js";
+import { ChatService } from "../services/chat/chat.service.js";
+import { ConversationCommand } from "../repositories/commandRepositories/conversation.command.js";
+import { StreamController } from "../controllers/stream.controller.js";
 
 export const container = new Container();
 
@@ -74,3 +80,12 @@ container.bind<ReviewQuery>(TYPES.ReviewQuery).to(ReviewQuery);
 container.bind<ReviewService>(TYPES.ReviewService).to(ReviewService);
 container.bind<ReviewController>(TYPES.ReviewController).to(ReviewController);
 container.bind<ReviewCommand>(TYPES.ReviewCommand).to(ReviewCommand);
+//chat
+container.bind(TYPES.ChatService).to(ChatService);
+container.bind(TYPES.ChatQuery).to(ChatQuery);
+container.bind(TYPES.ChatCommand).to(ChatCommand);
+container.bind(TYPES.ChatController).to(ChatController);
+container.bind(TYPES.ConversationCommand).to(ConversationCommand);
+
+//videoCalls
+container.bind<StreamController>(TYPES.StreamController).to(StreamController);

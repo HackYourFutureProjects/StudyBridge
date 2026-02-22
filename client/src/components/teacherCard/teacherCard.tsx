@@ -63,28 +63,32 @@ export const TeacherCard = ({
           </div>
         </div>
         <div className="flex flex-col items-center gap-5">
-          {subjects.length ? (
-            <span
-              className="inline-flex w-fit
-                        shrink-0 border border-light-300 text-[12px] md:text-[12px] text-light-100 rounded-full bg-dark-900
-                        px-8.75 py-0.5"
-            >
+          {subjects.length > 0 && (
+            <div className="flex flex-wrap gap-2 justify-center">
               {subjects.map((subject) => (
-                <span key={subject.subjectName}>
+                <span
+                  key={subject._id}
+                  className="inline-flex shrink-0 border border-light-300 text-[12px] md:text-[12px] text-light-100 rounded-full bg-dark-900 px-8.75 py-0.5"
+                >
                   {subject.subjectName} teacher
                 </span>
               ))}
-            </span>
-          ) : null}
+            </div>
+          )}
           <div className="flex flex-col gap-5 w-full max-w-116.25">
             <p className="text-[12px] md:text-[14px] lg:text-[14px] xl:text-[15px] text-light-100">
-              Experience — {experience}
+              Experience — {experience} {experience === 1 ? "year" : "years"}
             </p>
             <p className="text-[12px] md:text-[14px] lg:text-[14px] xl:text-[15px] text-light-100">
               Education —{" "}
-              {education.map((item) => (
-                <span key={item.degree}>{item.institution}</span>
-              ))}
+              {education.length > 0
+                ? education.map((item, index) => (
+                    <span key={item.degree}>
+                      {item.institution}
+                      {index < education.length - 1 ? ", " : ""}
+                    </span>
+                  ))
+                : "Not specified"}
             </p>
             <p
               className="text-[12px] md:text-[14px] lg:text-[14px] xl:text-[15px] text-light-100

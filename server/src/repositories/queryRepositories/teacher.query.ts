@@ -4,6 +4,7 @@ import {
   TeacherOutputModel,
   TeacherViewType,
   AvailabilityView,
+  UpdateTeacherProfileInput,
 } from "../../types/teacher/teacher.types.js";
 import { TeacherModel } from "../../db/schemes/teacherSchema.js";
 import { teacherMapper } from "../../utils/mappers/teacher.mapper.js";
@@ -69,6 +70,20 @@ export class TeacherQuery {
       return teacherMapper(teacher);
     } catch (err: unknown) {
       throw new Error("Something went wrong with teacher search", {
+        cause: err,
+      });
+    }
+  }
+
+  async getTeachersByIds(ids: string[]) {
+    try {
+      if (ids.length === 0) {
+        return [];
+      }
+      const teachers = await TeacherModel.find({ id: { $in: ids } }).lean();
+      return teachers.map(teacherMapper);
+    } catch (err: unknown) {
+      throw new Error("Something went wrong with getting teachersByIds", {
         cause: err,
       });
     }
@@ -156,6 +171,51 @@ export class TeacherQuery {
           cause: err,
         },
       );
+    }
+  }
+
+  async updateMyProfile(
+    teacherId: string,
+    updates: UpdateTeacherProfileInput,
+  ): Promise<TeacherViewType | null> {
+    try {
+      const updateFields: Record<string, unknown> = {};
+
+      if (updates.firstName !== undefined)
+        updateFields.firstName = updates.firstName;
+      if (updates.lastName !== undefined)
+        updateFields.lastName = updates.lastName;
+      if (updates.phoneNumber !== undefined)
+        updateFields.phoneNumber = updates.phoneNumber;
+      if (updates.experience !== undefined)
+        updateFields.experience = updates.experience;
+      if (updates.bio !== undefined) updateFields.bio = updates.bio;
+      if (updates.profileImageUrl !== undefined)
+        updateFields.profileImageUrl = updates.profileImageUrl;
+      if (updates.education !== undefined)
+        updateFields.education = updates.education;
+      if (updates.subjects !== undefined)
+        updateFields.subjects = updates.subjects;
+
+      if (updates.subjects) {
+        updateFields.priceFrom = Math.min(
+          ...updates.subjects.map((s) => s.hourlyRate),
+        );
+      }
+
+      const updatedTeacher = await TeacherModel.findOneAndUpdate(
+        { id: teacherId },
+        { $set: updateFields },
+        { new: true, lean: true },
+      );
+
+      if (!updatedTeacher) return null;
+
+      return teacherMapper(updatedTeacher);
+    } catch (err: unknown) {
+      throw new Error("Something went wrong with updating teacher profile", {
+        cause: err,
+      });
     }
   }
 }
