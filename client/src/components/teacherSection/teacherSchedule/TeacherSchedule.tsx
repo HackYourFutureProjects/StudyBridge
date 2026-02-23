@@ -27,9 +27,10 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
   const isOwnProfile = user?.id === teacher?.id;
   const isAuthenticated = !!user;
 
-  const { data: appointments = [] } = useTeacherAppointmentsQuery(
+  const { data } = useTeacherAppointmentsQuery(
     isAuthenticated ? teacher?.id : undefined,
   );
+  const appointments = data?.appointments || [];
 
   const subjectOptions = useMemo(() => {
     if (!teacher?.subjects) return [];

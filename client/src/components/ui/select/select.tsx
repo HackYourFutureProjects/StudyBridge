@@ -130,7 +130,7 @@ export const SelectComponent = <TValue extends string = string>({
           }}
         >
           <Select.ScrollUpButton className="flex items-center justify-center h-6 bg-purple-800 text-light-100 cursor-default">
-            Up
+            <ArrowDown className="w-4 h-4 rotate-180" />
           </Select.ScrollUpButton>
           <Select.Viewport className="p-1 max-h-[280px] overflow-y-auto">
             <Select.Group>
@@ -144,7 +144,7 @@ export const SelectComponent = <TValue extends string = string>({
             </Select.Group>
           </Select.Viewport>
           <Select.ScrollDownButton className="flex items-center justify-center h-6 bg-purple-800 text-light-100 cursor-default">
-            Down
+            <ArrowDown className="w-4 h-4" />
           </Select.ScrollDownButton>
         </Select.Content>
       </Select.Portal>

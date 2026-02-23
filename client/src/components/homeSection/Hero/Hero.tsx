@@ -43,7 +43,7 @@ export const Hero = () => {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 hidden lg:block w-[620px] h-[80px] bg-[#27222EB3] rounded-[60px] -z-10"></div>
           <SelectComponent
             options={Subjects}
-            defaultValue="english"
+            value={subject}
             onChange={(value: string) => setSubject(value)}
             className="w-full sm:w-auto"
           />
