@@ -57,16 +57,35 @@ export class AppointmentController {
   }
 
   async getAppointmentsByStudentController(
-    req: RequestWithParams<{ studentId: string }>,
+    req: RequestWithParams<{ studentId: string }> &
+      RequestWithQuery<{ page?: string; limit?: string }>,
     res: Response,
     next: NextFunction,
   ) {
     try {
-      const appointments =
-        await this.appointmentService.getAppointmentsByStudent(
-          req.params.studentId,
-        );
-      return res.status(200).json(appointments);
+      let page: number | undefined;
+      let limit: number | undefined;
+
+      if (req.query.page) {
+        page = parseInt(req.query.page, 10);
+        if (isNaN(page)) {
+          return res.status(400).json({ message: "Invalid page parameter" });
+        }
+      }
+
+      if (req.query.limit) {
+        limit = parseInt(req.query.limit, 10);
+        if (isNaN(limit)) {
+          return res.status(400).json({ message: "Invalid limit parameter" });
+        }
+      }
+
+      const result = await this.appointmentService.getAppointmentsByStudent(
+        req.params.studentId,
+        page,
+        limit,
+      );
+      return res.status(200).json(result);
     } catch (error) {
       return next(error);
     }
@@ -79,8 +98,22 @@ export class AppointmentController {
     next: NextFunction,
   ) {
     try {
-      const page = req.query.page ? parseInt(req.query.page) : undefined;
-      const limit = req.query.limit ? parseInt(req.query.limit) : undefined;
+      let page: number | undefined;
+      let limit: number | undefined;
+
+      if (req.query.page) {
+        page = parseInt(req.query.page, 10);
+        if (isNaN(page)) {
+          return res.status(400).json({ message: "Invalid page parameter" });
+        }
+      }
+
+      if (req.query.limit) {
+        limit = parseInt(req.query.limit, 10);
+        if (isNaN(limit)) {
+          return res.status(400).json({ message: "Invalid limit parameter" });
+        }
+      }
 
       const result = await this.appointmentService.getAppointmentsByTeacher(
         req.params.teacherId,

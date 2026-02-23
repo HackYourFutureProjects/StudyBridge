@@ -67,10 +67,26 @@ export class AppointmentService {
     return appointment ? this.formatAppointmentResponse(appointment) : null;
   }
 
-  async getAppointmentsByStudent(studentId: string) {
-    const appointments =
-      await this.appointmentQuery.getAppointmentsByStudent(studentId);
-    return appointments.map((apt) => this.formatAppointmentResponse(apt));
+  async getAppointmentsByStudent(
+    studentId: string,
+    page?: number,
+    limit?: number,
+  ) {
+    const result = await this.appointmentQuery.getAppointmentsByStudent(
+      studentId,
+      page,
+      limit,
+    );
+    const appointmentsWithNames = await this.appointmentQuery.populateNames(
+      result.appointments,
+    );
+    return {
+      appointments: appointmentsWithNames.map((apt) =>
+        this.formatAppointmentResponse(apt),
+      ),
+      total: result.total,
+      totalPages: result.totalPages,
+    };
   }
 
   async getAppointmentsByTeacher(
@@ -83,8 +99,11 @@ export class AppointmentService {
       page,
       limit,
     );
+    const appointmentsWithNames = await this.appointmentQuery.populateNames(
+      result.appointments,
+    );
     return {
-      appointments: result.appointments.map((apt) =>
+      appointments: appointmentsWithNames.map((apt) =>
         this.formatAppointmentResponse(apt),
       ),
       total: result.total,
@@ -172,6 +191,8 @@ export class AppointmentService {
       level?: string;
       teacherId: string;
       studentId: string;
+      teacherName?: string;
+      studentName?: string;
       price: string | number;
       date: string;
       time: string;
@@ -188,6 +209,8 @@ export class AppointmentService {
       level: apt.level,
       teacherId: apt.teacherId,
       studentId: apt.studentId,
+      teacherName: apt.teacherName,
+      studentName: apt.studentName,
       price: priceStr,
       date: apt.date,
       time: apt.time,

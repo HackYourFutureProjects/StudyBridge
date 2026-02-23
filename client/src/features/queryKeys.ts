@@ -16,6 +16,6 @@ export const queryKeys = {
   appointments: ["appointments"] as const,
   teacherAppointments: (teacherId: string, page?: number, limit?: number) =>
     ["appointments", "teacher", teacherId, page, limit] as const,
-  studentAppointments: (studentId: string) =>
-    ["appointments", "student", studentId] as const,
+  studentAppointments: (studentId: string, page?: number, limit?: number) =>
+    ["appointments", "student", studentId, page, limit] as const,
 };
