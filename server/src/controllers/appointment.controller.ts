@@ -4,6 +4,7 @@ import {
   RequestWithBody,
   RequestWithParams,
   ParamsType,
+  RequestWithQuery,
 } from "../types/common.types.js";
 import { NextFunction, Response } from "express";
 import { TYPES } from "../composition/composition.types.js";
@@ -72,16 +73,21 @@ export class AppointmentController {
   }
 
   async getAppointmentsByTeacherController(
-    req: RequestWithParams<{ teacherId: string }>,
+    req: RequestWithParams<{ teacherId: string }> &
+      RequestWithQuery<{ page?: string; limit?: string }>,
     res: Response,
     next: NextFunction,
   ) {
     try {
-      const appointments =
-        await this.appointmentService.getAppointmentsByTeacher(
-          req.params.teacherId,
-        );
-      return res.status(200).json(appointments);
+      const page = req.query.page ? parseInt(req.query.page) : undefined;
+      const limit = req.query.limit ? parseInt(req.query.limit) : undefined;
+
+      const result = await this.appointmentService.getAppointmentsByTeacher(
+        req.params.teacherId,
+        page,
+        limit,
+      );
+      return res.status(200).json(result);
     } catch (error) {
       return next(error);
     }

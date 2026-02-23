@@ -12,14 +12,19 @@ import { useModalStore } from "../../../store/modals.store";
 export const TeacherAppointments = () => {
   const [page, setPage] = useState(1);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const limit = 10;
 
   const { open: openModal } = useModalStore();
 
-  const {
-    data: appointments = [],
-    isLoading,
-    error,
-  } = useTeacherAppointmentsQuery();
+  const { data, isLoading, error } = useTeacherAppointmentsQuery(
+    undefined,
+    page,
+    limit,
+  );
+
+  const appointments = data?.appointments || [];
+  const totalPages = data?.totalPages || 1;
+
   const updateAppointmentMutation = useUpdateAppointmentMutation();
   const deleteAppointmentMutation = useDeleteAppointmentMutation();
 
@@ -178,7 +183,7 @@ export const TeacherAppointments = () => {
             <Pagination
               activeIndex={page}
               onIndexChange={setPage}
-              totalPages={6}
+              totalPages={totalPages}
               theme="secondary"
               shape="square"
             />
