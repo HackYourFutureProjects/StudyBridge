@@ -1,4 +1,4 @@
-import { useRef, useCallback } from "react";
+import { useRef, useCallback, useEffect } from "react";
 import type { Socket } from "socket.io-client";
 
 export function useTypingEmitter(args: {
@@ -10,7 +10,12 @@ export function useTypingEmitter(args: {
 
   const typingTimeoutRef = useRef<number | null>(null);
   const typingActiveRef = useRef(false);
-
+  const clearTimer = useCallback(() => {
+    if (typingTimeoutRef.current) {
+      window.clearTimeout(typingTimeoutRef.current);
+      typingTimeoutRef.current = null;
+    }
+  }, []);
   const emitTyping = useCallback(() => {
     if (!socket || !conversationId) {
       return;
@@ -21,7 +26,10 @@ export function useTypingEmitter(args: {
       socket.emit("chat:typing:start", { conversationId });
     }
 
-    if (typingTimeoutRef.current) window.clearTimeout(typingTimeoutRef.current);
+    if (typingTimeoutRef.current) {
+      window.clearTimeout(typingTimeoutRef.current);
+    }
+    clearTimer();
     typingTimeoutRef.current = window.setTimeout(() => {
       typingActiveRef.current = false;
       socket.emit("chat:typing:stop", { conversationId });
@@ -32,15 +40,28 @@ export function useTypingEmitter(args: {
     if (!socket || !conversationId) {
       return;
     }
+    clearTimer();
     if (typingTimeoutRef.current) {
       window.clearTimeout(typingTimeoutRef.current);
     }
+
     typingTimeoutRef.current = null;
     if (typingActiveRef.current) {
       typingActiveRef.current = false;
       socket.emit("chat:typing:stop", { conversationId });
     }
   }, [socket, conversationId]);
+
+  useEffect(() => {
+    return () => {
+      clearTimer();
+
+      if (socket && conversationId && typingActiveRef.current) {
+        typingActiveRef.current = false;
+        socket.emit("chat:typing:stop", { conversationId });
+      }
+    };
+  }, [socket, conversationId, clearTimer]);
 
   return { emitTyping, stopTypingNow };
 }

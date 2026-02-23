@@ -14,9 +14,11 @@ export const useSocketStore = create<SocketState>((set, get) => ({
 
   connect: (token) => {
     const existing = get().socket;
-    if (existing?.connected) {
+    if (existing && !existing.disconnected) {
       return;
     }
+    existing?.removeAllListeners();
+    existing?.disconnect();
 
     const s = io("/", {
       transports: ["websocket"],

@@ -24,11 +24,10 @@ export const PrivateLayout = () => {
 
   useEffect(() => {
     if (!accessToken) {
+      disconnect();
       return;
     }
-    if (accessToken) {
-      connect(accessToken);
-    }
+    connect(accessToken);
     return () => disconnect();
   }, [accessToken, connect, disconnect]);
 

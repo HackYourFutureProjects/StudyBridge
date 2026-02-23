@@ -29,9 +29,7 @@ export function useTypingIndicator(args: {
       if (e.conversationId !== conversationId) {
         return;
       }
-      if (typingUserId === e.userId) {
-        setTypingUserId(null);
-      }
+      setTypingUserId((prev) => (prev === e.userId ? null : prev));
     };
 
     socket.on("chat:typing", onTyping);
@@ -41,7 +39,7 @@ export function useTypingIndicator(args: {
       socket.off("chat:typing", onTyping);
       socket.off("chat:typing:stop", onTypingStop);
     };
-  }, [socket, conversationId, myUserId, typingUserId]);
+  }, [socket, conversationId, myUserId]);
 
   useEffect(() => {
     if (!typingUserId) {

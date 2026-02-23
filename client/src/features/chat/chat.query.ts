@@ -11,10 +11,8 @@ export function useChatConversationsQuery() {
 
 export function useChatMessagesQuery(conversationId: string | undefined) {
   return useQuery({
-    queryKey: conversationId
-      ? chatKeys.messages(conversationId)
-      : ["chat", "messages", "empty"],
-    queryFn: () => getMessages(conversationId!),
-    enabled: !!conversationId,
+    queryKey: chatKeys.messages(conversationId ?? ""),
+    queryFn: () => getMessages(conversationId as string),
+    enabled: Boolean(conversationId),
   });
 }

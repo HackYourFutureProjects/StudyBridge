@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 import type { Socket } from "socket.io-client";
 import { SendAck } from "../features/chat/chat.socket.types.ts";
+import { useNotificationStore } from "../store/notification.store.ts";
 
 export function useSendChatMessage(args: {
   socket: Socket | null;
@@ -9,6 +10,7 @@ export function useSendChatMessage(args: {
   onSuccess?: () => void;
 }) {
   const { socket, conversationId, stopTypingNow, onSuccess } = args;
+  const notifyError = useNotificationStore((s) => s.error);
 
   return useCallback(
     (text: string) => {
@@ -28,12 +30,13 @@ export function useSendChatMessage(args: {
         { conversationId, text: t },
         (ack: SendAck) => {
           if (!ack?.ok) {
+            notifyError(ack.error);
             return;
           }
           onSuccess?.();
         },
       );
     },
-    [socket, conversationId, stopTypingNow, onSuccess],
+    [socket, conversationId, stopTypingNow, onSuccess, notifyError],
   );
 }

@@ -5,7 +5,7 @@ import { RootLayout } from "../layouts/RootLayout";
 import { authRoutes } from "./routesVariables/authRoutes";
 import { publicRoutes } from "./routesVariables/publicRoutes";
 import { RequireAuth } from "./RequireAuth";
-import { PrivateLayout } from "../layouts/PrivadeLayout";
+import { PrivateLayout } from "../layouts/PrivateLayout.tsx";
 import { studentPrivateRoutes } from "./routesVariables/studentPrivateRoutes.tsx";
 import { RequireRole } from "./RequireRole.tsx";
 import { RoleIndexRedirect } from "./RoleIndexRedirect.tsx";

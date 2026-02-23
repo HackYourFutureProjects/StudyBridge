@@ -1,3 +1,6 @@
+export const studentBase = "/clients-dashboard";
+export const teacherBase = "/teacher";
+
 export const publicRoutesVariables = {
   home: "/",
   teachers: "/teachers",

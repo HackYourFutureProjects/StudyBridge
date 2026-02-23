@@ -20,18 +20,18 @@ export const ChatDialogPage = () => {
   const { id: conversationId } = useParams();
   const socket = useSocketStore((s) => s.socket);
   const myUserId = useAuthSessionStore((s) => s.user?.id);
-
   const { data: messages = [] } = useChatMessagesQuery(conversationId);
   const { data: conversations = [] } = useChatConversationsQuery();
   const conversation = useMemo(
     () => conversations.find((c) => c.id === conversationId),
     [conversations, conversationId],
   );
+
   const peer = conversation?.peer;
+  const peerId = peer?.id;
 
   useChatRealtime({ socket, conversationId });
 
-  const isOnline = usePresenceStore((s) => s.isOnline(peer?.id));
   const { typingUserId } = useTypingIndicator({
     socket,
     conversationId,
@@ -49,8 +49,17 @@ export const ChatDialogPage = () => {
     stopTypingNow,
     onSuccess: () => setText(""),
   });
+
+  const isOnline = usePresenceStore((s) =>
+    peerId ? s.isOnline(peerId) : false,
+  );
+
+  if (!conversation) {
+    return <div className="p-4 text-light-500">Conversation not found</div>;
+  }
+
   return (
-    <div className="max-h-210.5 flex flex-col">
+    <div className="flex flex-col h-full max-h-210.5 ">
       <div className="p-3 mb-5">
         <div className="flex items-center gap-4">
           <ChatSideBarItem name={peer?.name} imageUrl={peer?.imageUrl} />
@@ -62,7 +71,7 @@ export const ChatDialogPage = () => {
           ></div>
         </div>
         <div className="mt-1 text-xs h-2.5 text-light-500">
-          {typingUserId && peer?.name + "is typing…"}
+          {typingUserId && peer?.name ? `${peer.name} is typing…` : null}
         </div>
       </div>
 
