@@ -25,14 +25,12 @@ export const studentPrivatesRoutesVariables = {
   dashboard: "/clients-dashboard",
   classes: "/student-classes",
   appointments: "/clients-appointments",
-  billing: "/clients-billing",
 };
 
 export const teacherPrivatesRoutesVariables = {
   dashboard: "/teacher/my-dashboard",
   classes: "/teacher/my-classes",
   myStudents: "/teacher/my-students",
-  billings: "/teacher/my-billings",
   profile: "/teacher/profile",
   appointments: "/teacher-appointments",
 };

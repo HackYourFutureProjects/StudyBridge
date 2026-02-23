@@ -1,11 +1,8 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 
-import BillingIcon from "../icons/Billing";
 import AppointmentsIcon from "../icons/Appointments";
 import DashboardIcon from "../icons/Dashboard";
-import LessonsIcon from "../icons/Lessons";
-import SettingsIcon from "../icons/Settings";
 import VideoCallIcon from "../icons/VideoCall";
 import UsersIcon from "../icons/UsersIcon";
 import Chat from "../icons/Chat";
@@ -23,10 +20,7 @@ export const defaultStudentMenuItems: MenuItem[] = [
     link: "/clients-appointments",
     icon: AppointmentsIcon,
   },
-  { name: "My Classes", link: "/student-classes", icon: LessonsIcon },
-  { name: "Billings", link: "/clients-billing", icon: BillingIcon },
   { name: "Video call", link: "/video-call", icon: VideoCallIcon },
-  { name: "Settings", link: "/settings", icon: SettingsIcon },
   { name: "Chat", link: "/chat", icon: Chat },
 ];
 
@@ -37,10 +31,8 @@ export const defaultTeacherMenuItems: MenuItem[] = [
     link: "/teacher-appointments",
     icon: AppointmentsIcon,
   },
-  { name: "My Classes", link: "/teacher/my-classes", icon: LessonsIcon },
   { name: "My Students", link: "/teacher/my-students", icon: UsersIcon },
   { name: "My Profile", link: "/teacher/profile", icon: UsersIcon },
-  { name: "Billings", link: "/teacher/my-billings", icon: BillingIcon },
   { name: "Video call", link: "/video-call", icon: VideoCallIcon },
   { name: "Chat", link: "/chat", icon: Chat },
 ];
