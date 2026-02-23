@@ -72,4 +72,16 @@ export class StudentCommand {
       });
     }
   }
+
+  async updateStudent(id: string, data: Partial<StudentTypeDB>) {
+    try {
+      return await StudentModel.findOneAndUpdate(
+        { id },
+        { $set: data },
+        { new: true },
+      ).lean();
+    } catch (err: unknown) {
+      throw new HttpError(500, "Student was not updated", { cause: err, id });
+    }
+  }
 }

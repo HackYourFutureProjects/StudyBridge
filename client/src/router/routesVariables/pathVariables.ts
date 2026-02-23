@@ -29,6 +29,7 @@ export const studentPrivatesRoutesVariables = {
   classes: "student-classes",
   appointments: "clients-appointments",
   billing: "clients-billing",
+  profile: "profile",
 };
 
 export const teacherPrivatesRoutesVariables = {

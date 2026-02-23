@@ -71,6 +71,45 @@ export class StudentService {
     }
   }
 
+  async getStudentById(id: string) {
+    return await this.studentQuery.getStudentById(id);
+  }
+
+  async updateStudentProfile(
+    id: string,
+    data: {
+      firstName?: string;
+      lastName?: string;
+      email?: string;
+      profileImageUrl?: string;
+      password?: string;
+    },
+  ) {
+    const updateData: Partial<StudentTypeDB> = {};
+
+    if (data.firstName) updateData.firstName = data.firstName;
+    if (data.lastName) updateData.lastName = data.lastName;
+    if (data.email) updateData.email = data.email;
+    if (data.profileImageUrl !== undefined)
+      updateData.profileImageUrl = data.profileImageUrl;
+
+    if (data.password) {
+      const passwordSalt = await bcrypt.genSalt(10);
+      updateData.passwordHash = await this._generateHash(
+        data.password,
+        passwordSalt,
+      );
+      updateData.passwordSalt = passwordSalt;
+    }
+
+    const updated = await this.studentCommand.updateStudent(id, updateData);
+    if (!updated) {
+      return null;
+    }
+
+    return studentMapper(updated);
+  }
+
   async _generateHash(password: string, salt: string) {
     return await bcrypt.hash(password, salt);
   }

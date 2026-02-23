@@ -4,6 +4,7 @@ import AppointmentsIcon from "../icons/Appointments";
 import DashboardIcon from "../icons/Dashboard";
 import LessonsIcon from "../icons/Lessons";
 import Chat from "../icons/Chat";
+import UsersIcon from "../icons/UsersIcon";
 import {
   chatRoutes,
   studentBase,
@@ -36,9 +37,9 @@ export const defaultStudentMenuItems: MenuItem[] = [
     icon: LessonsIcon,
   },
   {
-    name: "Billings",
-    link: joinPath(studentBase, studentPrivatesRoutesVariables.billing),
-    icon: LessonsIcon,
+    name: "My Profile",
+    link: joinPath(studentBase, studentPrivatesRoutesVariables.profile),
+    icon: UsersIcon,
   },
   {
     name: "Chat",
@@ -62,6 +63,11 @@ export const defaultTeacherMenuItems: MenuItem[] = [
     name: "My Classes",
     link: joinPath(teacherBase, teacherPrivatesRoutesVariables.classes),
     icon: LessonsIcon,
+  },
+  {
+    name: "My Profile",
+    link: joinPath(teacherBase, teacherPrivatesRoutesVariables.profile),
+    icon: UsersIcon,
   },
   {
     name: "Chat",
