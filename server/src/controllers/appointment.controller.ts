@@ -63,8 +63,22 @@ export class AppointmentController {
     next: NextFunction,
   ) {
     try {
-      const page = req.query.page ? parseInt(req.query.page) : undefined;
-      const limit = req.query.limit ? parseInt(req.query.limit) : undefined;
+      let page: number | undefined;
+      let limit: number | undefined;
+
+      if (req.query.page) {
+        page = parseInt(req.query.page, 10);
+        if (isNaN(page)) {
+          return res.status(400).json({ message: "Invalid page parameter" });
+        }
+      }
+
+      if (req.query.limit) {
+        limit = parseInt(req.query.limit, 10);
+        if (isNaN(limit)) {
+          return res.status(400).json({ message: "Invalid limit parameter" });
+        }
+      }
 
       const result = await this.appointmentService.getAppointmentsByStudent(
         req.params.studentId,
@@ -84,8 +98,22 @@ export class AppointmentController {
     next: NextFunction,
   ) {
     try {
-      const page = req.query.page ? parseInt(req.query.page) : undefined;
-      const limit = req.query.limit ? parseInt(req.query.limit) : undefined;
+      let page: number | undefined;
+      let limit: number | undefined;
+
+      if (req.query.page) {
+        page = parseInt(req.query.page, 10);
+        if (isNaN(page)) {
+          return res.status(400).json({ message: "Invalid page parameter" });
+        }
+      }
+
+      if (req.query.limit) {
+        limit = parseInt(req.query.limit, 10);
+        if (isNaN(limit)) {
+          return res.status(400).json({ message: "Invalid limit parameter" });
+        }
+      }
 
       const result = await this.appointmentService.getAppointmentsByTeacher(
         req.params.teacherId,

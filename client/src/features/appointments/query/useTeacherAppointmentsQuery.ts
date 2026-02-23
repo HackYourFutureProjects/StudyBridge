@@ -14,8 +14,10 @@ const fetchTeacherAppointments = async (
   totalPages: number;
 }> => {
   const params = new URLSearchParams();
-  if (page) params.append("page", page.toString());
-  if (limit) params.append("limit", limit.toString());
+  if (page !== undefined && page !== null)
+    params.append("page", page.toString());
+  if (limit !== undefined && limit !== null)
+    params.append("limit", limit.toString());
 
   const queryString = params.toString();
   const url = `/api/appointments/teacher/${teacherId}${queryString ? `?${queryString}` : ""}`;

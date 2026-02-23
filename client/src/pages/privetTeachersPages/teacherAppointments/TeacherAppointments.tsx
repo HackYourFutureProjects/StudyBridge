@@ -119,6 +119,23 @@ export const TeacherAppointments = () => {
     });
   };
 
+  const invalidAppointments = appointments.filter(
+    (appointment) => !appointment.date || !appointment.time,
+  );
+
+  if (invalidAppointments.length > 0) {
+    console.warn(
+      "[TeacherAppointments] Received appointments missing date or time. " +
+        "These appointments will be excluded from the table.",
+      {
+        count: invalidAppointments.length,
+        appointmentIds: invalidAppointments
+          .map((appointment) => appointment.id)
+          .filter((id) => id !== undefined && id !== null),
+      },
+    );
+  }
+
   const tableRows = appointments
     .filter((appointment) => appointment.date && appointment.time)
     .map((appointment) => ({

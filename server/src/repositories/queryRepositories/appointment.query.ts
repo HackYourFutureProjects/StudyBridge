@@ -1,5 +1,7 @@
 import { injectable } from "inversify";
 import { AppointmentModel } from "../../db/schemes/appointmentSchema.js";
+import { TeacherModel } from "../../db/schemes/teacherSchema.js";
+import { StudentModel } from "../../db/schemes/studentSchema.js";
 import { WithId } from "mongodb";
 import { AppointmentTypeDB } from "../../db/schemes/types/appointment.types.js";
 
@@ -30,7 +32,12 @@ export class AppointmentQuery {
       const query = { studentId };
       const total = await AppointmentModel.countDocuments(query);
 
-      if (page && limit) {
+      if (page !== undefined && limit !== undefined) {
+        // Validate pagination parameters
+        if (page < 1 || limit < 1) {
+          throw new Error("Page and limit must be positive numbers");
+        }
+
         const skip = (page - 1) * limit;
         const appointments = await AppointmentModel.find(query)
           .sort({ date: 1, time: 1 })
@@ -52,7 +59,7 @@ export class AppointmentQuery {
       return {
         appointments,
         total,
-        totalPages: 1,
+        totalPages: Math.ceil(total / 10) || 1,
       };
     } catch (err: unknown) {
       throw new Error("Something went wrong with student appointments search", {
@@ -74,7 +81,12 @@ export class AppointmentQuery {
       const query = { teacherId };
       const total = await AppointmentModel.countDocuments(query);
 
-      if (page && limit) {
+      if (page !== undefined && limit !== undefined) {
+        // Validate pagination parameters
+        if (page < 1 || limit < 1) {
+          throw new Error("Page and limit must be positive numbers");
+        }
+
         const skip = (page - 1) * limit;
         const appointments = await AppointmentModel.find(query)
           .sort({ date: 1, time: 1 })
@@ -96,7 +108,7 @@ export class AppointmentQuery {
       return {
         appointments,
         total,
-        totalPages: 1,
+        totalPages: Math.ceil(total / 10) || 1,
       };
     } catch (err: unknown) {
       throw new Error("Something went wrong with teacher appointments search", {
@@ -138,16 +150,12 @@ export class AppointmentQuery {
     ].filter(Boolean);
 
     const [teachers, students] = await Promise.all([
-      import("../../db/schemes/teacherSchema.js").then(({ TeacherModel }) =>
-        TeacherModel.find({ id: { $in: teacherIds } })
-          .select("id firstName lastName")
-          .lean(),
-      ),
-      import("../../db/schemes/studentSchema.js").then(({ StudentModel }) =>
-        StudentModel.find({ id: { $in: studentIds } })
-          .select("id firstName lastName")
-          .lean(),
-      ),
+      TeacherModel.find({ id: { $in: teacherIds } })
+        .select("id firstName lastName")
+        .lean(),
+      StudentModel.find({ id: { $in: studentIds } })
+        .select("id firstName lastName")
+        .lean(),
     ]);
 
     const teacherMap = new Map(

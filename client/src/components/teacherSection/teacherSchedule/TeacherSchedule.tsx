@@ -90,6 +90,11 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
     }
 
     if (isTeacher) {
+      openModal("alert", {
+        title: "Cannot Book Lesson",
+        message:
+          "Teachers cannot book lessons with other teachers. Only students can book lessons.",
+      });
       return;
     }
 
