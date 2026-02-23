@@ -7,6 +7,8 @@ import { teacherRouter } from "./routes/teacherRoute.js";
 import { chatRouter } from "./routes/chatRoute.js";
 import { streamRouter } from "./routes/streamRoute.js";
 
+import { videoCallRouter } from "./routes/videoCallRoute.js";
+
 // Create an express server
 const app = express();
 app.use(cookieParser());
@@ -24,4 +26,6 @@ app.use("/api/teachers", teacherRouter);
 app.use("/api/chat", chatRouter);
 app.use("/api/stream", streamRouter);
 app.use(globalErrorMiddleware);
+app.use("/api/video-calls", videoCallRouter);
+
 export default app;
