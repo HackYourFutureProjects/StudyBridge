@@ -33,10 +33,12 @@ export const ClientsAppointments = () => {
   } = useStudentAppointmentsQuery(isTeacher ? "" : user?.id || "");
 
   const {
-    data: teacherAppointments = [],
+    data: teacherData,
     isLoading: isTeacherLoading,
     error: teacherError,
   } = useTeacherAppointmentsQuery();
+
+  const teacherAppointments = teacherData?.appointments || [];
 
   const updateAppointmentMutation = useUpdateAppointmentMutation();
   const deleteAppointmentMutation = useDeleteAppointmentMutation();
