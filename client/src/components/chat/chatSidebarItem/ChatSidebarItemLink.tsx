@@ -1,25 +1,25 @@
 import { NavLink } from "react-router-dom";
 import { ChatSideBarItem } from "./ChatSideBarItem.tsx";
-import { ChatUser } from "../../../pages/chat/chatMockData.ts";
+import { Peer } from "../../../api/chat/chat.types.ts";
 
 type ChatSidebarItemType = {
   conversationId: string;
-  user: ChatUser;
+  peer: Peer;
 };
 
 export const ChatSidebarItemLink = ({
-  user,
+  peer,
   conversationId,
 }: ChatSidebarItemType) => {
   return (
     <NavLink
-      key={user.id}
+      key={peer.id}
       to={conversationId}
       className={({ isActive }) =>
         `block rounded-[9px] p-3 ${isActive ? "bg-[#E0E7FF80]" : "hover:bg-white/5"}`
       }
     >
-      <ChatSideBarItem name={user.name} imageUrl={user.imageUrl} />
+      <ChatSideBarItem name={peer.name} imageUrl={peer.imageUrl} />
     </NavLink>
   );
 };
