@@ -81,4 +81,28 @@ export class VideoCallCommand {
       });
     }
   }
+
+  async endCallById(callId: string): Promise<VideoCallViewType | null> {
+    const now = new Date();
+
+    try {
+      const updated = await VideoCallModel.findOneAndUpdate(
+        { id: callId },
+        {
+          $set: {
+            status: "ended",
+            endedAt: now,
+            updatedAt: now,
+          },
+        },
+        { new: true },
+      ).lean();
+
+      return updated as VideoCallViewType | null;
+    } catch (err: unknown) {
+      throw new HttpError(500, "Something went wrong with updating call", {
+        cause: err,
+      });
+    }
+  }
 }

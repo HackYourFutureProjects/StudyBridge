@@ -115,4 +115,32 @@ export class VideoCallController {
       return next(error);
     }
   }
+
+  async endCallController(
+    req: RequestWithParams<{ callId: string }>,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const callId = req.params.callId;
+      const userId = req.auth?.userId;
+
+      if (!userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const endedCall = await this.videoCallService.endCall({
+        callId,
+        authUserId: userId,
+      });
+
+      if (!endedCall) {
+        return res.status(404).json({ message: "Call not found" });
+      }
+
+      return res.status(200).json(endedCall);
+    } catch (error) {
+      return next(error);
+    }
+  }
 } // end class
