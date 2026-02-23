@@ -92,8 +92,8 @@ export class VideoCallService {
       streamCallType: streamCallType ?? "default",
       streamCallId: streamCallId,
       status: "ringing",
-      expiresAt: new Date(Date.now() + 60 * 1000), // if student doesn’t accept within 60s, it is considered expired/missed.
-      // expiresAt: new Date(Date.now() + 6 * 60 * 1000),
+      // expiresAt: new Date(Date.now() + 60 * 1000), // if student doesn’t accept within 60s, it is considered expired/missed.
+      expiresAt: new Date(Date.now() + 15 * 60 * 1000),
       startedAt: null,
       endedAt: null,
       createdAt: now,
@@ -118,6 +118,49 @@ export class VideoCallService {
     const incoming =
       await this.videoCallQuery.getIncomingCallForStudent(authUserId);
 
-    return incoming ?? null;
+    // if none found, no active incoming call
+    if (!incoming) return null;
+
+    if (incoming.expiresAt <= new Date()) {
+      await this.videoCallCommand.markExpiredCallAsMissed(incoming.id);
+      return null;
+    }
+
+    return incoming;
+  }
+
+  async acceptCall({
+    callId,
+    authUserId,
+    authRole,
+  }: {
+    callId: string;
+    authUserId: string;
+    authRole: "teacher" | "student";
+  }): Promise<VideoCallViewType | null> {
+    const now = new Date();
+
+    if (authRole !== "student")
+      throw new HttpError(403, "Students only can accept the call");
+
+    //check if call exists
+    const call = await this.videoCallQuery.getVideoById(callId);
+    if (!call) throw new HttpError(404, "Call not found");
+
+    if (call.expiresAt <= now) {
+      await this.videoCallCommand.markExpiredCallAsMissed(callId);
+      throw new HttpError(409, "Call has expired");
+    }
+
+    if (call.studentId !== authUserId)
+      throw new HttpError(403, "Only students can accept the call");
+
+    if (call.status !== "ringing") {
+      throw new HttpError(409, "Call is no longer ringing");
+    }
+
+    const acceptedCall = await this.videoCallCommand.acceptCallById(callId);
+
+    return acceptedCall ?? null;
   }
 }

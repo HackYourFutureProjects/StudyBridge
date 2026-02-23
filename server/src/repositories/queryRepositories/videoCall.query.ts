@@ -40,4 +40,18 @@ export class VideoCallQuery {
       });
     }
   }
+
+  async getVideoById(id: string): Promise<VideoCallViewType | null> {
+    try {
+      const video = await VideoCallModel.findOne({ id }).lean();
+
+      if (!video) return null;
+
+      return video as VideoCallViewType;
+    } catch (err: unknown) {
+      throw new HttpError(500, "Something went wrong with video call search", {
+        cause: err,
+      });
+    }
+  }
 } //end of class

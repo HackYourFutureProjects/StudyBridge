@@ -3,7 +3,10 @@ import { container } from "../composition/compositionRoot.js";
 import { TYPES } from "../composition/composition.types.js";
 import { errorMiddleware } from "../middlewares/error.middleware.js";
 import { VideoCallController } from "../controllers/videoCall.controller.js";
-import { startCallValidationMiddleware } from "../validation/videoCall/videoCallValidationMiddelware.js";
+import {
+  startCallValidationMiddleware,
+  callIdValidationMiddleware,
+} from "../validation/videoCall/videoCallValidationMiddelware.js";
 import { AuthMiddleware } from "../middlewares/authMiddlewareWithBearer.js";
 
 export const videoCallRouter = Router();
@@ -24,5 +27,13 @@ videoCallRouter.post(
 videoCallRouter.get(
   "/incoming",
   authMiddleware.handle,
-  videoCallController.incomingCall.bind(videoCallController),
+  videoCallController.incomingCallController.bind(videoCallController),
+);
+
+videoCallRouter.post(
+  "/:callId/accept",
+  authMiddleware.handle,
+  callIdValidationMiddleware(),
+  errorMiddleware,
+  videoCallController.acceptCallController.bind(videoCallController),
 );

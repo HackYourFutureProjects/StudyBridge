@@ -1,5 +1,5 @@
 import { inject, injectable } from "inversify";
-import { RequestWithBody } from "../types/common.types.js";
+import { RequestWithBody, RequestWithParams } from "../types/common.types.js";
 import { VideoCallService } from "../services/video/videoCall.service.js";
 import { NextFunction, Request, Response } from "express";
 import { TYPES } from "../composition/composition.types.js";
@@ -32,7 +32,11 @@ export class VideoCallController {
     }
   }
 
-  async incomingCall(req: Request, res: Response, next: NextFunction) {
+  async incomingCallController(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
       const userId = req.auth?.userId;
       const role = req.auth?.role;
@@ -47,6 +51,36 @@ export class VideoCallController {
       });
 
       return res.status(200).json(incoming);
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  async acceptCallController(
+    req: RequestWithParams<{ callId: string }>,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const callId = req.params.callId;
+      const userId = req.auth?.userId;
+      const role = req.auth?.role;
+
+      if (!userId || !role) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const acceptedCall = await this.videoCallService.acceptCall({
+        callId,
+        authUserId: userId,
+        authRole: role,
+      });
+
+      if (!acceptedCall) {
+        return res.status(404).json({ message: "Call not found" });
+      }
+
+      return res.status(200).json(acceptedCall);
     } catch (error) {
       return next(error);
     }

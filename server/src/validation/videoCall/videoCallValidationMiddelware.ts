@@ -1,4 +1,4 @@
-import { body } from "express-validator";
+import { body, param } from "express-validator";
 
 export const startCallValidationMiddleware = () => [
   body("teacherId")
@@ -24,3 +24,10 @@ export const startCallValidationMiddleware = () => [
 ];
 
 //callId param validation for accept/decline/end.
+export const callIdValidationMiddleware = () => [
+  param("callId")
+    .exists()
+    .withMessage("Call ID is needed")
+    .isString()
+    .withMessage("Call ID must be a string"),
+];
