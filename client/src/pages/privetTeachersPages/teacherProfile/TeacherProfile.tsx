@@ -7,6 +7,7 @@ import { LessonsSection } from "../../../components/teacherProfileSection/Lesson
 import { ProfileExperienceEducation } from "../../../components/teacherProfileSection/ProfileExperienceEducation";
 import { ProfileAboutMe } from "../../../components/teacherProfileSection/ProfileAboutMe";
 import { LessonSchedule } from "../../../components/teacherProfileSection/LessonSchedule";
+import { ChangePasswordModal } from "../../../components/changePasswordModal/ChangePasswordModal";
 import {
   mapUiSlotsToMergedWeekAvailability,
   mapWeekAvailabilityToUiSlots,
@@ -49,6 +50,7 @@ export const TeacherProfile = () => {
   );
   const [isScheduleOpen, setIsScheduleOpen] = useState(false);
   const [schedule, setSchedule] = useState<TimeSlot[]>([]);
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
 
   useEffect(() => {
     if (profile) {
@@ -254,6 +256,8 @@ export const TeacherProfile = () => {
     }
   };
 
+  const handleChangePassword = async () => {};
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[#15141D]">
@@ -294,6 +298,7 @@ export const TeacherProfile = () => {
                 onEmailChange={setEmail}
                 onPhoneChange={setPhone}
                 onFocusField={() => setIsEditing(true)}
+                onChangePassword={() => setIsPasswordModalOpen(true)}
               />
             </div>
           </div>
@@ -345,6 +350,12 @@ export const TeacherProfile = () => {
         onClose={() => setIsScheduleOpen(false)}
         onSave={handleScheduleSave}
         initialSlots={schedule}
+      />
+
+      <ChangePasswordModal
+        isOpen={isPasswordModalOpen}
+        onClose={() => setIsPasswordModalOpen(false)}
+        onSubmit={handleChangePassword}
       />
     </div>
   );

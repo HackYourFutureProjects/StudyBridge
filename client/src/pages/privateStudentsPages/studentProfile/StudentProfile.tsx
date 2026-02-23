@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ProfileAvatar } from "../../../components/teacherProfileSection/ProfileAvatar";
 import { ProfileHeader } from "../../../components/teacherProfileSection/ProfileHeader";
 import { ProfileContactFields } from "../../../components/teacherProfileSection/ProfileContactFields";
+import { ChangePasswordModal } from "../../../components/changePasswordModal/ChangePasswordModal";
 import { useMyStudentProfileQuery } from "../../../features/students/query/useMyStudentProfileQuery";
 import { useUpdateMyStudentProfileMutation } from "../../../features/students/mutations/useUpdateMyStudentProfileMutation";
 
@@ -13,6 +14,7 @@ export const StudentProfile = () => {
   const [name, setName] = useState<string | null>(null);
   const [email, setEmail] = useState<string | null>(null);
   const [phone] = useState("+");
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
 
   const displayName =
     name !== null
@@ -41,6 +43,8 @@ export const StudentProfile = () => {
       console.error("Failed to save profile:", error);
     }
   };
+
+  const handleChangePassword = async () => {};
 
   if (isLoading) {
     return (
@@ -99,11 +103,18 @@ export const StudentProfile = () => {
                 onEmailChange={setEmail}
                 onPhoneChange={() => {}}
                 onFocusField={() => setIsEditing(true)}
+                onChangePassword={() => setIsPasswordModalOpen(true)}
               />
             </div>
           </div>
         </div>
       </div>
+
+      <ChangePasswordModal
+        isOpen={isPasswordModalOpen}
+        onClose={() => setIsPasswordModalOpen(false)}
+        onSubmit={handleChangePassword}
+      />
     </div>
   );
 };
