@@ -12,14 +12,19 @@ import { useModalStore } from "../../../store/modals.store";
 export const TeacherAppointments = () => {
   const [page, setPage] = useState(1);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const limit = 10;
 
   const { open: openModal } = useModalStore();
 
-  const {
-    data: appointments = [],
-    isLoading,
-    error,
-  } = useTeacherAppointmentsQuery();
+  const { data, isLoading, error } = useTeacherAppointmentsQuery(
+    undefined,
+    page,
+    limit,
+  );
+
+  const appointments = data?.appointments || [];
+  const totalPages = data?.totalPages || 1;
+
   const updateAppointmentMutation = useUpdateAppointmentMutation();
   const deleteAppointmentMutation = useDeleteAppointmentMutation();
 
@@ -53,6 +58,10 @@ export const TeacherAppointments = () => {
   };
 
   const isPastAppointment = (date: string, time: string): boolean => {
+    if (!date || !time) {
+      return false;
+    }
+
     const [hours, minutes] = time.split(":").map(Number);
     if (isNaN(hours) || isNaN(minutes)) {
       return false;
@@ -110,22 +119,41 @@ export const TeacherAppointments = () => {
     });
   };
 
-  const tableRows = appointments.map((appointment) => ({
-    id: appointment.id,
-    checked: false,
-    lesson: appointment.lesson,
-    student: appointment.studentId,
-    price: appointment.price,
-    date: appointment.date,
-    time: appointment.time,
-    status: appointment.status,
-    onStatusChange: (newStatus: AppointmentStatus) =>
-      handleStatusChange(appointment.id, newStatus),
-    canDelete: isPastAppointment(appointment.date, appointment.time),
-    onDelete: isPastAppointment(appointment.date, appointment.time)
-      ? () => handleDelete(appointment.id)
-      : undefined,
-  })) as LessonRowData[];
+  const invalidAppointments = appointments.filter(
+    (appointment) => !appointment.date || !appointment.time,
+  );
+
+  if (invalidAppointments.length > 0) {
+    console.warn(
+      "[TeacherAppointments] Received appointments missing date or time. " +
+        "These appointments will be excluded from the table.",
+      {
+        count: invalidAppointments.length,
+        appointmentIds: invalidAppointments
+          .map((appointment) => appointment.id)
+          .filter((id) => id !== undefined && id !== null),
+      },
+    );
+  }
+
+  const tableRows = appointments
+    .filter((appointment) => appointment.date && appointment.time)
+    .map((appointment) => ({
+      id: appointment.id,
+      checked: false,
+      lesson: appointment.lesson,
+      student: appointment.studentName || appointment.studentId,
+      price: appointment.price,
+      date: appointment.date,
+      time: appointment.time,
+      status: appointment.status,
+      onStatusChange: (newStatus: AppointmentStatus) =>
+        handleStatusChange(appointment.id, newStatus),
+      canDelete: isPastAppointment(appointment.date, appointment.time),
+      onDelete: isPastAppointment(appointment.date, appointment.time)
+        ? () => handleDelete(appointment.id)
+        : undefined,
+    })) as LessonRowData[];
 
   if (isLoading) {
     return (
@@ -178,7 +206,7 @@ export const TeacherAppointments = () => {
             <Pagination
               activeIndex={page}
               onIndexChange={setPage}
-              totalPages={6}
+              totalPages={totalPages}
               theme="secondary"
               shape="square"
             />

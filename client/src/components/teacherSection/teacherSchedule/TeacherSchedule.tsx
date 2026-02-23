@@ -26,10 +26,12 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
 
   const isOwnProfile = user?.id === teacher?.id;
   const isAuthenticated = !!user;
+  const isTeacher = user?.role === "teacher";
 
-  const { data: appointments = [] } = useTeacherAppointmentsQuery(
+  const { data } = useTeacherAppointmentsQuery(
     isAuthenticated ? teacher?.id : undefined,
   );
+  const appointments = data?.appointments || [];
 
   const subjectOptions = useMemo(() => {
     if (!teacher?.subjects) return [];
@@ -87,12 +89,21 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
       return;
     }
 
+    if (isTeacher) {
+      openModal("alert", {
+        title: "Cannot Book Lesson",
+        message:
+          "Teachers cannot book lessons with other teachers. Only students can book lessons.",
+      });
+      return;
+    }
+
     setSelectedTime(time);
     setShowSubjectLevelSelection(true);
   };
 
   const handleBooking = () => {
-    if (isOwnProfile) {
+    if (isOwnProfile || isTeacher) {
       return;
     }
 
@@ -254,14 +265,19 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
                   <Button
                     onClick={handleBooking}
                     disabled={
-                      !selectedSubject || !selectedLevel || isOwnProfile
+                      !selectedSubject ||
+                      !selectedLevel ||
+                      isOwnProfile ||
+                      isTeacher
                     }
                     variant="secondary"
                     className="w-full"
                   >
                     {isOwnProfile
                       ? "You cannot book lessons with yourself"
-                      : "Book Now"}
+                      : isTeacher
+                        ? "Teachers cannot book lessons"
+                        : "Book Now"}
                   </Button>
                 </div>
               </div>
