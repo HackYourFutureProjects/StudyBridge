@@ -21,7 +21,6 @@ export const queryKeys = {
     ["appointments", "teacher", teacherId, page, limit] as const,
   studentAppointments: (studentId: string, page?: number, limit?: number) =>
     ["appointments", "student", studentId, page, limit] as const,
-  myStudentProfile: () => ["students", "me"] as const,
 };
 export const chatKeys = {
   conversations: ["chat", "conversations"] as const,

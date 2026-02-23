@@ -9,7 +9,9 @@ export const useUpdateMyStudentProfileMutation = () => {
   return useMutation({
     mutationFn: (data: UpdateStudentProfile) => updateMyStudentProfile(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.myStudentProfile() });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.students.myProfile(),
+      });
     },
   });
 };

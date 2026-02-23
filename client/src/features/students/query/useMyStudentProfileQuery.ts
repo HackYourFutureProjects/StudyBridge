@@ -4,7 +4,7 @@ import { queryKeys } from "../../queryKeys";
 
 export const useMyStudentProfileQuery = () => {
   return useQuery({
-    queryKey: queryKeys.myStudentProfile(),
+    queryKey: queryKeys.students.myProfile(),
     queryFn: getMyStudentProfile,
   });
 };

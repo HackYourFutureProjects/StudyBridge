@@ -15,5 +15,4 @@ export interface UpdateStudentProfile {
   lastName?: string;
   email?: string;
   profileImageUrl?: string;
-  password?: string;
 }

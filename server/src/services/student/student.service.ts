@@ -82,25 +82,29 @@ export class StudentService {
       lastName?: string;
       email?: string;
       profileImageUrl?: string;
-      password?: string;
     },
   ) {
     const updateData: Partial<StudentTypeDB> = {};
 
-    if (data.firstName) updateData.firstName = data.firstName;
-    if (data.lastName) updateData.lastName = data.lastName;
-    if (data.email) updateData.email = data.email;
+    if (data.firstName !== undefined) updateData.firstName = data.firstName;
+    if (data.lastName !== undefined) updateData.lastName = data.lastName;
+
+    if (data.email !== undefined) {
+      const existingStudent = await this.studentQuery.getStudentByEmail(
+        data.email,
+      );
+      const existingTeacher = await this.teacherQuery.getTeacherByEmail(
+        data.email,
+      );
+
+      if ((existingStudent && existingStudent.id !== id) || existingTeacher) {
+        throw new HttpError(409, "Email already registered");
+      }
+      updateData.email = data.email;
+    }
+
     if (data.profileImageUrl !== undefined)
       updateData.profileImageUrl = data.profileImageUrl;
-
-    if (data.password) {
-      const passwordSalt = await bcrypt.genSalt(10);
-      updateData.passwordHash = await this._generateHash(
-        data.password,
-        passwordSalt,
-      );
-      updateData.passwordSalt = passwordSalt;
-    }
 
     const updated = await this.studentCommand.updateStudent(id, updateData);
     if (!updated) {

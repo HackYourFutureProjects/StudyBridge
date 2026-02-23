@@ -13,7 +13,6 @@ export const StudentProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState<string | null>(null);
   const [email, setEmail] = useState<string | null>(null);
-  const [phone] = useState("+");
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
 
   const displayName =
@@ -23,6 +22,7 @@ export const StudentProfile = () => {
         ? `${profile.firstName} ${profile.lastName}`
         : "";
   const displayEmail = email !== null ? email : profile?.email || "";
+  const phone = "+";
 
   const handleSaveProfile = async () => {
     const nameParts = displayName.trim().split(" ");
