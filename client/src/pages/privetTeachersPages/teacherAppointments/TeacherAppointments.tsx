@@ -58,6 +58,10 @@ export const TeacherAppointments = () => {
   };
 
   const isPastAppointment = (date: string, time: string): boolean => {
+    if (!date || !time) {
+      return false;
+    }
+
     const [hours, minutes] = time.split(":").map(Number);
     if (isNaN(hours) || isNaN(minutes)) {
       return false;
@@ -115,22 +119,24 @@ export const TeacherAppointments = () => {
     });
   };
 
-  const tableRows = appointments.map((appointment) => ({
-    id: appointment.id,
-    checked: false,
-    lesson: appointment.lesson,
-    student: appointment.studentId,
-    price: appointment.price,
-    date: appointment.date,
-    time: appointment.time,
-    status: appointment.status,
-    onStatusChange: (newStatus: AppointmentStatus) =>
-      handleStatusChange(appointment.id, newStatus),
-    canDelete: isPastAppointment(appointment.date, appointment.time),
-    onDelete: isPastAppointment(appointment.date, appointment.time)
-      ? () => handleDelete(appointment.id)
-      : undefined,
-  })) as LessonRowData[];
+  const tableRows = appointments
+    .filter((appointment) => appointment.date && appointment.time)
+    .map((appointment) => ({
+      id: appointment.id,
+      checked: false,
+      lesson: appointment.lesson,
+      student: appointment.studentName || appointment.studentId,
+      price: appointment.price,
+      date: appointment.date,
+      time: appointment.time,
+      status: appointment.status,
+      onStatusChange: (newStatus: AppointmentStatus) =>
+        handleStatusChange(appointment.id, newStatus),
+      canDelete: isPastAppointment(appointment.date, appointment.time),
+      onDelete: isPastAppointment(appointment.date, appointment.time)
+        ? () => handleDelete(appointment.id)
+        : undefined,
+    })) as LessonRowData[];
 
   if (isLoading) {
     return (

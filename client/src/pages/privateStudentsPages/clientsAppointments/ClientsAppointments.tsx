@@ -15,6 +15,7 @@ import { useModalStore } from "../../../store/modals.store";
 export const ClientsAppointments = () => {
   const [page, setPage] = useState(1);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const limit = 10;
   const { pathname } = useLocation();
   const user = useAuthSessionStore((state) => state.user);
   const accountType = useAuthSessionStore((s) => s.accountType ?? s.user?.role);
@@ -27,23 +28,28 @@ export const ClientsAppointments = () => {
   const isTeacher = inferredType === "teacher";
 
   const {
-    data: studentAppointments = [],
+    data: studentData,
     isLoading: isStudentLoading,
     error: studentError,
-  } = useStudentAppointmentsQuery(isTeacher ? "" : user?.id || "");
+  } = useStudentAppointmentsQuery(isTeacher ? "" : user?.id || "", page, limit);
+
+  const studentAppointments = studentData?.appointments || [];
+  const studentTotalPages = studentData?.totalPages || 1;
 
   const {
     data: teacherData,
     isLoading: isTeacherLoading,
     error: teacherError,
-  } = useTeacherAppointmentsQuery();
+  } = useTeacherAppointmentsQuery(undefined, page, limit);
 
   const teacherAppointments = teacherData?.appointments || [];
+  const teacherTotalPages = teacherData?.totalPages || 1;
 
   const updateAppointmentMutation = useUpdateAppointmentMutation();
   const deleteAppointmentMutation = useDeleteAppointmentMutation();
 
   const appointments = isTeacher ? teacherAppointments : studentAppointments;
+  const totalPages = isTeacher ? teacherTotalPages : studentTotalPages;
   const isLoading = isTeacher ? isTeacherLoading : isStudentLoading;
   const error = isTeacher ? teacherError : studentError;
 
@@ -86,6 +92,10 @@ export const ClientsAppointments = () => {
   };
 
   const isPastAppointment = (date: string, time: string): boolean => {
+    if (!date || !time) {
+      return false;
+    }
+
     const [hours, minutes] = time.split(":").map(Number);
     if (isNaN(hours) || isNaN(minutes)) {
       return false;
@@ -143,25 +153,27 @@ export const ClientsAppointments = () => {
     });
   };
 
-  const tableRows = appointments.map((appointment) => ({
-    id: appointment.id,
-    checked: false,
-    lesson: appointment.lesson,
-    student: appointment.studentId,
-    teacher: appointment.teacherId,
-    price: appointment.price,
-    date: appointment.date,
-    time: appointment.time,
-    status: appointment.status,
-    onStatusChange: isTeacher
-      ? (newStatus: AppointmentStatus) =>
-          handleStatusChange(appointment.id, newStatus)
-      : undefined,
-    canDelete: isPastAppointment(appointment.date, appointment.time),
-    onDelete: isPastAppointment(appointment.date, appointment.time)
-      ? () => handleDelete(appointment.id)
-      : undefined,
-  })) as LessonRowData[];
+  const tableRows = appointments
+    .filter((appointment) => appointment.date && appointment.time)
+    .map((appointment) => ({
+      id: appointment.id,
+      checked: false,
+      lesson: appointment.lesson,
+      student: appointment.studentName || appointment.studentId,
+      teacher: appointment.teacherName || appointment.teacherId,
+      price: appointment.price,
+      date: appointment.date,
+      time: appointment.time,
+      status: appointment.status,
+      onStatusChange: isTeacher
+        ? (newStatus: AppointmentStatus) =>
+            handleStatusChange(appointment.id, newStatus)
+        : undefined,
+      canDelete: isPastAppointment(appointment.date, appointment.time),
+      onDelete: isPastAppointment(appointment.date, appointment.time)
+        ? () => handleDelete(appointment.id)
+        : undefined,
+    })) as LessonRowData[];
 
   if (isLoading) {
     return (
@@ -219,7 +231,7 @@ export const ClientsAppointments = () => {
             <Pagination
               activeIndex={page}
               onIndexChange={setPage}
-              totalPages={6}
+              totalPages={totalPages}
               theme="secondary"
               shape="square"
             />
