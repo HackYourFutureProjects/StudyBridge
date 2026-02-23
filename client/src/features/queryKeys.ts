@@ -3,7 +3,10 @@ import { TeachersQuery } from "../api/teacher/teacher.type.ts";
 export const queryKeys = {
   me: ["auth", "me"] as const,
 
-  students: ["students"] as const,
+  students: {
+    all: ["students"] as const,
+    myProfile: () => ["students", "me"] as const,
+  },
   teachers: {
     all: ["teachers"] as const,
     myProfile: () => ["teachers", "me"] as const,
