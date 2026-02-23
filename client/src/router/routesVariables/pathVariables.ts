@@ -20,7 +20,7 @@ export const authRoutesVariables = {
 };
 
 export const chatRoutes = {
-  root: "/chat",
+  root: "chat",
   dialog: ":id",
 };
 
