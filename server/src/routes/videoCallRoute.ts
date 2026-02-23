@@ -37,3 +37,11 @@ videoCallRouter.post(
   errorMiddleware,
   videoCallController.acceptCallController.bind(videoCallController),
 );
+
+videoCallRouter.post(
+  "/:callId/decline",
+  authMiddleware.handle,
+  callIdValidationMiddleware(),
+  errorMiddleware,
+  videoCallController.declineCallController.bind(videoCallController),
+);

@@ -58,4 +58,27 @@ export class VideoCallCommand {
       });
     }
   }
+
+  async declineCallById(callId: string): Promise<VideoCallViewType | null> {
+    const now = new Date();
+
+    try {
+      const updated = await VideoCallModel.findOneAndUpdate(
+        { id: callId },
+        {
+          $set: {
+            status: "declined",
+            updatedAt: now,
+          },
+        },
+        { new: true },
+      ).lean();
+
+      return updated as VideoCallViewType | null;
+    } catch (err: unknown) {
+      throw new HttpError(500, "Something went wrong with updating call", {
+        cause: err,
+      });
+    }
+  }
 }

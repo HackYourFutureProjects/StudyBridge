@@ -163,4 +163,39 @@ export class VideoCallService {
 
     return acceptedCall ?? null;
   }
+
+  async declineCall({
+    callId,
+    authUserId,
+    authRole,
+  }: {
+    callId: string;
+    authUserId: string;
+    authRole: "teacher" | "student";
+  }): Promise<VideoCallViewType | null> {
+    const now = new Date();
+
+    if (authRole !== "student")
+      throw new HttpError(403, "Students only can decline the call");
+
+    //check if call exists
+    const call = await this.videoCallQuery.getVideoById(callId);
+    if (!call) throw new HttpError(404, "Call not found");
+
+    if (call.studentId !== authUserId)
+      throw new HttpError(403, "Only students can decline the call");
+
+    if (call.expiresAt <= now) {
+      await this.videoCallCommand.markExpiredCallAsMissed(callId);
+      throw new HttpError(409, "Call has expired");
+    }
+
+    if (call.status !== "ringing") {
+      throw new HttpError(409, "Call is no longer ringing");
+    }
+
+    const declinedCall = await this.videoCallCommand.declineCallById(callId);
+
+    return declinedCall ?? null;
+  }
 }

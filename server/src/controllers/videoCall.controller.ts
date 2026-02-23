@@ -85,4 +85,34 @@ export class VideoCallController {
       return next(error);
     }
   }
+
+  async declineCallController(
+    req: RequestWithParams<{ callId: string }>,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const callId = req.params.callId;
+      const userId = req.auth?.userId;
+      const role = req.auth?.role;
+
+      if (!userId || !role) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const declinedCall = await this.videoCallService.declineCall({
+        callId,
+        authUserId: userId,
+        authRole: role,
+      });
+
+      if (!declinedCall) {
+        return res.status(404).json({ message: "Call not found" });
+      }
+
+      return res.status(200).json(declinedCall);
+    } catch (error) {
+      return next(error);
+    }
+  }
 } // end class
