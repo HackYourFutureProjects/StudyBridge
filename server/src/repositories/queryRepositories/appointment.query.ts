@@ -33,11 +33,41 @@ export class AppointmentQuery {
 
   async getAppointmentsByTeacher(
     teacherId: string,
-  ): Promise<WithId<AppointmentTypeDB>[]> {
+    page?: number,
+    limit?: number,
+  ): Promise<{
+    appointments: WithId<AppointmentTypeDB>[];
+    total: number;
+    totalPages: number;
+  }> {
     try {
-      return await AppointmentModel.find({ teacherId })
+      const query = { teacherId };
+      const total = await AppointmentModel.countDocuments(query);
+
+      if (page && limit) {
+        const skip = (page - 1) * limit;
+        const appointments = await AppointmentModel.find(query)
+          .sort({ date: 1, time: 1 })
+          .skip(skip)
+          .limit(limit)
+          .lean();
+
+        return {
+          appointments,
+          total,
+          totalPages: Math.ceil(total / limit),
+        };
+      }
+
+      const appointments = await AppointmentModel.find(query)
         .sort({ date: 1, time: 1 })
         .lean();
+
+      return {
+        appointments,
+        total,
+        totalPages: 1,
+      };
     } catch (err: unknown) {
       throw new Error("Something went wrong with teacher appointments search", {
         cause: err,

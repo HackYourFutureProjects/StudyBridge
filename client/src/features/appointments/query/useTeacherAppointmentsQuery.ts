@@ -6,20 +6,35 @@ import { apiProtected } from "../../../api/api";
 
 const fetchTeacherAppointments = async (
   teacherId: string,
-): Promise<Appointment[]> => {
-  const response = await apiProtected.get(
-    `/api/appointments/teacher/${teacherId}`,
-  );
+  page?: number,
+  limit?: number,
+): Promise<{
+  appointments: Appointment[];
+  total: number;
+  totalPages: number;
+}> => {
+  const params = new URLSearchParams();
+  if (page) params.append("page", page.toString());
+  if (limit) params.append("limit", limit.toString());
+
+  const queryString = params.toString();
+  const url = `/api/appointments/teacher/${teacherId}${queryString ? `?${queryString}` : ""}`;
+
+  const response = await apiProtected.get(url);
   return response.data;
 };
 
-export const useTeacherAppointmentsQuery = (teacherId?: string) => {
+export const useTeacherAppointmentsQuery = (
+  teacherId?: string,
+  page?: number,
+  limit?: number,
+) => {
   const user = useAuthSessionStore((state) => state.user);
   const resolvedTeacherId = teacherId || user?.id || "";
 
   return useQuery({
-    queryKey: queryKeys.teacherAppointments(resolvedTeacherId),
-    queryFn: () => fetchTeacherAppointments(resolvedTeacherId),
+    queryKey: queryKeys.teacherAppointments(resolvedTeacherId, page, limit),
+    queryFn: () => fetchTeacherAppointments(resolvedTeacherId, page, limit),
     enabled: !!resolvedTeacherId && !!user,
   });
 };

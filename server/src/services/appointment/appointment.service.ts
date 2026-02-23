@@ -73,10 +73,23 @@ export class AppointmentService {
     return appointments.map((apt) => this.formatAppointmentResponse(apt));
   }
 
-  async getAppointmentsByTeacher(teacherId: string) {
-    const appointments =
-      await this.appointmentQuery.getAppointmentsByTeacher(teacherId);
-    return appointments.map((apt) => this.formatAppointmentResponse(apt));
+  async getAppointmentsByTeacher(
+    teacherId: string,
+    page?: number,
+    limit?: number,
+  ) {
+    const result = await this.appointmentQuery.getAppointmentsByTeacher(
+      teacherId,
+      page,
+      limit,
+    );
+    return {
+      appointments: result.appointments.map((apt) =>
+        this.formatAppointmentResponse(apt),
+      ),
+      total: result.total,
+      totalPages: result.totalPages,
+    };
   }
 
   async updateAppointmentStatus(id: string, data: UpdateAppointmentStatusType) {
