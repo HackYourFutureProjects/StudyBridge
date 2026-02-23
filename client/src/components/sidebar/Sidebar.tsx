@@ -1,7 +1,5 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-
-import BillingIcon from "../icons/Billing";
 import AppointmentsIcon from "../icons/Appointments";
 import DashboardIcon from "../icons/Dashboard";
 import LessonsIcon from "../icons/Lessons";
@@ -22,7 +20,11 @@ export type MenuItem = {
 };
 
 export const defaultStudentMenuItems: MenuItem[] = [
-  { name: "Dashboard", link: studentBase, icon: DashboardIcon },
+  {
+    name: "Dashboard",
+    link: joinPath(studentBase, studentPrivatesRoutesVariables.dashboard),
+    icon: DashboardIcon,
+  },
   {
     name: "Appointments",
     link: joinPath(studentBase, studentPrivatesRoutesVariables.appointments),
@@ -36,7 +38,7 @@ export const defaultStudentMenuItems: MenuItem[] = [
   {
     name: "Billings",
     link: joinPath(studentBase, studentPrivatesRoutesVariables.billing),
-    icon: BillingIcon,
+    icon: LessonsIcon,
   },
   {
     name: "Chat",
