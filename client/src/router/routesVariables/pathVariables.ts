@@ -1,3 +1,6 @@
+export const studentBase = "/clients-dashboard";
+export const teacherBase = "/teacher";
+
 export const publicRoutesVariables = {
   home: "/",
   teachers: "/teachers",
@@ -22,15 +25,17 @@ export const chatRoutes = {
 };
 
 export const studentPrivatesRoutesVariables = {
-  dashboard: "/clients-dashboard",
-  classes: "/student-classes",
-  appointments: "/clients-appointments",
+  dashboard: "",
+  classes: "student-classes",
+  appointments: "clients-appointments",
+  billing: "clients-billing",
 };
 
 export const teacherPrivatesRoutesVariables = {
-  dashboard: "/teacher/my-dashboard",
-  classes: "/teacher/my-classes",
-  myStudents: "/teacher/my-students",
-  profile: "/teacher/profile",
-  appointments: "/teacher-appointments",
+  dashboard: "my-dashboard",
+  classes: "my-classes",
+  myStudents: "my-students",
+  billings: "my-billings",
+  profile: "profile",
+  appointments: "teacher-appointments",
 };

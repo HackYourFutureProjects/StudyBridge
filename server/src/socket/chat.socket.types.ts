@@ -15,3 +15,7 @@ export type NewMessageEvent = { message: ChatMessageDTO };
 export type SendAck =
   | { ok: true; message: ChatMessageDTO }
   | { ok: false; error: string };
+
+export type PresenceSyncEvent = { userIds: string[] };
+export type PresenceOnlineEvent = { userId: string };
+export type PresenceOfflineEvent = { userId: string };

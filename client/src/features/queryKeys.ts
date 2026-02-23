@@ -19,3 +19,8 @@ export const queryKeys = {
   studentAppointments: (studentId: string, page?: number, limit?: number) =>
     ["appointments", "student", studentId, page, limit] as const,
 };
+export const chatKeys = {
+  conversations: ["chat", "conversations"] as const,
+  messages: (conversationId: string) =>
+    ["chat", "messages", conversationId] as const,
+};

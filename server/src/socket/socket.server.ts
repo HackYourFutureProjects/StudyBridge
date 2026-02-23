@@ -23,7 +23,26 @@ type SocketData = {
 };
 
 export let io: Server | null = null;
+const onlineCount = new Map<string, number>();
 
+function markOnline(userId: string) {
+  const prev = onlineCount.get(userId) ?? 0;
+  onlineCount.set(userId, prev + 1);
+  return prev === 0;
+}
+
+function markOffline(userId: string) {
+  const prev = onlineCount.get(userId) ?? 0;
+  const next = Math.max(0, prev - 1);
+
+  if (next === 0) {
+    onlineCount.delete(userId);
+    return true;
+  }
+
+  onlineCount.set(userId, next);
+  return false;
+}
 export function initSocketServer(httpServer: http.Server): Server {
   const _io = new Server(httpServer, {
     cors: {
@@ -57,6 +76,22 @@ export function initSocketServer(httpServer: http.Server): Server {
   });
 
   _io.on("connection", (socket: Socket) => {
+    const { userId } = socket.data as SocketData;
+
+    const becameOnline = markOnline(userId);
+    if (becameOnline) {
+      _io.emit("presence:online", { userId });
+    }
+
+    socket.emit("presence:sync", { userIds: Array.from(onlineCount.keys()) });
+
+    socket.on("disconnect", () => {
+      const becameOffline = markOffline(userId);
+      if (becameOffline) {
+        _io.emit("presence:offline", { userId });
+      }
+    });
+
     registerChatHandlers(_io, socket);
   });
 
