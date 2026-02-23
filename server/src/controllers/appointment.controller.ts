@@ -57,16 +57,21 @@ export class AppointmentController {
   }
 
   async getAppointmentsByStudentController(
-    req: RequestWithParams<{ studentId: string }>,
+    req: RequestWithParams<{ studentId: string }> &
+      RequestWithQuery<{ page?: string; limit?: string }>,
     res: Response,
     next: NextFunction,
   ) {
     try {
-      const appointments =
-        await this.appointmentService.getAppointmentsByStudent(
-          req.params.studentId,
-        );
-      return res.status(200).json(appointments);
+      const page = req.query.page ? parseInt(req.query.page) : undefined;
+      const limit = req.query.limit ? parseInt(req.query.limit) : undefined;
+
+      const result = await this.appointmentService.getAppointmentsByStudent(
+        req.params.studentId,
+        page,
+        limit,
+      );
+      return res.status(200).json(result);
     } catch (error) {
       return next(error);
     }

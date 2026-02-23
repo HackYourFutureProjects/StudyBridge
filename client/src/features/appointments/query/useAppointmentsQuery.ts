@@ -14,10 +14,21 @@ const fetchAppointmentsByTeacher = async (
 
 const fetchAppointmentsByStudent = async (
   studentId: string,
-): Promise<Appointment[]> => {
-  const response = await apiProtected.get(
-    `/api/appointments/student/${studentId}`,
-  );
+  page?: number,
+  limit?: number,
+): Promise<{
+  appointments: Appointment[];
+  total: number;
+  totalPages: number;
+}> => {
+  const params = new URLSearchParams();
+  if (page) params.append("page", page.toString());
+  if (limit) params.append("limit", limit.toString());
+
+  const queryString = params.toString();
+  const url = `/api/appointments/student/${studentId}${queryString ? `?${queryString}` : ""}`;
+
+  const response = await apiProtected.get(url);
   return response.data;
 };
 
@@ -29,10 +40,14 @@ export const useTeacherAppointmentsQuery = (teacherId: string) => {
   });
 };
 
-export const useStudentAppointmentsQuery = (studentId: string) => {
+export const useStudentAppointmentsQuery = (
+  studentId: string,
+  page?: number,
+  limit?: number,
+) => {
   return useQuery({
-    queryKey: queryKeys.studentAppointments(studentId),
-    queryFn: () => fetchAppointmentsByStudent(studentId),
+    queryKey: queryKeys.studentAppointments(studentId, page, limit),
+    queryFn: () => fetchAppointmentsByStudent(studentId, page, limit),
     enabled: !!studentId,
   });
 };

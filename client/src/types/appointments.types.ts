@@ -6,6 +6,8 @@ export interface Appointment {
   level?: string;
   teacherId: string;
   studentId: string;
+  teacherName?: string;
+  studentName?: string;
   price: string;
   date: string;
   time: string;
