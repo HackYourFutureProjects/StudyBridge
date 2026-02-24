@@ -8,6 +8,7 @@ import { TeacherAppointments } from "../../pages/privetTeachersPages/teacherAppo
 import { ChatDialogPage } from "../../pages/chat/chatDialogPage/ChatDialogPage.tsx";
 import { ChatPage } from "../../pages/chat/chatPage/ChatPage.tsx";
 import { EmptyChat } from "../../pages/chat/EmptyChat/EmptyChat.tsx";
+import { VideoCallPage } from "../../pages/videoCall/VideoCallPage.tsx";
 
 export const teacherPrivateRoutes: RouteObject[] = [
   {
@@ -15,6 +16,10 @@ export const teacherPrivateRoutes: RouteObject[] = [
     element: <TeacherDashboard />,
   },
   { path: teacherPrivatesRoutesVariables.classes, element: <ClientsClasses /> },
+  {
+    path: teacherPrivatesRoutesVariables.videoCall,
+    element: <VideoCallPage />,
+  },
   {
     path: teacherPrivatesRoutesVariables.myStudents,
     element: <ClientsClasses />,

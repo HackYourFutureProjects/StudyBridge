@@ -1,20 +1,12 @@
 import { LoginFinalType, RegisterFinalType, UserType } from "./types";
 import { apiProtected, apiPublic } from "../api";
 
-export async function registerStudentApi(data: RegisterFinalType) {
-  await apiPublic.post("/api/auth/registration-student", data);
+export async function registerApi(data: RegisterFinalType) {
+  await apiPublic.post("/api/auth/registration", data);
 }
 
-export async function registerTeacherApi(data: RegisterFinalType) {
-  await apiPublic.post("/api/auth/registration-teacher", data);
-}
-
-export async function loginTeacherApi(data: LoginFinalType) {
-  const res = await apiPublic.post("/api/auth/login-teacher", data);
-  return res.data as { accessToken: string };
-}
-export async function loginStudentApi(data: LoginFinalType) {
-  const res = await apiPublic.post("/api/auth/login-student", data);
+export async function loginApi(data: LoginFinalType) {
+  const res = await apiPublic.post("/api/auth/login", data);
   return res.data as { accessToken: string };
 }
 

@@ -1,9 +1,8 @@
 import { Router } from "express";
 import {
-  authStudentLoginValidationMiddleware,
-  autStudentValidationMiddleware,
-} from "../validation/auth/studentAuthMiddleware.js";
-import { autTeacherValidationMiddleware } from "../validation/auth/teacherAuthMiddleware.js";
+  authLoginValidationMiddleware,
+  authRegistrationValidationMiddleware,
+} from "../validation/auth/authMiddleware.js";
 import { errorMiddleware } from "../middlewares/error.middleware.js";
 import { container } from "../composition/compositionRoot.js";
 import { AuthController } from "../controllers/auth.controller.js";
@@ -24,35 +23,19 @@ const refreshTokenMiddleware = container.get<RefreshTokenMiddleware>(
 );
 
 authRouter.post(
-  "/registration-student",
+  "/registration",
   accessCounterMiddleware,
-  autStudentValidationMiddleware(),
+  authRegistrationValidationMiddleware(),
   errorMiddleware,
-  authController.registrationStudentController.bind(authController),
+  authController.registrationUserController.bind(authController),
 );
 
 authRouter.post(
-  "/registration-teacher",
+  "/login",
   accessCounterMiddleware,
-  autTeacherValidationMiddleware(),
+  authLoginValidationMiddleware(),
   errorMiddleware,
-  authController.registrationTeacherController.bind(authController),
-);
-
-authRouter.post(
-  "/login-student",
-  accessCounterMiddleware,
-  authStudentLoginValidationMiddleware(),
-  errorMiddleware,
-  authController.loginStudentController.bind(authController),
-);
-
-authRouter.post(
-  "/login-teacher",
-  accessCounterMiddleware,
-  authStudentLoginValidationMiddleware(),
-  errorMiddleware,
-  authController.loginTeacherController.bind(authController),
+  authController.loginController.bind(authController),
 );
 
 authRouter.get(

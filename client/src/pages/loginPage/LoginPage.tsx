@@ -3,10 +3,10 @@ import { LoginForm } from "../../components/auth/loginForm/LoginForm";
 import { useLoginMutation } from "../../features/auth/mutations/useLoginMutation";
 
 export const LoginPage = ({ role }: { role: Role }) => {
-  const { mutateAsync, isPending } = useLoginMutation(role);
+  const { mutateAsync, isPending } = useLoginMutation();
 
   const onSubmit = async (data: LoginFinalType) => {
-    await mutateAsync(data);
+    await mutateAsync({ ...data, role });
   };
 
   return (

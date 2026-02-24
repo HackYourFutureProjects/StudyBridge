@@ -1,7 +1,6 @@
 import { inject, injectable } from "inversify";
 import { TeacherCommand } from "../../repositories/commandRepositories/teacher.command.js";
 import { TYPES } from "../../composition/composition.types.js";
-import { TeacherRegistrationType } from "../../types/teacher/teacher.types.js";
 import bcrypt from "bcryptjs";
 import { randomUUID } from "node:crypto";
 import { TeacherTypeDB } from "../../db/schemes/types/teacher.types.js";
@@ -10,6 +9,7 @@ import { HttpError, NotFoundError } from "../../utils/error.util.js";
 import { StudentQuery } from "../../repositories/queryRepositories/student.query.js";
 import { TeacherQuery } from "../../repositories/queryRepositories/teacher.query.js";
 import { isMongoDuplicateKeyError } from "../../utils/duplicateType.guard.js";
+import { RegistrationType } from "../../types/auth/auth.types.js";
 
 @injectable()
 export class TeacherService {
@@ -25,7 +25,7 @@ export class TeacherService {
     lastName,
     password,
     role,
-  }: TeacherRegistrationType) {
+  }: RegistrationType) {
     const studentExists = await this.studentQuery.getStudentByEmail(email);
     const teacherExists = await this.teacherQuery.getTeacherByEmail(email);
 

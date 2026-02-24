@@ -4,8 +4,11 @@ import LessonsTable from "../../../components/table/LessonsTable";
 import { PageTitle } from "../../../components/pageTitle/PageTitle";
 import { useAuthSessionStore } from "../../../store/authSession.store";
 import { useLocation } from "react-router-dom";
+import { Button } from "../../../components/ui/button/Button";
+import { startCall } from "../../../api/video/video.api";
 
 export const ClientsClasses = () => {
+  const { user } = useAuthSessionStore();
   const [page, setPage] = useState(1);
   const { pathname } = useLocation();
 
@@ -14,6 +17,23 @@ export const ClientsClasses = () => {
     accountType ?? (pathname.startsWith("/teacher") ? "teacher" : "student");
   const isTeacher = inferredType === "teacher";
   const isMyStudents = pathname === "/teacher/my-students";
+  // const appointment = { studentId: "20e8ad65-9712-4826-b0d5-2f34a2799262" };
+
+  const handleStartCall = async (studentId: string) => {
+    if (!user?.id) return;
+
+    try {
+      const call = await startCall({
+        teacherId: user.id,
+        studentId,
+        streamCallId: `call_${crypto.randomUUID()}`,
+      });
+      console.log("Call started:", call.id, call.streamCallId);
+      // later: we navigate to video call page
+    } catch (error) {
+      console.error("Failed to start call", error);
+    }
+  };
 
   const columns = isMyStudents
     ? [
@@ -56,7 +76,22 @@ export const ClientsClasses = () => {
                 student: "John Smith",
                 date: "5/27/15",
                 price: "25 euro",
-                videoCall: "Join",
+                videoCall: isTeacher ? (
+                  <Button
+                    as="button"
+                    variant="link"
+                    className="text-inherit underline font-normal min-h-0 min-w-0 rounded-none"
+                    // // TODO: [VIDEO] Replace hardcoded studentId with appointment.studentId after appointments integration is merged. Like this way
+                    // onClick={() => handleStartCall(appointment.studentId)}
+                    onClick={() =>
+                      handleStartCall("20e8ad65-9712-4826-b0d5-2f34a2799262")
+                    }
+                  >
+                    Start call!
+                  </Button>
+                ) : (
+                  "Join"
+                ),
               },
               {
                 id: 3,
@@ -66,7 +101,23 @@ export const ClientsClasses = () => {
                 student: "John Smith",
                 date: "5/27/15",
                 price: "25 euro",
-                videoCall: "Join",
+
+                videoCall: isTeacher ? (
+                  <Button
+                    as="button"
+                    variant="link"
+                    className="text-inherit underline font-normal min-h-0 min-w-0 rounded-none"
+                    // // TODO: [VIDEO] Replace hardcoded studentId with appointment.studentId after appointments integration is merged. Like this way
+                    // onClick={() => handleStartCall(appointment.studentId)}
+                    onClick={() =>
+                      handleStartCall("ee3dce21-be6e-423a-92f2-1d0ad0460a9b")
+                    }
+                  >
+                    Start call!
+                  </Button>
+                ) : (
+                  "Join"
+                ),
               },
               {
                 id: 2,
@@ -76,7 +127,22 @@ export const ClientsClasses = () => {
                 student: "John Smith",
                 date: "5/27/15",
                 price: "25 euro",
-                videoCall: "Join",
+                videoCall: isTeacher ? (
+                  <Button
+                    as="button"
+                    variant="link"
+                    className="text-inherit underline font-normal min-h-0 min-w-0 rounded-none"
+                    // // TODO: [VIDEO] Replace hardcoded studentId with appointment.studentId after appointments integration is merged. Like this way
+                    // onClick={() => handleStartCall(appointment.studentId)}
+                    onClick={() =>
+                      handleStartCall("76a73bb5-dcbb-454a-88a0-6adee35f5bbf")
+                    }
+                  >
+                    Start call!
+                  </Button>
+                ) : (
+                  "Join"
+                ),
               },
             ]}
           />
