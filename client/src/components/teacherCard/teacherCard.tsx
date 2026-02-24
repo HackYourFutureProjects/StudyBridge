@@ -2,12 +2,17 @@ import { Button } from "../ui/button/Button";
 import { Rating } from "../rating/Rating";
 import { TeacherType } from "../../api/teacher/teacher.type";
 import ImageNotFount from "../../assets/images/image-not-found.png";
-import { NavLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 type TeacherCardType = {
   teacher: TeacherType;
+  showBookButton?: boolean;
 };
 
-export const TeacherCard = ({ teacher }: TeacherCardType) => {
+export const TeacherCard = ({
+  teacher,
+  showBookButton = true,
+}: TeacherCardType) => {
   const {
     id,
     firstName,
@@ -20,6 +25,12 @@ export const TeacherCard = ({ teacher }: TeacherCardType) => {
     bio,
     rating,
   } = teacher;
+
+  const navigate = useNavigate();
+
+  const handleBookClick = () => {
+    navigate(`/teacher/${id}`);
+  };
   return (
     <div
       className="flex flex-col items-center xl:flex-row border bg-[#15141D80] border-blue-500
@@ -52,28 +63,32 @@ export const TeacherCard = ({ teacher }: TeacherCardType) => {
           </div>
         </div>
         <div className="flex flex-col items-center gap-5">
-          {subjects.length ? (
-            <span
-              className="inline-flex w-fit
-                        shrink-0 border border-light-300 text-[12px] md:text-[12px] text-light-100 rounded-full bg-dark-900
-                        px-8.75 py-0.5"
-            >
+          {subjects.length > 0 && (
+            <div className="flex flex-wrap gap-2 justify-center">
               {subjects.map((subject) => (
-                <span key={subject.subjectName}>
+                <span
+                  key={subject._id}
+                  className="inline-flex shrink-0 border border-light-300 text-[12px] md:text-[12px] text-light-100 rounded-full bg-dark-900 px-8.75 py-0.5"
+                >
                   {subject.subjectName} teacher
                 </span>
               ))}
-            </span>
-          ) : null}
+            </div>
+          )}
           <div className="flex flex-col gap-5 w-full max-w-116.25">
             <p className="text-[12px] md:text-[14px] lg:text-[14px] xl:text-[15px] text-light-100">
-              Experience — {experience}
+              Experience — {experience} {experience === 1 ? "year" : "years"}
             </p>
             <p className="text-[12px] md:text-[14px] lg:text-[14px] xl:text-[15px] text-light-100">
               Education —{" "}
-              {education.map((item) => (
-                <span key={item.degree}>{item.institution}</span>
-              ))}
+              {education.length > 0
+                ? education.map((item, index) => (
+                    <span key={item.degree}>
+                      {item.institution}
+                      {index < education.length - 1 ? ", " : ""}
+                    </span>
+                  ))
+                : "Not specified"}
             </p>
             <p
               className="text-[12px] md:text-[14px] lg:text-[14px] xl:text-[15px] text-light-100
@@ -96,9 +111,11 @@ export const TeacherCard = ({ teacher }: TeacherCardType) => {
           1 hour
         </span>
         <Rating rating={rating} />
-        <Button as={NavLink} to={`/teacher/${id}`} variant="secondary">
-          Book
-        </Button>
+        {showBookButton && (
+          <Button onClick={handleBookClick} variant="secondary">
+            Book
+          </Button>
+        )}
         <span className="text-[14px] text-dark-400">First lesson - free</span>
       </div>
     </div>

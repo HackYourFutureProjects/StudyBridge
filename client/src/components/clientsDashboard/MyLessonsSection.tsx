@@ -7,13 +7,12 @@ import { useAuthSessionStore } from "../../store/authSession.store";
 
 export const MyLessonsSection = () => {
   const user = useAuthSessionStore((state) => state.user);
-  const {
-    data: appointments = [],
-    isLoading,
-    error,
-  } = useStudentAppointmentsQuery(user?.id || "");
+  const { data, isLoading, error } = useStudentAppointmentsQuery(
+    user?.id || "",
+  );
 
-  // Filter today's appointments
+  const appointments = data?.appointments || [];
+
   const today = new Date().toISOString().split("T")[0];
   const todayAppointments = appointments.filter(
     (appointment) => appointment.date === today,
@@ -23,7 +22,7 @@ export const MyLessonsSection = () => {
     id: appointment.id,
     checked: appointment.status === "approved",
     lesson: appointment.lesson,
-    teacher: appointment.teacher || "N/A",
+    teacher: appointment.teacherName || appointment.teacherId || "N/A",
     price: appointment.price,
     videoCall: appointment.videoCall || "Join",
   }));

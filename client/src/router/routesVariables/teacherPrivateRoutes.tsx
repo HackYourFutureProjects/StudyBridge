@@ -1,10 +1,13 @@
 import { RouteObject } from "react-router-dom";
-import { TeacherDashboard } from "../../pages/teacherDashboard/TeacherDashboard.tsx";
-import { ClientsClasses } from "../../pages/ClientsClasses/ClientsClasses.tsx";
-import { TeacherProfile } from "../../pages/teacherProfile/TeacherProfile.tsx";
-import { TeacherAppointments } from "../../pages/teacherAppointments/TeacherAppointments.tsx";
-import { ClientsBilling } from "../../pages/clientsBilling/ClientsBilling.tsx";
-import { teacherPrivatesRoutesVariables } from "./pathVariables.ts";
+
+import { chatRoutes, teacherPrivatesRoutesVariables } from "./pathVariables.ts";
+import { TeacherDashboard } from "../../pages/privetTeachersPages/teacherDashboard/TeacherDashboard.tsx";
+import { ClientsClasses } from "../../pages/privateStudentsPages/ClientsClasses/ClientsClasses.tsx";
+import { TeacherProfile } from "../../pages/privetTeachersPages/teacherProfile/TeacherProfile.tsx";
+import { TeacherAppointments } from "../../pages/privetTeachersPages/teacherAppointments/TeacherAppointments.tsx";
+import { ChatDialogPage } from "../../pages/chat/chatDialogPage/ChatDialogPage.tsx";
+import { ChatPage } from "../../pages/chat/chatPage/ChatPage.tsx";
+import { EmptyChat } from "../../pages/chat/EmptyChat/EmptyChat.tsx";
 
 export const teacherPrivateRoutes: RouteObject[] = [
   {
@@ -16,11 +19,15 @@ export const teacherPrivateRoutes: RouteObject[] = [
     path: teacherPrivatesRoutesVariables.myStudents,
     element: <ClientsClasses />,
   },
-  {
-    path: teacherPrivatesRoutesVariables.billings,
-    element: <ClientsBilling />,
-  },
   { path: teacherPrivatesRoutesVariables.profile, element: <TeacherProfile /> },
+  {
+    path: chatRoutes.root,
+    element: <ChatPage />,
+    children: [
+      { index: true, element: <EmptyChat /> },
+      { path: chatRoutes.dialog, element: <ChatDialogPage /> },
+    ],
+  },
   {
     path: teacherPrivatesRoutesVariables.appointments,
     element: <TeacherAppointments />,

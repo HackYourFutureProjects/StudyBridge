@@ -4,6 +4,7 @@ import {
   RequestWithBody,
   RequestWithParams,
   ParamsType,
+  RequestWithQuery,
 } from "../types/common.types.js";
 import { NextFunction, Response } from "express";
 import { TYPES } from "../composition/composition.types.js";
@@ -56,32 +57,70 @@ export class AppointmentController {
   }
 
   async getAppointmentsByStudentController(
-    req: RequestWithParams<{ studentId: string }>,
+    req: RequestWithParams<{ studentId: string }> &
+      RequestWithQuery<{ page?: string; limit?: string }>,
     res: Response,
     next: NextFunction,
   ) {
     try {
-      const appointments =
-        await this.appointmentService.getAppointmentsByStudent(
-          req.params.studentId,
-        );
-      return res.status(200).json(appointments);
+      let page: number | undefined;
+      let limit: number | undefined;
+
+      if (req.query.page) {
+        page = parseInt(req.query.page, 10);
+        if (isNaN(page)) {
+          return res.status(400).json({ message: "Invalid page parameter" });
+        }
+      }
+
+      if (req.query.limit) {
+        limit = parseInt(req.query.limit, 10);
+        if (isNaN(limit)) {
+          return res.status(400).json({ message: "Invalid limit parameter" });
+        }
+      }
+
+      const result = await this.appointmentService.getAppointmentsByStudent(
+        req.params.studentId,
+        page,
+        limit,
+      );
+      return res.status(200).json(result);
     } catch (error) {
       return next(error);
     }
   }
 
   async getAppointmentsByTeacherController(
-    req: RequestWithParams<{ teacherId: string }>,
+    req: RequestWithParams<{ teacherId: string }> &
+      RequestWithQuery<{ page?: string; limit?: string }>,
     res: Response,
     next: NextFunction,
   ) {
     try {
-      const appointments =
-        await this.appointmentService.getAppointmentsByTeacher(
-          req.params.teacherId,
-        );
-      return res.status(200).json(appointments);
+      let page: number | undefined;
+      let limit: number | undefined;
+
+      if (req.query.page) {
+        page = parseInt(req.query.page, 10);
+        if (isNaN(page)) {
+          return res.status(400).json({ message: "Invalid page parameter" });
+        }
+      }
+
+      if (req.query.limit) {
+        limit = parseInt(req.query.limit, 10);
+        if (isNaN(limit)) {
+          return res.status(400).json({ message: "Invalid limit parameter" });
+        }
+      }
+
+      const result = await this.appointmentService.getAppointmentsByTeacher(
+        req.params.teacherId,
+        page,
+        limit,
+      );
+      return res.status(200).json(result);
     } catch (error) {
       return next(error);
     }
@@ -120,6 +159,24 @@ export class AppointmentController {
       }
 
       return res.status(200).json(appointment);
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  async deleteAppointmentController(
+    req: RequestWithParams<ParamsType>,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const userId = req.auth?.userId;
+      if (!userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      await this.appointmentService.deleteAppointment(req.params.id, userId);
+      return res.status(204).send();
     } catch (error) {
       return next(error);
     }

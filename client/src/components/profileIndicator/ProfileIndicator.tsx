@@ -5,13 +5,23 @@ import imageNotFound from "../../assets/images/image-not-found.png";
 import { NavLink } from "react-router-dom";
 import { useAuthSessionStore } from "../../store/authSession.store.ts";
 
-export const ProfileIndicator = () => {
+type ProfileIndicatorVariant = "main" | "private";
+
+type Props = {
+  variant?: ProfileIndicatorVariant;
+};
+
+export const ProfileIndicator = ({ variant = "private" }: Props) => {
   const { open } = useModalStore();
   const user = useAuthSessionStore((s) => s.user);
 
+  const wrapperClass =
+    variant === "private"
+      ? "hidden md:flex flex-row items-center gap-2 md:gap-3"
+      : "flex flex-row items-center gap-2 md:gap-3";
   return (
     <>
-      <div className="flex flex-row items-center gap-2 md:gap-3">
+      <div className={wrapperClass}>
         <Button
           as={NavLink}
           to="/app"

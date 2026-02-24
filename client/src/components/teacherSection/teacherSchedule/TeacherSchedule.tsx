@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Calendar } from "./Calendar/Calendar";
 import { Time } from "./Time/Time";
-import { Button } from "../../ui/button/Button";
-import { Modal } from "../../ui/modal/Modal";
 import { TeacherType } from "../../../api/teacher/teacher.type";
-import { useCreateAppointmentMutation } from "../../../features/appointments/mutations/useCreateAppointmentMutation";
+import { useModalStore } from "../../../store/modals.store";
 import { useAuthSessionStore } from "../../../store/authSession.store";
+import { useTeacherAppointmentsQuery } from "../../../features/appointments/query/useTeacherAppointmentsQuery";
+import { SelectComponent } from "../../ui/select/select";
+import { Button } from "../../ui/button/Button";
 
 interface TeacherScheduleProps {
   teacher?: TeacherType;
@@ -13,13 +14,69 @@ interface TeacherScheduleProps {
 
 export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [showTimeAndBook, setShowTimeAndBook] = useState<boolean>(false);
-  const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
+  const [selectedSubject, setSelectedSubject] = useState<string>("");
+  const [selectedLevel, setSelectedLevel] = useState<string>("");
+  const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const [showSubjectLevelSelection, setShowSubjectLevelSelection] =
+    useState<boolean>(false);
 
-  const { mutate: createAppointment, isPending } =
-    useCreateAppointmentMutation();
+  const { open: openModal } = useModalStore();
   const user = useAuthSessionStore((state) => state.user);
+
+  const isOwnProfile = user?.id === teacher?.id;
+  const isAuthenticated = !!user;
+  const isTeacher = user?.role === "teacher";
+
+  const { data } = useTeacherAppointmentsQuery(
+    isAuthenticated ? teacher?.id : undefined,
+  );
+  const appointments = data?.appointments || [];
+
+  const subjectOptions = useMemo(() => {
+    if (!teacher?.subjects) return [];
+    return teacher.subjects.map((subject) => ({
+      label: subject.subjectName,
+      value: subject.subjectName,
+    }));
+  }, [teacher]);
+
+  const levelOptions = useMemo(() => {
+    if (!selectedSubject || !teacher?.subjects) return [];
+    const subject = teacher.subjects.find(
+      (s) => s.subjectName === selectedSubject,
+    );
+    if (!subject || !subject.levels || subject.levels.length === 0) return [];
+
+    return subject.levels.map((levelItem) => {
+      if (typeof levelItem === "string") {
+        return { label: levelItem, value: levelItem };
+      }
+      return { label: levelItem.level, value: levelItem.level };
+    });
+  }, [selectedSubject, teacher]);
+
+  const selectedPrice = useMemo(() => {
+    if (!selectedSubject || !selectedLevel || !teacher?.subjects) return null;
+    const subject = teacher.subjects.find(
+      (s) => s.subjectName === selectedSubject,
+    );
+    if (!subject || !subject.levels || subject.levels.length === 0) return null;
+
+    const levelItem = subject.levels.find((l) => {
+      if (typeof l === "string") {
+        return l === selectedLevel;
+      }
+      return l.level === selectedLevel;
+    });
+
+    if (!levelItem) return null;
+
+    if (typeof levelItem === "string") {
+      return subject.hourlyRate;
+    }
+    return levelItem.price;
+  }, [selectedSubject, selectedLevel, teacher]);
 
   const handleDateSelection = (date: Date): void => {
     setSelectedDate(date);
@@ -27,43 +84,51 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
   };
 
   const handleTimeSelection = (time: string): void => {
-    setSelectedTime(time);
-  };
-
-  const handleBook = (): void => {
-    if (selectedDate && selectedTime && teacher) {
-      setShowConfirmModal(true);
-    }
-  };
-
-  const handleConfirmBooking = (): void => {
-    if (!teacher || !selectedDate || !selectedTime || !user) {
-      console.error("Missing required data for booking");
+    if (!isAuthenticated) {
+      openModal("signIn");
       return;
     }
 
-    const appointmentData = {
-      teacherId: teacher.id,
-      studentId: user.id,
-      date: selectedDate.toISOString().split("T")[0],
-      time: selectedTime,
-      lesson: teacher.subjects?.[0]?.subjectName || "General Lesson",
-      price: teacher.priceFrom?.toString() || "0",
-    };
+    if (isTeacher) {
+      openModal("alert", {
+        title: "Cannot Book Lesson",
+        message:
+          "Teachers cannot book lessons with other teachers. Only students can book lessons.",
+      });
+      return;
+    }
 
-    createAppointment(appointmentData, {
-      onSuccess: () => {
-        setShowConfirmModal(false);
-        setSelectedDate(null);
-        setSelectedTime(null);
-        setShowTimeAndBook(false);
-        alert("Booking successful! The teacher will review your request.");
-      },
-      onError: (error) => {
-        console.error("Booking failed:", error);
-        alert("Booking failed. Please try again.");
-      },
-    });
+    setSelectedTime(time);
+    setShowSubjectLevelSelection(true);
+  };
+
+  const handleBooking = () => {
+    if (isOwnProfile || isTeacher) {
+      return;
+    }
+
+    if (!selectedSubject || !selectedLevel) {
+      return;
+    }
+
+    if (selectedDate && teacher && selectedTime) {
+      openModal("bookingConfirm", {
+        teacher,
+        selectedDate,
+        selectedTime,
+        selectedSubject,
+        selectedLevel,
+        selectedPrice: selectedPrice || undefined,
+        onSuccess: () => {
+          setSelectedDate(null);
+          setShowTimeAndBook(false);
+          setSelectedTime(null);
+          setShowSubjectLevelSelection(false);
+          setSelectedSubject("");
+          setSelectedLevel("");
+        },
+      });
+    }
   };
 
   const getAvailableTimeSlots = (): string[] => {
@@ -78,11 +143,7 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
     const dayAvailability = teacher.availability?.[dayName];
 
     if (!dayAvailability || dayAvailability.length === 0) {
-      const defaultSlots: string[] = [];
-      for (let hour = 9; hour < 18; hour++) {
-        defaultSlots.push(`${hour.toString().padStart(2, "0")}:00`);
-      }
-      return defaultSlots;
+      return [];
     }
 
     const slots: string[] = [];
@@ -92,7 +153,6 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
       const endMatch = slot.end.match(timeRegex);
 
       if (!startMatch || !endMatch) {
-        console.warn(`Invalid time format: ${slot.start} - ${slot.end}`);
         return;
       }
 
@@ -100,7 +160,6 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
       const endHour = parseInt(endMatch[1], 10);
 
       if (startHour < 0 || startHour > 23 || endHour < 0 || endHour > 23) {
-        console.warn(`Invalid hour range: ${startHour} - ${endHour}`);
         return;
       }
 
@@ -109,7 +168,20 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
       }
     });
 
-    return slots;
+    const year = selectedDate.getFullYear();
+    const month = String(selectedDate.getMonth() + 1).padStart(2, "0");
+    const day = String(selectedDate.getDate()).padStart(2, "0");
+    const formattedDate = `${year}-${month}-${day}`;
+
+    const approvedAppointments = appointments.filter(
+      (apt) => apt.status === "approved" && apt.date === formattedDate,
+    );
+
+    const bookedTimes = new Set(
+      approvedAppointments.map((apt) => apt.time.substring(0, 5)),
+    );
+
+    return slots.filter((slot) => !bookedTimes.has(slot));
   };
 
   return (
@@ -140,53 +212,79 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
               </div>
             )}
 
-            {showTimeAndBook && selectedTime && (
-              <div className="mt-8">
-                <Button variant="secondary" onClick={handleBook}>
-                  Book Lesson - €{teacher?.priceFrom || 0}
-                </Button>
+            {showSubjectLevelSelection && selectedTime && (
+              <div className="mt-8 p-6 bg-[#1E1D28] rounded-lg border border-[#7286FF]">
+                <p className="text-white text-lg font-semibold mb-4">
+                  Please select subject and level
+                </p>
+
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Select Subject
+                    </label>
+                    <SelectComponent
+                      options={subjectOptions}
+                      value={selectedSubject}
+                      onChange={(value) => {
+                        setSelectedSubject(value);
+                        setSelectedLevel("");
+                      }}
+                      placeholder="Choose a subject"
+                    />
+                  </div>
+
+                  {selectedSubject && levelOptions.length > 0 && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                        Select Level
+                      </label>
+                      <SelectComponent
+                        options={levelOptions}
+                        value={selectedLevel}
+                        onChange={setSelectedLevel}
+                        placeholder="Choose a level"
+                      />
+                    </div>
+                  )}
+
+                  {selectedSubject && selectedLevel && selectedPrice && (
+                    <div className="bg-[#15141D] p-4 rounded-lg border border-[#7286FF]">
+                      <p className="text-gray-300">
+                        <span className="font-medium text-[#7186FF]">
+                          {selectedSubject}
+                        </span>{" "}
+                        - Level {selectedLevel}
+                      </p>
+                      <p className="text-xl font-bold text-white mt-1">
+                        €{selectedPrice}/hour
+                      </p>
+                    </div>
+                  )}
+
+                  <Button
+                    onClick={handleBooking}
+                    disabled={
+                      !selectedSubject ||
+                      !selectedLevel ||
+                      isOwnProfile ||
+                      isTeacher
+                    }
+                    variant="secondary"
+                    className="w-full"
+                  >
+                    {isOwnProfile
+                      ? "You cannot book lessons with yourself"
+                      : isTeacher
+                        ? "Teachers cannot book lessons"
+                        : "Book Now"}
+                  </Button>
+                </div>
               </div>
             )}
           </div>
         </div>
       </div>
-
-      <Modal
-        isOpen={showConfirmModal}
-        onClose={() => setShowConfirmModal(false)}
-        title="Confirm Booking"
-        onConfirm={handleConfirmBooking}
-        confirmText={isPending ? "Booking..." : "Book Now"}
-        cancelText="Cancel"
-      >
-        <div className="space-y-2">
-          <p>
-            <strong>Teacher:</strong> {teacher?.firstName} {teacher?.lastName}
-          </p>
-          <p>
-            <strong>Subject:</strong>{" "}
-            {teacher?.subjects?.[0]?.subjectName || "N/A"}
-          </p>
-          <p>
-            <strong>Date:</strong> {selectedDate?.toLocaleDateString()}
-          </p>
-          <p>
-            <strong>Time:</strong> {selectedTime}
-            {teacher?.timezone && (
-              <span className="text-sm text-gray-600">
-                {" "}
-                ({teacher.timezone})
-              </span>
-            )}
-          </p>
-          <p>
-            <strong>Price:</strong> €{teacher?.priceFrom}
-          </p>
-          <p className="text-sm text-gray-600 mt-4">
-            The lesson request will be sent to the teacher.
-          </p>
-        </div>
-      </Modal>
     </div>
   );
 }

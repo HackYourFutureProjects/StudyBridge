@@ -12,7 +12,6 @@ export const RequireRole = ({
 }) => {
   const location = useLocation();
   const user = useAuthSessionStore((s) => s.user);
-
   const isLoading = false;
 
   if (isLoading) {

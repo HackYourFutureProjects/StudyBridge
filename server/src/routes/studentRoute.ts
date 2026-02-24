@@ -12,8 +12,22 @@ const studentController = container.get<StudentController>(
 );
 const authMiddleware = container.get<AuthMiddleware>(TYPES.AuthMiddleware);
 
+studentRouter.get(
+  "/me",
+  authMiddleware.handle,
+  requireRole("student"),
+  studentController.getMyProfile.bind(studentController),
+);
+
+studentRouter.put(
+  "/me",
+  authMiddleware.handle,
+  requireRole("student"),
+  studentController.updateMyProfile.bind(studentController),
+);
+
 studentRouter.delete(
-  "/students/:id",
+  "/:id",
   authMiddleware.handle,
   requireRole("student"),
   requireSelf("id"),

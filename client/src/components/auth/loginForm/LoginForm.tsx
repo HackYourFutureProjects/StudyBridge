@@ -8,6 +8,7 @@ import { ControlledTextField } from "../../ui/controlled/controlledTextField/Con
 import { Button } from "../../ui/button/Button";
 import { NavLink } from "react-router-dom";
 import { authRoutesVariables } from "../../../router/routesVariables/pathVariables";
+import { Loader } from "../../loader/Loader.tsx";
 
 type LoginFormComponentTypes = {
   loading: boolean;
@@ -110,8 +111,7 @@ export const LoginForm = ({
           </Button>
         </div>
       </div>
-
-      {loading && <div>Loading...</div>}
+      {loading && <Loader />}
     </form>
   );
 };

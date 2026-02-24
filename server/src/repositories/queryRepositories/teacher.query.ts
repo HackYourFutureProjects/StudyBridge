@@ -4,7 +4,7 @@ import {
   TeacherOutputModel,
   TeacherViewType,
   AvailabilityView,
-  TimeSlotView,
+  UpdateTeacherProfileInput,
 } from "../../types/teacher/teacher.types.js";
 import { TeacherModel } from "../../db/schemes/teacherSchema.js";
 import { teacherMapper } from "../../utils/mappers/teacher.mapper.js";
@@ -75,6 +75,20 @@ export class TeacherQuery {
     }
   }
 
+  async getTeachersByIds(ids: string[]) {
+    try {
+      if (ids.length === 0) {
+        return [];
+      }
+      const teachers = await TeacherModel.find({ id: { $in: ids } }).lean();
+      return teachers.map(teacherMapper);
+    } catch (err: unknown) {
+      throw new Error("Something went wrong with getting teachersByIds", {
+        cause: err,
+      });
+    }
+  }
+
   async findTeacherByEmailWithHash(email: string) {
     try {
       const teacher = await TeacherModel.findOne({ email }).lean();
@@ -105,18 +119,17 @@ export class TeacherQuery {
     }
   }
 
-  async upsertDaySlots(
+  async replaceAvailabilityForWeek(
     teacherId: string,
-    day: keyof AvailabilityView,
-    slots: TimeSlotView[],
+    availability: AvailabilityView,
     timezone?: string,
-  ): Promise<TimeSlotView[] | null> {
+  ): Promise<AvailabilityView | null> {
     try {
       const updatedTeacher = await TeacherModel.findOneAndUpdate(
         { id: teacherId },
         {
           $set: {
-            [`availability.${day}`]: slots,
+            availability,
             ...(timezone ? { timezone } : {}),
           },
         },
@@ -129,18 +142,20 @@ export class TeacherQuery {
 
       if (!updatedTeacher) return null;
 
-      return updatedTeacher.availability[day];
+      return updatedTeacher.availability;
     } catch (err: unknown) {
-      throw new Error("Something went wrong with upserting day slots", {
-        cause: err,
-      });
+      throw new Error(
+        "Something went wrong with replacing weekly availability",
+        {
+          cause: err,
+        },
+      );
     }
   }
 
-  async getTeacherAvailability(
+  async findTeacherWeeklyAvailability(
     teacherId: string,
-    day: keyof AvailabilityView | "all",
-  ): Promise<TimeSlotView[] | AvailabilityView | null> {
+  ): Promise<AvailabilityView | null> {
     try {
       const teacherTimeslots = await TeacherModel.findOne(
         { id: teacherId },
@@ -148,9 +163,7 @@ export class TeacherQuery {
       ).lean();
 
       if (!teacherTimeslots) return null;
-      if (day === "all") return teacherTimeslots.availability;
-
-      return teacherTimeslots.availability[day];
+      return teacherTimeslots.availability;
     } catch (err: unknown) {
       throw new Error(
         "Something went wrong while fetching teacher availability",
@@ -158,6 +171,51 @@ export class TeacherQuery {
           cause: err,
         },
       );
+    }
+  }
+
+  async updateMyProfile(
+    teacherId: string,
+    updates: UpdateTeacherProfileInput,
+  ): Promise<TeacherViewType | null> {
+    try {
+      const updateFields: Record<string, unknown> = {};
+
+      if (updates.firstName !== undefined)
+        updateFields.firstName = updates.firstName;
+      if (updates.lastName !== undefined)
+        updateFields.lastName = updates.lastName;
+      if (updates.phoneNumber !== undefined)
+        updateFields.phoneNumber = updates.phoneNumber;
+      if (updates.experience !== undefined)
+        updateFields.experience = updates.experience;
+      if (updates.bio !== undefined) updateFields.bio = updates.bio;
+      if (updates.profileImageUrl !== undefined)
+        updateFields.profileImageUrl = updates.profileImageUrl;
+      if (updates.education !== undefined)
+        updateFields.education = updates.education;
+      if (updates.subjects !== undefined)
+        updateFields.subjects = updates.subjects;
+
+      if (updates.subjects) {
+        updateFields.priceFrom = Math.min(
+          ...updates.subjects.map((s) => s.hourlyRate),
+        );
+      }
+
+      const updatedTeacher = await TeacherModel.findOneAndUpdate(
+        { id: teacherId },
+        { $set: updateFields },
+        { new: true, lean: true },
+      );
+
+      if (!updatedTeacher) return null;
+
+      return teacherMapper(updatedTeacher);
+    } catch (err: unknown) {
+      throw new Error("Something went wrong with updating teacher profile", {
+        cause: err,
+      });
     }
   }
 }

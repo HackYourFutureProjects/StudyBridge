@@ -26,9 +26,9 @@ export const TeacherDetail = () => {
   const renderContent = () => {
     switch (activeTab) {
       case "subjects":
-        return <TeacherSubjects />;
+        return <TeacherSubjects teacher={teacher} />;
       case "about":
-        return <TeacherAbout />;
+        return <TeacherAbout teacher={teacher} />;
       case "schedule":
         return <TeacherSchedule teacher={teacher} />;
       default:
@@ -82,7 +82,7 @@ export const TeacherDetail = () => {
             Back
           </Button>
         </div>
-        <TeacherCard teacher={teacher} />
+        <TeacherCard teacher={teacher} showBookButton={false} />
         <div className="section-spacing">
           <TeacherNavigation activeTab={activeTab} onTabChange={setActiveTab} />
         </div>

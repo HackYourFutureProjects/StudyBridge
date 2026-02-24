@@ -2,6 +2,10 @@ import * as React from "react";
 import { createPortal } from "react-dom";
 
 import { LogoutConfirmation } from "../auth/logoutConfirmation/LogoutConfirmation.tsx";
+import { BookingConfirmation } from "../bookingConfirmation/BookingConfirmation.tsx";
+import { SignInConfirmation } from "../auth/signInConfirmation/SignInConfirmation.tsx";
+import { ConfirmDialog } from "../confirmDialog/ConfirmDialog.tsx";
+import { AlertDialog } from "../alertDialog/AlertDialog.tsx";
 import { useModalStore } from "../../store/modals.store.ts";
 import { cva } from "class-variance-authority";
 import { twMerge } from "tailwind-merge";
@@ -22,7 +26,7 @@ const overlayClass = cva(
 );
 
 export const ModalHost = () => {
-  const { activeModal, opened, close, finishClose } = useModalStore();
+  const { activeModal, opened, close, finishClose, payload } = useModalStore();
 
   if (typeof document === "undefined") {
     return null;
@@ -50,6 +54,36 @@ export const ModalHost = () => {
       <div onClick={(e) => e.stopPropagation()} key={activeModal}>
         {activeModal === "logout" && (
           <LogoutConfirmation isOpen={opened} onClose={close} />
+        )}
+        {activeModal === "bookingConfirm" && (
+          <BookingConfirmation isOpen={opened} onClose={close} />
+        )}
+        {activeModal === "signIn" && (
+          <SignInConfirmation isOpen={opened} onClose={close} />
+        )}
+        {activeModal === "confirmDelete" &&
+          payload &&
+          "onConfirm" in payload && (
+            <ConfirmDialog
+              isOpen={opened}
+              title={payload.title}
+              message={payload.message}
+              confirmText="Delete"
+              cancelText="Cancel"
+              onConfirm={() => {
+                payload.onConfirm();
+                close();
+              }}
+              onCancel={close}
+            />
+          )}
+        {activeModal === "alert" && payload && "title" in payload && (
+          <AlertDialog
+            isOpen={opened}
+            title={payload.title}
+            message={payload.message}
+            onClose={close}
+          />
         )}
       </div>
     </div>,

@@ -1,5 +1,6 @@
 :root {
   --header-height: 90px;
+  --sidebar-width: 218px;
 }
 
 @theme inline {
@@ -18,9 +19,11 @@
   --color-blue-500: #7286ff;
 
   --color-light-100: #ffffff;
+  --color-light-150: #f1eefe;
   --color-light-200: #d8e0f0;
   --color-light-300: #bfbfbf;
   --color-light-500: #7d8592;
+  --color-light-600: #667085;
 
   --color-success-500: #17af26;
 

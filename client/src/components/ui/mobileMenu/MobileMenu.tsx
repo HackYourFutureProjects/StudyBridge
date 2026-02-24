@@ -2,7 +2,15 @@ import React from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import MenuIcon from "../../icons/Menu-button";
 import CrossIcon from "../../icons/Cross";
-
+import { Button } from "../button/Button.tsx";
+import { NavLink } from "react-router-dom";
+import {
+  authRoutesVariables,
+  publicRoutesVariables,
+} from "../../../router/routesVariables/pathVariables.ts";
+import LogoutIcon from "../../icons/LogoutIcon.tsx";
+import { useModalStore } from "../../../store/modals.store.ts";
+import { useAuthSessionStore } from "../../../store/authSession.store.ts";
 interface MobileMenuProps {
   isOpen: boolean;
   onClose: () => void;
@@ -13,25 +21,18 @@ interface MobileMenuItemProps {
   onClick?: () => void;
 }
 
-const MobileMenuItem: React.FC<MobileMenuItemProps> = ({
-  children,
-  onClick,
-}) => (
-  <button
+const MobileMenuItem = ({ children, onClick }: MobileMenuItemProps) => (
+  <div
+    className="w-full px-6 py-4 border-b border-[#ffffff15] hover:bg-[#ffffff08]"
     onClick={onClick}
-    className="
-      w-full text-left px-6 py-4
-      text-[#ffffff60] hover:text-light-100
-      transition-colors duration-200
-      border-b border-[#ffffff15]
-      hover:bg-[#ffffff08]
-    "
   >
     {children}
-  </button>
+  </div>
 );
 
 export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose }) => {
+  const { open } = useModalStore();
+  const isAuth = useAuthSessionStore((s) => s.user !== null);
   return (
     <Dialog.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <Dialog.Portal>
@@ -39,7 +40,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose }) => {
         <Dialog.Content
           className="
           fixed top-0 right-0 h-full w-80 max-w-[80vw]
-          bg-[#15141D] backdrop-blur-[12px]
+          bg-[#15141D] backdrop-blur-md
           z-50 transform transition-transform duration-300 ease-in-out
           md:hidden
           shadow-2xl
@@ -64,14 +65,63 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose }) => {
 
           <nav className="py-4">
             <MobileMenuItem onClick={onClose}>
-              <span className="font-medium">Tutors</span>
+              <Button
+                variant="link"
+                as={NavLink}
+                to={publicRoutesVariables.teachers}
+                className="font-medium"
+              >
+                Teachers
+              </Button>
             </MobileMenuItem>
             <MobileMenuItem onClick={onClose}>
-              <span className="font-medium">I want be tutor</span>
+              <Button
+                variant="link"
+                as={NavLink}
+                to={authRoutesVariables.registerTutor}
+                className="font-medium"
+              >
+                I want to be a teacher
+              </Button>
             </MobileMenuItem>
             <MobileMenuItem onClick={onClose}>
-              <span className="font-medium">Sign in</span>
+              <Button
+                variant="link"
+                as={NavLink}
+                to={authRoutesVariables.loginStudent}
+                className="font-medium"
+              >
+                Sign in as a student
+              </Button>
             </MobileMenuItem>
+            <MobileMenuItem onClick={onClose}>
+              <Button
+                variant="link"
+                as={NavLink}
+                to={authRoutesVariables.loginTutor}
+                className="font-medium"
+              >
+                Sign in as a teacher
+              </Button>
+            </MobileMenuItem>
+            {isAuth && (
+              <MobileMenuItem>
+                <Button
+                  variant="link"
+                  onClick={() => open("logout")}
+                  className="flex items-center gap-2 md:gap-5 text-[#474747]
+              hover:text-[#8A8A8A] transition-colors cursor-pointer"
+                >
+                  <LogoutIcon className="w-5 h-5" />
+                  <span
+                    className="hidden md:block font-semibold text-[16px]
+                leading-[100%]"
+                  >
+                    Logout
+                  </span>
+                </Button>
+              </MobileMenuItem>
+            )}
           </nav>
         </Dialog.Content>
       </Dialog.Portal>

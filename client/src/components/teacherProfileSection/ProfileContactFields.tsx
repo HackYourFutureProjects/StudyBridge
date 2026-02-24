@@ -5,6 +5,7 @@ type ProfileContactFieldsProps = {
   onEmailChange: (value: string) => void;
   onPhoneChange: (value: string) => void;
   onFocusField: () => void;
+  onChangePassword?: () => void;
 };
 
 export const ProfileContactFields = ({
@@ -14,14 +15,17 @@ export const ProfileContactFields = ({
   onEmailChange,
   onPhoneChange,
   onFocusField,
+  onChangePassword,
 }: ProfileContactFieldsProps) => {
   const inputClass =
     "w-full max-w-md px-4 py-2 bg-transparent border border-purple-500 rounded-lg text-white focus:outline-none focus:border-purple-400 read-only:opacity-50 read-only:cursor-pointer";
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-4">
-        <label className="text-white text-base w-24">E-mail:</label>
+      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+        <label className="text-white text-sm sm:text-base sm:w-24 shrink-0">
+          E-mail:
+        </label>
         <div className="flex-1 relative">
           <input
             type="email"
@@ -34,8 +38,10 @@ export const ProfileContactFields = ({
         </div>
       </div>
 
-      <div className="flex items-center gap-4">
-        <label className="text-white text-base w-24">Phone:</label>
+      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+        <label className="text-white text-sm sm:text-base sm:w-24 shrink-0">
+          Phone:
+        </label>
         <div className="flex-1 relative">
           <input
             type="tel"
@@ -48,12 +54,15 @@ export const ProfileContactFields = ({
         </div>
       </div>
 
-      <button
-        type="button"
-        className="text-white underline hover:text-purple-400 transition-colors"
-      >
-        Change password
-      </button>
+      {onChangePassword && (
+        <button
+          type="button"
+          onClick={onChangePassword}
+          className="text-white text-sm sm:text-base underline hover:text-purple-400 transition-colors cursor-pointer"
+        >
+          Change password
+        </button>
+      )}
     </div>
   );
 };

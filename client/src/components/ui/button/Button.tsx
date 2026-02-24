@@ -15,7 +15,7 @@ const buttonStyles = cva(
   {
     variants: {
       variant: {
-        primary: "bg-purple-700 text-white hover:bg-purple-700",
+        primary: "bg-purple-500 text-white hover:bg-purple-700",
         secondary:
           "bg-dark-900 text-white border-2 border-blue-500 hover:bg-dark-700",
         success: "bg-success-500 text-white hover:brightness-95",

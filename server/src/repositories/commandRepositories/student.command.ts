@@ -2,6 +2,7 @@ import { injectable } from "inversify";
 import { StudentTypeDB } from "../../db/schemes/types/student.types.js";
 import { StudentModel } from "../../db/schemes/studentSchema.js";
 import { HttpError } from "../../utils/error.util.js";
+import { isMongoDuplicateKeyError } from "../../utils/duplicateType.guard.js";
 
 @injectable()
 export class StudentCommand {
@@ -70,6 +71,24 @@ export class StudentCommand {
       throw new HttpError(500, "Password was not updated", {
         cause: err,
       });
+    }
+  }
+
+  async updateStudent(id: string, data: Partial<StudentTypeDB>) {
+    try {
+      return await StudentModel.findOneAndUpdate(
+        { id },
+        { $set: data },
+        { new: true },
+      ).lean();
+    } catch (err: unknown) {
+      if (isMongoDuplicateKeyError(err)) {
+        throw new HttpError(409, "Email already registered", {
+          cause: err,
+          id,
+        });
+      }
+      throw new HttpError(500, "Student was not updated", { cause: err, id });
     }
   }
 }

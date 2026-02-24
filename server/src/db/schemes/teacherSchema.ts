@@ -44,7 +44,17 @@ export const TeacherSchema = new mongoose.Schema<TeacherTypeDB>(
       type: [
         {
           subjectName: { type: String, required: true },
-          levels: { type: [String], required: true, default: [] },
+          description: { type: String, default: null },
+          levels: {
+            type: [
+              {
+                level: { type: String, required: true },
+                price: { type: Number, required: true, min: 0 },
+              },
+            ],
+            required: true,
+            default: [],
+          },
           experienceYears: { type: Number, required: true, min: 0 },
           hourlyRate: { type: Number, required: true, min: 0 },
         },
@@ -83,7 +93,6 @@ export const TeacherSchema = new mongoose.Schema<TeacherTypeDB>(
 TeacherSchema.index(
   { "passwordReset.tokenHash": 1 },
   {
-    // Partial index: only index docs where reset token exists (string), to keep index small and speed token lookup.
     partialFilterExpression: {
       "passwordReset.tokenHash": { $type: "string" },
     },

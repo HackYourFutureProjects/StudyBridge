@@ -233,4 +233,26 @@ export class AuthController {
       return next(error);
     }
   }
+
+  //the Logout  Controller
+
+  async logoutController(req: Request, res: Response, next: NextFunction) {
+    try {
+      const refreshToken = req.cookies?.refreshToken; // To get the refresh token from the cookie
+
+      if (refreshToken) {
+        await this.authService.logoutByRefreshToken(refreshToken); // To delete the session in the database by deleting the refresh token
+      }
+
+      // Clear the refresh token cookie from the client side
+      res.clearCookie("refreshToken", {
+        httpOnly: true,
+        secure: true,
+        path: "/api/auth",
+      });
+      return res.sendStatus(204);
+    } catch (error) {
+      return next(error);
+    }
+  }
 }

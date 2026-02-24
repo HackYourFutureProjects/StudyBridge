@@ -1,14 +1,47 @@
 import { create } from "zustand";
 import { lockScroll, unlockScroll } from "../util/modalScroll.util.ts";
+import { TeacherType } from "../api/teacher/teacher.type.ts";
 
-export type ModalName = null | "logout";
+export type ModalName =
+  | null
+  | "logout"
+  | "bookingConfirm"
+  | "signIn"
+  | "confirmDelete"
+  | "alert";
+
+type ModalPayload = {
+  logout?: never;
+  bookingConfirm?: {
+    teacher: TeacherType;
+    selectedDate: Date;
+    selectedTime: string;
+    selectedSubject?: string;
+    selectedLevel?: string;
+    selectedPrice?: number;
+    onSuccess?: () => void;
+  };
+  signIn?: never;
+  confirmDelete?: {
+    title: string;
+    message: string;
+    onConfirm: () => void;
+  };
+  alert?: {
+    title: string;
+    message: string;
+  };
+};
 
 type ModalState = {
   activeModal: ModalName;
   opened: boolean;
-  payload: string | null;
+  payload: ModalPayload[keyof ModalPayload] | null;
 
-  open: (name: Exclude<ModalName, null>, payload?: string) => void;
+  open: <T extends Exclude<ModalName, null>>(
+    name: T,
+    payload?: ModalPayload[T],
+  ) => void;
   close: () => void;
   finishClose: () => void;
 };

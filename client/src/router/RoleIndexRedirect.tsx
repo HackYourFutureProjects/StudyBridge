@@ -1,9 +1,6 @@
 import { useAuthSessionStore } from "../store/authSession.store.ts";
 import { Navigate } from "react-router-dom";
-import {
-  studentPrivatesRoutesVariables,
-  teacherPrivatesRoutesVariables,
-} from "./routesVariables/pathVariables.ts";
+import { teacherPrivatesRoutesVariables } from "./routesVariables/pathVariables.ts";
 
 export const RoleIndexRedirect = () => {
   const user = useAuthSessionStore((s) => s.user);
@@ -13,8 +10,11 @@ export const RoleIndexRedirect = () => {
   }
 
   return user.role === "teacher" ? (
-    <Navigate to={teacherPrivatesRoutesVariables.dashboard} replace />
+    <Navigate
+      to={`/teacher/${teacherPrivatesRoutesVariables.dashboard}`}
+      replace
+    />
   ) : (
-    <Navigate to={studentPrivatesRoutesVariables.dashboard} replace />
+    <Navigate to={`/clients-dashboard`} replace />
   );
 };
