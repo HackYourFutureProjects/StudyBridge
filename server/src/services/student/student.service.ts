@@ -9,11 +9,8 @@ import { HttpError, NotFoundError } from "../../utils/error.util.js";
 import { StudentQuery } from "../../repositories/queryRepositories/student.query.js";
 import { TeacherQuery } from "../../repositories/queryRepositories/teacher.query.js";
 import { isMongoDuplicateKeyError } from "../../utils/duplicateType.guard.js";
-<<<<<<< feat/teacher-reviews-BE
 import { TeacherCommand } from "../../repositories/commandRepositories/teacher.command.js";
-=======
 import { RegistrationType } from "../../types/auth/auth.types.js";
->>>>>>> develop
 @injectable()
 export class StudentService {
   constructor(
