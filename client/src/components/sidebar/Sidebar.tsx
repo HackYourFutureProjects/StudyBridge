@@ -1,14 +1,18 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-
-import BillingIcon from "../icons/Billing";
 import AppointmentsIcon from "../icons/Appointments";
 import DashboardIcon from "../icons/Dashboard";
 import LessonsIcon from "../icons/Lessons";
-import SettingsIcon from "../icons/Settings";
-import VideoCallIcon from "../icons/VideoCall";
-import UsersIcon from "../icons/UsersIcon";
 import Chat from "../icons/Chat";
+import UsersIcon from "../icons/UsersIcon";
+import {
+  chatRoutes,
+  studentBase,
+  studentPrivatesRoutesVariables,
+  teacherBase,
+  teacherPrivatesRoutesVariables,
+} from "../../router/routesVariables/pathVariables.ts";
+import { joinPath } from "../../util/joinPath.util.ts";
 
 export type MenuItem = {
   name: string;
@@ -17,32 +21,59 @@ export type MenuItem = {
 };
 
 export const defaultStudentMenuItems: MenuItem[] = [
-  { name: "Dashboard", link: "/clients-dashboard", icon: DashboardIcon },
+  {
+    name: "Dashboard",
+    link: joinPath(studentBase, studentPrivatesRoutesVariables.dashboard),
+    icon: DashboardIcon,
+  },
   {
     name: "Appointments",
-    link: "/clients-appointments",
+    link: joinPath(studentBase, studentPrivatesRoutesVariables.appointments),
     icon: AppointmentsIcon,
   },
-  { name: "My Classes", link: "/student-classes", icon: LessonsIcon },
-  { name: "Billings", link: "/clients-billing", icon: BillingIcon },
-  { name: "Video call", link: "/video-call", icon: VideoCallIcon },
-  { name: "Settings", link: "/settings", icon: SettingsIcon },
-  { name: "Chat", link: "/chat", icon: Chat },
+  {
+    name: "My Classes",
+    link: joinPath(studentBase, studentPrivatesRoutesVariables.classes),
+    icon: LessonsIcon,
+  },
+  {
+    name: "My Profile",
+    link: joinPath(studentBase, studentPrivatesRoutesVariables.profile),
+    icon: UsersIcon,
+  },
+  {
+    name: "Chat",
+    link: joinPath(studentBase, chatRoutes.root),
+    icon: Chat,
+  },
 ];
 
 export const defaultTeacherMenuItems: MenuItem[] = [
-  { name: "Dashboard", link: "/teacher/my-dashboard", icon: DashboardIcon },
+  {
+    name: "Dashboard",
+    link: joinPath(teacherBase, teacherPrivatesRoutesVariables.dashboard),
+    icon: DashboardIcon,
+  },
   {
     name: "Appointments",
-    link: "/teacher-appointments",
+    link: joinPath(teacherBase, teacherPrivatesRoutesVariables.appointments),
     icon: AppointmentsIcon,
   },
-  { name: "My Classes", link: "/teacher/my-classes", icon: LessonsIcon },
-  { name: "My Students", link: "/teacher/my-students", icon: UsersIcon },
-  { name: "My Profile", link: "/teacher/profile", icon: UsersIcon },
-  { name: "Billings", link: "/teacher/my-billings", icon: BillingIcon },
-  { name: "Video call", link: "/video-call", icon: VideoCallIcon },
-  { name: "Chat", link: "/chat", icon: Chat },
+  {
+    name: "My Classes",
+    link: joinPath(teacherBase, teacherPrivatesRoutesVariables.classes),
+    icon: LessonsIcon,
+  },
+  {
+    name: "My Profile",
+    link: joinPath(teacherBase, teacherPrivatesRoutesVariables.profile),
+    icon: UsersIcon,
+  },
+  {
+    name: "Chat",
+    link: joinPath(teacherBase, chatRoutes.root),
+    icon: Chat,
+  },
 ];
 
 type SidebarProps = {

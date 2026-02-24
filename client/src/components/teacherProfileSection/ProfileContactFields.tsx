@@ -5,6 +5,7 @@ type ProfileContactFieldsProps = {
   onEmailChange: (value: string) => void;
   onPhoneChange: (value: string) => void;
   onFocusField: () => void;
+  onChangePassword?: () => void;
 };
 
 export const ProfileContactFields = ({
@@ -14,6 +15,7 @@ export const ProfileContactFields = ({
   onEmailChange,
   onPhoneChange,
   onFocusField,
+  onChangePassword,
 }: ProfileContactFieldsProps) => {
   const inputClass =
     "w-full max-w-md px-4 py-2 bg-transparent border border-purple-500 rounded-lg text-white focus:outline-none focus:border-purple-400 read-only:opacity-50 read-only:cursor-pointer";
@@ -52,12 +54,15 @@ export const ProfileContactFields = ({
         </div>
       </div>
 
-      <button
-        type="button"
-        className="text-white text-sm sm:text-base underline hover:text-purple-400 transition-colors"
-      >
-        Change password
-      </button>
+      {onChangePassword && (
+        <button
+          type="button"
+          onClick={onChangePassword}
+          className="text-white text-sm sm:text-base underline hover:text-purple-400 transition-colors cursor-pointer"
+        >
+          Change password
+        </button>
+      )}
     </div>
   );
 };

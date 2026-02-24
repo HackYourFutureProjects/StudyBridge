@@ -72,6 +72,49 @@ export class StudentService {
     }
   }
 
+  async getStudentById(id: string) {
+    return await this.studentQuery.getStudentById(id);
+  }
+
+  async updateStudentProfile(
+    id: string,
+    data: {
+      firstName?: string;
+      lastName?: string;
+      email?: string;
+      profileImageUrl?: string;
+    },
+  ) {
+    const updateData: Partial<StudentTypeDB> = {};
+
+    if (data.firstName !== undefined) updateData.firstName = data.firstName;
+    if (data.lastName !== undefined) updateData.lastName = data.lastName;
+
+    if (data.email !== undefined) {
+      const existingStudent = await this.studentQuery.getStudentByEmail(
+        data.email,
+      );
+      const existingTeacher = await this.teacherQuery.getTeacherByEmail(
+        data.email,
+      );
+
+      if ((existingStudent && existingStudent.id !== id) || existingTeacher) {
+        throw new HttpError(409, "Email already registered");
+      }
+      updateData.email = data.email;
+    }
+
+    if (data.profileImageUrl !== undefined)
+      updateData.profileImageUrl = data.profileImageUrl;
+
+    const updated = await this.studentCommand.updateStudent(id, updateData);
+    if (!updated) {
+      return null;
+    }
+
+    return studentMapper(updated);
+  }
+
   async _generateHash(password: string, salt: string) {
     return await bcrypt.hash(password, salt);
   }

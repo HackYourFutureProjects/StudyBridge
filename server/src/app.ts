@@ -5,8 +5,11 @@ import { appointmentRouter } from "./routes/appointmentRoute.js";
 import { globalErrorMiddleware } from "./middlewares/global.middleware.js";
 import { teacherRouter } from "./routes/teacherRoute.js";
 import { reviewRouter } from "./routes/reviewRoute.js";
+import { studentRouter } from "./routes/studentRoute.js";
 import { chatRouter } from "./routes/chatRoute.js";
 import { streamRouter } from "./routes/streamRoute.js";
+
+import { videoCallRouter } from "./routes/videoCallRoute.js";
 
 // Create an express server
 const app = express();
@@ -23,8 +26,10 @@ app.use("/api/auth", authRouter);
 app.use("/api/appointments", appointmentRouter);
 app.use("/api/teachers", teacherRouter);
 app.use("/api/reviews", reviewRouter);
+app.use("/api/students", studentRouter);
 app.use("/api/chat", chatRouter);
 app.use("/api/stream", streamRouter);
+app.use("/api/video-calls", videoCallRouter);
 app.use(globalErrorMiddleware);
 
 export default app;

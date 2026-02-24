@@ -24,3 +24,11 @@ export type StudentLoginType = {
   email: string;
   password: string;
 };
+
+export type UpdateStudentProfileType = {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  profileImageUrl?: string;
+  password?: string;
+};
