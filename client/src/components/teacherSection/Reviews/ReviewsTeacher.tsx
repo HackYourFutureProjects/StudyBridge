@@ -33,7 +33,7 @@ export const ReviewsTeacher = ({
         </div>
 
         <div className="gap-x-8 gap-y-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full">
-          {reviews.map((review, index) => (
+          {reviews?.map((review, index) => (
             <div
               key={index} //TODO: change this to review._id when I connect it to the backend and get the real data structure of reviews
               className="relative flex justify-center px-[15px] sm:px-[10px] md:px-[5px] w-full"

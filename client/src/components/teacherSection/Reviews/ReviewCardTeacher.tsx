@@ -1,35 +1,33 @@
 import ReviewsIcon from "../../icons/Reviews";
 import { Rating } from "../../rating/Rating";
 import UsersIcon from "../../icons/UsersIcon";
+import { ReviewType } from "../../../api/review/review.type";
 
 //TODO : change the props schema to match the real data structure of reviews when we have it from the backend.
 //
 interface ReviewCardProps {
-  name: string;
-  avatar?: string;
-  rating: number;
-  course: string;
-  review?: string;
-  createdAt?: string;
+  reviewData: ReviewType;
 }
 
 export const ReviewCardTeacher = ({
-  name,
-  avatar,
-  rating,
-  course,
-  review,
-  createdAt,
+  reviewData: {
+    studentName,
+    studentAvatar,
+    rating,
+    subject,
+    review,
+    createdAt,
+  },
 }: ReviewCardProps) => {
   return (
     <div className="w-full">
       <div className="flex flex-col bg-[#15141D] p-[16px] md:p-[25px] rounded-2xl h-auto">
         {/* Header Part (Avatar , Name, Icon ) */}
         <div className="flex items-center gap-[10px] md:gap-[16px] mb-[12px] md:mb-[20px]">
-          {avatar ? (
+          {studentAvatar ? (
             <img
-              src={avatar}
-              alt={name}
+              src={studentAvatar}
+              alt={studentName}
               className="flex-shrink-0 rounded-full w-[28px] md:w-[40px] h-[28px] md:h-[40px] object-cover"
             />
           ) : (
@@ -38,10 +36,10 @@ export const ReviewCardTeacher = ({
 
           <div className="flex-1 min-w-0">
             <h4 className="font-semibold text-white text-xs md:text-base truncate">
-              {name}
+              {studentName}
             </h4>
             <p className="text-[10px] text-white/60 md:text-sm truncate">
-              {course}
+              {subject}
             </p>
           </div>
 
