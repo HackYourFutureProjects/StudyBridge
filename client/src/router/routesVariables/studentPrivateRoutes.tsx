@@ -7,10 +7,15 @@ import { StudentProfile } from "../../pages/privateStudentsPages/studentProfile/
 import { ChatPage } from "../../pages/chat/chatPage/ChatPage.tsx";
 import { ChatDialogPage } from "../../pages/chat/chatDialogPage/ChatDialogPage.tsx";
 import { EmptyChat } from "../../pages/chat/EmptyChat/EmptyChat.tsx";
+import { VideoCallPage } from "../../pages/videoCall/VideoCallPage.tsx";
 
 export const studentPrivateRoutes: RouteObject[] = [
   { index: true, element: <ClientsDashboard /> },
   { path: studentPrivatesRoutesVariables.classes, element: <ClientsClasses /> },
+  {
+    path: studentPrivatesRoutesVariables.videoCall,
+    element: <VideoCallPage />,
+  },
   {
     path: studentPrivatesRoutesVariables.appointments,
     element: <ClientsAppointments />,

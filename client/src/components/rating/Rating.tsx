@@ -21,9 +21,8 @@ export const Rating = ({ rating }: RatingType) => {
         }
         if (value - 0.5 === rating) {
           return <StarHalf key={value} />;
-        } else {
-          return <StarWhite key={value} />;
         }
+        return <StarWhite key={value} />;
       })}
     </div>
   );

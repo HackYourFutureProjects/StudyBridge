@@ -1,8 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  registerStudentApi,
-  registerTeacherApi,
-} from "../../../api/auth/auth.api";
+import { registerApi } from "../../../api/auth/auth.api";
 import { queryKeys } from "../../queryKeys";
 import { getErrorMessage } from "../../../util/ErrorUtil";
 import { RegisterFinalType, Role } from "../../../api/auth/types";
@@ -12,19 +9,14 @@ export const useRegisterMutation = (role: Role) => {
   const qc = useQueryClient();
   const success = useNotificationStore((s) => s.success);
   const notifyError = useNotificationStore((s) => s.error);
-  const mutationFn = (data: RegisterFinalType) => {
-    return role === "teacher"
-      ? registerTeacherApi(data)
-      : registerStudentApi(data);
-  };
 
   return useMutation({
-    mutationFn,
+    mutationFn: (data: RegisterFinalType) => registerApi(data),
     onSuccess: async () => {
       if (role === "teacher") {
-        await qc.invalidateQueries({ queryKey: queryKeys.teachers });
+        await qc.invalidateQueries({ queryKey: queryKeys.teachers.all });
       } else {
-        await qc.invalidateQueries({ queryKey: queryKeys.students });
+        await qc.invalidateQueries({ queryKey: queryKeys.students.all });
       }
       success("Successfully registered");
     },
