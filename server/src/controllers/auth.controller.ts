@@ -29,42 +29,30 @@ export class AuthController {
     @inject(TYPES.TeacherQuery) protected teacherQuery: TeacherQuery,
   ) {}
 
-  async registrationStudentController(
-    req: RequestWithBody<StudentRegistrationType>,
+  async registrationUserController(
+    req: RequestWithBody<StudentRegistrationType | TeacherRegistrationType>,
     res: Response,
     next: NextFunction,
   ) {
     const { firstName, lastName, email, password, role } = req.body;
     try {
-      await this.studentService.createStudent({
-        firstName,
-        lastName,
-        email,
-        password,
-        role,
-      });
-
-      res.sendStatus(204);
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  async registrationTeacherController(
-    req: RequestWithBody<TeacherRegistrationType>,
-    res: Response,
-    next: NextFunction,
-  ) {
-    const { firstName, lastName, email, password, role } = req.body;
-
-    try {
-      await this.teacherService.createTeacher({
-        firstName,
-        lastName,
-        email,
-        password,
-        role,
-      });
+      if (role === "student") {
+        await this.studentService.createStudent({
+          firstName,
+          lastName,
+          email,
+          password,
+          role,
+        });
+      } else {
+        await this.teacherService.createTeacher({
+          firstName,
+          lastName,
+          email,
+          password,
+          role,
+        });
+      }
 
       res.sendStatus(204);
     } catch (error) {

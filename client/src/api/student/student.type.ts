@@ -1,3 +1,5 @@
+import { Role } from "../auth/types.ts";
+
 export type StudentType = {
   id: string;
   firstName: string;
@@ -7,7 +9,7 @@ export type StudentType = {
   address: string | null;
   mainLanguage: string | null;
   createdAt: string;
-  role: string;
+  role: Role;
 };
 
 export interface UpdateStudentProfile {
