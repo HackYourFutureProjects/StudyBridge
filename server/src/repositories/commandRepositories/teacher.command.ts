@@ -70,4 +70,23 @@ export class TeacherCommand {
       throw new HttpError(500, "Password was not updated", { cause: err });
     }
   }
+
+  // Update the average rating for a teacher
+  async updateTeacherAverageRating(teacherId: string, newRating: number) {
+    try {
+      const updated = await TeacherModel.updateOne(
+        {
+          id: teacherId,
+        },
+        {
+          $set: { rating: newRating },
+        },
+      );
+      return updated.modifiedCount === 1;
+    } catch (err: unknown) {
+      throw new HttpError(500, "Teacher average rating was not updated", {
+        cause: err,
+      });
+    }
+  }
 }

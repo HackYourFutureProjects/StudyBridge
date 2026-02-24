@@ -9,6 +9,7 @@ import { HttpError, NotFoundError } from "../../utils/error.util.js";
 import { StudentQuery } from "../../repositories/queryRepositories/student.query.js";
 import { TeacherQuery } from "../../repositories/queryRepositories/teacher.query.js";
 import { isMongoDuplicateKeyError } from "../../utils/duplicateType.guard.js";
+import { TeacherCommand } from "../../repositories/commandRepositories/teacher.command.js";
 import { RegistrationType } from "../../types/auth/auth.types.js";
 @injectable()
 export class StudentService {
@@ -16,6 +17,7 @@ export class StudentService {
     @inject(TYPES.StudentCommand) private studentCommand: StudentCommand,
     @inject(TYPES.StudentQuery) private studentQuery: StudentQuery,
     @inject(TYPES.TeacherQuery) private teacherQuery: TeacherQuery,
+    @inject(TYPES.TeacherCommand) private teacherCommand: TeacherCommand,
   ) {}
 
   async createStudent({

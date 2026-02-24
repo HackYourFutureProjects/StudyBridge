@@ -19,6 +19,10 @@ import { AppointmentService } from "../services/appointment/appointment.service.
 import { AppointmentController } from "../controllers/appointment.controller.js";
 import { AppointmentCommand } from "../repositories/commandRepositories/appointment.command.js";
 import { AppointmentQuery } from "../repositories/queryRepositories/appointment.query.js";
+import { ReviewQuery } from "../repositories/queryRepositories/review.query.js";
+import { ReviewService } from "../services/review/review.service.js";
+import { ReviewController } from "../controllers/review.controller.js";
+import { ReviewCommand } from "../repositories/commandRepositories/review.command.js";
 import { ChatQuery } from "../repositories/queryRepositories/chat.query.js";
 import { ChatCommand } from "../repositories/commandRepositories/chat.command.js";
 import { ChatController } from "../controllers/chat.controller.js";
@@ -75,6 +79,11 @@ container
   .bind<AppointmentCommand>(TYPES.AppointmentCommand)
   .to(AppointmentCommand);
 
+// review
+container.bind<ReviewQuery>(TYPES.ReviewQuery).to(ReviewQuery);
+container.bind<ReviewService>(TYPES.ReviewService).to(ReviewService);
+container.bind<ReviewController>(TYPES.ReviewController).to(ReviewController);
+container.bind<ReviewCommand>(TYPES.ReviewCommand).to(ReviewCommand);
 //chat
 container.bind(TYPES.ChatService).to(ChatService);
 container.bind(TYPES.ChatQuery).to(ChatQuery);
