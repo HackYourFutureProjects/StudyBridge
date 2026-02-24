@@ -27,9 +27,9 @@ export class ReviewController {
         studentId,
         req.body as ReviewInputType,
       );
-      res.status(201).send(review);
+      return res.status(201).send(review);
     } catch (err) {
-      next(err);
+      return next(err);
     }
   }
 
@@ -61,10 +61,9 @@ export class ReviewController {
         pageNumber: safePageNumber,
         pageSize: safePageSize,
       });
-
-      res.status(200).send(result);
+      return res.status(200).send(result);
     } catch (err) {
-      next(err);
+      return next(err);
     }
   }
 
@@ -77,9 +76,9 @@ export class ReviewController {
     try {
       const teacherId = req.params.teacherId as string;
       const result = await this.reviewQuery.getTeacherAverageRating(teacherId);
-      res.status(200).send(result);
+      return res.status(200).send(result);
     } catch (err) {
-      next(err);
+      return next(err);
     }
   }
 }
