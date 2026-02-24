@@ -32,10 +32,27 @@ export class ReviewController {
       const teacherId = req.params.teacherId as string;
       const { pageNumber, pageSize } = req.query;
 
+      const DEFAULT_PAGE_NUMBER = 1;
+      const DEFAULT_PAGE_SIZE = 10;
+      const MAX_PAGE_SIZE = 50;
+
+      const parsedPageNumber = pageNumber
+        ? Number(pageNumber)
+        : DEFAULT_PAGE_NUMBER;
+      const safePageNumber =
+        Number.isNaN(parsedPageNumber) || parsedPageNumber < 1
+          ? DEFAULT_PAGE_NUMBER
+          : parsedPageNumber;
+      const parsedPageSize = pageSize ? Number(pageSize) : DEFAULT_PAGE_SIZE;
+      const safePageSize =
+        Number.isNaN(parsedPageSize) || parsedPageSize < 1
+          ? DEFAULT_PAGE_SIZE
+          : Math.min(parsedPageSize, MAX_PAGE_SIZE);
+
       const result = await this.reviewQuery.getReviewsByTeacherId({
         teacherId,
-        pageNumber: pageNumber ? Number(pageNumber) : 1,
-        pageSize: pageSize ? Number(pageSize) : 10,
+        pageNumber: safePageNumber,
+        pageSize: safePageSize,
       });
 
       res.status(200).send(result);

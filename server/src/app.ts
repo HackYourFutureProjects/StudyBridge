@@ -4,12 +4,9 @@ import { authRouter } from "./routes/authRoute.js";
 import { appointmentRouter } from "./routes/appointmentRoute.js";
 import { globalErrorMiddleware } from "./middlewares/global.middleware.js";
 import { teacherRouter } from "./routes/teacherRoute.js";
-<<<<<<< HEAD
 import { reviewRouter } from "./routes/reviewRoute.js";
-=======
 import { chatRouter } from "./routes/chatRoute.js";
 import { streamRouter } from "./routes/streamRoute.js";
->>>>>>> develop
 
 // Create an express server
 const app = express();
@@ -25,12 +22,9 @@ app.use(express.json());
 app.use("/api/auth", authRouter);
 app.use("/api/appointments", appointmentRouter);
 app.use("/api/teachers", teacherRouter);
-<<<<<<< HEAD
 app.use("/api/reviews", reviewRouter);
-=======
 app.use("/api/chat", chatRouter);
 app.use("/api/stream", streamRouter);
->>>>>>> develop
 app.use(globalErrorMiddleware);
 
 export default app;

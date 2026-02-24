@@ -22,7 +22,7 @@ export class ReviewQuery {
       //  To fetch the reviews for a teacher with pagination and also get the total count of reviews for that teacher.
       const [reviewsDoc, totalCount] = await Promise.all([
         ReviewModel.find({ teacherId })
-          .sort({ createdAt: -1 }) // Sort reviews depending on creation date and newst first
+          .sort({ createdAt: -1 }) // Sort reviews depending on creation date and newest first
           .skip(skip) // Skip the reviews that are before the current page
           .limit(pageSize) // size of reviews per page
           .lean(), //

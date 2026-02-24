@@ -3,9 +3,9 @@ import { ReviewTypeDB } from "./types/review.types.js";
 
 export const ReviewSchema = new mongoose.Schema<ReviewTypeDB>(
   {
-    teacherId: { type: String, required: true, index: true },
+    teacherId: { type: String, required: true },
     studentId: { type: String, required: true },
-    bookingId: { type: String, required: true },
+    bookingId: { type: String, required: true, unique: true },
     rating: { type: Number, required: true, min: 1, max: 5 },
     review: { type: String, required: false },
     subject: { type: String, required: true },

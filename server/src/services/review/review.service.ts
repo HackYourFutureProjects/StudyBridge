@@ -29,6 +29,18 @@ export class ReviewService {
     studentId: string,
     reviewInput: ReviewInputType,
   ): Promise<ReviewOutputModel> {
+    if (
+      !reviewInput.rating ||
+      reviewInput.rating < 1 ||
+      reviewInput.rating > 5
+    ) {
+      throw new HttpError(400, "Rating must be between 1 and 5");
+    }
+
+    if (!reviewInput.subject || reviewInput.subject.trim().length === 0) {
+      throw new HttpError(400, "Subject is required");
+    }
+
     try {
       // check if the appointment exists
       const appointment = await this.appointmentQuery.getAppointmentById(
@@ -40,7 +52,7 @@ export class ReviewService {
       }
 
       if (appointment.status !== "approved") {
-        throw new HttpError(400, "You can only review completed appointments");
+        throw new HttpError(400, "You can only review approved appointments");
       }
 
       //Check the student reviewing his own appointment
@@ -48,6 +60,14 @@ export class ReviewService {
         throw new HttpError(
           403,
           "Students can only review their own appointments",
+        );
+      }
+
+      // check if the teacherId in the review matches the teacherId in the appointment
+      if (appointment.teacherId !== reviewInput.teacherId) {
+        throw new HttpError(
+          403,
+          "The teacherId in the review does not match the teacherId in the appointment",
         );
       }
 
@@ -84,14 +104,22 @@ export class ReviewService {
       };
       // Save the review in the database
       const createdReview = await this.reviewCommand.createReview(newReview);
-      //Updat the average rating for the teacher after creating the review
-      const teacherRating = await this.reviewQuery.getTeacherAverageRating(
-        reviewInput.teacherId,
-      );
-      await this.teacherCommand.updateTeacherAverageRating(
-        reviewInput.teacherId,
-        teacherRating.averageRating,
-      );
+      //Update the average rating for the teacher after creating the review
+
+      try {
+        const teacherRating = await this.reviewQuery.getTeacherAverageRating(
+          reviewInput.teacherId,
+        );
+        await this.teacherCommand.updateTeacherAverageRating(
+          reviewInput.teacherId,
+          teacherRating.averageRating,
+        );
+      } catch (err: unknown) {
+        throw new Error(
+          "Review was created but failed to update the teacher's average rating",
+          { cause: err },
+        );
+      }
 
       return reviewMapper(createdReview);
     } catch (err: any) {
