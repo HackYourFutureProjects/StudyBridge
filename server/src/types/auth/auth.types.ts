@@ -20,3 +20,17 @@ export type RotateArgs = {
   refreshToken: string;
   payload: RefreshTokenPayload;
 };
+
+export type RegistrationType = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  role: Role;
+};
+
+export type LoginType = {
+  email: string;
+  password: string;
+  role: Role;
+};

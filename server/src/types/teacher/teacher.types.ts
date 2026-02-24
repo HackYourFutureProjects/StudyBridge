@@ -1,5 +1,3 @@
-import { Role } from "../common.types.js";
-
 export type EducationViewItem = {
   degree: string;
   institution: string;
@@ -64,19 +62,6 @@ export type TeacherViewType = {
   address: AddressView;
   createdAt: Date;
   role: string;
-};
-
-export type TeacherRegistrationType = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  role: Role;
-};
-
-export type TeacherLoginType = {
-  email: string;
-  password: string;
 };
 
 type SortDirection = "asc" | "desc";
