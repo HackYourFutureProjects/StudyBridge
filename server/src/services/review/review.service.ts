@@ -123,10 +123,6 @@ export class ReviewService {
 
       return reviewMapper(createdReview);
     } catch (err: unknown) {
-      const errorMessage = err as any;
-      if (errorMessage.statusCode && errorMessage.message) {
-        throw err;
-      }
       throw new HttpError(500, "Could not create review", { cause: err });
     }
   }
