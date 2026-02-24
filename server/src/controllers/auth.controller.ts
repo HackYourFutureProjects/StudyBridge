@@ -1,22 +1,18 @@
 import { injectable } from "inversify";
 import { RequestWithBody } from "../types/common.types.js";
-import {
-  StudentLoginType,
-  StudentRegistrationType,
-} from "../types/student/student.types.js";
+import { StudentViewType } from "../types/student/student.types.js";
 import { inject } from "inversify";
 import { TYPES } from "../composition/composition.types.js";
 import { StudentService } from "../services/student/student.service.js";
 import { Request, NextFunction, Response } from "express";
-import {
-  TeacherLoginType,
-  TeacherRegistrationType,
-} from "../types/teacher/teacher.types.js";
+import { TeacherViewType } from "../types/teacher/teacher.types.js";
 import { TeacherService } from "../services/teacher/teacher.service.js";
 import { AuthService } from "../services/auth/auth.service.js";
 import { JwtService } from "../services/jwt/jwt.service.js";
 import { StudentQuery } from "../repositories/queryRepositories/student.query.js";
 import { TeacherQuery } from "../repositories/queryRepositories/teacher.query.js";
+import { LoginType, RegistrationType } from "../types/auth/auth.types.js";
+import { Role } from "../../index.js";
 
 @injectable()
 export class AuthController {
@@ -30,7 +26,7 @@ export class AuthController {
   ) {}
 
   async registrationUserController(
-    req: RequestWithBody<StudentRegistrationType | TeacherRegistrationType>,
+    req: RequestWithBody<RegistrationType>,
     res: Response,
     next: NextFunction,
   ) {
@@ -60,27 +56,34 @@ export class AuthController {
     }
   }
 
-  async loginStudentController(
-    req: RequestWithBody<StudentLoginType>,
+  async loginController(
+    req: RequestWithBody<LoginType>,
     res: Response,
     next: NextFunction,
   ) {
-    const { email, password } = req.body;
-
+    const { email, password, role } = req.body;
     try {
-      const student = await this.authService.checkAuthStudentCredentials(
-        email,
-        password,
-      );
+      const credentialCheck: Record<
+        Role,
+        (e: string, p: string) => Promise<StudentViewType | TeacherViewType>
+      > = {
+        student: this.authService.checkAuthStudentCredentials.bind(
+          this.authService,
+        ),
+        teacher: this.authService.checkAuthTeacherCredentials.bind(
+          this.authService,
+        ),
+      };
+      const user = await credentialCheck[role](email, password);
 
       const accessToken = this.jwtService.createJWTAccessToken({
-        userId: student.id,
-        role: "student",
+        userId: user.id,
+        role: role,
       });
 
       const { refreshToken } = await this.authService.createRefreshSession({
-        userId: student.id,
-        role: "student",
+        userId: user.id,
+        role: role,
       });
 
       res.cookie("refreshToken", refreshToken, {
@@ -88,42 +91,7 @@ export class AuthController {
         secure: true,
         path: "/api/auth",
         maxAge: 2 * 60 * 60 * 1000,
-      });
-      res.status(200).send({ accessToken });
-      return;
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  async loginTeacherController(
-    req: RequestWithBody<TeacherLoginType>,
-    res: Response,
-    next: NextFunction,
-  ) {
-    const { email, password } = req.body;
-
-    try {
-      const teacher = await this.authService.checkAuthTeacherCredentials(
-        email,
-        password,
-      );
-
-      const accessToken = this.jwtService.createJWTAccessToken({
-        userId: teacher.id,
-        role: "teacher",
-      });
-
-      const { refreshToken } = await this.authService.createRefreshSession({
-        userId: teacher.id,
-        role: "teacher",
-      });
-
-      res.cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        secure: true,
-        path: "/api/auth",
-        maxAge: 2 * 60 * 60 * 1000,
+        sameSite: "lax",
       });
       res.status(200).send({ accessToken });
       return;

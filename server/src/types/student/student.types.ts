@@ -1,5 +1,3 @@
-import { Role } from "../common.types.js";
-
 export type StudentViewType = {
   id: string;
   firstName: string;
@@ -10,19 +8,6 @@ export type StudentViewType = {
   mainLanguage: string | null;
   createdAt: Date;
   role: string;
-};
-
-export type StudentRegistrationType = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  role: Role;
-};
-
-export type StudentLoginType = {
-  email: string;
-  password: string;
 };
 
 export type UpdateStudentProfileType = {

@@ -3,7 +3,7 @@ import { StudentQuery } from "../../repositories/queryRepositories/student.query
 import { container } from "../../composition/compositionRoot.js";
 import { TYPES } from "../../composition/composition.types.js";
 import { TeacherQuery } from "../../repositories/queryRepositories/teacher.query.js";
-const allowedRoles = ["student", "teacher", "admin"] as const;
+const allowedRoles = ["student", "teacher"] as const;
 export const FirstName = check("firstName")
   .trim()
   .notEmpty()
@@ -18,7 +18,7 @@ export const Role = check("role")
   .notEmpty()
   .withMessage("Role is required")
   .isIn(allowedRoles)
-  .withMessage("Role must be one of: student, teacher, admin");
+  .withMessage("Role must be one of: student, teacher");
 
 export const LastName = check("lastName")
   .trim()
@@ -64,7 +64,11 @@ export const PasswordLogin = check("password")
   .notEmpty()
   .withMessage("Password is required");
 
-export const authLoginValidationMiddleware = () => [EmailLogin, PasswordLogin];
+export const authLoginValidationMiddleware = () => [
+  EmailLogin,
+  PasswordLogin,
+  Role,
+];
 
 export const authRegistrationValidationMiddleware = () => [
   FirstName,

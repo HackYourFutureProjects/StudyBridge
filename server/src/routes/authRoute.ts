@@ -2,7 +2,7 @@ import { Router } from "express";
 import {
   authLoginValidationMiddleware,
   authRegistrationValidationMiddleware,
-} from "../validation/auth/studentAuthMiddleware.js";
+} from "../validation/auth/authMiddleware.js";
 import { errorMiddleware } from "../middlewares/error.middleware.js";
 import { container } from "../composition/compositionRoot.js";
 import { AuthController } from "../controllers/auth.controller.js";
@@ -31,19 +31,11 @@ authRouter.post(
 );
 
 authRouter.post(
-  "/login-student",
+  "/login",
   accessCounterMiddleware,
   authLoginValidationMiddleware(),
   errorMiddleware,
-  authController.loginStudentController.bind(authController),
-);
-
-authRouter.post(
-  "/login-teacher",
-  accessCounterMiddleware,
-  authLoginValidationMiddleware(),
-  errorMiddleware,
-  authController.loginTeacherController.bind(authController),
+  authController.loginController.bind(authController),
 );
 
 authRouter.get(
