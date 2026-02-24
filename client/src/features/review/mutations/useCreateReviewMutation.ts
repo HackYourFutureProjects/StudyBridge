@@ -8,12 +8,14 @@ export const useCreateReviewMutation = (teacherId: string) => {
   return useMutation({
     mutationFn: createReviewApi,
     onSuccess: () => {
+      // refresh the reviews list
       queryClient.invalidateQueries({
         queryKey: queryKeys.reviews(teacherId),
       });
 
+      // refresh the teacher profile to update the average rating
       queryClient.invalidateQueries({
-        queryKey: queryKeys.reviewAverageRating(teacherId),
+        queryKey: queryKeys.teacher(teacherId),
       });
     },
   });

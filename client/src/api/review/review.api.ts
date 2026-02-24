@@ -14,13 +14,15 @@ export async function getReviewsApi(
   pageNumber: number = 1,
   pageSize: number = 5,
 ): Promise<PaginatedReviewsResponse> {
-  const res = await apiPublic.get<PaginatedReviewsResponse>("/api/reviews", {
-    params: {
-      teacherId,
-      pageNumber,
-      pageSize,
+  const res = await apiPublic.get<PaginatedReviewsResponse>(
+    `/api/reviews/teachers/${teacherId}`,
+    {
+      params: {
+        pageNumber,
+        pageSize,
+      },
     },
-  });
+  );
   return res.data;
 }
 
