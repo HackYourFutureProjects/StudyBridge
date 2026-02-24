@@ -15,7 +15,14 @@ export class ReviewController {
   // POST - Review. Let Student to create a review
   async createReview(req: Request, res: Response, next: NextFunction) {
     try {
-      const studentId = (req as any).auth.userId;
+      const studentId = req.auth?.userId;
+
+      if (!studentId) {
+        return res
+          .status(401)
+          .json({ message: " User not authenticated, please log in." });
+      }
+
       const review = await this.reviewService.createReview(
         studentId,
         req.body as ReviewInputType,

@@ -122,7 +122,7 @@ export class ReviewService {
       }
 
       return reviewMapper(createdReview);
-    } catch (err: any) {
+    } catch (err: unknown) {
       if (err.statusCode && err.message) {
         throw err;
       }
