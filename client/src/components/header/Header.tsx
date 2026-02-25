@@ -10,15 +10,28 @@ import {
 import { Logo } from "../logo/Logo";
 import { useAuthSessionStore } from "../../store/authSession.store";
 import { ProfileIndicator } from "../profileIndicator/ProfileIndicator.tsx";
+import { useMeStatusQuery } from "../../features/auth/query/useMeStatusQuery.tsx";
+import { ProfileIndicatorSkeleton } from "../skeletons/ProfileIndicatorSkeleton.tsx";
 
 export const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const isAuth = useAuthSessionStore((s) => s.user !== null);
   const user = useAuthSessionStore((s) => s.user);
+  const accessToken = useAuthSessionStore((s) => s.accessToken);
   const handleMobileMenuToggle = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
+  const authInitDone = useAuthSessionStore((s) => s.authInitDone);
 
+  const [hadSession] = useState(
+    () => localStorage.getItem("hadSession") === "1",
+  );
+
+  const { isPending, isFetching } = useMeStatusQuery();
+
+  const isMeLoading =
+    (!authInitDone && hadSession) ||
+    (!!accessToken && !isAuth && (isPending || isFetching));
   const handleMobileMenuClose = () => {
     setIsMobileMenuOpen(false);
   };
@@ -55,10 +68,10 @@ export const Header = () => {
               </Button>
             )}
           </div>
-          {isAuth ? (
-            <>
-              <ProfileIndicator />
-            </>
+          {isMeLoading ? (
+            <ProfileIndicatorSkeleton />
+          ) : isAuth ? (
+            <ProfileIndicator />
           ) : (
             <ControlPanel />
           )}

@@ -39,6 +39,28 @@ export class AppointmentService {
       throw new Error("Teachers cannot book appointments with themselves");
     }
 
+    const appointmentDate = new Date(data.date);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    appointmentDate.setHours(0, 0, 0, 0);
+
+    if (appointmentDate < today) {
+      throw new Error("Cannot create appointments in the past");
+    }
+
+    if (appointmentDate.getTime() === today.getTime()) {
+      const [hours, minutes] = data.time.split(":").map(Number);
+      const appointmentDateTime = new Date(data.date);
+      appointmentDateTime.setHours(hours, minutes, 0, 0);
+
+      const now = new Date();
+      if (appointmentDateTime < now) {
+        throw new Error(
+          "Cannot create appointments for times that have already passed",
+        );
+      }
+    }
+
     const appointment = {
       id: randomUUID(),
       studentId: data.studentId,
