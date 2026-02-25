@@ -16,6 +16,7 @@ import { ProfileIndicatorSkeleton } from "../skeletons/ProfileIndicatorSkeleton.
 export const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const isAuth = useAuthSessionStore((s) => s.user !== null);
+  const user = useAuthSessionStore((s) => s.user);
   const accessToken = useAuthSessionStore((s) => s.accessToken);
   const handleMobileMenuToggle = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -56,14 +57,16 @@ export const Header = () => {
             >
               Tutors
             </Button>
-            <Button
-              as={NavLink}
-              to={authRoutesVariables.registerTutor}
-              className="p-0 text-[#ffffff60] hover:text-light-100"
-              variant="link"
-            >
-              I want be tutor
-            </Button>
+            {!(isAuth && user?.role === "teacher") && (
+              <Button
+                as={NavLink}
+                to={authRoutesVariables.registerTutor}
+                className="p-0 text-[#ffffff60] hover:text-light-100"
+                variant="link"
+              >
+                I want to be a tutor
+              </Button>
+            )}
           </div>
           {isMeLoading ? (
             <ProfileIndicatorSkeleton />

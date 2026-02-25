@@ -21,7 +21,7 @@ export type TextFieldProps = {
   onValueChange?: (value: string) => void;
   errorMessage?: string;
   label?: string;
-  variant?: "primary" | "secondary" | "primarySmall";
+  variant?: "primary" | "secondary" | "primarySmall" | "hero";
   iconClassName?: string;
   containerClassName?: string;
   Icon?: MemoExoticComponent<
@@ -58,6 +58,7 @@ const fieldContainerStyles = cva(
         primary: "bg-dark-800 border-dark-600",
         secondary: "bg-light-100 border-light-200",
         primarySmall: "bg-dark-800 border-dark-600",
+        hero: "bg-light-100 border-light-200",
       },
 
       layout: {
@@ -65,6 +66,7 @@ const fieldContainerStyles = cva(
           "w-full max-w-[498px] gap-[10px] px-[24px] rounded-[88px] h-[75px]",
         secondary: "max-w-[320px] gap-[8px] px-[14px] py-[14px] rounded-[14px]",
         primarySmall: "w-full gap-[10px] px-[24px] rounded-[88px] h-[55px]",
+        hero: "w-full gap-[10px] px-[24px] rounded-[88px] h-[55px]",
       },
 
       state: {
@@ -95,6 +97,7 @@ const inputStyles = cva(
         primary: "text-light-100 placeholder:text-dark-400",
         secondary: "text-light-500 placeholder:text-light-500",
         primarySmall: "text-light-100 placeholder:text-dark-400",
+        hero: "text-light-500 placeholder:text-light-500",
       },
       state: {
         default: "",
@@ -111,6 +114,7 @@ const labelStyles = cva("mb-0.5 text-[12px]", {
       primary: "text-purple-500",
       secondary: "text-light-500",
       primarySmall: "text-purple-500",
+      hero: "text-light-500",
     },
   },
   defaultVariants: { variant: "primary" },
@@ -131,6 +135,7 @@ const showPasswordBtnStyles = cva(
         primary: "text-dark-400",
         secondary: "text-light-500",
         primarySmall: "text-dark-400",
+        hero: "text-light-500",
       },
     },
     defaultVariants: { variant: "primary" },

@@ -1,15 +1,13 @@
 import heroImage from "../../../assets/images/hero.png";
-import { SelectComponent } from "../../ui/select/select";
 import { Button } from "../../ui/button/Button";
-import { Subjects } from "../../../constants/subjects";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { TextField } from "../../ui/textField/TextField.tsx";
 
 export const Hero = () => {
   const navigate = useNavigate();
-  const [subject, setSubject] = useState<string>(
-    Subjects[0].value ?? "english",
-  );
+
+  const [subject, setSubject] = useState<string>("english");
 
   const onSearch = () => {
     navigate(`/teachers?subject=${encodeURIComponent(subject)}`);
@@ -41,11 +39,11 @@ export const Hero = () => {
 
         <div className="relative flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 max-w-2xl lg:max-w-3xl mx-auto mb-16 sm:mb-20 lg:mb-24">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 hidden lg:block w-[620px] h-[80px] bg-[#27222EB3] rounded-[60px] -z-10"></div>
-          <SelectComponent
-            options={Subjects}
-            value={subject}
-            onChange={(value: string) => setSubject(value)}
-            className="w-full sm:w-auto"
+          <TextField
+            containerClassName="w-[200px] sm:w-[300px] md:w-[400px]"
+            placeholder="What do you want to learn?"
+            variant="hero"
+            onValueChange={setSubject}
           />
           <Button variant="secondary" onClick={onSearch}>
             Search
