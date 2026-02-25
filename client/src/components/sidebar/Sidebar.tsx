@@ -2,7 +2,6 @@ import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import AppointmentsIcon from "../icons/Appointments";
 import DashboardIcon from "../icons/Dashboard";
-import LessonsIcon from "../icons/Lessons";
 import Chat from "../icons/Chat";
 import UsersIcon from "../icons/UsersIcon";
 import VideoCallIcon from "../icons/VideoCall";
@@ -33,11 +32,6 @@ export const defaultStudentMenuItems: MenuItem[] = [
     icon: AppointmentsIcon,
   },
   {
-    name: "My Classes",
-    link: joinPath(studentBase, studentPrivatesRoutesVariables.classes),
-    icon: LessonsIcon,
-  },
-  {
     name: "Video Call",
     link: joinPath(studentBase, studentPrivatesRoutesVariables.videoCall),
     icon: VideoCallIcon,
@@ -64,11 +58,6 @@ export const defaultTeacherMenuItems: MenuItem[] = [
     name: "Appointments",
     link: joinPath(teacherBase, teacherPrivatesRoutesVariables.appointments),
     icon: AppointmentsIcon,
-  },
-  {
-    name: "My Classes",
-    link: joinPath(teacherBase, teacherPrivatesRoutesVariables.classes),
-    icon: LessonsIcon,
   },
   {
     name: "Video Call",

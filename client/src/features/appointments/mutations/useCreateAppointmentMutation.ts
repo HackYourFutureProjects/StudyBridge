@@ -44,6 +44,15 @@ export const useCreateAppointmentMutation = () => {
     },
     onError: (error) => {
       const msg = getErrorMessage(error);
+
+      if (error && typeof error === "object" && "response" in error) {
+        const axiosError = error as { response?: { status?: number } };
+        if (axiosError.response?.status === 401) {
+          notifyError("Your session has expired. Please log in again.");
+          return;
+        }
+      }
+
       notifyError(msg ?? "Booking failed. Please try again.");
     },
   });

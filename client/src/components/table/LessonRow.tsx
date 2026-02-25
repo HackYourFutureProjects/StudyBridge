@@ -12,13 +12,16 @@ export type LessonRowData = {
   linkText?: string;
   lesson?: string;
   student?: string;
+  teacher?: string;
   price?: string;
   date?: string;
   time?: string;
   status?: AppointmentStatus;
+  videoCall?: string;
   onStatusChange?: (status: AppointmentStatus) => void;
   onDelete?: () => void;
   canDelete?: boolean;
+  isPast?: boolean;
   [key: string]:
     | ReactNode
     | string
@@ -49,6 +52,7 @@ const LessonRow = ({
   canSelect = true,
 }: LessonRowProps) => {
   const rowBgClass = index % 2 === 0 ? "bg-[#0F0E13]" : "bg-[#211C27]";
+  const isPastLesson = data.isPast ?? false;
 
   return (
     <tr
@@ -65,7 +69,7 @@ const LessonRow = ({
             onClick={canSelect ? onToggle : undefined}
             disabled={!canSelect}
             className={`flex h-[24px] w-[24px] min-h-0 min-w-0 items-center justify-center rounded-[8px] px-0 py-0 ${
-              data.checked ? "bg-[#7B3FF2] text-white" : "text-[#D9D9D9]"
+              data.checked ? "bg-[#7B3FF2] text-white" : "text-white"
             } ${!canSelect ? "opacity-30 cursor-not-allowed" : ""}`}
           >
             {data.checked ? (
@@ -80,7 +84,7 @@ const LessonRow = ({
       {columns.map((column, columnIndex) => (
         <td
           key={`${String(data.id ?? index)}-${column.key}`}
-          className={`font-inter p-2 text-[14px] text-[#B9B9B9] border-b border-[#E1E1E1] ${
+          className={`font-inter p-2 text-[14px] border-b border-[#E1E1E1] ${
             columnIndex === columns.length - 1 && column.key !== "status"
               ? "underline"
               : ""
@@ -91,19 +95,43 @@ const LessonRow = ({
             }
           }}
         >
-          {column.key === "status" && useStatusButtons ? (
-            <StatusButtons
-              initialStatus={
-                (data[column.key] as string).toLowerCase() as
-                  | "pending"
-                  | "approved"
-                  | "rejected"
-              }
-              onStatusChange={data.onStatusChange}
-            />
-          ) : (
-            (data[column.key] as ReactNode)
-          )}
+          <div className={isPastLesson ? "opacity-50" : ""}>
+            {column.key === "status" && useStatusButtons ? (
+              <StatusButtons
+                initialStatus={
+                  (data[column.key] as string).toLowerCase() as
+                    | "pending"
+                    | "approved"
+                    | "rejected"
+                }
+                onStatusChange={data.onStatusChange}
+                disabled={isPastLesson}
+              />
+            ) : column.key === "videoCall" &&
+              data[column.key] &&
+              data[column.key] !== "N/A" ? (
+              <a
+                href={data[column.key] as string}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`underline ${isPastLesson ? "text-gray-500" : "text-[#B9B9B9]"} hover:text-[#7186FF]`}
+              >
+                Start call
+              </a>
+            ) : column.key === "date" ? (
+              <span
+                className={isPastLesson ? "text-red-500" : "text-green-700"}
+              >
+                {data[column.key] as ReactNode}
+              </span>
+            ) : (
+              <span
+                className={isPastLesson ? "text-gray-500" : "text-[#B9B9B9]"}
+              >
+                {data[column.key] as ReactNode}
+              </span>
+            )}
+          </div>
         </td>
       ))}
 
@@ -118,7 +146,7 @@ const LessonRow = ({
                 e.stopPropagation();
                 data.onDelete?.();
               }}
-              className="h-[24px] w-[24px] min-h-0 min-w-0 px-0 py-0 text-[#EDEDED] hover:text-red-500"
+              className="h-[24px] w-[24px] min-h-0 min-w-0 px-0 py-0 text-white hover:text-red-500"
               title="Delete past appointment"
             >
               <KebabVerticalIcon className="h-[16px] w-[16px]" />

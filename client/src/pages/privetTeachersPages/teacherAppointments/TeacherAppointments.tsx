@@ -34,6 +34,7 @@ export const TeacherAppointments = () => {
     { key: "price", label: "Price", width: "146px" },
     { key: "date", label: "Date", width: "146px" },
     { key: "time", label: "Time", width: "146px" },
+    { key: "videoCall", label: "Video call", width: "146px" },
     { key: "status", label: "Status", width: "200px" },
   ];
 
@@ -119,41 +120,29 @@ export const TeacherAppointments = () => {
     });
   };
 
-  const invalidAppointments = appointments.filter(
-    (appointment) => !appointment.date || !appointment.time,
-  );
-
-  if (invalidAppointments.length > 0) {
-    console.warn(
-      "[TeacherAppointments] Received appointments missing date or time. " +
-        "These appointments will be excluded from the table.",
-      {
-        count: invalidAppointments.length,
-        appointmentIds: invalidAppointments
-          .map((appointment) => appointment.id)
-          .filter((id) => id !== undefined && id !== null),
-      },
-    );
-  }
-
   const tableRows = appointments
     .filter((appointment) => appointment.date && appointment.time)
-    .map((appointment) => ({
-      id: appointment.id,
-      checked: false,
-      lesson: appointment.lesson,
-      student: appointment.studentName || appointment.studentId,
-      price: appointment.price,
-      date: appointment.date,
-      time: appointment.time,
-      status: appointment.status,
-      onStatusChange: (newStatus: AppointmentStatus) =>
-        handleStatusChange(appointment.id, newStatus),
-      canDelete: isPastAppointment(appointment.date, appointment.time),
-      onDelete: isPastAppointment(appointment.date, appointment.time)
-        ? () => handleDelete(appointment.id)
-        : undefined,
-    })) as LessonRowData[];
+    .map((appointment) => {
+      const isPast = isPastAppointment(appointment.date, appointment.time);
+      return {
+        id: appointment.id,
+        checked: false,
+        lesson: appointment.lesson,
+        student: appointment.studentName || appointment.studentId,
+        price: appointment.price,
+        date: appointment.date,
+        time: appointment.time,
+        videoCall: appointment.videoCall || "N/A",
+        status: appointment.status,
+        isPast: isPast,
+        onStatusChange: !isPast
+          ? (newStatus: AppointmentStatus) =>
+              handleStatusChange(appointment.id, newStatus)
+          : undefined,
+        canDelete: isPast,
+        onDelete: isPast ? () => handleDelete(appointment.id) : undefined,
+      };
+    }) as LessonRowData[];
 
   if (isLoading) {
     return (
