@@ -5,11 +5,9 @@ import { PageTitle } from "../../../components/pageTitle/PageTitle";
 import { useAuthSessionStore } from "../../../store/authSession.store";
 import { Button } from "../../../components/ui/button/Button";
 import { startCall } from "../../../api/video/video.api";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 export const ClientsClasses = () => {
-  const navigate = useNavigate();
-
   const { user } = useAuthSessionStore();
   const [page, setPage] = useState(1);
   const { pathname } = useLocation();
@@ -36,7 +34,7 @@ export const ClientsClasses = () => {
         call.streamCallId,
       )}&streamCallType=${encodeURIComponent(call.streamCallType)}`;
 
-      navigate(callUrl);
+      window.open(callUrl, "_blank", "noopener,noreferrer");
     } catch (error) {
       console.error("Failed to start call", error);
     }

@@ -3,8 +3,11 @@ import type { ReactNode } from "react";
 import { useAuthSessionStore } from "../store/authSession.store.ts";
 
 export const RequireAuth = ({ children }: { children: ReactNode }) => {
-  const isLoading = false;
-  const isAuth = useAuthSessionStore((s) => s.user !== null);
+  const user = useAuthSessionStore((s) => s.user);
+  const accessToken = useAuthSessionStore((s) => s.accessToken);
+  const hadSession = localStorage.getItem("hadSession") === "1";
+  const isLoading = hadSession && !user && !accessToken;
+  const isAuth = Boolean(user) || Boolean(accessToken);
 
   const location = useLocation();
 
