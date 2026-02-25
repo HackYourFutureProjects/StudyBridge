@@ -3,11 +3,13 @@ import { Pagination } from "../../../components/ui/pagination/Pagination";
 import LessonsTable from "../../../components/table/LessonsTable";
 import { PageTitle } from "../../../components/pageTitle/PageTitle";
 import { useAuthSessionStore } from "../../../store/authSession.store";
-import { useLocation } from "react-router-dom";
 import { Button } from "../../../components/ui/button/Button";
 import { startCall } from "../../../api/video/video.api";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export const ClientsClasses = () => {
+  const navigate = useNavigate();
+
   const { user } = useAuthSessionStore();
   const [page, setPage] = useState(1);
   const { pathname } = useLocation();
@@ -29,7 +31,12 @@ export const ClientsClasses = () => {
         streamCallId: `call_${crypto.randomUUID()}`,
       });
       console.log("Call started:", call.id, call.streamCallId);
-      // later: we navigate to video call page
+
+      const callUrl = `/call/${call.id}?streamCallId=${encodeURIComponent(
+        call.streamCallId,
+      )}&streamCallType=${encodeURIComponent(call.streamCallType)}`;
+
+      navigate(callUrl);
     } catch (error) {
       console.error("Failed to start call", error);
     }

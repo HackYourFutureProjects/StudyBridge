@@ -50,6 +50,6 @@ export async function endCall(
 }
 
 export async function getStreamToken(): Promise<StreamTokenResponse> {
-  const res = await apiProtected.get<StreamTokenResponse>(`api/stream/token`);
+  const res = await apiProtected.get<StreamTokenResponse>("/api/stream/token");
   return res.data;
 }

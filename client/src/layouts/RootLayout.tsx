@@ -13,6 +13,7 @@ import {
   getIncomingCall,
 } from "../api/video/video.api.ts";
 import { IncomingCallPopup } from "../components/IncomingCallPopup/IncomingCallPopup.tsx";
+import { useNavigate } from "react-router-dom";
 
 export const RootLayout = () => {
   const [incomingCall, setIncomingCall] = useState<VideoCallResponse | null>(
@@ -22,6 +23,7 @@ export const RootLayout = () => {
   const user = useAuthSessionStore((s) => s.user);
   const accessToken = useAuthSessionStore((s) => s.accessToken);
   const isStudent = user?.role === "student";
+  const navigate = useNavigate();
 
   useAuthInit();
   useMeQuery();
@@ -52,8 +54,16 @@ export const RootLayout = () => {
   const handleAccept = async (callId: string) => {
     setIncomingLoading(true);
     try {
-      await acceptCall(callId);
+      const accepted = await acceptCall(callId);
       setIncomingCall(null);
+
+      if (!accepted) return;
+
+      const callUrl = `/call/${accepted.id}?streamCallId=${encodeURIComponent(
+        accepted.streamCallId,
+      )}&streamCallType=${encodeURIComponent(accepted.streamCallType)}`;
+
+      navigate(callUrl);
     } catch {
       console.error("Failed to accept incoming call");
     } finally {
