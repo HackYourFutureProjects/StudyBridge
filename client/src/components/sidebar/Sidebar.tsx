@@ -2,10 +2,8 @@ import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import AppointmentsIcon from "../icons/Appointments";
 import DashboardIcon from "../icons/Dashboard";
-import LessonsIcon from "../icons/Lessons";
 import Chat from "../icons/Chat";
 import UsersIcon from "../icons/UsersIcon";
-import VideoCallIcon from "../icons/VideoCall";
 import {
   chatRoutes,
   studentBase,
@@ -32,16 +30,11 @@ export const defaultStudentMenuItems: MenuItem[] = [
     link: joinPath(studentBase, studentPrivatesRoutesVariables.appointments),
     icon: AppointmentsIcon,
   },
-  {
-    name: "My Classes",
-    link: joinPath(studentBase, studentPrivatesRoutesVariables.classes),
-    icon: LessonsIcon,
-  },
-  {
-    name: "Video Call",
-    link: joinPath(studentBase, studentPrivatesRoutesVariables.videoCall),
-    icon: VideoCallIcon,
-  },
+  // {
+  //   name: "Video Call",
+  //   link: joinPath(studentBase, studentPrivatesRoutesVariables.videoCall),
+  //   icon: VideoCallIcon,
+  // },
   {
     name: "My Profile",
     link: joinPath(studentBase, studentPrivatesRoutesVariables.profile),
@@ -65,16 +58,11 @@ export const defaultTeacherMenuItems: MenuItem[] = [
     link: joinPath(teacherBase, teacherPrivatesRoutesVariables.appointments),
     icon: AppointmentsIcon,
   },
-  {
-    name: "My Classes",
-    link: joinPath(teacherBase, teacherPrivatesRoutesVariables.classes),
-    icon: LessonsIcon,
-  },
-  {
-    name: "Video Call",
-    link: joinPath(teacherBase, teacherPrivatesRoutesVariables.videoCall),
-    icon: VideoCallIcon,
-  },
+  // {
+  //   name: "Video Call",
+  //   link: joinPath(teacherBase, teacherPrivatesRoutesVariables.videoCall),
+  //   icon: VideoCallIcon,
+  // },
   {
     name: "My Profile",
     link: joinPath(teacherBase, teacherPrivatesRoutesVariables.profile),

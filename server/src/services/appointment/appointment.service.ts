@@ -161,18 +161,30 @@ export class AppointmentService {
       throw new Error("Unauthorized to delete this appointment");
     }
 
-    const [hours, minutes] = appointment.time.split(":").map(Number);
-    if (isNaN(hours) || isNaN(minutes)) {
-      throw new Error("Invalid appointment time format");
+    const updateData = {
+      status: "rejected" as const,
+      updatedAt: new Date(),
+    };
+
+    const updated = await this.appointmentCommand.updateAppointment(
+      id,
+      updateData,
+    );
+
+    if (!updated) {
+      throw new Error("Failed to update appointment status");
     }
 
-    const appointmentDateTime = new Date(appointment.date);
-    appointmentDateTime.setHours(hours, minutes, 0, 0);
-
-    const now = new Date();
-
-    if (appointmentDateTime >= now) {
-      throw new Error("You cannot delete future lesson");
+    try {
+      await this.conversationCommand.upsertForAppointment({
+        appointmentId: updated.id,
+        studentId: updated.studentId,
+        teacherId: updated.teacherId,
+        status: updated.status,
+      });
+    } catch (err) {
+      logError(err);
+      logWarning("Conversation upsert failed during appointment deletion");
     }
 
     await this.appointmentCommand.deleteAppointment(id);

@@ -34,3 +34,9 @@ export type StreamTokenResponse = {
   userId: string;
   role: "teacher" | "student";
 };
+
+export type VideoCallRouteState = {
+  callId: string;
+  streamCallId: string;
+  streamCallType: string;
+};
