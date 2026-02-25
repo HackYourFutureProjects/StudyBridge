@@ -18,6 +18,7 @@ import {
 } from "../../../api/teacher/teacher.api";
 import { useMyProfileQuery } from "../../../features/teachers/query/useMyProfileQuery";
 import { useUpdateMyProfileMutation } from "../../../features/teachers/mutations/useUpdateMyProfileMutation";
+import { useModalStore } from "../../../store/modals.store";
 
 export type { LessonPrice } from "../../../components/teacherProfileSection/types";
 
@@ -29,6 +30,7 @@ export interface TimeSlot {
 export const TeacherProfile = () => {
   const { data: profile, isLoading } = useMyProfileQuery();
   const updateProfileMutation = useUpdateMyProfileMutation();
+  const openModal = useModalStore((s) => s.open);
 
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState("");
@@ -134,17 +136,26 @@ export const TeacherProfile = () => {
 
   const handleAddLesson = () => {
     if (lessons.length >= 5) {
-      alert("You can add maximum 5 subjects");
+      openModal("alert", {
+        title: "Maximum Subjects Reached",
+        message: "You can add maximum 5 subjects",
+      });
       return;
     }
 
     if (!newSubject || !newDescription) {
-      alert("Please fill in subject and description");
+      openModal("alert", {
+        title: "Missing Information",
+        message: "Please fill in subject and description",
+      });
       return;
     }
 
     if (newLevels.length === 0) {
-      alert("Please add at least one level with price");
+      openModal("alert", {
+        title: "Missing Level",
+        message: "Please add at least one level with price",
+      });
       return;
     }
 
@@ -153,9 +164,10 @@ export const TeacherProfile = () => {
     );
 
     if (isDuplicate) {
-      alert(
-        `You already have ${newSubject} in your lessons. Please choose a different subject.`,
-      );
+      openModal("alert", {
+        title: "Duplicate Subject",
+        message: `You already have ${newSubject} in your lessons. Please choose a different subject.`,
+      });
       return;
     }
 
@@ -188,12 +200,18 @@ export const TeacherProfile = () => {
 
   const handleUpdateLesson = () => {
     if (!newSubject || !newDescription) {
-      alert("Please fill in subject and description");
+      openModal("alert", {
+        title: "Missing Information",
+        message: "Please fill in subject and description",
+      });
       return;
     }
 
     if (newLevels.length === 0) {
-      alert("Please add at least one level with price");
+      openModal("alert", {
+        title: "Missing Level",
+        message: "Please add at least one level with price",
+      });
       return;
     }
 
@@ -206,9 +224,10 @@ export const TeacherProfile = () => {
     );
 
     if (isDuplicate) {
-      alert(
-        `You already have ${newSubject} in your lessons. Please choose a different subject.`,
-      );
+      openModal("alert", {
+        title: "Duplicate Subject",
+        message: `You already have ${newSubject} in your lessons. Please choose a different subject.`,
+      });
       return;
     }
 

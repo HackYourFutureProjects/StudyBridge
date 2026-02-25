@@ -2,6 +2,7 @@ import { Button } from "../ui/button/Button";
 import { SelectComponent } from "../ui/select/select";
 import { LEVELS, SUBJECTS } from "./constants";
 import { useState } from "react";
+import { useModalStore } from "../../store/modals.store";
 
 type LessonFormProps = {
   subject: string;
@@ -28,20 +29,30 @@ export const LessonForm = ({
 }: LessonFormProps) => {
   const [newLevel, setNewLevel] = useState("");
   const [newPrice, setNewPrice] = useState("");
+  const openModal = useModalStore((s) => s.open);
 
   const handleAddLevel = () => {
     if (!newLevel) {
-      alert("Please select a level");
+      openModal("alert", {
+        title: "Missing Level",
+        message: "Please select a level",
+      });
       return;
     }
     if (!newPrice) {
-      alert("Please enter a price");
+      openModal("alert", {
+        title: "Missing Price",
+        message: "Please enter a price",
+      });
       return;
     }
 
     const isDuplicate = levels.some((l) => l.level === newLevel);
     if (isDuplicate) {
-      alert("This level already exists for this subject");
+      openModal("alert", {
+        title: "Duplicate Level",
+        message: "This level already exists for this subject",
+      });
       return;
     }
 
