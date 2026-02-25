@@ -27,7 +27,6 @@ export const chatRoutes = {
 export const studentPrivatesRoutesVariables = {
   dashboard: "",
   classes: "student-classes",
-  videoCall: "video-call",
   appointments: "clients-appointments",
   billing: "clients-billing",
   profile: "profile",
@@ -36,7 +35,6 @@ export const studentPrivatesRoutesVariables = {
 export const teacherPrivatesRoutesVariables = {
   dashboard: "my-dashboard",
   classes: "my-classes",
-  videoCall: "video-call",
   myStudents: "my-students",
   billings: "my-billings",
   profile: "profile",

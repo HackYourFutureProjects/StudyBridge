@@ -10,6 +10,7 @@ import { studentPrivateRoutes } from "./routesVariables/studentPrivateRoutes.tsx
 import { RequireRole } from "./RequireRole.tsx";
 import { RoleIndexRedirect } from "./RoleIndexRedirect.tsx";
 import { teacherPrivateRoutes } from "./routesVariables/teacherPrivateRoutes.tsx";
+import { VideoCallPage } from "../pages/videoCall/VideoCallPage.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -53,6 +54,14 @@ export const router = createBrowserRouter([
           </RequireAuth>
         ),
         children: teacherPrivateRoutes,
+      },
+      {
+        path: "/call/:callId",
+        element: (
+          <RequireAuth>
+            <VideoCallPage />
+          </RequireAuth>
+        ),
       },
 
       { path: "/forbidden", element: <div>403 Forbidden</div> },
