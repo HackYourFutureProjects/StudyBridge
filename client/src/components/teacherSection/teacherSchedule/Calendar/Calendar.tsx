@@ -24,10 +24,21 @@ export function Calendar({ onDateSelect, selectedDate }: TimeProps) {
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth();
+  const today = currentDate.getDate();
 
   const handleDateClick = (day: number): void => {
     const selectedDay = new Date(currentYear, currentMonth, day);
-    onDateSelect(selectedDay);
+    const todayDate = new Date(currentYear, currentMonth, today);
+    todayDate.setHours(0, 0, 0, 0);
+    selectedDay.setHours(0, 0, 0, 0);
+
+    if (selectedDay >= todayDate) {
+      onDateSelect(selectedDay);
+    }
+  };
+
+  const isPastDate = (day: number): boolean => {
+    return day < today;
   };
 
   const totalDays = new Date(currentYear, currentMonth + 1, 0).getDate();
@@ -66,10 +77,13 @@ export function Calendar({ onDateSelect, selectedDate }: TimeProps) {
             {day && (
               <button
                 onClick={() => handleDateClick(day)}
+                disabled={isPastDate(day)}
                 className={`w-full h-full rounded-[40px] flex items-center justify-center text-sm sm:text-base font-normal leading-6 transition-colors ${
-                  selectedDate && day === selectedDate.getDate()
-                    ? "bg-[#7C86F7] text-white"
-                    : "text-white hover:bg-transparent hover:text-[#F3F2F5] sm:hover:bg-[#F3F2F5] sm:hover:text-black"
+                  isPastDate(day)
+                    ? "text-gray-600 cursor-not-allowed opacity-50"
+                    : selectedDate && day === selectedDate.getDate()
+                      ? "bg-[#7C86F7] text-white"
+                      : "text-white hover:bg-transparent hover:text-[#F3F2F5] sm:hover:bg-[#F3F2F5] sm:hover:text-black"
                 }`}
               >
                 {day}
