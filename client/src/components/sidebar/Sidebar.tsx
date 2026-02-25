@@ -4,7 +4,6 @@ import AppointmentsIcon from "../icons/Appointments";
 import DashboardIcon from "../icons/Dashboard";
 import Chat from "../icons/Chat";
 import UsersIcon from "../icons/UsersIcon";
-import VideoCallIcon from "../icons/VideoCall";
 import {
   chatRoutes,
   studentBase,

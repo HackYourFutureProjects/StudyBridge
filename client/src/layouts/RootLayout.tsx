@@ -52,8 +52,16 @@ export const RootLayout = () => {
   const handleAccept = async (callId: string) => {
     setIncomingLoading(true);
     try {
-      await acceptCall(callId);
+      const accepted = await acceptCall(callId);
       setIncomingCall(null);
+
+      if (!accepted) return;
+
+      const callUrl = `/call/${accepted.id}?streamCallId=${encodeURIComponent(
+        accepted.streamCallId,
+      )}&streamCallType=${encodeURIComponent(accepted.streamCallType)}`;
+
+      window.open(callUrl, "_blank", "noopener,noreferrer");
     } catch {
       console.error("Failed to accept incoming call");
     } finally {
