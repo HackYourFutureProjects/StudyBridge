@@ -50,7 +50,7 @@ export const ReviewCardTeacher = ({
             <Rating rating={rating} />
             {createdAt && (
               <span className="text-[10px] text-white/40 md:text-xs">
-                {new Date(createdAt).toLocaleDateString()}
+                {new Date(createdAt).toLocaleDateString("en-GB")}
               </span>
             )}
           </div>

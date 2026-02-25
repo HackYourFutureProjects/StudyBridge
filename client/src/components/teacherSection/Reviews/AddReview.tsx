@@ -11,20 +11,25 @@ interface AddReviewFormProps {
 
 export const AddReview = ({ teacherId }: AddReviewFormProps) => {
   const { user } = useAuthSessionStore();
+  const isLoggedIn = !!user;
   const studentId = user?.id || "";
 
   const [rating, setRating] = useState(0);
   const [reviewText, setReviewText] = useState("");
   const [selectedBookingId, setSelectedBookingId] = useState("");
 
-  const { data } = useStudentAppointmentsQuery(studentId);
+  const { data, isLoading } = useStudentAppointmentsQuery(studentId); //__________
+  const { mutate, isPending } = useCreateReviewMutation(teacherId);
 
   // Filter to only approved lessons with this teacher
-  const approvedLessons = data?.appointments.filter(
-    (app) => app.teacherId === teacherId && app.status === "approved",
-  );
+  const approvedLessons =
+    data?.appointments.filter(
+      (app) => app.teacherId === teacherId && app.status === "approved",
+    ) || [];
 
-  const { mutate, isPending } = useCreateReviewMutation(teacherId);
+  // If not logged in, don't show the review form
+  if (!isLoggedIn) return null;
+  if (isLoading) return <p>Loading your lessons...</p>; //__________________
 
   // Find the selected booking details for use in the review
   const selectBooking = approvedLessons?.find(
@@ -50,6 +55,9 @@ export const AddReview = ({ teacherId }: AddReviewFormProps) => {
           setReviewText("");
           setSelectedBookingId("");
         },
+        onError: () => {
+          alert(`You already submitted a review for this lesson`);
+        },
       },
     );
   };
@@ -67,12 +75,12 @@ export const AddReview = ({ teacherId }: AddReviewFormProps) => {
           </label>
           <select
             id="lesson-select"
-            className="bg-dark px-4 py-3 border border-white/10 focus:border-primary-500 rounded-lg outline-none w-full text-white"
+            className="bg-dark px-4 py-3 border border-white/10 focus:border-primary-500 rounded-lg outline-none w-full text-white cursor-pointer"
             value={selectedBookingId}
             onChange={(e) => setSelectedBookingId(e.target.value)}
             required
           >
-            <option value="" className="bg-black text-white">
+            <option value="" className="bg-[#1A1926] text-white">
               -- Choose a lesson --
             </option>
 
@@ -80,9 +88,16 @@ export const AddReview = ({ teacherId }: AddReviewFormProps) => {
               <option
                 key={app.id}
                 value={app.id}
-                className="bg-black text-white"
+                className="bg-purple-500/80 text-white cursor-pointer"
               >
-                {app.lesson} - {new Date(app.date).toLocaleDateString()}
+                {`${app.lesson} ${"\u00A0".repeat(5)} ${".".repeat(25)}${"\u00A0".repeat(5)} ${new Date(
+                  app.date,
+                ).toLocaleDateString("en-GB", {
+                  day: "numeric",
+                  month: "short",
+                  year: "numeric",
+                })}
+                 `}
               </option>
             ))}
           </select>
@@ -93,13 +108,13 @@ export const AddReview = ({ teacherId }: AddReviewFormProps) => {
           <label className="block mb-2 text-white/60 text-sm">
             How was the lesson?
           </label>
-          <div className="flex gap-2">
+          <div className="flex gap-4">
             {[1, 2, 3, 4, 5].map((star) => (
               <button
                 key={star}
                 type="button"
                 onClick={() => setRating(star)}
-                className={`text-3xl transition ${star <= rating ? "text-yellow-400" : "text-gray-600 cursor-pointer"}`}
+                className={`text-3xl transition cursor-pointer  ${star <= rating ? "text-yellow-400" : "text-gray-600 "}`}
               >
                 ★
               </button>
