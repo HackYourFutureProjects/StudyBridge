@@ -17,7 +17,7 @@ export type PaginatedReviewsResponse = {
   page: number;
   pageSize: number;
   totalCount: number;
-  items: ReviewType[];
+  reviews: ReviewType[];
 };
 
 export type TeacherAverageRating = {

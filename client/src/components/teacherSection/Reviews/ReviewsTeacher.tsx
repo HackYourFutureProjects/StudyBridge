@@ -1,30 +1,21 @@
 import { ReviewCardTeacher } from "./ReviewCardTeacher";
 import { Button } from "../../ui/button/Button";
 import shapeImage from "../../../assets/images/Shape.png";
-import { useState } from "react";
-import { useReviewsQuery } from "../../../features/review/query/useReviewsQuery";
+import { ReviewType } from "../../../api/review/review.type";
 
-// Props Type
 interface ReviewsTeacherProps {
-  teacherId: string;
+  reviews: ReviewType[];
+  isLoading: boolean;
+  onLoadMore: () => void;
+  hasMore: boolean;
 }
 
-export const ReviewsTeacher = ({ teacherId }: ReviewsTeacherProps) => {
-  const [page, setPage] = useState(1);
-  const pageSize = 3;
-
-  // Fetch reviews
-  const { data: reviewsData, isLoading } = useReviewsQuery(
-    teacherId,
-    page,
-    pageSize,
-  );
-
-  // to check if there are more reviews to load
-  const hasMore = reviewsData ? reviewsData.pageCount > page : false;
-  const onLoadMore = () => {
-    setPage((prevPage) => prevPage + 1);
-  };
+export const ReviewsTeacher = ({
+  reviews,
+  isLoading,
+  onLoadMore,
+  hasMore,
+}: ReviewsTeacherProps) => {
   return (
     <section className="py-12 sm:py-16 lg:py-20 section-spacing">
       <div className="mx-auto px-4 sm:px-6 lg:px-8 container-centered">
@@ -41,7 +32,7 @@ export const ReviewsTeacher = ({ teacherId }: ReviewsTeacherProps) => {
         </div>
 
         <div className="gap-x-8 gap-y-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full">
-          {reviewsData?.items?.map((review) => (
+          {reviews.map((review) => (
             <div
               key={review._id}
               className="relative flex justify-center px-[15px] sm:px-[10px] md:px-[5px] w-full"
@@ -66,13 +57,9 @@ export const ReviewsTeacher = ({ teacherId }: ReviewsTeacherProps) => {
               variant="secondary"
               onClick={onLoadMore}
               disabled={isLoading}
+              className="mt-10"
             >
-              {/* Loading state for the first page */}
-              {isLoading && page === 1 && (
-                <p className="mt-10 text-white/40 text-center">
-                  Loading reviews...
-                </p>
-              )}
+              {isLoading ? "Loading..." : "Load More Reviews"}
             </Button>
           </div>
         )}

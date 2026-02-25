@@ -6,9 +6,9 @@ import TeacherSubjects from "../../components/teacherSection/teacherSubjects/tea
 import TeacherAbout from "../../components/teacherSection/teacherAbout/teacherAbout";
 import TeacherSchedule from "../../components/teacherSection/teacherSchedule/TeacherSchedule";
 import { useState } from "react";
-import { ReviewsTeacher } from "../../components/teacherSection/Reviews/ReviewsTeacher";
 import { useTeacherQuery } from "../../features/teachers/query/useTeacherQuery";
 import { TeacherCardSkeleton } from "../../components/skeletons/TeacherCardSkeleton";
+import { ReviewsManager } from "../../components/teacherSection/Reviews/ReviewsManager";
 
 type TabType = "about" | "subjects" | "schedule";
 
@@ -88,7 +88,7 @@ export const TeacherDetail = () => {
         </div>
         <div className="section-spacing">{renderContent()}</div>
         <section className="z-10 relative bg-bg-main section-spacing">
-          {id && <ReviewsTeacher teacherId={id} />}
+          <ReviewsManager />
         </section>
       </div>
     </div>
