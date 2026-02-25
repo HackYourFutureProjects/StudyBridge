@@ -29,7 +29,11 @@ export class AppointmentQuery {
     totalPages: number;
   }> {
     try {
-      const query = { studentId };
+      const query = {
+        studentId,
+        date: { $exists: true, $ne: "" },
+        time: { $exists: true, $ne: "" },
+      };
       const total = await AppointmentModel.countDocuments(query);
 
       if (page !== undefined && limit !== undefined) {
@@ -78,7 +82,11 @@ export class AppointmentQuery {
     totalPages: number;
   }> {
     try {
-      const query = { teacherId };
+      const query = {
+        teacherId,
+        date: { $exists: true, $ne: "" },
+        time: { $exists: true, $ne: "" },
+      };
       const total = await AppointmentModel.countDocuments(query);
 
       if (page !== undefined && limit !== undefined) {
