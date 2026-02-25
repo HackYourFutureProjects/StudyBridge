@@ -11,7 +11,7 @@ import { Logo } from "../logo/Logo";
 import { useAuthSessionStore } from "../../store/authSession.store";
 import { ProfileIndicator } from "../profileIndicator/ProfileIndicator.tsx";
 import { useMeStatusQuery } from "../../features/auth/query/useMeStatusQuery.tsx";
-import { ProfileIndicatorSkeleton } from "../skeletons/HeaderAuthSkeleton.tsx";
+import { ProfileIndicatorSkeleton } from "../skeletons/ProfileIndicatorSkeleton.tsx";
 
 export const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -22,7 +22,9 @@ export const Header = () => {
   };
   const authInitDone = useAuthSessionStore((s) => s.authInitDone);
 
-  const hadSession = localStorage.getItem("hadSession") === "1";
+  const [hadSession] = useState(
+    () => localStorage.getItem("hadSession") === "1",
+  );
 
   const { isPending, isFetching } = useMeStatusQuery();
 

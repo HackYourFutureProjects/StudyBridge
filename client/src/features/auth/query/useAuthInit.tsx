@@ -24,5 +24,5 @@ export const useAuthInit = () => {
         setAuthInitDone(true);
       }
     })();
-  }, [setAccessToken, clearSession]);
+  }, [setAccessToken, clearSession, setAuthInitDone]);
 };
