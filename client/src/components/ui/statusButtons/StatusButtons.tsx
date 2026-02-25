@@ -5,11 +5,13 @@ type Status = "pending" | "approved" | "rejected";
 interface StatusButtonsProps {
   initialStatus?: Status;
   onStatusChange?: (status: Status) => void;
+  disabled?: boolean;
 }
 
 export const StatusButtons = ({
   initialStatus = "pending",
   onStatusChange,
+  disabled = false,
 }: StatusButtonsProps) => {
   const [status, setStatus] = useState<Status>(initialStatus);
 
@@ -21,6 +23,7 @@ export const StatusButtons = ({
     newStatus: Status,
     event: MouseEvent<HTMLButtonElement>,
   ) => {
+    if (disabled) return;
     event.preventDefault();
     event.stopPropagation();
     setStatus(newStatus);
@@ -29,20 +32,21 @@ export const StatusButtons = ({
 
   const getButtonStyle = (buttonStatus: Status) => {
     const baseStyle =
-      "px-3 py-1 rounded-md text-sm font-medium transition-colors cursor-pointer";
+      "px-3 py-1 rounded-md text-sm font-medium transition-colors";
+    const cursorStyle = disabled ? "cursor-not-allowed" : "cursor-pointer";
 
     if (status === buttonStatus) {
       switch (buttonStatus) {
         case "pending":
-          return `${baseStyle} bg-yellow-100 text-yellow-800 border border-yellow-300 hover:bg-yellow-200`;
+          return `${baseStyle} ${cursorStyle} bg-yellow-100 text-yellow-800 border border-yellow-300 ${!disabled ? "hover:bg-yellow-200" : "opacity-50"}`;
         case "approved":
-          return `${baseStyle} bg-green-100 text-green-800 border border-green-300 hover:bg-green-200`;
+          return `${baseStyle} ${cursorStyle} bg-green-100 text-green-800 border border-green-300 ${!disabled ? "hover:bg-green-200" : "opacity-50"}`;
         case "rejected":
-          return `${baseStyle} bg-red-100 text-red-800 border border-red-300 hover:bg-red-200`;
+          return `${baseStyle} ${cursorStyle} bg-red-100 text-red-800 border border-red-300 ${!disabled ? "hover:bg-red-200" : "opacity-50"}`;
       }
     }
 
-    return `${baseStyle} bg-gray-50 text-gray-600 border border-gray-300 hover:bg-gray-100`;
+    return `${baseStyle} ${cursorStyle} bg-gray-50 text-gray-600 border border-gray-300 ${!disabled ? "hover:bg-gray-100" : "opacity-50"}`;
   };
 
   return (
@@ -51,6 +55,7 @@ export const StatusButtons = ({
         type="button"
         onClick={(e) => handleStatusChange("pending", e)}
         className={getButtonStyle("pending")}
+        disabled={disabled}
       >
         Pending
       </button>
@@ -58,6 +63,7 @@ export const StatusButtons = ({
         type="button"
         onClick={(e) => handleStatusChange("approved", e)}
         className={getButtonStyle("approved")}
+        disabled={disabled}
       >
         Approve
       </button>
@@ -65,6 +71,7 @@ export const StatusButtons = ({
         type="button"
         onClick={(e) => handleStatusChange("rejected", e)}
         className={getButtonStyle("rejected")}
+        disabled={disabled}
       >
         Reject
       </button>
