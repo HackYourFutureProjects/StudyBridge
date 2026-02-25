@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { useReviewsQuery } from "../../../features/review/query/useReviewsQuery";
 import { ReviewsTeacher } from "./ReviewsTeacher";
 import { ReviewType } from "../../../api/review/review.type";
+import { AddReview } from "./AddReview";
 
 export const ReviewsManager = () => {
   const { id: teacherId } = useParams<{ id: string }>();
@@ -39,11 +40,14 @@ export const ReviewsManager = () => {
   };
 
   return (
-    <ReviewsTeacher
-      reviews={accumulatedReviews}
-      isLoading={isLoading}
-      onLoadMore={handleLoadMore}
-      hasMore={hasMore}
-    />
+    <>
+      <AddReview teacherId={teacherId ?? ""} />
+      <ReviewsTeacher
+        reviews={accumulatedReviews}
+        isLoading={isLoading}
+        onLoadMore={handleLoadMore}
+        hasMore={hasMore}
+      />
+    </>
   );
 };

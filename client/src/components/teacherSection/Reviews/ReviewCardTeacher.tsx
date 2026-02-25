@@ -3,8 +3,6 @@ import { Rating } from "../../rating/Rating";
 import UsersIcon from "../../icons/UsersIcon";
 import { ReviewType } from "../../../api/review/review.type";
 
-//TODO : change the props schema to match the real data structure of reviews when we have it from the backend.
-//
 interface ReviewCardProps {
   reviewData: ReviewType;
 }
