@@ -58,7 +58,7 @@ const fieldContainerStyles = cva(
         primary: "bg-dark-800 border-dark-600",
         secondary: "bg-light-100 border-light-200",
         primarySmall: "bg-dark-800 border-dark-600",
-        hero: "bg-light-100 order-light-200",
+        hero: "bg-light-100 border-light-200",
       },
 
       layout: {
