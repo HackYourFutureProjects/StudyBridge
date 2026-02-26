@@ -8,11 +8,15 @@ import { useDeleteAppointmentMutation } from "../../../features/appointments/mut
 import { AppointmentStatus } from "../../../types/appointments.types";
 import { LessonRowData } from "../../../components/table/LessonRow";
 import { useModalStore } from "../../../store/modals.store";
+import { Button } from "../../../components/ui/button/Button";
+import { startCall } from "../../../api/video/video.api";
+import { useAuthSessionStore } from "../../../store/authSession.store";
 
 export const TeacherAppointments = () => {
   const [page, setPage] = useState(1);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const limit = 10;
+  const user = useAuthSessionStore((state) => state.user);
 
   const { open: openModal } = useModalStore();
 
@@ -56,6 +60,27 @@ export const TeacherAppointments = () => {
         deleteAppointmentMutation.mutate(appointmentId);
       },
     });
+  };
+
+  const handleStartCall = async (studentId: string, appointmentId?: string) => {
+    if (!user?.id) return;
+
+    try {
+      const call = await startCall({
+        teacherId: user.id,
+        studentId,
+        appointmentId: appointmentId ?? undefined,
+        streamCallId: `call_${crypto.randomUUID()}`,
+      });
+
+      const callUrl = `/call/${call.id}?streamCallId=${encodeURIComponent(
+        call.streamCallId,
+      )}&streamCallType=${encodeURIComponent(call.streamCallType)}`;
+
+      window.open(callUrl, "_blank", "noopener,noreferrer");
+    } catch (error) {
+      console.error("Failed to start call", error);
+    }
   };
 
   const isPastAppointment = (date: string, time: string): boolean => {
@@ -132,7 +157,18 @@ export const TeacherAppointments = () => {
         price: appointment.price,
         date: appointment.date,
         time: appointment.time,
-        videoCall: appointment.videoCall || "N/A",
+        videoCall: (
+          <Button
+            as="button"
+            variant="link"
+            className="text-inherit underline font-normal min-h-0 min-w-0 rounded-none"
+            onClick={() =>
+              handleStartCall(appointment.studentId, appointment.id)
+            }
+          >
+            Start call!
+          </Button>
+        ),
         status: appointment.status,
         isPast: isPast,
         onStatusChange: !isPast
