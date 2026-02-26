@@ -78,6 +78,15 @@ export const TeacherAppointments = () => {
   const handleStartCall = async (studentId: string, appointmentId?: string) => {
     if (!user?.id) return;
 
+    const callWindow = window.open("about:blank", "_blank");
+    if (!callWindow) {
+      openModal("alert", {
+        title: "Popup blocked",
+        message: "Please allow popups for this site, then try again.",
+      });
+      return;
+    }
+
     try {
       const call = await startCall({
         teacherId: user.id,
@@ -90,8 +99,9 @@ export const TeacherAppointments = () => {
         call.streamCallId,
       )}&streamCallType=${encodeURIComponent(call.streamCallType)}`;
 
-      window.open(callUrl, "_blank", "noopener,noreferrer");
+      callWindow.location.href = callUrl;
     } catch (error) {
+      callWindow.close();
       console.error("Failed to start call", error);
     }
   };
