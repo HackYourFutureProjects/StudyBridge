@@ -26,6 +26,9 @@ type ModalPayload = {
     title: string;
     message: string;
     onConfirm: () => void;
+    confirmText?: string;
+    cancelText?: string;
+    confirmVariant?: "danger" | "primary";
   };
   alert?: {
     title: string;

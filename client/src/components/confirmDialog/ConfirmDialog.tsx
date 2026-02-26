@@ -7,6 +7,7 @@ interface ConfirmDialogProps {
   message: string;
   confirmText?: string;
   cancelText?: string;
+  confirmVariant?: "danger" | "primary";
   onConfirm: () => void;
   onCancel: () => void;
 }
@@ -17,9 +18,15 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   message,
   confirmText = "Confirm",
   cancelText = "Cancel",
+  confirmVariant = "danger",
   onConfirm,
   onCancel,
 }) => {
+  const confirmBtnClass =
+    confirmVariant === "primary"
+      ? "px-6 py-3 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg text-[16px] font-semibold transition-colors"
+      : "px-6 py-3 bg-[#DC2626] hover:bg-[#B91C1C] text-white rounded-lg text-[16px] font-semibold transition-colors";
+
   if (!isOpen) return null;
 
   return (
@@ -48,7 +55,8 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
           </button>
           <button
             onClick={onConfirm}
-            className="px-6 py-3 bg-[#DC2626] hover:bg-[#B91C1C] text-white rounded-lg text-[16px] font-semibold transition-colors"
+            className={confirmBtnClass}
+            // className="px-6 py-3 bg-[#DC2626] hover:bg-[#B91C1C] text-white rounded-lg text-[16px] font-semibold transition-colors"
           >
             {confirmText}
           </button>

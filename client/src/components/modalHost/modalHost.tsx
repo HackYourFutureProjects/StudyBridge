@@ -68,8 +68,9 @@ export const ModalHost = () => {
               isOpen={opened}
               title={payload.title}
               message={payload.message}
-              confirmText="Delete"
-              cancelText="Cancel"
+              confirmText={payload.confirmText ?? "Confirm"}
+              cancelText={payload.cancelText ?? "Cancel"}
+              confirmVariant={payload.confirmVariant ?? "danger"}
               onConfirm={() => {
                 payload.onConfirm();
                 close();
