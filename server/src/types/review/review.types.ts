@@ -28,6 +28,7 @@ export type ReviewOutputModel = {
   subject: string;
   createdAt: Date | string;
   updatedAt: Date | string; // in case we want to let the user edit their review in the future, we can use this field to show when it was last updated
+  bookingId: string;
 };
 
 // (REQUEST) Type of filters and pagination settings that can be sent to the BE when fetching reviews for a teacher.

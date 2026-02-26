@@ -18,5 +18,6 @@ export const reviewMapper = (
     subject: review.subject,
     createdAt: review.createdAt,
     updatedAt: review.updatedAt,
+    bookingId: review.bookingId,
   };
 };
