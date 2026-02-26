@@ -17,7 +17,7 @@ export type LessonRowData = {
   date?: string;
   time?: string;
   status?: AppointmentStatus;
-  videoCall?: string;
+  videoCall?: ReactNode;
   onStatusChange?: (status: AppointmentStatus) => void;
   onDelete?: () => void;
   canDelete?: boolean;
@@ -108,6 +108,7 @@ const LessonRow = ({
                 disabled={isPastLesson}
               />
             ) : column.key === "videoCall" &&
+              typeof data[column.key] === "string" &&
               data[column.key] &&
               data[column.key] !== "N/A" ? (
               <a
@@ -118,6 +119,12 @@ const LessonRow = ({
               >
                 Start call
               </a>
+            ) : column.key === "videoCall" ? (
+              <span
+                className={isPastLesson ? "text-gray-500" : "text-[#B9B9B9]"}
+              >
+                {data[column.key] as ReactNode}
+              </span>
             ) : column.key === "date" ? (
               <span
                 className={isPastLesson ? "text-red-500" : "text-green-700"}
