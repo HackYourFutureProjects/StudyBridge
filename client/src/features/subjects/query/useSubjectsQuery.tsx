@@ -16,7 +16,7 @@ export function useSubjectsQuery() {
   useEffect(() => {
     if (query.isError) {
       const msg = getErrorMessage(query.error);
-      notifyError(msg ?? "Failed to load teachers");
+      notifyError(msg ?? "Failed to load subjects");
     }
   }, [query.isError, query.isSuccess, query.error, notifyError]);
 

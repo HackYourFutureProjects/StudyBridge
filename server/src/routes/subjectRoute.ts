@@ -8,7 +8,4 @@ const subjectsController = container.get<SubjectsController>(
   TYPES.SubjectsController,
 );
 
-subjectRouter.get(
-  "/subjects",
-  subjectsController.getSubjects.bind(subjectsController),
-);
+subjectRouter.get("/", subjectsController.getSubjects.bind(subjectsController));

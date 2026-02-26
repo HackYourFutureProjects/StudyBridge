@@ -6,15 +6,12 @@ import { SubjectsQuery } from "../repositories/queryRepositories/subjects.query.
 @injectable()
 export class SubjectsController {
   constructor(
-    @inject(TYPES.SubjectsQuery) private studentService: SubjectsQuery,
+    @inject(TYPES.SubjectsQuery) private subjectsQuery: SubjectsQuery,
   ) {}
 
   async getSubjects(req: Request, res: Response, next: NextFunction) {
     try {
-      const subjects = await this.studentService.getAllSubjects();
-      if (!subjects) {
-        return res.status(404).json({ message: "Subjects not found" });
-      }
+      const subjects = await this.subjectsQuery.getAllSubjects();
 
       return res.status(200).json(subjects);
     } catch (err) {

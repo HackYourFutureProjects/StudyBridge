@@ -4,7 +4,7 @@ import { subjectsMapper } from "../../utils/mappers/subject.mapper.js";
 
 @injectable()
 export class SubjectsQuery {
-  async getAllSubjects() {
+  async getAllSubjects(): Promise<ReturnType<typeof subjectsMapper>[]> {
     try {
       const subjects = await SubjectsModel.find().lean();
       return subjects.map(subjectsMapper);
