@@ -161,6 +161,12 @@ export const ClientsAppointments = () => {
     .filter((appointment) => appointment.date && appointment.time)
     .map((appointment) => {
       const isPast = isPastAppointment(appointment.date, appointment.time);
+
+      //only allow internal StudyBridge call routes; block stale/external links (e.g. old Google Meet URLs).
+      const isInternalCallLink =
+        typeof appointment.videoCall === "string" &&
+        appointment.videoCall.startsWith("/call/");
+
       return {
         id: appointment.id,
         checked: false,
@@ -170,7 +176,8 @@ export const ClientsAppointments = () => {
         price: appointment.price,
         date: appointment.date,
         time: appointment.time,
-        videoCall: appointment.videoCall || "N/A",
+        videoCall: isInternalCallLink ? appointment.videoCall : "N/A",
+        linkText: isTeacher ? "Start call" : "Join",
         status: appointment.status,
         isPast: isPast,
         onStatusChange:

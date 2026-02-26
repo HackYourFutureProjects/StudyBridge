@@ -12,6 +12,7 @@ import { StudentModel } from "../../db/schemes/studentSchema.js";
 import { TeacherModel } from "../../db/schemes/teacherSchema.js";
 import { ConversationCommand } from "../../repositories/commandRepositories/conversation.command.js";
 import { logError, logWarning } from "../../utils/logging.js";
+import { VideoCallModel } from "../../db/schemes/videoCallSchema.js";
 
 @injectable()
 export class AppointmentService {
@@ -102,8 +103,12 @@ export class AppointmentService {
     const appointmentsWithNames = await this.appointmentQuery.populateNames(
       result.appointments,
     );
+
+    const appointmentsWithVideoLinks =
+      await this.attachVideoCallLinksToAppointments(appointmentsWithNames);
+
     return {
-      appointments: appointmentsWithNames.map((apt) =>
+      appointments: appointmentsWithVideoLinks.map((apt) =>
         this.formatAppointmentResponse(apt),
       ),
       total: result.total,
@@ -124,8 +129,12 @@ export class AppointmentService {
     const appointmentsWithNames = await this.appointmentQuery.populateNames(
       result.appointments,
     );
+
+    const appointmentsWithVideoLinks =
+      await this.attachVideoCallLinksToAppointments(appointmentsWithNames);
+
     return {
-      appointments: appointmentsWithNames.map((apt) =>
+      appointments: appointmentsWithVideoLinks.map((apt) =>
         this.formatAppointmentResponse(apt),
       ),
       total: result.total,
@@ -216,6 +225,67 @@ export class AppointmentService {
     const appointments =
       await this.appointmentQuery.getPendingAppointmentsByTeacher(teacherId);
     return appointments.map((apt) => this.formatAppointmentResponse(apt));
+  }
+
+  // Create the call link that students can click to open this exact video call.
+  private buildVideoCallJoinUrl(
+    callId: string,
+    streamCallId: string,
+    streamCallType?: string,
+  ): string {
+    const type = streamCallType || "default";
+
+    return `/call/${callId}?streamCallId=${encodeURIComponent(
+      streamCallId,
+    )}&streamCallType=${encodeURIComponent(type)}`;
+  }
+
+  private async attachVideoCallLinksToAppointments<
+    T extends { id: string; videoCall?: string },
+  >(appointments: T[]): Promise<T[]> {
+    const now = new Date();
+    const MISSED_JOIN_GRACE_MS = 3 * 60 * 60 * 1000; // 3 hours
+    const appointmentIds = appointments.map((a) => a.id).filter(Boolean);
+
+    if (!appointmentIds.length) return appointments;
+
+    const calls = await VideoCallModel.find({
+      appointmentId: { $in: appointmentIds },
+      $or: [
+        // include ringing even if popup expiry passed; accept flow can still convert it.
+        { status: "ringing" },
+        { status: "accepted", expiresAt: { $gt: now } },
+        {
+          status: "missed",
+          createdAt: { $gt: new Date(now.getTime() - MISSED_JOIN_GRACE_MS) },
+        },
+      ],
+    })
+      .sort({ createdAt: -1 })
+      .select("id appointmentId streamCallId streamCallType")
+      .lean();
+
+    const latestByAppointmentId = new Map<string, (typeof calls)[number]>();
+    for (const call of calls) {
+      if (!call.appointmentId) continue;
+      if (!latestByAppointmentId.has(call.appointmentId)) {
+        latestByAppointmentId.set(call.appointmentId, call);
+      }
+    }
+
+    return appointments.map((appointment) => {
+      const call = latestByAppointmentId.get(appointment.id);
+      if (!call) return appointment;
+
+      return {
+        ...appointment,
+        videoCall: this.buildVideoCallJoinUrl(
+          call.id,
+          call.streamCallId,
+          call.streamCallType,
+        ),
+      };
+    });
   }
 
   private formatAppointmentResponse(appointment: unknown) {

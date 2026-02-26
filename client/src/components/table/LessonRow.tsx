@@ -117,7 +117,7 @@ const LessonRow = ({
                 rel="noopener noreferrer"
                 className={`underline ${isPastLesson ? "text-gray-500" : "text-[#B9B9B9]"} hover:text-[#7186FF]`}
               >
-                Start call
+                {(data.linkText as string) || "Join"}
               </a>
             ) : column.key === "videoCall" ? (
               <span

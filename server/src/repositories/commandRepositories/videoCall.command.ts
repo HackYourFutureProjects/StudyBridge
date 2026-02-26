@@ -35,16 +35,26 @@ export class VideoCallCommand {
     }
   }
 
-  async acceptCallById(callId: string): Promise<VideoCallViewType | null> {
+  async acceptCallById(
+    callId: string,
+    nextExpiresAt: Date,
+    studentId: string,
+  ): Promise<VideoCallViewType | null> {
     const now = new Date();
 
     try {
       const updated = await VideoCallModel.findOneAndUpdate(
-        { id: callId },
+        {
+          id: callId,
+          studentId,
+          status: { $in: ["ringing", "missed"] },
+        },
         {
           $set: {
             status: "accepted",
             startedAt: now,
+            // Long-lived join window so student can rejoin after popup timeout.
+            expiresAt: nextExpiresAt,
             updatedAt: now,
           },
         },
