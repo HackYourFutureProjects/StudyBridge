@@ -43,4 +43,7 @@ export const TYPES = {
   VideoCallQuery: Symbol.for("VideoCallQuery"),
   VideoCallService: Symbol.for("VideoCallService"),
   VideoCallController: Symbol.for("VideoCallController"),
+  //subjects
+  SubjectsController: Symbol.for("SubjectsController"),
+  SubjectsQuery: Symbol.for("SubjectsQuery"),
 };
