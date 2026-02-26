@@ -6,10 +6,12 @@ import { Checkbox } from "../ui/checkbox/Checkbox";
 import { SliderRange } from "../ui/sliderRange/SliderRange";
 import { useTeachersFiltersStore } from "../../store/filters.store.ts";
 import { useShallow } from "zustand/react/shallow";
-import { Subjects } from "../../constants/subjects.ts";
 import { useSearchParams } from "react-router-dom";
+type FiltersProps = {
+  radioGroupValues: { label: string; value: string }[];
+};
 
-export const Filters = () => {
+export const Filters = ({ radioGroupValues }: FiltersProps) => {
   const [, setSearchParams] = useSearchParams();
   const {
     subjectDraft,
@@ -64,7 +66,7 @@ export const Filters = () => {
       >
         <h5 className="text-light-100 mb-5">Tutors</h5>
         <RadioGroup
-          options={Subjects}
+          options={radioGroupValues}
           value={subjectDraft ?? ""}
           onValueChange={(v: string) => setSubjectDraft(v || undefined)}
         />

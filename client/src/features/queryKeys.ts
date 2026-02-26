@@ -10,7 +10,6 @@ export const queryKeys = {
   teachers: {
     all: ["teachers"] as const,
     myProfile: () => ["teachers", "me"] as const,
-    detail: (id: string) => ["teachers", id] as const,
     list: (params: TeachersQuery) => ["teachers", "list", params] as const,
   },
   teacher: (id: string) => ["teachers", id] as const,
@@ -26,4 +25,8 @@ export const chatKeys = {
   conversations: ["chat", "conversations"] as const,
   messages: (conversationId: string) =>
     ["chat", "messages", conversationId] as const,
+};
+
+export const subjectsKey = {
+  all: ["subjects"] as const,
 };

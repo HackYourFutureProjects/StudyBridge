@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { ChatSideBarItem } from "../../../components/chat/chatSidebarItem/ChatSideBarItem.tsx";
 import { useMemo, useState } from "react";
-import { formatDate } from "../../../util/data.util.ts";
+import { formatDate } from "../../../util/date.util.ts";
 import { TextField } from "../../../components/ui/textField/TextField.tsx";
 import { Button } from "../../../components/ui/button/Button.tsx";
 import {

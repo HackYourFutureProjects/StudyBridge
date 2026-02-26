@@ -1,5 +1,5 @@
 import { Button } from "../ui/button/Button";
-import { SelectComponent } from "../ui/select/select";
+import { SelectComponent } from "../ui/select/Select";
 import { LEVELS, SUBJECTS } from "./constants";
 import { useState } from "react";
 import { useModalStore } from "../../store/modals.store";

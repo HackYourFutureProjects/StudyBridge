@@ -5,7 +5,7 @@ import { TeacherType } from "../../../api/teacher/teacher.type";
 import { useModalStore } from "../../../store/modals.store";
 import { useAuthSessionStore } from "../../../store/authSession.store";
 import { useTeacherAppointmentsQuery } from "../../../features/appointments/query/useTeacherAppointmentsQuery";
-import { SelectComponent } from "../../ui/select/select";
+import { SelectComponent } from "../../ui/select/Select.tsx";
 import { Button } from "../../ui/button/Button";
 
 interface TeacherScheduleProps {
