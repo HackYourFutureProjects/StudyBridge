@@ -14,6 +14,8 @@ import {
 } from "../../types/video/video.types.js";
 import { randomUUID } from "node:crypto";
 
+const ACCEPTED_CALL_TTL_MS = 3 * 60 * 60 * 1000; // 3 hours
+
 @injectable()
 export class VideoCallService {
   constructor(
@@ -33,7 +35,7 @@ export class VideoCallService {
     if (authRole !== "teacher")
       throw new HttpError(403, "Only teachers can start calls");
 
-    //// Safety check: a teacher can only start a call using their own logged-in ID.
+    //a teacher can only start a call using
     if (authUserId !== teacherId)
       throw new HttpError(403, "You can only start calls as yourself");
 
@@ -140,28 +142,48 @@ export class VideoCallService {
   }): Promise<VideoCallViewType | null> {
     const now = new Date();
 
-    if (authRole !== "student")
+    // only students can accept.
+    if (authRole !== "student") {
       throw new HttpError(403, "Students only can accept the call");
+    }
 
-    //check if call exists
+    // check call existence and ownership.
     const call = await this.videoCallQuery.getVideoById(callId);
     if (!call) throw new HttpError(404, "Call not found");
 
-    if (call.expiresAt <= now) {
+    if (call.studentId !== authUserId) {
+      throw new HttpError(403, "Only the assigned student can accept the call");
+    }
+
+    // expired ringing => mark missed for popup tracking only.
+    if (call.status === "ringing" && call.expiresAt <= now) {
       await this.videoCallCommand.markExpiredCallAsMissed(callId);
-      throw new HttpError(409, "Call has expired");
     }
 
-    if (call.studentId !== authUserId)
-      throw new HttpError(403, "Only students can accept the call");
+    const acceptedCall = await this.videoCallCommand.acceptCallById(
+      callId,
+      new Date(Date.now() + ACCEPTED_CALL_TTL_MS),
+      authUserId,
+    );
 
-    if (call.status !== "ringing") {
-      throw new HttpError(409, "Call is no longer ringing");
+    // if update did not happen, inspect latest status.
+    if (!acceptedCall) {
+      const latest = await this.videoCallQuery.getVideoById(callId);
+      if (!latest) throw new HttpError(404, "Call not found");
+
+      if (latest.status === "ended" || latest.status === "declined") {
+        throw new HttpError(409, "Call is no longer joinable");
+      }
+
+      // if already accepted, allow client to proceed.
+      if (latest.status === "accepted") {
+        return latest;
+      }
+
+      throw new HttpError(409, "Call is no longer joinable");
     }
 
-    const acceptedCall = await this.videoCallCommand.acceptCallById(callId);
-
-    return acceptedCall ?? null;
+    return acceptedCall;
   }
 
   async declineCall({

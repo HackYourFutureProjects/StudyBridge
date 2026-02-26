@@ -34,6 +34,10 @@ export const VideoCallSchema = new mongoose.Schema<VideoCallDB>(
 
 // helps the app quickly find active incoming calls for a student.
 VideoCallSchema.index({ studentId: 1, status: 1, expiresAt: 1 });
+// helps lookup and sort latest call candidates by appointment and status.
+VideoCallSchema.index({ appointmentId: 1, status: 1, createdAt: -1 });
+// helps filtering of non-expired calls by appointment and status
+VideoCallSchema.index({ appointmentId: 1, status: 1, expiresAt: 1 });
 
 export const VideoCallModel = mongoose.model<WithId<VideoCallDB>>(
   "videoCall",
