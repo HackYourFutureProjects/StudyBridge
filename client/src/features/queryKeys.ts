@@ -20,6 +20,12 @@ export const queryKeys = {
     ["appointments", "teacher", teacherId, page, limit] as const,
   studentAppointments: (studentId: string, page?: number, limit?: number) =>
     ["appointments", "student", studentId, page, limit] as const,
+
+  // Reviews
+  reviews: (teacherId: string, page?: number, limit?: number) =>
+    ["reviews", teacherId, page, limit] as const,
+  reviewAverageRating: (teacherId: string) =>
+    ["reviews", "averageRating", teacherId] as const,
 };
 export const chatKeys = {
   conversations: ["chat", "conversations"] as const,

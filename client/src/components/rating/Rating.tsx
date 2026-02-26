@@ -6,6 +6,11 @@ type RatingType = {
   rating: number;
 };
 
+// what does thuis file do?
+// This component takes a rating value (between 0 and 5) as a prop and renders a visual representation of that rating using star icons.
+// It displays filled stars for the rating value and empty stars for the remaining out of 5. For example, if the rating is 3, it will show 3 filled stars and 2 empty stars.
+//
+
 export const Rating = ({ rating }: RatingType) => {
   return (
     <div className="flex gap-[4px]">

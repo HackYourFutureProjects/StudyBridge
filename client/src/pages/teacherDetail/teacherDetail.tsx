@@ -6,9 +6,9 @@ import TeacherSubjects from "../../components/teacherSection/teacherSubjects/tea
 import TeacherAbout from "../../components/teacherSection/teacherAbout/teacherAbout";
 import TeacherSchedule from "../../components/teacherSection/teacherSchedule/TeacherSchedule";
 import { useState } from "react";
-import { ReviewsTeacher } from "../../components/teacherSection/Reviews/ReviewsTeacher";
 import { useTeacherQuery } from "../../features/teachers/query/useTeacherQuery";
 import { TeacherCardSkeleton } from "../../components/skeletons/TeacherCardSkeleton";
+import { ReviewsManager } from "../../components/teacherSection/Reviews/ReviewsManager";
 
 type TabType = "about" | "subjects" | "schedule";
 
@@ -39,7 +39,7 @@ export const TeacherDetail = () => {
   if (isLoading) {
     return (
       <div className="h-auto min-h-screen">
-        <div className="pt-20 container-centered mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
+        <div className="mx-auto px-4 sm:px-6 lg:px-8 pt-20 max-w-6xl container-centered">
           <div className="section-spacing">
             <Button variant="secondary" onClick={handleBack} className="h-auto">
               Back
@@ -47,10 +47,10 @@ export const TeacherDetail = () => {
           </div>
           <TeacherCardSkeleton />
           <div className="section-spacing">
-            <div className="h-12 bg-[#15141D80] rounded-lg animate-pulse"></div>
+            <div className="bg-[#15141D80] rounded-lg h-12 animate-pulse"></div>
           </div>
           <div className="section-spacing">
-            <div className="h-96 bg-[#15141D80] rounded-3xl animate-pulse"></div>
+            <div className="bg-[#15141D80] rounded-3xl h-96 animate-pulse"></div>
           </div>
         </div>
       </div>
@@ -60,7 +60,7 @@ export const TeacherDetail = () => {
   if (error || !teacher) {
     return (
       <div className="h-auto min-h-screen">
-        <div className="pt-20 container-centered mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
+        <div className="mx-auto px-4 sm:px-6 lg:px-8 pt-20 max-w-6xl container-centered">
           <div className="section-spacing">
             <Button variant="secondary" onClick={handleBack} className="h-auto">
               Back
@@ -76,7 +76,7 @@ export const TeacherDetail = () => {
 
   return (
     <div className="h-auto min-h-screen">
-      <div className="pt-20 container-centered mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
+      <div className="mx-auto px-4 sm:px-6 lg:px-8 pt-20 max-w-6xl container-centered">
         <div className="section-spacing">
           <Button variant="secondary" onClick={handleBack} className="h-auto">
             Back
@@ -87,8 +87,8 @@ export const TeacherDetail = () => {
           <TeacherNavigation activeTab={activeTab} onTabChange={setActiveTab} />
         </div>
         <div className="section-spacing">{renderContent()}</div>
-        <section className="section-spacing relative z-10 bg-bg-main">
-          <ReviewsTeacher />
+        <section className="z-10 relative bg-bg-main section-spacing">
+          <ReviewsManager />
         </section>
       </div>
     </div>

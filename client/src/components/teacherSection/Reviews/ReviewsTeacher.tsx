@@ -1,56 +1,21 @@
 import { ReviewCardTeacher } from "./ReviewCardTeacher";
 import { Button } from "../../ui/button/Button";
-import avatar1 from "../../../assets/images/Avatar.png";
-import avatar2 from "../../../assets/images/Avatar2.png";
-import avatar3 from "../../../assets/images/Avatar3.png";
 import shapeImage from "../../../assets/images/Shape.png";
+import { ReviewType } from "../../../api/review/review.type";
 
-// TODO: Fetch reviews data from API instead of using hardcoded data.
-// Temporary hardcoded reviews data
+interface ReviewsTeacherProps {
+  reviews: ReviewType[];
+  isLoading: boolean;
+  onLoadMore: () => void;
+  hasMore: boolean;
+}
 
-const reviews = [
-  {
-    avatar: null,
-    name: "Cameron Williamson",
-    course: "English",
-    review:
-      "The classes are engaging and focused on real communication. Students see noticeable improvement.",
-    rating: 3.4,
-  },
-  {
-    avatar: avatar2,
-    name: "Esther Howard",
-    course: "Dutch",
-
-    rating: 4.0,
-  },
-  {
-    avatar: avatar3,
-    name: "Darrell Steward",
-    course: "QA / Software Testing",
-    review:
-      "The classes are engaging and focused on real communication. Students see noticeable improvement.",
-    rating: 4.8,
-  },
-  {
-    avatar: avatar1,
-    name: "Jacob Jones",
-    course: "Spanish",
-    review:
-      "The classes are engaging and focused on real communication. Students see noticeable improvement.",
-    rating: 4.2,
-  },
-  {
-    avatar: avatar2,
-    name: "Marvin McKinney",
-    course: "French",
-    review:
-      "The classes are engaging and focused on real communication. Students see noticeable improvement.",
-    rating: 3,
-  },
-];
-
-export const ReviewsTeacher = () => {
+export const ReviewsTeacher = ({
+  reviews,
+  isLoading,
+  onLoadMore,
+  hasMore,
+}: ReviewsTeacherProps) => {
   return (
     <section className="py-12 sm:py-16 lg:py-20 section-spacing">
       <div className="mx-auto px-4 sm:px-6 lg:px-8 container-centered">
@@ -66,14 +31,14 @@ export const ReviewsTeacher = () => {
           </p>
         </div>
 
-        <div className="flex flex-col gap-8 sm:gap-8 md:gap-8 lg:gap-12 w-full">
-          {reviews.map((review, index) => (
+        <div className="gap-x-8 gap-y-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full">
+          {reviews.map((review) => (
             <div
-              key={index}
+              key={review._id}
               className="relative flex justify-center px-[15px] sm:px-[10px] md:px-[5px] w-full"
             >
               <div className="z-10 relative w-full">
-                <ReviewCardTeacher {...review} />
+                <ReviewCardTeacher reviewData={review} />
               </div>
 
               <img
@@ -85,9 +50,19 @@ export const ReviewsTeacher = () => {
           ))}
         </div>
 
-        <div className="flex justify-center mt-12 sm:mt-16 md:mt-20 lg:mt-12">
-          <Button variant="secondary">More</Button>
-        </div>
+        {/* Load More Button */}
+        {hasMore && (
+          <div className="flex justify-center mt-12 sm:mt-16 md:mt-20 lg:mt-12">
+            <Button
+              variant="secondary"
+              onClick={onLoadMore}
+              disabled={isLoading}
+              className="mt-10"
+            >
+              {isLoading ? "Loading..." : "Load More Reviews"}
+            </Button>
+          </div>
+        )}
       </div>
     </section>
   );
