@@ -4,32 +4,61 @@ import { useCreateReviewMutation } from "../../../features/review/mutations/useC
 import { useStudentAppointmentsQuery } from "../../../features/appointments/query/useAppointmentsQuery";
 import { useAuthSessionStore } from "../../../store/authSession.store";
 import { Appointment } from "../../../types/appointments.types";
+import { Loader } from "../../loader/Loader";
+import { useNotificationStore } from "../../../store/notification.store";
+import { ReviewType } from "../../../api/review/review.type";
 
 interface AddReviewFormProps {
   teacherId: string;
+  accumulatedReviews?: ReviewType[];
 }
 
-export const AddReview = ({ teacherId }: AddReviewFormProps) => {
+export const AddReview = ({
+  teacherId,
+  accumulatedReviews = [],
+}: AddReviewFormProps) => {
   const { user } = useAuthSessionStore();
   const isLoggedIn = !!user;
   const studentId = user?.id || "";
+  const notifyError = useNotificationStore((s) => s.error);
 
   const [rating, setRating] = useState(0);
   const [reviewText, setReviewText] = useState("");
   const [selectedBookingId, setSelectedBookingId] = useState("");
 
-  const { data, isLoading } = useStudentAppointmentsQuery(studentId); //__________
+  const { data, isLoading } = useStudentAppointmentsQuery(studentId);
   const { mutate, isPending } = useCreateReviewMutation(teacherId);
 
-  // Filter to only approved lessons with this teacher
+  // Get the set of bookingIds that already have reviews
+  const reviewedBookingIds = new Set(
+    accumulatedReviews.map((r) => r.bookingId),
+  );
+
+  // Filter to only approved lessons with this teacher, without lessonse already reviewed
   const approvedLessons =
     data?.appointments.filter(
-      (app) => app.teacherId === teacherId && app.status === "approved",
+      (app) =>
+        app.teacherId === teacherId &&
+        app.status === "approved" &&
+        !reviewedBookingIds.has(app.id),
     ) || [];
+  console.log("All appointments for student:", data?.appointments[0]);
+  console.log("Approved lessons for review:", approvedLessons);
+  console.log("Check:", {
+    allReviews: accumulatedReviews.map((r) => r.bookingId),
+    thisBookingId: "699b29c90bfad36c573ba5ff",
+  });
+
+  console.log("Full Review Object:", accumulatedReviews[0]);
 
   // If not logged in, don't show the review form
   if (!isLoggedIn) return null;
-  if (isLoading) return <p>Loading your lessons...</p>; //__________________
+  if (isLoading)
+    return (
+      <div className="flex justify-center p-4">
+        <Loader />
+      </div>
+    );
 
   // Find the selected booking details for use in the review
   const selectBooking = approvedLessons?.find(
@@ -38,8 +67,11 @@ export const AddReview = ({ teacherId }: AddReviewFormProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (rating === 0) return alert("Please select a rating");
-    if (!selectedBookingId) return alert("BookingID is required");
+    if (rating === 0) {
+      return notifyError("Please provide a rating for the lesson");
+    }
+    if (!selectedBookingId)
+      return notifyError("Please select a lesson to review");
 
     mutate(
       {
@@ -55,8 +87,12 @@ export const AddReview = ({ teacherId }: AddReviewFormProps) => {
           setReviewText("");
           setSelectedBookingId("");
         },
-        onError: () => {
-          alert(`You already submitted a review for this lesson`);
+        onError: (error) => {
+          const msg =
+            error instanceof Error
+              ? error.message
+              : "Failed to submit review. Please try again.";
+          notifyError(msg);
         },
       },
     );
@@ -90,13 +126,14 @@ export const AddReview = ({ teacherId }: AddReviewFormProps) => {
                 value={app.id}
                 className="bg-purple-500/80 text-white cursor-pointer"
               >
-                {`${app.lesson} ${"\u00A0".repeat(5)} ${".".repeat(25)}${"\u00A0".repeat(5)} ${new Date(
-                  app.date,
-                ).toLocaleDateString("en-GB", {
-                  day: "numeric",
-                  month: "short",
-                  year: "numeric",
-                })}
+                {`${app.lesson} ---- ${new Date(app.date).toLocaleDateString(
+                  "en-GB",
+                  {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  },
+                )}
                  `}
               </option>
             ))}

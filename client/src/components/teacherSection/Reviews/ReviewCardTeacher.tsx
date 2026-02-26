@@ -18,8 +18,8 @@ export const ReviewCardTeacher = ({
   },
 }: ReviewCardProps) => {
   return (
-    <div className="w-full">
-      <div className="flex flex-col bg-[#15141D] p-[16px] md:p-[25px] rounded-2xl h-auto">
+    <div className="w-full h-full">
+      <div className="flex flex-col bg-[#15141D] p-[16px] md:p-[25px] rounded-2xl h-full">
         {/* Header Part (Avatar , Name, Icon ) */}
         <div className="flex items-center gap-[10px] md:gap-[16px] mb-[12px] md:mb-[20px]">
           {studentAvatar ? (
@@ -56,7 +56,7 @@ export const ReviewCardTeacher = ({
           </div>
 
           {review && (
-            <p className="text-white/80 text-xs md:text-base leading-relaxed">
+            <p className="text-white/80 text-xs md:text-base wrap-break-word">
               {review}
             </p>
           )}

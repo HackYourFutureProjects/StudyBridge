@@ -8,12 +8,9 @@ export const useReviewsQuery = (
   pageSize: number,
 ) => {
   return useQuery({
-    queryKey: [...queryKeys.reviews(teacherId), pageNumber, pageSize],
+    queryKey: queryKeys.reviews(teacherId, pageNumber, pageSize),
     queryFn: () => getReviewsApi(teacherId, pageNumber, pageSize),
     enabled: !!teacherId,
     placeholderData: keepPreviousData,
-    select: (data) => {
-      return data;
-    },
   });
 };

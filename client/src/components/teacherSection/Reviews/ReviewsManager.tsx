@@ -11,7 +11,7 @@ export const ReviewsManager = () => {
   const [accumulatedReviews, setAccumulatedReviews] = useState<ReviewType[]>(
     [],
   );
-  const pageSize = 3;
+  const pageSize = 6;
 
   const {
     data: reviewsData,
@@ -41,7 +41,10 @@ export const ReviewsManager = () => {
 
   return (
     <>
-      <AddReview teacherId={teacherId ?? ""} />
+      <AddReview
+        teacherId={teacherId ?? ""}
+        accumulatedReviews={accumulatedReviews}
+      />
       <ReviewsTeacher
         reviews={accumulatedReviews}
         isLoading={isLoading}
