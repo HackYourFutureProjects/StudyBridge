@@ -97,7 +97,7 @@ const inputStyles = cva(
         primary: "text-light-100 placeholder:text-dark-400",
         secondary: "text-light-500 placeholder:text-light-500",
         primarySmall: "text-light-100 placeholder:text-dark-400",
-        hero: "text-light-500 placeholder:text-light-500",
+        hero: "text-light-500 placeholder:text-light-500 placeholder:text-xs",
       },
       state: {
         default: "",
