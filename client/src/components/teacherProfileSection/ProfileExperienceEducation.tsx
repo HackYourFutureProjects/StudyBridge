@@ -1,4 +1,4 @@
-import { SelectComponent } from "../ui/select/select";
+import { SelectComponent } from "../ui/select/Select.tsx";
 import { EXPERIENCE_OPTIONS, EDUCATION_OPTIONS } from "./constants";
 
 type ProfileExperienceEducationProps = {

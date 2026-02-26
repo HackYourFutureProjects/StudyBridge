@@ -10,6 +10,7 @@ import { chatRouter } from "./routes/chatRoute.js";
 import { streamRouter } from "./routes/streamRoute.js";
 
 import { videoCallRouter } from "./routes/videoCallRoute.js";
+import { subjectRouter } from "./routes/subjectRoute.js";
 
 // Create an express server
 const app = express();
@@ -23,6 +24,7 @@ app.use(express.json());
  * As we also host our client code on heroku we want to separate the API endpoints.
  */
 app.use("/api/auth", authRouter);
+app.use("/api/subjects", subjectRouter);
 app.use("/api/appointments", appointmentRouter);
 app.use("/api/teachers", teacherRouter);
 app.use("/api/reviews", reviewRouter);

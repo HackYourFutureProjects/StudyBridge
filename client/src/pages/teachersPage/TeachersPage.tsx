@@ -3,16 +3,32 @@ import { CardsList } from "../../components/cardsList/CardsList";
 import { Pagination } from "../../components/ui/pagination/Pagination";
 import { useTeachersQuery } from "../../features/teachers/query/useTeachersQuery.tsx";
 import { useTeachersFiltersStore } from "../../store/filters.store.ts";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { TeachersQuery } from "../../api/teacher/teacher.type.ts";
 import { useShallow } from "zustand/react/shallow";
 import { useSearchParams } from "react-router-dom";
 import { TeachersCardsSkeletonList } from "../../components/skeletons/TeachersCardsSkeletonList.tsx";
+import { useSubjectsQuery } from "../../features/subjects/query/useSubjectsQuery.tsx";
+import { mapSubjectsToOptions } from "../../util/mapSubjectToOptions.util.ts";
+import { FiltersSkeleton } from "../../components/skeletons/FiltersSkeleton.tsx";
+
 export const TeachersPage = () => {
   const [sp] = useSearchParams();
   const setFromExternalQuery = useTeachersFiltersStore(
     (s) => s.setFromExternalQuery,
   );
+
+  const listTopRef = useRef<HTMLDivElement | null>(null);
+
+  const handlePageChange = (page: number) => {
+    setPage(page);
+
+    requestAnimationFrame(() => {
+      listTopRef.current?.scrollIntoView({
+        block: "start",
+      });
+    });
+  };
 
   const {
     subject,
@@ -62,12 +78,15 @@ export const TeachersPage = () => {
     pageSize,
   ]);
   const { data, isFetching } = useTeachersQuery(params);
+  const { data: radioGroupSubjects, isLoading: radioGroupSubjectsLoading } =
+    useSubjectsQuery();
   useEffect(() => {
     setFromExternalQuery({ subject: sp.get("subject") || undefined });
   }, [sp, setFromExternalQuery]);
-  const showSkeleton = isFetching;
+
   return (
     <div
+      ref={listTopRef}
       className="
            flex flex-col items-center justify-center
             w-full mx-auto
@@ -85,10 +104,20 @@ export const TeachersPage = () => {
       </h3>
       <div className="flex flex-col gap-10 lg:flex-row lg:items-start w-full">
         <div className="flex justify-center w-full lg:w-75 shrink-0">
-          <Filters />
+          {radioGroupSubjectsLoading ? (
+            <FiltersSkeleton />
+          ) : (
+            <Filters
+              radioGroupValues={
+                radioGroupSubjects
+                  ? mapSubjectsToOptions(radioGroupSubjects)
+                  : []
+              }
+            />
+          )}
         </div>
         <div className="w-full lg:flex-1 min-w-0">
-          {showSkeleton ? (
+          {isFetching ? (
             <TeachersCardsSkeletonList count={10} />
           ) : data?.items?.length ? (
             <CardsList cards={data.items} />
@@ -101,7 +130,7 @@ export const TeachersPage = () => {
               theme="primary"
               shape="round"
               activeIndex={pageNumber}
-              onIndexChange={setPage}
+              onIndexChange={handlePageChange}
               totalPages={data?.pagesCount ?? 1}
             />
           </div>

@@ -33,6 +33,8 @@ import { VideoCallCommand } from "../repositories/commandRepositories/videoCall.
 import { VideoCallController } from "../controllers/videoCall.controller.js";
 import { VideoCallQuery } from "../repositories/queryRepositories/videoCall.query.js";
 import { VideoCallService } from "../services/video/videoCall.service.js";
+import { SubjectsController } from "../controllers/subjects.controller.js";
+import { SubjectsQuery } from "../repositories/queryRepositories/subjects.query.js";
 
 export const container = new Container();
 
@@ -90,6 +92,9 @@ container.bind(TYPES.ChatQuery).to(ChatQuery);
 container.bind(TYPES.ChatCommand).to(ChatCommand);
 container.bind(TYPES.ChatController).to(ChatController);
 container.bind(TYPES.ConversationCommand).to(ConversationCommand);
+//subjects
+container.bind(TYPES.SubjectsController).to(SubjectsController);
+container.bind(TYPES.SubjectsQuery).to(SubjectsQuery);
 
 //video call
 container.bind<StreamController>(TYPES.StreamController).to(StreamController);
