@@ -1,9 +1,10 @@
 import LogoutIcon from "../icons/LogoutIcon.tsx";
 import { Button } from "../ui/button/Button.tsx";
 import { useModalStore } from "../../store/modals.store.ts";
-import imageNotFound from "../../assets/images/image-not-found.png";
 import { NavLink } from "react-router-dom";
 import { useAuthSessionStore } from "../../store/authSession.store.ts";
+import { getAvatarUrl } from "../../api/upload/upload.api.ts";
+import DefaultAvatarIcon from "../icons/DefaultAvatarIcon.tsx";
 
 type ProfileIndicatorVariant = "main" | "private";
 
@@ -14,6 +15,8 @@ type Props = {
 export const ProfileIndicator = ({ variant = "private" }: Props) => {
   const { open } = useModalStore();
   const user = useAuthSessionStore((s) => s.user);
+
+  const avatarUrl = getAvatarUrl(user?.profileImageUrl || null);
 
   const wrapperClass =
     variant === "private"
@@ -30,11 +33,15 @@ export const ProfileIndicator = ({ variant = "private" }: Props) => {
           variant="link"
         >
           <div className="w-9.5 h-9.5 rounded-full overflow-hidden">
-            <img
-              className="w-full h-full"
-              src={user?.profileImageUrl ? user.profileImageUrl : imageNotFound}
-              alt="userPhoto"
-            />
+            {avatarUrl ? (
+              <img
+                className="w-full h-full object-cover"
+                src={avatarUrl}
+                alt="userPhoto"
+              />
+            ) : (
+              <DefaultAvatarIcon className="w-full h-full" />
+            )}
           </div>
           <div>{user?.firstName ? user.firstName : user?.email}</div>
         </Button>
