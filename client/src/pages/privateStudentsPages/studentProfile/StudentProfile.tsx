@@ -102,15 +102,38 @@ export const StudentProfile = () => {
               onFocusField={() => setIsEditing(true)}
               onChangePassword={() => setIsPasswordModalOpen(true)}
             />
+            <div className="flex flex-col lg:flex-row gap-6 lg:gap-12">
+              <ProfileAvatar
+                avatarUrl={profile?.profileImageUrl || undefined}
+              />
+              <div className="flex-1 space-y-4 sm:space-y-6">
+                <ProfileHeader
+                  name={displayName}
+                  isEditing={isEditing}
+                  onNameChange={setName}
+                  onEdit={() => setIsEditing(true)}
+                  onSave={handleSaveProfile}
+                />
+                <ProfileContactFields
+                  email={displayEmail}
+                  phone={phone}
+                  isEditing={isEditing}
+                  onEmailChange={setEmail}
+                  onPhoneChange={() => {}}
+                  onFocusField={() => setIsEditing(true)}
+                  onChangePassword={() => setIsPasswordModalOpen(true)}
+                />
+              </div>
+            </div>
           </div>
         </div>
-      </div>
 
-      <ChangePasswordModal
-        isOpen={isPasswordModalOpen}
-        onClose={() => setIsPasswordModalOpen(false)}
-        onSubmit={handleChangePassword}
-      />
+        <ChangePasswordModal
+          isOpen={isPasswordModalOpen}
+          onClose={() => setIsPasswordModalOpen(false)}
+          onSubmit={handleChangePassword}
+        />
+      </div>
     </div>
   );
 };

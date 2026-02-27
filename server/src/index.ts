@@ -2,7 +2,16 @@
 import dotenv from "dotenv";
 import express from "express";
 import http from "http";
+import { v2 as cloudinary } from "cloudinary";
+
 dotenv.config();
+
+// Configure Cloudinary after loading env variables
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 import connectDB from "./db/connectDB.js";
 import app from "./app.js";

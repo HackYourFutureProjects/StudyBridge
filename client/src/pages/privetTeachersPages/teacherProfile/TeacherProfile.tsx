@@ -298,9 +298,8 @@ export const TeacherProfile = () => {
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-[#7C86F7] to-[#E879F9] bg-clip-text text-transparent mb-8 sm:mb-10 lg:mb-12">
           My profile
         </h1>
-
         <div className="flex flex-col lg:flex-row gap-6 lg:gap-12">
-          <ProfileAvatar />
+          <ProfileAvatar avatarUrl={profile?.profileImageUrl} />
           <div className="flex-1 space-y-4 sm:space-y-6">
             <ProfileHeader
               name={name}

@@ -89,7 +89,7 @@ export class AuthController {
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: true,
-        path: "/api/auth",
+        path: "/",
         maxAge: 2 * 60 * 60 * 1000,
         sameSite: "lax",
       });
@@ -131,7 +131,7 @@ export class AuthController {
       res.cookie("refreshToken", newRefreshToken, {
         httpOnly: true,
         secure: true,
-        path: "/api/auth",
+        path: "/",
         maxAge: 2 * 60 * 60 * 1000,
       });
 
@@ -204,7 +204,7 @@ export class AuthController {
       res.clearCookie("refreshToken", {
         httpOnly: true,
         secure: true,
-        path: "/api/auth",
+        path: "/",
       });
       return res.sendStatus(204);
     } catch (error) {

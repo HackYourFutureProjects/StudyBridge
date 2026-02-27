@@ -25,7 +25,8 @@ export class StudentQuery {
       if (!student) {
         return null;
       }
-      return studentMapper(student);
+      const mapped = studentMapper(student);
+      return mapped;
     } catch (err: unknown) {
       throw new Error("Something went wrong with student search", {
         cause: err,
