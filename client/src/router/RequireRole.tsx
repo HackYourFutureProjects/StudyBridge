@@ -17,15 +17,9 @@ export const RequireRole = ({
   const authInitDone = useAuthSessionStore((s) => s.authInitDone);
   const accessToken = useAuthSessionStore((s) => s.accessToken);
 
-  if (!authInitDone) {
-    return (
-      <ModalOverlay>
-        <Loader />
-      </ModalOverlay>
-    );
-  }
+  const isLoading = !authInitDone || (accessToken && !user);
 
-  if (accessToken && !user) {
+  if (isLoading) {
     return (
       <ModalOverlay>
         <Loader />
