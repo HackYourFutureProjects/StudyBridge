@@ -219,38 +219,36 @@ export const ClientsAppointments = () => {
   }
 
   return (
-    <div className="min-h-screen">
-      <div className="px-6 lg:px-10 min-h-screen flex flex-col">
-        <div className="pt-[40px] flex flex-col flex-1">
-          <PageTitle title="My Appointments" />
-          <div className="mt-6" />
+    <div className="px-6 lg:px-10 flex flex-col">
+      <div className="pt-[40px] flex flex-col flex-1">
+        <PageTitle title="My Appointments" />
+        <div className="mt-6" />
 
-          {appointments.length === 0 ? (
-            <div className="text-white text-center py-8">
-              No appointments found
-            </div>
-          ) : (
-            <LessonsTable
-              headerHeight={66}
-              rowHeight={66}
-              columns={columns}
-              useStatusButtons={isTeacher}
-              rows={tableRows}
-              onSelectionChange={setSelectedIds}
-              onBulkDelete={handleBulkDelete}
-              isPastAppointment={isPastAppointment}
-            />
-          )}
-
-          <div className="mt-auto pt-4 mb-6 flex justify-center">
-            <Pagination
-              activeIndex={page}
-              onIndexChange={setPage}
-              totalPages={totalPages}
-              theme="secondary"
-              shape="square"
-            />
+        {appointments.length === 0 ? (
+          <div className="text-white text-center py-8">
+            No appointments found
           </div>
+        ) : (
+          <LessonsTable
+            headerHeight={66}
+            rowHeight={66}
+            columns={columns}
+            useStatusButtons={isTeacher}
+            rows={tableRows}
+            onSelectionChange={setSelectedIds}
+            onBulkDelete={handleBulkDelete}
+            isPastAppointment={isPastAppointment}
+          />
+        )}
+
+        <div className="mt-auto pt-4 mb-6 flex justify-center">
+          <Pagination
+            activeIndex={page}
+            onIndexChange={setPage}
+            totalPages={totalPages}
+            theme="secondary"
+            shape="square"
+          />
         </div>
       </div>
     </div>

@@ -2,7 +2,7 @@ import { MyLessonsSection } from "../../../components/teacherDashboard/MyLessons
 
 export const TeacherDashboard = () => {
   return (
-    <div className="min-h-screen">
+    <div>
       <div className="px-6 lg:px-10">
         <div className="pt-10">
           <div className="mt-0">

@@ -30,12 +30,12 @@ export const MyLessonsSection = () => {
   return (
     <div>
       <PageTitle title="General" />
-      <div className="mt-[24px] flex items-start justify-between gap-[40px]">
+      <div className="flex flex-col items-center justify-center mt-6 lg:flex-row lg:justify-between gap-10">
         <FindTeachersCard />
         <Calendar />
       </div>
       <PageTitle title="My lessons today" />
-      <div className="mt-[28px]">
+      <div className="mt-7">
         {isLoading ? (
           <div className="text-white text-center py-8">
             Loading appointments...

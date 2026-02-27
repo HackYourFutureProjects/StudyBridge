@@ -293,73 +293,71 @@ export const TeacherProfile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#15141D]">
-      <div className="px-4 sm:px-6 lg:px-10 min-h-screen flex flex-col">
-        <div className="pt-6 sm:pt-8 lg:pt-10 flex-1">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-[#7C86F7] to-[#E879F9] bg-clip-text text-transparent mb-8 sm:mb-10 lg:mb-12">
-            My profile
-          </h1>
+    <div className="px-4 sm:px-6 lg:px-10 flex flex-col">
+      <div className="pt-6 sm:pt-8 lg:pt-10 flex-1">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-[#7C86F7] to-[#E879F9] bg-clip-text text-transparent mb-8 sm:mb-10 lg:mb-12">
+          My profile
+        </h1>
 
-          <div className="flex flex-col lg:flex-row gap-6 lg:gap-12">
-            <ProfileAvatar />
-            <div className="flex-1 space-y-4 sm:space-y-6">
-              <ProfileHeader
-                name={name}
-                isEditing={isEditing}
-                onNameChange={setName}
-                onEdit={() => setIsEditing(true)}
-                onSave={handleSaveProfile}
-              />
-              <ProfileContactFields
-                email={email}
-                phone={phone}
-                isEditing={isEditing}
-                onEmailChange={setEmail}
-                onPhoneChange={setPhone}
-                onFocusField={() => setIsEditing(true)}
-                onChangePassword={() => setIsPasswordModalOpen(true)}
-              />
-            </div>
-          </div>
-
-          <div className="mt-8 sm:mt-10 lg:mt-12 space-y-4 sm:space-y-6">
-            <LessonsSection
-              lessons={lessons}
-              showAddForm={showAddForm}
-              editingLessonIndex={editingLessonIndex}
-              newSubject={newSubject}
-              newDescription={newDescription}
-              newLevels={newLevels}
-              onShowAddForm={setShowAddForm}
-              onNewSubjectChange={setNewSubject}
-              onNewDescriptionChange={setNewDescription}
-              onNewLevelsChange={setNewLevels}
-              onAddLesson={handleAddLesson}
-              onUpdateLesson={handleUpdateLesson}
-              onEditLesson={handleEditLesson}
-              onRemoveLesson={handleRemoveLesson}
-              onCancelForm={handleCancelForm}
-            />
-
-            <ProfileExperienceEducation
-              experience={experience}
-              education={education}
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-12">
+          <ProfileAvatar />
+          <div className="flex-1 space-y-4 sm:space-y-6">
+            <ProfileHeader
+              name={name}
               isEditing={isEditing}
-              onExperienceChange={setExperience}
-              onEducationChange={setEducation}
-              onRowClick={() => setIsEditing(true)}
-              onScheduleClick={handleOpenSchedule}
+              onNameChange={setName}
+              onEdit={() => setIsEditing(true)}
+              onSave={handleSaveProfile}
             />
-          </div>
-
-          <div className="mt-8 sm:mt-10 lg:mt-12 mb-8 sm:mb-10 lg:mb-12">
-            <ProfileAboutMe
-              aboutMe={aboutMe}
+            <ProfileContactFields
+              email={email}
+              phone={phone}
               isEditing={isEditing}
-              onAboutMeChange={setAboutMe}
-              onFocus={() => setIsEditing(true)}
+              onEmailChange={setEmail}
+              onPhoneChange={setPhone}
+              onFocusField={() => setIsEditing(true)}
+              onChangePassword={() => setIsPasswordModalOpen(true)}
             />
           </div>
+        </div>
+
+        <div className="mt-8 sm:mt-10 lg:mt-12 space-y-4 sm:space-y-6">
+          <LessonsSection
+            lessons={lessons}
+            showAddForm={showAddForm}
+            editingLessonIndex={editingLessonIndex}
+            newSubject={newSubject}
+            newDescription={newDescription}
+            newLevels={newLevels}
+            onShowAddForm={setShowAddForm}
+            onNewSubjectChange={setNewSubject}
+            onNewDescriptionChange={setNewDescription}
+            onNewLevelsChange={setNewLevels}
+            onAddLesson={handleAddLesson}
+            onUpdateLesson={handleUpdateLesson}
+            onEditLesson={handleEditLesson}
+            onRemoveLesson={handleRemoveLesson}
+            onCancelForm={handleCancelForm}
+          />
+
+          <ProfileExperienceEducation
+            experience={experience}
+            education={education}
+            isEditing={isEditing}
+            onExperienceChange={setExperience}
+            onEducationChange={setEducation}
+            onRowClick={() => setIsEditing(true)}
+            onScheduleClick={handleOpenSchedule}
+          />
+        </div>
+
+        <div className="mt-8 sm:mt-10 lg:mt-12 mb-8 sm:mb-10 lg:mb-12">
+          <ProfileAboutMe
+            aboutMe={aboutMe}
+            isEditing={isEditing}
+            onAboutMeChange={setAboutMe}
+            onFocus={() => setIsEditing(true)}
+          />
         </div>
       </div>
 
