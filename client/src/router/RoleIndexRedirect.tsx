@@ -6,7 +6,7 @@ export const RoleIndexRedirect = () => {
   const user = useAuthSessionStore((s) => s.user);
 
   if (!user) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/" replace state={{ from: location }} />;
   }
 
   return user.role === "teacher" ? (
