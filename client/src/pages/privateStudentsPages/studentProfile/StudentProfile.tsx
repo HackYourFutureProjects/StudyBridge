@@ -87,7 +87,7 @@ export const StudentProfile = () => {
           </h1>
 
           <div className="flex flex-col lg:flex-row gap-6 lg:gap-12">
-            <ProfileAvatar />
+            <ProfileAvatar avatarUrl={profile?.profileImageUrl || undefined} />
             <div className="flex-1 space-y-4 sm:space-y-6">
               <ProfileHeader
                 name={displayName}

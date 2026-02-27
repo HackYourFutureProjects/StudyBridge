@@ -6,6 +6,6 @@ export const useMyProfileQuery = () => {
   return useQuery({
     queryKey: queryKeys.teachers.myProfile(),
     queryFn: getMyProfileApi,
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 30,
   });
 };
