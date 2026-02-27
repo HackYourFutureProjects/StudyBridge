@@ -22,6 +22,10 @@ import { useModalStore } from "../../../store/modals.store";
 
 export type { LessonPrice } from "../../../components/teacherProfileSection/types";
 
+import { updatePasswordApi } from "../../../api/auth/auth.api";
+import { useNotificationStore } from "../../../store/notification.store";
+import { getErrorMessage } from "../../../util/ErrorUtil";
+
 export interface TimeSlot {
   day: string;
   hour: number;
@@ -53,6 +57,9 @@ export const TeacherProfile = () => {
   const [isScheduleOpen, setIsScheduleOpen] = useState(false);
   const [schedule, setSchedule] = useState<TimeSlot[]>([]);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+
+  const success = useNotificationStore((s) => s.success);
+  const notifyError = useNotificationStore((s) => s.error);
 
   useEffect(() => {
     if (profile) {
@@ -275,7 +282,22 @@ export const TeacherProfile = () => {
     }
   };
 
-  const handleChangePassword = async () => {};
+  const handleChangePassword = async (
+    oldPassword: string,
+    newPassword: string,
+  ) => {
+    try {
+      await updatePasswordApi({
+        oldPassword,
+        newPassword,
+        confirmPassword: newPassword,
+      });
+      success("Password changed successfully");
+    } catch (error) {
+      notifyError(getErrorMessage(error));
+      throw error;
+    }
+  };
 
   if (isLoading) {
     return (

@@ -5,6 +5,9 @@ import { ProfileContactFields } from "../../../components/teacherProfileSection/
 import { ChangePasswordModal } from "../../../components/changePasswordModal/ChangePasswordModal";
 import { useMyStudentProfileQuery } from "../../../features/students/query/useMyStudentProfileQuery";
 import { useUpdateMyStudentProfileMutation } from "../../../features/students/mutations/useUpdateMyStudentProfileMutation";
+import { updatePasswordApi } from "../../../api/auth/auth.api";
+import { useNotificationStore } from "../../../store/notification.store";
+import { getErrorMessage } from "../../../util/ErrorUtil";
 
 export const StudentProfile = () => {
   const { data: profile, isLoading, error } = useMyStudentProfileQuery();
@@ -14,6 +17,9 @@ export const StudentProfile = () => {
   const [name, setName] = useState<string | null>(null);
   const [email, setEmail] = useState<string | null>(null);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+
+  const success = useNotificationStore((s) => s.success);
+  const notifyError = useNotificationStore((s) => s.error);
 
   const displayName =
     name !== null
@@ -44,7 +50,22 @@ export const StudentProfile = () => {
     }
   };
 
-  const handleChangePassword = async () => {};
+  const handleChangePassword = async (
+    oldPassword: string,
+    newPassword: string,
+  ) => {
+    try {
+      await updatePasswordApi({
+        oldPassword,
+        newPassword,
+        confirmPassword: newPassword,
+      });
+      success("Password changed successfully");
+    } catch (error) {
+      notifyError(getErrorMessage(error));
+      throw error;
+    }
+  };
 
   if (isLoading) {
     return (

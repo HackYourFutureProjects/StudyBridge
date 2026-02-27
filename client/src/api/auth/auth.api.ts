@@ -37,3 +37,11 @@ export async function resetPasswordApi(data: {
 }) {
   await apiPublic.post("/api/auth/reset-password", data);
 }
+
+export async function updatePasswordApi(data: {
+  oldPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}) {
+  await apiProtected.post("/api/auth/update-password", data);
+}
