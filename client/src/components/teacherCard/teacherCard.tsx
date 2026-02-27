@@ -1,8 +1,9 @@
 import { Button } from "../ui/button/Button";
 import { Rating } from "../rating/Rating";
 import { TeacherType } from "../../api/teacher/teacher.type";
-import ImageNotFount from "../../assets/images/image-not-found.png";
 import { useNavigate } from "react-router-dom";
+import { getAvatarUrl } from "../../api/upload/upload.api";
+import DefaultAvatarIcon from "../icons/DefaultAvatarIcon";
 
 type TeacherCardType = {
   teacher: TeacherType;
@@ -28,6 +29,8 @@ export const TeacherCard = ({
 
   const navigate = useNavigate();
 
+  const avatarUrl = getAvatarUrl(profileImageUrl || null);
+
   const handleBookClick = () => {
     navigate(`/teacher/${id}`);
   };
@@ -50,11 +53,15 @@ export const TeacherCard = ({
 
                              "
           >
-            <img
-              className="w-full h-full object-cover"
-              src={profileImageUrl ?? ImageNotFount}
-              alt="person"
-            />
+            {avatarUrl ? (
+              <img
+                className="w-full h-full object-cover"
+                src={avatarUrl}
+                alt="person"
+              />
+            ) : (
+              <DefaultAvatarIcon className="w-full h-full" />
+            )}
           </div>
           <div className="pb-2.25 border-b border-light-200">
             <p className="text-light-100 text-[16px] md:text-[18px] lg:text-[20px] xl:text-[22px]">
