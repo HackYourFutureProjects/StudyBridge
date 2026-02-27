@@ -66,7 +66,7 @@ export const TeacherCard = ({
             )}
           </div>
           <div className="pb-2.25 border-b border-light-200">
-            <p className="text-light-100 text-[16px] md:text-[24px] lg:text-[24px] xl:text-[22px]">
+            <p className="text-light-100 text-[16px] md:text-[24px] lg:text-[24px] xl:text-[24px]">
               {firstName} {lastName}
             </p>
           </div>
