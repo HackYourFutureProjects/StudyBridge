@@ -238,8 +238,6 @@ export const TeacherAppointments = () => {
     <div className="px-6 lg:px-10 flex flex-col">
       <div className="pt-10 flex flex-col flex-1">
         <PageTitle title="My Appointments" />
-
-        <div className="mt-6" />
         <div className="mt-6 flex gap-4 border-b border-gray-700">
           <button
             onClick={() => setActiveTab("requests")}
