@@ -13,6 +13,9 @@ import { startCall } from "../../../api/video/video.api";
 import { useAuthSessionStore } from "../../../store/authSession.store";
 
 export const TeacherAppointments = () => {
+  const [activeTab, setActiveTab] = useState<"requests" | "regular">(
+    "requests",
+  );
   const [page, setPage] = useState(1);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const limit = 10;
@@ -237,28 +240,67 @@ export const TeacherAppointments = () => {
         <div className="pt-[40px] flex flex-col flex-1">
           <PageTitle title="My Appointments" />
 
-          <div className="mt-6" />
-
-          <LessonsTable
-            headerHeight={66}
-            rowHeight={66}
-            columns={columns}
-            useStatusButtons={true}
-            rows={tableRows}
-            onSelectionChange={setSelectedIds}
-            onBulkDelete={handleBulkDelete}
-            isPastAppointment={isPastAppointment}
-          />
-
-          <div className="mt-auto pt-4 mb-6 flex justify-center">
-            <Pagination
-              activeIndex={page}
-              onIndexChange={setPage}
-              totalPages={totalPages}
-              theme="secondary"
-              shape="square"
-            />
+          <div className="mt-6 flex gap-4 border-b border-gray-700">
+            <button
+              onClick={() => setActiveTab("requests")}
+              className={`px-6 py-3 font-medium transition-colors ${
+                activeTab === "requests"
+                  ? "text-purple-400 border-b-2 border-purple-400"
+                  : "text-gray-400 hover:text-gray-300"
+              }`}
+            >
+              Requests
+            </button>
+            <button
+              onClick={() => setActiveTab("regular")}
+              className={`px-6 py-3 font-medium transition-colors ${
+                activeTab === "regular"
+                  ? "text-purple-400 border-b-2 border-purple-400"
+                  : "text-gray-400 hover:text-gray-300"
+              }`}
+            >
+              Regular Students
+            </button>
           </div>
+
+          {activeTab === "requests" ? (
+            <>
+              <div className="mt-6" />
+
+              <LessonsTable
+                headerHeight={66}
+                rowHeight={66}
+                columns={columns}
+                useStatusButtons={true}
+                rows={tableRows}
+                onSelectionChange={setSelectedIds}
+                onBulkDelete={handleBulkDelete}
+                isPastAppointment={isPastAppointment}
+              />
+
+              <div className="mt-auto pt-4 mb-6 flex justify-center">
+                <Pagination
+                  activeIndex={page}
+                  onIndexChange={setPage}
+                  totalPages={totalPages}
+                  theme="secondary"
+                  shape="square"
+                />
+              </div>
+            </>
+          ) : (
+            <div className="mt-6 text-white">
+              <div className="text-center py-12">
+                <p className="text-gray-400 mb-4">
+                  Regular students feature coming soon
+                </p>
+                <p className="text-sm text-gray-500">
+                  Here you&apos;ll be able to manage recurring lessons with your
+                  regular students
+                </p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
