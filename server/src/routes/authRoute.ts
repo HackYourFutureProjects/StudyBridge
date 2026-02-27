@@ -13,6 +13,7 @@ import { accessCounterMiddleware } from "../middlewares/accessCounter.middleware
 import {
   passwordResetValidationMiddleware,
   sendPasswordResetValidationMiddleware,
+  updatePasswordValidationMiddleware,
 } from "../validation/auth/passwordResetMiddleware.js";
 
 export const authRouter = Router();
@@ -80,4 +81,12 @@ authRouter.post(
   "/logout",
   authMiddleware.handle,
   authController.logoutController.bind(authController),
+);
+
+authRouter.post(
+  "/update-password",
+  authMiddleware.handle,
+  updatePasswordValidationMiddleware(),
+  errorMiddleware,
+  authController.updatePasswordController.bind(authController),
 );
