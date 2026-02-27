@@ -42,14 +42,6 @@ export const AddReview = ({
         app.status === "approved" &&
         !reviewedBookingIds.has(app.id),
     ) || [];
-  console.log("All appointments for student:", data?.appointments[0]);
-  console.log("Approved lessons for review:", approvedLessons);
-  console.log("Check:", {
-    allReviews: accumulatedReviews.map((r) => r.bookingId),
-    thisBookingId: "699b29c90bfad36c573ba5ff",
-  });
-
-  console.log("Full Review Object:", accumulatedReviews[0]);
 
   // If not logged in, don't show the review form
   if (!isLoggedIn) return null;
