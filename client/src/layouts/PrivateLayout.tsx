@@ -33,15 +33,19 @@ export const PrivateLayout = () => {
 
   return (
     <>
-      <TopBar />
-
-      <div className="mx-auto max-w-360 pt-(--header-height)">
-        <div className="grid grid-cols-1 md:grid-cols-[218px_1fr]">
-          <div className="hidden md:block sticky top-(--header-height) self-start h-[calc(100dvh-var(--header-height))]">
+      <div className="mx-auto max-w-360 grid grid-cols-1 md:grid-cols-[218px_1fr]">
+        <div className="hidden md:block">
+          <div className="sticky top-0 h-dvh">
             <Sidebar items={items} variant="desktop" />
           </div>
+        </div>
 
-          <main className="min-w-0 bg-[#15141D] pb-17.5 md:pb-0">
+        <div className="flex flex-col">
+          <div className="sticky top-0 z-50">
+            <TopBar />
+          </div>
+
+          <main className="w-full bg-[#15141D] pb-18.5 md:pb-0 min-h-[calc(100vh-var(--header-height))]">
             <Outlet />
           </main>
         </div>

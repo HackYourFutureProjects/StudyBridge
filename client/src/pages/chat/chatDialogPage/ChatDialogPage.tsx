@@ -112,7 +112,7 @@ export const ChatDialogPage = () => {
               <div className="max-w-[75%]">
                 <div
                   className={[
-                    "rounded-2xl px-5 py-2 text-sm leading-relaxed mb-1.5",
+                    "rounded-2xl px-5 py-2 text-sm leading-relaxed mb-1.5 wrap-break-word whitespace-pre-wrap",
                     isMine
                       ? "bg-purple-500 text-light-100 rounded-br-md"
                       : "bg-light-150 text-dark-900 rounded-bl-md",
