@@ -28,7 +28,6 @@ export const ClientsClasses = () => {
         studentId,
         streamCallId: `call_${crypto.randomUUID()}`,
       });
-      console.log("Call started:", call.id, call.streamCallId);
 
       const callUrl = `/call/${call.id}?streamCallId=${encodeURIComponent(
         call.streamCallId,
@@ -64,8 +63,8 @@ export const ClientsClasses = () => {
 
   return (
     <div className="min-h-screen">
-      <div className="px-6 lg:px-10 min-h-screen flex flex-col">
-        <div className="pt-[40px] flex flex-col flex-1">
+      <div className="flex flex-col px-6 lg:px-10 min-h-screen">
+        <div className="flex flex-col flex-1 pt-[40px]">
           <PageTitle title={isMyStudents ? "My Students" : "My Classes"} />
           <div className="mt-6" />
           <LessonsTable
@@ -85,7 +84,7 @@ export const ClientsClasses = () => {
                   <Button
                     as="button"
                     variant="link"
-                    className="text-inherit underline font-normal min-h-0 min-w-0 rounded-none"
+                    className="rounded-none min-w-0 min-h-0 font-normal text-inherit underline"
                     // // TODO: [VIDEO] Replace hardcoded studentId with appointment.studentId after appointments integration is merged. Like this way
                     // onClick={() => handleStartCall(appointment.studentId)}
                     onClick={() =>
@@ -111,7 +110,7 @@ export const ClientsClasses = () => {
                   <Button
                     as="button"
                     variant="link"
-                    className="text-inherit underline font-normal min-h-0 min-w-0 rounded-none"
+                    className="rounded-none min-w-0 min-h-0 font-normal text-inherit underline"
                     // // TODO: [VIDEO] Replace hardcoded studentId with appointment.studentId after appointments integration is merged. Like this way
                     // onClick={() => handleStartCall(appointment.studentId)}
                     onClick={() =>
@@ -136,7 +135,7 @@ export const ClientsClasses = () => {
                   <Button
                     as="button"
                     variant="link"
-                    className="text-inherit underline font-normal min-h-0 min-w-0 rounded-none"
+                    className="rounded-none min-w-0 min-h-0 font-normal text-inherit underline"
                     // // TODO: [VIDEO] Replace hardcoded studentId with appointment.studentId after appointments integration is merged. Like this way
                     // onClick={() => handleStartCall(appointment.studentId)}
                     onClick={() =>
@@ -152,7 +151,7 @@ export const ClientsClasses = () => {
             ]}
           />
 
-          <div className="mt-auto mb-6 flex justify-center pt-6">
+          <div className="flex justify-center mt-auto mb-6 pt-6">
             <Pagination
               activeIndex={page}
               onIndexChange={setPage}
