@@ -18,6 +18,13 @@ import {
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useAuthSessionStore } from "../../store/authSession.store";
 import type { AxiosError } from "axios";
+import {
+  studentBase,
+  studentPrivatesRoutesVariables,
+  teacherBase,
+  teacherPrivatesRoutesVariables,
+} from "../../router/routesVariables/pathVariables";
+import { joinPath } from "../../util/joinPath.util";
 
 const VideoLayout = () => {
   const { useHasOngoingScreenShare } = useCallStateHooks();
@@ -38,10 +45,10 @@ export const VideoCallPage = () => {
   const streamCallType = searchParams.get("streamCallType") ?? "default";
   const hasInvalidParams =
     !callId || !streamCallId || !streamCallType || !streamCallId.trim();
-  const backToClassesPath =
+  const backToAppointmentsPath =
     user?.role === "teacher"
-      ? "/teacher/my-classes"
-      : "/clients-dashboard/student-classes";
+      ? joinPath(teacherBase, teacherPrivatesRoutesVariables.appointments)
+      : joinPath(studentBase, studentPrivatesRoutesVariables.appointments);
 
   useEffect(() => {
     if (hasInvalidParams) return;
@@ -92,7 +99,7 @@ export const VideoCallPage = () => {
 
   const handleEndCall = async () => {
     if (!callId) {
-      navigate(backToClassesPath);
+      navigate(backToAppointmentsPath);
       return;
     }
 
@@ -113,7 +120,7 @@ export const VideoCallPage = () => {
       return;
     }
 
-    navigate(backToClassesPath);
+    navigate(backToAppointmentsPath);
   };
 
   if (hasInvalidParams) {
@@ -128,10 +135,10 @@ export const VideoCallPage = () => {
           </p>
           <button
             type="button"
-            onClick={() => navigate(backToClassesPath)}
+            onClick={() => navigate(backToAppointmentsPath)}
             className="mt-5 rounded bg-white px-4 py-2 text-sm font-medium text-[#1B1823] hover:bg-[#E9ECF1]"
           >
-            Back to classes
+            Back to appointments
           </button>
         </div>
       </div>
@@ -148,10 +155,10 @@ export const VideoCallPage = () => {
           <p className="mt-2 text-sm text-[#C6CAD3]">{error}</p>
           <button
             type="button"
-            onClick={() => navigate(backToClassesPath)}
+            onClick={() => navigate(backToAppointmentsPath)}
             className="mt-5 rounded bg-white px-4 py-2 text-sm font-medium text-[#1B1823] hover:bg-[#E9ECF1]"
           >
-            Back to classes
+            Back to appointments
           </button>
         </div>
       </div>
