@@ -1,99 +1,56 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PageTitle } from "../../../components/pageTitle/PageTitle";
-import LessonsTable from "../../../components/table/LessonsTable";
 import { Pagination } from "../../../components/ui/pagination/Pagination";
 import { useAuthSessionStore } from "../../../store/authSession.store";
-import { useLocation } from "react-router-dom";
 import { useStudentAppointmentsQuery } from "../../../features/appointments/query/useAppointmentsQuery";
-import { useTeacherAppointmentsQuery } from "../../../features/appointments/query/useTeacherAppointmentsQuery";
-import { useUpdateAppointmentMutation } from "../../../features/appointments/mutations/useUpdateAppointmentMutation";
-import { useDeleteAppointmentMutation } from "../../../features/appointments/mutations/useDeleteAppointmentMutation";
-import { AppointmentStatus } from "../../../types/appointments.types";
-import { LessonRowData } from "../../../components/table/LessonRow";
-import { useModalStore } from "../../../store/modals.store";
+import { AppointmentCard } from "../../../components/appointmentCard/AppointmentCard";
+import { getTeacherByIdApi } from "../../../api/teacher/teacher.api";
+import { TeacherType } from "../../../api/teacher/teacher.type";
 
 export const ClientsAppointments = () => {
   const [page, setPage] = useState(1);
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [teachersData, setTeachersData] = useState<Record<string, TeacherType>>(
+    {},
+  );
   const limit = 10;
-  const { pathname } = useLocation();
   const user = useAuthSessionStore((state) => state.user);
-  const accountType = useAuthSessionStore((s) => s.accountType ?? s.user?.role);
-
-  const { open: openModal } = useModalStore();
-
-  const inferredType =
-    accountType ?? (pathname.startsWith("/teacher") ? "teacher" : "student");
-
-  const isTeacher = inferredType === "teacher";
 
   const {
     data: studentData,
-    isLoading: isStudentLoading,
-    error: studentError,
-  } = useStudentAppointmentsQuery(isTeacher ? "" : user?.id || "", page, limit);
+    isLoading,
+    error,
+  } = useStudentAppointmentsQuery(user?.id || "", page, limit);
 
-  const studentAppointments = studentData?.appointments || [];
-  const studentTotalPages = studentData?.totalPages || 1;
+  const appointments = studentData?.appointments || [];
+  const totalPages = studentData?.totalPages || 1;
 
-  const {
-    data: teacherData,
-    isLoading: isTeacherLoading,
-    error: teacherError,
-  } = useTeacherAppointmentsQuery(undefined, page, limit);
+  useEffect(() => {
+    const fetchTeachersData = async () => {
+      const teacherIds = [...new Set(appointments.map((apt) => apt.teacherId))];
+      const newTeachersData: Record<string, TeacherType> = {};
 
-  const teacherAppointments = teacherData?.appointments || [];
-  const teacherTotalPages = teacherData?.totalPages || 1;
+      await Promise.all(
+        teacherIds.map(async (teacherId) => {
+          if (!teachersData[teacherId]) {
+            try {
+              const teacher = await getTeacherByIdApi(teacherId);
+              newTeachersData[teacherId] = teacher;
+            } catch {
+              // Silent fail
+            }
+          }
+        }),
+      );
 
-  const updateAppointmentMutation = useUpdateAppointmentMutation();
-  const deleteAppointmentMutation = useDeleteAppointmentMutation();
+      if (Object.keys(newTeachersData).length > 0) {
+        setTeachersData((prev) => ({ ...prev, ...newTeachersData }));
+      }
+    };
 
-  const appointments = (
-    isTeacher ? teacherAppointments : studentAppointments
-  ).filter((apt) => apt.date && apt.time);
-  const totalPages = isTeacher ? teacherTotalPages : studentTotalPages;
-  const isLoading = isTeacher ? isTeacherLoading : isStudentLoading;
-  const error = isTeacher ? teacherError : studentError;
-
-  const columns = isTeacher
-    ? [
-        { key: "lesson", label: "Lessons", width: "130px" },
-        { key: "student", label: "Students", width: "184px" },
-        { key: "price", label: "Price", width: "146px" },
-        { key: "date", label: "Date", width: "146px" },
-        { key: "time", label: "Time", width: "146px" },
-        { key: "videoCall", label: "Video call", width: "146px" },
-        { key: "status", label: "Status", width: "200px" },
-      ]
-    : [
-        { key: "lesson", label: "Lessons", width: "130px" },
-        { key: "teacher", label: "Teachers", width: "184px" },
-        { key: "price", label: "Price", width: "146px" },
-        { key: "date", label: "Date", width: "146px" },
-        { key: "time", label: "Time", width: "146px" },
-        { key: "videoCall", label: "Video call", width: "146px" },
-        { key: "status", label: "Status", width: "200px" },
-      ];
-
-  const handleStatusChange = (
-    appointmentId: string,
-    newStatus: AppointmentStatus,
-  ) => {
-    updateAppointmentMutation.mutate({
-      appointmentId,
-      status: newStatus,
-    });
-  };
-
-  const handleDelete = (appointmentId: string) => {
-    openModal("confirmDelete", {
-      title: "Delete Appointment",
-      message: "Are you sure you want to delete this appointment?",
-      onConfirm: () => {
-        deleteAppointmentMutation.mutate(appointmentId);
-      },
-    });
-  };
+    if (appointments.length > 0) {
+      fetchTeachersData();
+    }
+  }, [appointments]);
 
   const isPastAppointment = (date: string, time: string): boolean => {
     if (!date || !time) {
@@ -111,84 +68,6 @@ export const ClientsAppointments = () => {
     const now = new Date();
     return appointmentDateTime < now;
   };
-
-  const handleBulkDelete = () => {
-    if (selectedIds.length === 0) return;
-
-    const selectedAppointments = appointments.filter((apt) =>
-      selectedIds.includes(apt.id),
-    );
-
-    const futureAppointments = selectedAppointments.filter(
-      (apt) => !isPastAppointment(apt.date, apt.time),
-    );
-
-    if (futureAppointments.length > 0) {
-      openModal("alert", {
-        title: "Cannot Delete",
-        message: "You cannot delete future lesson",
-      });
-      return;
-    }
-
-    openModal("confirmDelete", {
-      title: "Delete Appointments",
-      message: `Are you sure you want to delete ${selectedIds.length} appointment(s)?`,
-      onConfirm: async () => {
-        const deletePromises = selectedIds.map((id) =>
-          deleteAppointmentMutation.mutateAsync(id),
-        );
-
-        const results = await Promise.allSettled(deletePromises);
-
-        const failures = results.filter(
-          (result) => result.status === "rejected",
-        );
-
-        if (failures.length === 0) {
-          setSelectedIds([]);
-        } else {
-          openModal("alert", {
-            title: "Delete Failed",
-            message: `Failed to delete ${failures.length} appointment(s). Please try again.`,
-          });
-        }
-      },
-    });
-  };
-
-  const tableRows = appointments
-    .filter((appointment) => appointment.date && appointment.time)
-    .map((appointment) => {
-      const isPast = isPastAppointment(appointment.date, appointment.time);
-
-      //only allow internal StudyBridge call routes; block stale/external links (e.g. old Google Meet URLs).
-      const isInternalCallLink =
-        typeof appointment.videoCall === "string" &&
-        appointment.videoCall.startsWith("/call/");
-
-      return {
-        id: appointment.id,
-        checked: false,
-        lesson: appointment.lesson,
-        student: appointment.studentName || appointment.studentId,
-        teacher: appointment.teacherName || appointment.teacherId,
-        price: appointment.price,
-        date: appointment.date,
-        time: appointment.time,
-        videoCall: isInternalCallLink ? appointment.videoCall : "N/A",
-        linkText: isTeacher ? "Start call" : "Join",
-        status: appointment.status,
-        isPast: isPast,
-        onStatusChange:
-          isTeacher && !isPast
-            ? (newStatus: AppointmentStatus) =>
-                handleStatusChange(appointment.id, newStatus)
-            : undefined,
-        canDelete: isPast,
-        onDelete: isPast ? () => handleDelete(appointment.id) : undefined,
-      };
-    }) as LessonRowData[];
 
   if (isLoading) {
     return (
@@ -219,7 +98,7 @@ export const ClientsAppointments = () => {
   }
 
   return (
-    <div className="px-6 lg:px-10 flex flex-col">
+    <div className="px-6 lg:px-10 flex flex-col min-h-screen">
       <div className="pt-[40px] flex flex-col flex-1">
         <PageTitle title="My Appointments" />
         <div className="mt-6" />
@@ -229,16 +108,25 @@ export const ClientsAppointments = () => {
             No appointments found
           </div>
         ) : (
-          <LessonsTable
-            headerHeight={66}
-            rowHeight={66}
-            columns={columns}
-            useStatusButtons={isTeacher}
-            rows={tableRows}
-            onSelectionChange={setSelectedIds}
-            onBulkDelete={handleBulkDelete}
-            isPastAppointment={isPastAppointment}
-          />
+          <div className="flex flex-col gap-4">
+            {appointments.map((appointment) => {
+              const isPast = isPastAppointment(
+                appointment.date,
+                appointment.time,
+              );
+
+              return (
+                <AppointmentCard
+                  key={appointment.id}
+                  appointment={appointment}
+                  teacherAvatar={
+                    teachersData[appointment.teacherId]?.profileImageUrl
+                  }
+                  isPast={isPast}
+                />
+              );
+            })}
+          </div>
         )}
 
         <div className="mt-auto pt-4 mb-6 flex justify-center">
