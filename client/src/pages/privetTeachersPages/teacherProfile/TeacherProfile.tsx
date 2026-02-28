@@ -259,9 +259,25 @@ export const TeacherProfile = () => {
   };
 
   const handleScheduleSave = async (slots: TimeSlot[]) => {
-    setSchedule(slots);
-    const availability = mapUiSlotsToMergedWeekAvailability(slots);
-    await updateMyWeeklyScheduleApi({ availability });
+    try {
+      setSchedule(slots);
+      const availability = mapUiSlotsToMergedWeekAvailability(slots);
+      await updateMyWeeklyScheduleApi({ availability });
+      openModal("alert", {
+        title: "Success",
+        message: "Schedule saved successfully",
+      });
+    } catch (error) {
+      const axiosError = error as {
+        response?: { data?: { errorsMessages?: Array<{ message: string }> } };
+      };
+      openModal("alert", {
+        title: "Error",
+        message:
+          axiosError?.response?.data?.errorsMessages?.[0]?.message ||
+          "Failed to save schedule. Please try again.",
+      });
+    }
   };
 
   const handleOpenSchedule = async () => {

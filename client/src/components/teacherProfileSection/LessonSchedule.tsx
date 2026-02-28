@@ -24,7 +24,7 @@ const DAYS = [
   "Sunday",
 ];
 
-const HOURS = Array.from({ length: 24 }, (_, i) => i + 7); // 7:00 to 30:00 (next day 6:00)
+const HOURS = Array.from({ length: 17 }, (_, i) => i + 7); // 7:00 to 23:00
 
 export const LessonSchedule = ({
   isOpen,
@@ -55,7 +55,10 @@ export const LessonSchedule = ({
   const handleSave = async () => {
     const slots: TimeSlot[] = Array.from(selectedSlots).map((key) => {
       const [day, hour] = key.split("-");
-      return { day, hour: parseInt(hour, 10) };
+      return {
+        day: day.charAt(0).toUpperCase() + day.slice(1),
+        hour: parseInt(hour, 10),
+      };
     });
     await onSave(slots);
     onClose();
@@ -84,7 +87,7 @@ export const LessonSchedule = ({
             <thead>
               <tr>
                 <th className="border border-gray-600 p-2"></th>
-                {HOURS.slice(0, 17).map((hour) => (
+                {HOURS.map((hour) => (
                   <th
                     key={hour}
                     className="border border-gray-600 p-2 text-white text-sm"
@@ -100,7 +103,7 @@ export const LessonSchedule = ({
                   <td className="border border-gray-600 p-3 text-white font-medium">
                     {day}
                   </td>
-                  {HOURS.slice(0, 17).map((hour) => {
+                  {HOURS.map((hour) => {
                     const key = `${day}-${hour}`;
                     const isSelected = selectedSlots.has(key);
                     return (
