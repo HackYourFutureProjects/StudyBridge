@@ -297,6 +297,7 @@ export class AppointmentService {
       studentId: string;
       teacherName?: string;
       studentName?: string;
+      studentProfileImageUrl?: string | null;
       price: string | number;
       date: string;
       time: string;
@@ -315,6 +316,7 @@ export class AppointmentService {
       studentId: apt.studentId,
       teacherName: apt.teacherName,
       studentName: apt.studentName,
+      studentProfileImageUrl: apt.studentProfileImageUrl,
       price: priceStr,
       date: apt.date,
       time: apt.time,

@@ -147,6 +147,7 @@ export class AppointmentQuery {
       WithId<AppointmentTypeDB> & {
         teacherName?: string;
         studentName?: string;
+        studentProfileImageUrl?: string | null;
       }
     >
   > {
@@ -162,7 +163,7 @@ export class AppointmentQuery {
         .select("id firstName lastName")
         .lean(),
       StudentModel.find({ id: { $in: studentIds } })
-        .select("id firstName lastName")
+        .select("id firstName lastName profileImageUrl")
         .lean(),
     ]);
 
@@ -170,13 +171,23 @@ export class AppointmentQuery {
       teachers.map((t) => [t.id, `${t.firstName} ${t.lastName}`]),
     );
     const studentMap = new Map(
-      students.map((s) => [s.id, `${s.firstName} ${s.lastName}`]),
+      students.map((s) => [
+        s.id,
+        {
+          name: `${s.firstName} ${s.lastName}`,
+          profileImageUrl: s.profileImageUrl,
+        },
+      ]),
     );
 
-    return appointments.map((apt) => ({
-      ...apt,
-      teacherName: teacherMap.get(apt.teacherId),
-      studentName: studentMap.get(apt.studentId),
-    }));
+    return appointments.map((apt) => {
+      const studentData = studentMap.get(apt.studentId);
+      return {
+        ...apt,
+        teacherName: teacherMap.get(apt.teacherId),
+        studentName: studentData?.name,
+        studentProfileImageUrl: studentData?.profileImageUrl,
+      };
+    });
   }
 }
