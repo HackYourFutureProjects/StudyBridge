@@ -8,12 +8,14 @@ type TeacherAppointmentStatusBarProps = {
   date: string;
   time: string;
   statusStyles: StatusStyles;
+  showScheduleButton?: boolean;
 };
 
 export const TeacherAppointmentStatusBar = ({
   date,
   time,
   statusStyles,
+  showScheduleButton = false,
 }: TeacherAppointmentStatusBarProps) => {
   return (
     <div
@@ -22,12 +24,21 @@ export const TeacherAppointmentStatusBar = ({
       <span className={`text-[14px] font-medium ${statusStyles.text}`}>
         {statusStyles.label}
       </span>
-      <div className="text-right">
-        <div className={`text-[14px] font-medium ${statusStyles.text}`}>
-          {date}
+      {showScheduleButton ? (
+        <button
+          onClick={() => {}}
+          className={`px-4 py-2 rounded-full text-sm font-medium transition-colors bg-white/20 hover:bg-white/30 ${statusStyles.text} border border-white/30`}
+        >
+          Choose schedule
+        </button>
+      ) : (
+        <div className="text-right">
+          <div className={`text-[14px] font-medium ${statusStyles.text}`}>
+            {date}
+          </div>
+          <div className={`text-[14px] ${statusStyles.text}`}>{time}</div>
         </div>
-        <div className={`text-[14px] ${statusStyles.text}`}>{time}</div>
-      </div>
+      )}
     </div>
   );
 };

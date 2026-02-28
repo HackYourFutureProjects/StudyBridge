@@ -7,6 +7,10 @@ type TeacherAppointmentsListProps = {
   onStatusChange: (appointmentId: string, newStatus: AppointmentStatus) => void;
   onStartCall: (studentId: string, appointmentId: string) => void;
   onDelete: (appointmentId: string) => void;
+  onAddToRegular?: (appointment: Appointment) => void;
+  onRemoveFromRegular?: (appointmentId: string) => void;
+  regularStudentIds?: string[];
+  isRegularTab?: boolean;
 };
 
 export const TeacherAppointmentsList = ({
@@ -15,6 +19,10 @@ export const TeacherAppointmentsList = ({
   onStatusChange,
   onStartCall,
   onDelete,
+  onAddToRegular,
+  onRemoveFromRegular,
+  regularStudentIds = [],
+  isRegularTab = false,
 }: TeacherAppointmentsListProps) => {
   if (appointments.length === 0) {
     return (
@@ -26,6 +34,7 @@ export const TeacherAppointmentsList = ({
     <div className="flex flex-col gap-4">
       {appointments.map((appointment) => {
         const isPast = isPastAppointment(appointment.date, appointment.time);
+        const isInRegular = regularStudentIds.includes(appointment.id);
 
         return (
           <TeacherAppointmentCard
@@ -43,6 +52,17 @@ export const TeacherAppointmentsList = ({
               onStartCall(appointment.studentId, appointment.id)
             }
             onDelete={isPast ? () => onDelete(appointment.id) : undefined}
+            onAddToRegular={
+              !isRegularTab && !isInRegular && onAddToRegular
+                ? () => onAddToRegular(appointment)
+                : undefined
+            }
+            onRemoveFromRegular={
+              isRegularTab && onRemoveFromRegular
+                ? () => onRemoveFromRegular(appointment.id)
+                : undefined
+            }
+            isRegularTab={isRegularTab}
           />
         );
       })}

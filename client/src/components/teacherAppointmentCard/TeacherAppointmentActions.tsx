@@ -8,6 +8,8 @@ type TeacherAppointmentActionsProps = {
   onStatusChange?: (newStatus: AppointmentStatus) => void;
   onStartCall: () => void;
   onDelete?: () => void;
+  onAddToRegular?: () => void;
+  onRemoveFromRegular?: () => void;
 };
 
 export const TeacherAppointmentActions = ({
@@ -16,6 +18,8 @@ export const TeacherAppointmentActions = ({
   onStatusChange,
   onStartCall,
   onDelete,
+  onAddToRegular,
+  onRemoveFromRegular,
 }: TeacherAppointmentActionsProps) => {
   return (
     <div className="flex flex-col items-end gap-3 min-w-[200px]">
@@ -23,14 +27,25 @@ export const TeacherAppointmentActions = ({
         <StatusButtons initialStatus={status} onStatusChange={onStatusChange} />
       )}
 
-      {status === "approved" && !isPast && (
+      {status === "approved" && !isPast && onAddToRegular && (
         <Button
           as="button"
           variant="link"
           className="text-green-400 underline text-[14px] hover:text-green-300"
-          onClick={() => {}}
+          onClick={onAddToRegular}
         >
           Add to Regular Students
+        </Button>
+      )}
+
+      {onRemoveFromRegular && (
+        <Button
+          as="button"
+          variant="link"
+          className="text-orange-400 underline text-[14px] hover:text-orange-300"
+          onClick={onRemoveFromRegular}
+        >
+          Remove from Regular
         </Button>
       )}
 
