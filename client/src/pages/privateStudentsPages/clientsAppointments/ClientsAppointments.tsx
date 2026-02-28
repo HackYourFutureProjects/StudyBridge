@@ -3,10 +3,12 @@ import { PageTitle } from "../../../components/pageTitle/PageTitle";
 import { Pagination } from "../../../components/ui/pagination/Pagination";
 import { useAuthSessionStore } from "../../../store/authSession.store";
 import { useStudentAppointmentsQuery } from "../../../features/appointments/query/useAppointmentsQuery";
+import { useDeleteAppointmentMutation } from "../../../features/appointments/mutations/useDeleteAppointmentMutation";
 import { AppointmentCard } from "../../../components/appointmentCard/AppointmentCard";
 import { getTeacherByIdApi } from "../../../api/teacher/teacher.api";
 import { TeacherType } from "../../../api/teacher/teacher.type";
 import { useAppointmentTime } from "../../../features/appointments/hooks/useAppointmentTime";
+import { useModalStore } from "../../../store/modals.store";
 
 export const ClientsAppointments = () => {
   const [activeTab, setActiveTab] = useState<"requests" | "regular">(
@@ -19,12 +21,15 @@ export const ClientsAppointments = () => {
   const limit = 10;
   const user = useAuthSessionStore((state) => state.user);
   const { isPastAppointment } = useAppointmentTime();
+  const { open: openModal } = useModalStore();
 
   const {
     data: studentData,
     isLoading,
     error,
   } = useStudentAppointmentsQuery(user?.id || "", page, limit);
+
+  const deleteAppointmentMutation = useDeleteAppointmentMutation();
 
   const appointments = studentData?.appointments || [];
   const totalPages = studentData?.totalPages || 1;
@@ -56,6 +61,16 @@ export const ClientsAppointments = () => {
       fetchTeachersData();
     }
   }, [appointments]);
+
+  const handleDelete = (appointmentId: string) => {
+    openModal("confirmDelete", {
+      title: "Delete Appointment",
+      message: "Are you sure you want to delete this appointment?",
+      onConfirm: () => {
+        deleteAppointmentMutation.mutate(appointmentId);
+      },
+    });
+  };
 
   if (isLoading) {
     return (
@@ -136,6 +151,9 @@ export const ClientsAppointments = () => {
                         teachersData[appointment.teacherId]?.profileImageUrl
                       }
                       isPast={isPast}
+                      onDelete={
+                        isPast ? () => handleDelete(appointment.id) : undefined
+                      }
                     />
                   );
                 })}

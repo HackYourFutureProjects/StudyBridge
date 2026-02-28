@@ -12,12 +12,14 @@ type AppointmentCardProps = {
   appointment: Appointment;
   teacherAvatar?: string | null;
   isPast?: boolean;
+  onDelete?: () => void;
 };
 
 export const AppointmentCard = ({
   appointment,
   teacherAvatar,
   isPast = false,
+  onDelete,
 }: AppointmentCardProps) => {
   const statusStyles = getStatusStyles(appointment.status);
   const isInternalLink = isInternalVideoCallLink(appointment.videoCall);
@@ -54,6 +56,7 @@ export const AppointmentCard = ({
           canJoin={!!canJoin}
           videoCall={appointment.videoCall}
           isPast={isPast}
+          onDelete={isPast ? onDelete : undefined}
         />
       </div>
     </div>

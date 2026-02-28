@@ -4,13 +4,30 @@ type AppointmentJoinButtonProps = {
   canJoin: boolean;
   videoCall?: string;
   isPast: boolean;
+  onDelete?: () => void;
 };
 
 export const AppointmentJoinButton = ({
   canJoin,
   videoCall,
   isPast,
+  onDelete,
 }: AppointmentJoinButtonProps) => {
+  if (isPast && onDelete) {
+    return (
+      <div className="flex items-center justify-center">
+        <Button
+          as="button"
+          variant="link"
+          className="text-red-400 underline text-[14px] hover:text-red-300"
+          onClick={onDelete}
+        >
+          Delete
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <div className="flex items-center justify-center">
       {canJoin ? (
