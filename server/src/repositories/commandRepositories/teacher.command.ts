@@ -89,4 +89,20 @@ export class TeacherCommand {
       });
     }
   }
+
+  async updatePassword(
+    teacherId: string,
+    passwordHash: string,
+    passwordSalt: string,
+  ) {
+    try {
+      const updated = await TeacherModel.updateOne(
+        { id: teacherId },
+        { $set: { passwordHash, passwordSalt } },
+      );
+      return updated.matchedCount === 1;
+    } catch (error) {
+      throw new HttpError(500, "Password was not updated", { cause: error });
+    }
+  }
 }

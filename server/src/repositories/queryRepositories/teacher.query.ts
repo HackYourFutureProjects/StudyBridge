@@ -218,4 +218,15 @@ export class TeacherQuery {
       });
     }
   }
+
+  async findTeacherByIdWithHash(id: string) {
+    try {
+      const user = await TeacherModel.findOne({ id }).lean();
+      return user || null;
+    } catch (err: unknown) {
+      throw new Error("Something went wrong with teacher search", {
+        cause: err,
+      });
+    }
+  }
 }

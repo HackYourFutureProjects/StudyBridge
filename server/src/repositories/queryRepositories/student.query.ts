@@ -80,4 +80,15 @@ export class StudentQuery {
       });
     }
   }
+
+  async findStudentByIdWithHash(id: string) {
+    try {
+      const user = await StudentModel.findOne({ id }).lean();
+      return user || null;
+    } catch (err: unknown) {
+      throw new Error("Something went wrong with student search", {
+        cause: err,
+      });
+    }
+  }
 }

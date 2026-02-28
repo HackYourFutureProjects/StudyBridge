@@ -91,4 +91,20 @@ export class StudentCommand {
       throw new HttpError(500, "Student was not updated", { cause: err, id });
     }
   }
+
+  async updatePassword(
+    studentId: string,
+    passwordHash: string,
+    passwordSalt: string,
+  ) {
+    try {
+      const updated = await StudentModel.updateOne(
+        { id: studentId },
+        { $set: { passwordHash, passwordSalt } },
+      );
+      return updated.matchedCount === 1;
+    } catch (error) {
+      throw new HttpError(500, "Password was not updated", { cause: error });
+    }
+  }
 }

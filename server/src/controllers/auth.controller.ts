@@ -211,4 +211,30 @@ export class AuthController {
       return next(error);
     }
   }
+
+  async updatePasswordController(
+    req: RequestWithBody<{
+      oldPassword: string;
+      newPassword: string;
+      confirmPassword: string;
+    }>,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const auth = req.auth;
+      if (!auth) return res.sendStatus(401);
+
+      await this.authService.changePasswordForAuthenticatedUser({
+        userId: auth.userId,
+        role: auth.role,
+        oldPassword: req.body.oldPassword,
+        newPassword: req.body.newPassword,
+      });
+
+      return res.sendStatus(204);
+    } catch (error) {
+      return next(error);
+    }
+  }
 }

@@ -25,3 +25,19 @@ export const sendPasswordResetValidationMiddleware = () => [
     .custom((value, { req }) => value === req.body.newPassword)
     .withMessage("Passwords do not match"),
 ];
+
+export const updatePasswordValidationMiddleware = () => [
+  check("oldPassword").notEmpty().withMessage("old password is required"),
+
+  check("newPassword")
+    .notEmpty()
+    .withMessage("Password is required")
+    .isLength({ min: 5 })
+    .withMessage("Password must be at least 5 characters long"),
+
+  check("confirmPassword")
+    .notEmpty()
+    .withMessage("Confirm password is required")
+    .custom((value, { req }) => value === req.body.newPassword)
+    .withMessage("Passwords do not match"),
+];

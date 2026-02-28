@@ -298,4 +298,45 @@ export class AuthService {
 
     throw new HttpError(400, "Invalid or expired reset token");
   }
+
+  async changePasswordForAuthenticatedUser(args: {
+    userId: string;
+    role: "student" | "teacher";
+    oldPassword: string;
+    newPassword: string;
+  }) {
+    const { userId, role, oldPassword, newPassword } = args;
+
+    const user =
+      role === "student"
+        ? await this.studentQuery.findStudentByIdWithHash(userId)
+        : await this.teacherQuery.findTeacherByIdWithHash(userId);
+
+    if (!user) throw new HttpError(401, "Unauthorized");
+
+    const oldHash = await this._generateHash(oldPassword, user.passwordSalt);
+    if (oldHash !== user.passwordHash)
+      throw new HttpError(401, "Old password is incorrect");
+
+    const passwordSalt = await bcrypt.genSalt(10);
+    const passwordHash = await this._generateHash(newPassword, passwordSalt);
+
+    const updated =
+      role === "student"
+        ? await this.studentCommand.updatePassword(
+            userId,
+            passwordHash,
+            passwordSalt,
+          )
+        : await this.teacherCommand.updatePassword(
+            userId,
+            passwordHash,
+            passwordSalt,
+          );
+
+    if (!updated) throw new HttpError(500, "Password was not updated");
+
+    //invalidate all refresh sessions for that user and role.
+    await this.refreshSessionRepository.revokeAllForUser(userId, role);
+  }
 }
