@@ -2,6 +2,8 @@ import { ReactNode } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { useAuthSessionStore } from "../store/authSession.store.ts";
 import { Role } from "../api/auth/types.ts";
+import { Loader } from "../components/loader/Loader.tsx";
+import { ModalOverlay } from "../components/ui/modal/ModalOverlay.tsx";
 
 export const RequireRole = ({
   allow,
@@ -12,10 +14,17 @@ export const RequireRole = ({
 }) => {
   const location = useLocation();
   const user = useAuthSessionStore((s) => s.user);
-  const isLoading = false;
+  const authInitDone = useAuthSessionStore((s) => s.authInitDone);
+  const accessToken = useAuthSessionStore((s) => s.accessToken);
+
+  const isLoading = !authInitDone || (accessToken && !user);
 
   if (isLoading) {
-    return null;
+    return (
+      <ModalOverlay>
+        <Loader />
+      </ModalOverlay>
+    );
   }
 
   if (!user) {

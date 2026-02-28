@@ -8,9 +8,8 @@ import {
   authRoutesVariables,
   publicRoutesVariables,
 } from "../../../router/routesVariables/pathVariables.ts";
-import LogoutIcon from "../../icons/LogoutIcon.tsx";
-import { useModalStore } from "../../../store/modals.store.ts";
 import { useAuthSessionStore } from "../../../store/authSession.store.ts";
+import { ProfileIndicator } from "../../profileIndicator/ProfileIndicator.tsx";
 interface MobileMenuProps {
   isOpen: boolean;
   onClose: () => void;
@@ -31,8 +30,9 @@ const MobileMenuItem = ({ children, onClick }: MobileMenuItemProps) => (
 );
 
 export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose }) => {
-  const { open } = useModalStore();
-  const isAuth = useAuthSessionStore((s) => s.user !== null);
+  const isAuth = useAuthSessionStore(
+    (s) => Boolean(s.user) || Boolean(s.accessToken),
+  );
   return (
     <Dialog.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <Dialog.Portal>
@@ -74,52 +74,45 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose }) => {
                 Teachers
               </Button>
             </MobileMenuItem>
-            <MobileMenuItem onClick={onClose}>
-              <Button
-                variant="link"
-                as={NavLink}
-                to={authRoutesVariables.registerTutor}
-                className="font-medium"
-              >
-                I want to be a teacher
-              </Button>
-            </MobileMenuItem>
-            <MobileMenuItem onClick={onClose}>
-              <Button
-                variant="link"
-                as={NavLink}
-                to={authRoutesVariables.loginStudent}
-                className="font-medium"
-              >
-                Sign in as a student
-              </Button>
-            </MobileMenuItem>
-            <MobileMenuItem onClick={onClose}>
-              <Button
-                variant="link"
-                as={NavLink}
-                to={authRoutesVariables.loginTutor}
-                className="font-medium"
-              >
-                Sign in as a teacher
-              </Button>
-            </MobileMenuItem>
-            {isAuth && (
-              <MobileMenuItem>
-                <Button
-                  variant="link"
-                  onClick={() => open("logout")}
-                  className="flex items-center gap-2 md:gap-5 text-[#474747]
-              hover:text-[#8A8A8A] transition-colors cursor-pointer"
-                >
-                  <LogoutIcon className="w-5 h-5" />
-                  <span
-                    className="hidden md:block font-semibold text-[16px]
-                leading-[100%]"
+
+            {!isAuth ? (
+              <>
+                <MobileMenuItem onClick={onClose}>
+                  <Button
+                    variant="link"
+                    as={NavLink}
+                    to={authRoutesVariables.registerTutor}
+                    className="font-medium"
                   >
-                    Logout
-                  </span>
-                </Button>
+                    I want to be a teacher
+                  </Button>
+                </MobileMenuItem>
+
+                <MobileMenuItem onClick={onClose}>
+                  <Button
+                    variant="link"
+                    as={NavLink}
+                    to={authRoutesVariables.loginStudent}
+                    className="font-medium"
+                  >
+                    Sign in as a student
+                  </Button>
+                </MobileMenuItem>
+
+                <MobileMenuItem onClick={onClose}>
+                  <Button
+                    variant="link"
+                    as={NavLink}
+                    to={authRoutesVariables.loginTutor}
+                    className="font-medium"
+                  >
+                    Sign in as a teacher
+                  </Button>
+                </MobileMenuItem>
+              </>
+            ) : (
+              <MobileMenuItem onClick={onClose}>
+                <ProfileIndicator variant="main" />
               </MobileMenuItem>
             )}
           </nav>

@@ -27,6 +27,5 @@ export function useMeQuery() {
       clearSession();
     }
   }, [query.isError, clearSession]);
-
   return query;
 }
