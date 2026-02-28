@@ -6,6 +6,7 @@ import { useStudentAppointmentsQuery } from "../../../features/appointments/quer
 import { AppointmentCard } from "../../../components/appointmentCard/AppointmentCard";
 import { getTeacherByIdApi } from "../../../api/teacher/teacher.api";
 import { TeacherType } from "../../../api/teacher/teacher.type";
+import { useAppointmentTime } from "../../../features/appointments/hooks/useAppointmentTime";
 
 export const ClientsAppointments = () => {
   const [activeTab, setActiveTab] = useState<"requests" | "regular">(
@@ -17,6 +18,7 @@ export const ClientsAppointments = () => {
   );
   const limit = 10;
   const user = useAuthSessionStore((state) => state.user);
+  const { isPastAppointment } = useAppointmentTime();
 
   const {
     data: studentData,
@@ -54,23 +56,6 @@ export const ClientsAppointments = () => {
       fetchTeachersData();
     }
   }, [appointments]);
-
-  const isPastAppointment = (date: string, time: string): boolean => {
-    if (!date || !time) {
-      return false;
-    }
-
-    const [hours, minutes] = time.split(":").map(Number);
-    if (isNaN(hours) || isNaN(minutes)) {
-      return false;
-    }
-
-    const appointmentDateTime = new Date(date);
-    appointmentDateTime.setHours(hours, minutes, 0, 0);
-
-    const now = new Date();
-    return appointmentDateTime < now;
-  };
 
   if (isLoading) {
     return (
