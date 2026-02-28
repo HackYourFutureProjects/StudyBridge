@@ -11,7 +11,11 @@ import { AuthService } from "../services/auth/auth.service.js";
 import { JwtService } from "../services/jwt/jwt.service.js";
 import { StudentQuery } from "../repositories/queryRepositories/student.query.js";
 import { TeacherQuery } from "../repositories/queryRepositories/teacher.query.js";
-import { LoginType, RegistrationType } from "../types/auth/auth.types.js";
+import {
+  GoogleAuthRequest,
+  LoginType,
+  RegistrationType,
+} from "../types/auth/auth.types.js";
 import { Role } from "../../index.js";
 
 @injectable()
@@ -88,7 +92,7 @@ export class AuthController {
 
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
-        secure: true,
+        secure: process.env.NODE_ENV === "production",
         path: "/",
         maxAge: 2 * 60 * 60 * 1000,
         sameSite: "lax",
@@ -130,7 +134,7 @@ export class AuthController {
 
       res.cookie("refreshToken", newRefreshToken, {
         httpOnly: true,
-        secure: true,
+        secure: process.env.NODE_ENV === "production",
         path: "/",
         maxAge: 2 * 60 * 60 * 1000,
       });
@@ -203,7 +207,7 @@ export class AuthController {
       // Clear the refresh token cookie from the client side
       res.clearCookie("refreshToken", {
         httpOnly: true,
-        secure: true,
+        secure: process.env.NODE_ENV === "production",
         path: "/",
       });
       return res.sendStatus(204);
@@ -235,6 +239,74 @@ export class AuthController {
       return res.sendStatus(204);
     } catch (error) {
       return next(error);
+    }
+  }
+
+  async googleRegisterController(
+    req: RequestWithBody<GoogleAuthRequest>,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const { idToken, role } = req.body;
+
+      const user = await this.authService.googleRegister({ idToken, role });
+
+      const accessToken = this.jwtService.createJWTAccessToken({
+        userId: user.id,
+        role,
+      });
+
+      const { refreshToken } = await this.authService.createRefreshSession({
+        userId: user.id,
+        role,
+      });
+
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        path: "/",
+        maxAge: 2 * 60 * 60 * 1000,
+        sameSite: "lax",
+      });
+
+      return res.status(200).send({ accessToken });
+    } catch (e) {
+      return next(e);
+    }
+  }
+
+  async googleLoginController(
+    req: RequestWithBody<GoogleAuthRequest>,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const { idToken, role } = req.body;
+
+      const user = await this.authService.googleLogin({ idToken, role });
+
+      const accessToken = this.jwtService.createJWTAccessToken({
+        userId: user.id,
+        role,
+      });
+
+      const { refreshToken } = await this.authService.createRefreshSession({
+        userId: user.id,
+        role,
+      });
+
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: true,
+        path: "/",
+        maxAge: 2 * 60 * 60 * 1000,
+        sameSite: "lax",
+      });
+
+      return res.status(200).send({ accessToken });
+    } catch (e) {
+      return next(e);
     }
   }
 }

@@ -1,3 +1,5 @@
+import { Role } from "../../../index.js";
+
 export type EducationViewItem = {
   degree: string;
   institution: string;
@@ -62,6 +64,8 @@ export type TeacherViewType = {
   address: AddressView;
   createdAt: Date;
   role: string;
+  authProvider: "local" | "google";
+  googleSub: string | null;
 };
 
 type SortDirection = "asc" | "desc";
@@ -102,4 +106,38 @@ export type UpdateTeacherProfileInput = {
     experienceYears: number;
     hourlyRate: number;
   }>;
+};
+
+export type TeacherCreateBase = {
+  id: string;
+  role: Role;
+  email: string;
+  firstName: string;
+  lastName: string;
+
+  profileImageUrl?: string | null;
+  address?: string | null;
+  mainLanguage?: string | null;
+
+  authProvider: "local" | "google";
+  googleSub?: string | null;
+
+  passwordReset?: {
+    tokenHash: string | null;
+    expiresAt: Date | null;
+  };
+
+  createdAt?: Date;
+};
+
+export type CreateLocalTeacher = TeacherCreateBase & {
+  authProvider: "local";
+  passwordHash: string;
+  passwordSalt: string;
+  googleSub?: null;
+};
+
+export type CreateGoogleTeacher = TeacherCreateBase & {
+  authProvider: "google";
+  googleSub: string;
 };

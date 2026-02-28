@@ -8,8 +8,8 @@ export const StudentSchema = new mongoose.Schema<StudentTypeDB>(
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
     email: { type: String, required: true, index: true, unique: true },
-    passwordHash: { type: String, required: true },
-    passwordSalt: { type: String, required: true },
+    passwordHash: { type: String, required: false, default: null },
+    passwordSalt: { type: String, required: false, default: null },
     passwordReset: {
       tokenHash: { type: String, default: null },
       expiresAt: { type: Date, default: null },
@@ -19,6 +19,8 @@ export const StudentSchema = new mongoose.Schema<StudentTypeDB>(
     mainLanguage: { type: String, default: null },
     createdAt: { type: Date, default: Date.now },
     role: { type: String, required: true },
+    authProvider: { type: String, required: true },
+    googleSub: { type: String, required: false },
   },
   {
     versionKey: false,

@@ -5,6 +5,11 @@ export type RefreshTokenPayload = {
   sessionId: string;
 };
 
+export type GoogleAuthRequest = {
+  idToken: string;
+  role: "student" | "teacher";
+};
+
 export type AccessTokenPayload = {
   userId: string;
   role: Role;

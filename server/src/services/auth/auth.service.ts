@@ -9,18 +9,21 @@ import { teacherMapper } from "../../utils/mappers/teacher.mapper.js";
 import { createHash, randomUUID } from "node:crypto";
 import { JwtService } from "../jwt/jwt.service.js";
 import { RefreshSessionRepository } from "../../repositories/commandRepositories/refreshSession.repository.js";
+import { OAuth2Client } from "google-auth-library";
 import {
+  GoogleAuthRequest,
+  PasswordResetTokenPayload,
   RefreshTokenPayload,
   RotateArgs,
-  PasswordResetTokenPayload,
 } from "../../types/auth/auth.types.js";
 import { StudentCommand } from "../../repositories/commandRepositories/student.command.js";
 import { TeacherCommand } from "../../repositories/commandRepositories/teacher.command.js";
 import { sendPasswordResetEmail } from "../email/mailSender.js";
-import { logWarning, logError } from "../../utils/logging.js";
+import { logError, logWarning } from "../../utils/logging.js";
 
 @injectable()
 export class AuthService {
+  private googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
   constructor(
     @inject(TYPES.StudentQuery) private studentQuery: StudentQuery,
     @inject(TYPES.TeacherQuery) private teacherQuery: TeacherQuery,
@@ -35,6 +38,14 @@ export class AuthService {
 
     if (!student) {
       throw new HttpError(401, "Invalid credentials");
+    }
+
+    if (
+      student.authProvider === "google" ||
+      !student.passwordSalt ||
+      !student.passwordHash
+    ) {
+      throw new HttpError(409, "This account uses Google login");
     }
 
     const passwordHash = await this._generateHash(
@@ -54,6 +65,14 @@ export class AuthService {
 
     if (!teacher) {
       throw new HttpError(401, "Invalid credentials");
+    }
+
+    if (
+      teacher.authProvider === "google" ||
+      !teacher.passwordSalt ||
+      !teacher.passwordHash
+    ) {
+      throw new HttpError(409, "This account uses Google login");
     }
 
     const passwordHash = await this._generateHash(
@@ -313,7 +332,13 @@ export class AuthService {
         : await this.teacherQuery.findTeacherByIdWithHash(userId);
 
     if (!user) throw new HttpError(401, "Unauthorized");
-
+    if (
+      user.authProvider === "google" ||
+      !user.passwordSalt ||
+      !user.passwordHash
+    ) {
+      throw new HttpError(409, "Password is not set for Google account");
+    }
     const oldHash = await this._generateHash(oldPassword, user.passwordSalt);
     if (oldHash !== user.passwordHash)
       throw new HttpError(401, "Old password is incorrect");
@@ -338,5 +363,125 @@ export class AuthService {
 
     //invalidate all refresh sessions for that user and role.
     await this.refreshSessionRepository.revokeAllForUser(userId, role);
+  }
+
+  async verifyGoogleIdToken(idToken: string) {
+    const ticket = await this.googleClient.verifyIdToken({
+      idToken,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+    if (!payload?.email) {
+      throw new HttpError(401, "Invalid Google token");
+    }
+
+    if (!payload.email_verified) {
+      throw new HttpError(401, "Email not verified");
+    }
+
+    return {
+      email: payload.email,
+      googleSub: payload.sub,
+      firstName: payload.given_name ?? "",
+      lastName: payload.family_name ?? "",
+      picture: payload.picture ?? null,
+    };
+  }
+
+  async googleRegister(args: GoogleAuthRequest) {
+    const { idToken, role } = args;
+    const goggle = await this.verifyGoogleIdToken(idToken);
+
+    const existingStudent = await this.studentQuery.getStudentByEmail(
+      goggle.email,
+    );
+    const existingTeacher = await this.teacherQuery.getTeacherByEmail(
+      goggle.email,
+    );
+
+    if (existingStudent || existingTeacher) {
+      const existingRole = existingStudent ? "student" : "teacher";
+      throw new HttpError(
+        409,
+        existingRole === role
+          ? "Account already exists. Please use Google login."
+          : `This email is already registered as ${existingRole}.`,
+      );
+    }
+
+    if (role === "student") {
+      return await this.studentCommand.createStudent({
+        id: randomUUID(),
+        role,
+        email: goggle.email,
+        firstName: goggle.firstName,
+        lastName: goggle.lastName,
+        profileImageUrl: goggle.picture ?? null,
+        address: null,
+        mainLanguage: null,
+        authProvider: "google",
+        googleSub: goggle.googleSub,
+        passwordReset: { tokenHash: null, expiresAt: null },
+        createdAt: new Date(),
+      });
+    } else {
+      return await this.teacherCommand.createTeacher({
+        id: randomUUID(),
+        role,
+        email: goggle.email,
+        firstName: goggle.firstName,
+        lastName: goggle.lastName,
+        profileImageUrl: goggle.picture ?? null,
+        address: null,
+        mainLanguage: null,
+        authProvider: "google",
+        googleSub: goggle.googleSub,
+        passwordReset: { tokenHash: null, expiresAt: null },
+        createdAt: new Date(),
+      });
+    }
+  }
+
+  async googleLogin(args: GoogleAuthRequest) {
+    const { idToken, role } = args;
+    const google = await this.verifyGoogleIdToken(idToken);
+
+    if (role === "student") {
+      const student = await this.studentQuery.getStudentByEmail(google.email);
+      if (!student)
+        throw new HttpError(404, "Account not found. Please sign up.");
+
+      if (student.authProvider !== "google" || !student.googleSub) {
+        throw new HttpError(
+          409,
+          "This account uses password login. Please sign in with email/password.",
+        );
+      }
+
+      if (student.googleSub !== google.googleSub) {
+        throw new HttpError(401, "Google account mismatch");
+      }
+
+      return student;
+    }
+
+    // teacher
+    const teacher = await this.teacherQuery.getTeacherByEmail(google.email);
+    if (!teacher)
+      throw new HttpError(404, "Account not found. Please sign up.");
+
+    if (teacher.authProvider !== "google" || !teacher.googleSub) {
+      throw new HttpError(
+        409,
+        "This account uses password login. Please sign in with email/password.",
+      );
+    }
+
+    if (teacher.googleSub !== google.googleSub) {
+      throw new HttpError(401, "Google account mismatch");
+    }
+
+    return teacher;
   }
 }

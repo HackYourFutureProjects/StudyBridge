@@ -5,8 +5,8 @@ export type StudentTypeDB = {
   firstName: string;
   lastName: string;
   email: string;
-  passwordHash: string;
-  passwordSalt: string;
+  passwordHash?: string | null;
+  passwordSalt?: string | null;
   passwordReset: {
     tokenHash: string | null;
     expiresAt: Date | null;
@@ -16,4 +16,6 @@ export type StudentTypeDB = {
   mainLanguage: string | null;
   createdAt: Date;
   role: Role;
+  authProvider: "local" | "google";
+  googleSub: string | null;
 };
