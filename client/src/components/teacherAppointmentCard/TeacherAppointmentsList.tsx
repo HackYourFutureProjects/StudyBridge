@@ -31,7 +31,7 @@ export const TeacherAppointmentsList = ({
           <TeacherAppointmentCard
             key={appointment.id}
             appointment={appointment}
-            studentAvatar={null}
+            studentAvatar={appointment.studentProfileImageUrl}
             isPast={isPast}
             onStatusChange={
               !isPast
