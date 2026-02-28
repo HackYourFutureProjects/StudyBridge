@@ -32,7 +32,7 @@ export const StatusButtons = ({
 
   const getButtonStyle = (buttonStatus: Status) => {
     const baseStyle =
-      "px-3 py-1 rounded-md text-sm font-medium transition-colors";
+      "px-4 py-2 rounded-full text-sm font-medium transition-colors";
     const cursorStyle = disabled ? "cursor-not-allowed" : "cursor-pointer";
 
     if (status === buttonStatus) {
