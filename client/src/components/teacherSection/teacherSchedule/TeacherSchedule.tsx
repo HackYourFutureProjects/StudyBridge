@@ -184,7 +184,28 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
       approvedAppointments.map((apt) => apt.time.substring(0, 5)),
     );
 
-    return slots.filter((slot) => !bookedTimes.has(slot));
+    const now = new Date();
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const selectedDateOnly = new Date(selectedDate);
+    selectedDateOnly.setHours(0, 0, 0, 0);
+
+    const isToday = selectedDateOnly.getTime() === today.getTime();
+
+    return slots.filter((slot) => {
+      if (bookedTimes.has(slot)) {
+        return false;
+      }
+
+      if (isToday) {
+        const [hours, minutes] = slot.split(":").map(Number);
+        const slotTime = new Date();
+        slotTime.setHours(hours, minutes, 0, 0);
+        return slotTime > now;
+      }
+
+      return true;
+    });
   };
 
   return (
