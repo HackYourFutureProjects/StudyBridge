@@ -24,7 +24,7 @@ export const TeacherAppointmentActions = ({
   isRegularTab = false,
 }: TeacherAppointmentActionsProps) => {
   return (
-    <div className="flex flex-col items-end gap-3 min-w-[200px]">
+    <div className="flex flex-col items-center min-[540px]:items-end gap-2 md:gap-3 w-full sm:w-auto sm:min-w-[200px] min-[540px]:ml-auto">
       {!isPast && onStatusChange && !isRegularTab && (
         <StatusButtons initialStatus={status} onStatusChange={onStatusChange} />
       )}
@@ -33,7 +33,7 @@ export const TeacherAppointmentActions = ({
         <Button
           as="button"
           variant="link"
-          className="text-green-400 underline text-[14px] hover:text-green-300"
+          className="text-green-400 underline text-[12px] md:text-[14px] hover:text-green-300"
           onClick={onAddToRegular}
         >
           Add to Regular Students
@@ -44,7 +44,7 @@ export const TeacherAppointmentActions = ({
         <Button
           as="button"
           variant="link"
-          className="text-purple-400 underline text-[14px] hover:text-purple-300"
+          className="text-purple-400 underline text-[12px] md:text-[14px] hover:text-purple-300"
           onClick={onRemoveFromRegular}
         >
           Remove from Regular
@@ -54,7 +54,7 @@ export const TeacherAppointmentActions = ({
       <Button
         as="button"
         variant="link"
-        className="text-white underline text-[16px] hover:text-gray-300"
+        className="text-white underline text-[14px] md:text-[16px] hover:text-gray-300"
         onClick={onStartCall}
       >
         Start call!
@@ -64,7 +64,7 @@ export const TeacherAppointmentActions = ({
         <Button
           as="button"
           variant="link"
-          className="text-red-400 underline text-[14px] hover:text-red-300"
+          className="text-red-400 underline text-[12px] md:text-[14px] hover:text-red-300"
           onClick={onDelete}
         >
           Delete

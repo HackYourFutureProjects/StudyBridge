@@ -37,14 +37,13 @@ export class AppointmentQuery {
       const total = await AppointmentModel.countDocuments(query);
 
       if (page !== undefined && limit !== undefined) {
-        // Validate pagination parameters
         if (page < 1 || limit < 1) {
           throw new Error("Page and limit must be positive numbers");
         }
 
         const skip = (page - 1) * limit;
         const appointments = await AppointmentModel.find(query)
-          .sort({ date: 1, time: 1 })
+          .sort({ date: -1, time: -1 })
           .skip(skip)
           .limit(limit)
           .lean();
@@ -57,7 +56,7 @@ export class AppointmentQuery {
       }
 
       const appointments = await AppointmentModel.find(query)
-        .sort({ date: 1, time: 1 })
+        .sort({ date: -1, time: -1 })
         .lean();
 
       return {
@@ -97,7 +96,7 @@ export class AppointmentQuery {
 
         const skip = (page - 1) * limit;
         const appointments = await AppointmentModel.find(query)
-          .sort({ date: 1, time: 1 })
+          .sort({ date: -1, time: -1 })
           .skip(skip)
           .limit(limit)
           .lean();
@@ -110,7 +109,7 @@ export class AppointmentQuery {
       }
 
       const appointments = await AppointmentModel.find(query)
-        .sort({ date: 1, time: 1 })
+        .sort({ date: -1, time: -1 })
         .lean();
 
       return {

@@ -101,7 +101,7 @@ export const LessonSchedule = ({
           </button>
         </div>
 
-        <div className="overflow-x-auto overflow-y-auto">
+        <div className="overflow-x-auto overflow-y-auto scrollbar-visible">
           <div className="min-w-max">
             <table className="w-full border-collapse">
               <thead>
