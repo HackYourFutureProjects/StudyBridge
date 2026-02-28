@@ -35,19 +35,33 @@ const getInitialRegularStudents = (): Appointment[] => {
     const stored = localStorage.getItem(REGULAR_STUDENTS_KEY);
     if (!stored) return [];
 
-    const students: Appointment[] = JSON.parse(stored);
+    const parsed = JSON.parse(stored);
+    if (!Array.isArray(parsed)) return [];
+
     let needsUpdate = false;
 
-    const migratedStudents = students.map((student) => {
-      if (!student.addedToRegularAt) {
-        needsUpdate = true;
-        return {
-          ...student,
-          addedToRegularAt: new Date(student.date).toISOString(),
-        };
-      }
-      return student;
-    });
+    const migratedStudents = parsed
+      .filter((item): item is Appointment => {
+        return (
+          typeof item === "object" &&
+          item !== null &&
+          typeof item.id === "string" &&
+          typeof item.date === "string"
+        );
+      })
+      .map((student) => {
+        if (!student.addedToRegularAt) {
+          const parsedDate = Date.parse(student.date);
+          if (!isNaN(parsedDate)) {
+            needsUpdate = true;
+            return {
+              ...student,
+              addedToRegularAt: new Date(parsedDate).toISOString(),
+            };
+          }
+        }
+        return student;
+      });
 
     if (needsUpdate) {
       localStorage.setItem(
@@ -290,7 +304,7 @@ export const TeacherAppointments = () => {
                   isPastAppointment={isPastAppointment}
                   onStatusChange={handleStatusChange}
                   onStartCall={confirmStartCall}
-                  onDelete={handleRemoveFromRegular}
+                  onDelete={handleDelete}
                   onRemoveFromRegular={handleRemoveFromRegular}
                   onScheduleClick={handleOpenSchedule}
                   isRegularTab
