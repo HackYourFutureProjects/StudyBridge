@@ -12,6 +12,7 @@ import { useAuthSessionStore } from "../../store/authSession.store";
 import { ProfileIndicator } from "../profileIndicator/ProfileIndicator.tsx";
 import { useMeStatusQuery } from "../../features/auth/query/useMeStatusQuery.tsx";
 import { ProfileIndicatorSkeleton } from "../skeletons/ProfileIndicatorSkeleton.tsx";
+import { HeaderNavSkeleton } from "../skeletons/HeaderNavSkeleton.tsx";
 
 export const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -48,26 +49,35 @@ export const Header = () => {
       >
         <div className="flex items-center justify-between mx-auto max-w-[1440px] h-full px-4 sm:px-6 md:px-8 lg:px-[151px]">
           <Logo />
-          <div className="hidden md:flex justify-center gap-4 sm:gap-6 lg:gap-7 border border-[#ffffff15] rounded-[20px] px-4 sm:px-6 lg:px-[38px]">
-            <Button
-              as={NavLink}
-              to={publicRoutesVariables.teachers}
-              className="p-0 text-[#ffffff60] hover:text-light-100"
-              variant="link"
-            >
-              Tutors
-            </Button>
-            {!(isAuth && user?.role === "teacher") && (
+          {isMeLoading ? (
+            user?.role === "teacher" ? (
+              <HeaderNavSkeleton />
+            ) : (
+              <HeaderNavSkeleton hideRegisterTutor={true} />
+            )
+          ) : (
+            <div className="hidden md:flex justify-center gap-4 sm:gap-6 lg:gap-7 border border-[#ffffff15] rounded-[20px] px-4 sm:px-6 lg:px-[38px]">
               <Button
                 as={NavLink}
-                to={authRoutesVariables.registerTutor}
+                to={publicRoutesVariables.teachers}
                 className="p-0 text-[#ffffff60] hover:text-light-100"
                 variant="link"
               >
-                I want to be a tutor
+                Tutors
               </Button>
-            )}
-          </div>
+              {!(isAuth && user?.role === "teacher") && (
+                <Button
+                  as={NavLink}
+                  to={authRoutesVariables.registerTutor}
+                  className="p-0 text-[#ffffff60] hover:text-light-100"
+                  variant="link"
+                >
+                  I want to be a tutor
+                </Button>
+              )}
+            </div>
+          )}
+
           {isMeLoading ? (
             <ProfileIndicatorSkeleton />
           ) : isAuth ? (
