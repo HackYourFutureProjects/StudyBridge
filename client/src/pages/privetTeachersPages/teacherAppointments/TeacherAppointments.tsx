@@ -4,11 +4,39 @@ import { Pagination } from "../../../components/ui/pagination/Pagination";
 import { useTeacherAppointmentsQuery } from "../../../features/appointments/query/useTeacherAppointmentsQuery";
 import { useUpdateAppointmentMutation } from "../../../features/appointments/mutations/useUpdateAppointmentMutation";
 import { useDeleteAppointmentMutation } from "../../../features/appointments/mutations/useDeleteAppointmentMutation";
-import { AppointmentStatus } from "../../../types/appointments.types";
+import {
+  Appointment,
+  AppointmentStatus,
+} from "../../../types/appointments.types";
 import { useModalStore } from "../../../store/modals.store";
 import { useVideoCall } from "../../../features/appointments/hooks/useVideoCall";
 import { useAppointmentTime } from "../../../features/appointments/hooks/useAppointmentTime";
 import { TeacherAppointmentsList } from "../../../components/teacherAppointmentCard/TeacherAppointmentsList";
+import { LessonSchedule } from "../../../components/teacherProfileSection/LessonSchedule";
+import {
+  getMyWeeklyScheduleApi,
+  updateMyWeeklyScheduleApi,
+} from "../../../api/teacher/teacher.api";
+import {
+  mapUiSlotsToMergedWeekAvailability,
+  mapWeekAvailabilityToUiSlots,
+} from "../teacherProfile/scheduleMappers";
+
+export interface TimeSlot {
+  day: string;
+  hour: number;
+}
+
+const REGULAR_STUDENTS_KEY = "regularStudents";
+
+const getInitialRegularStudents = (): Appointment[] => {
+  try {
+    const stored = localStorage.getItem(REGULAR_STUDENTS_KEY);
+    return stored ? JSON.parse(stored) : [];
+  } catch {
+    return [];
+  }
+};
 
 export const TeacherAppointments = () => {
   const [activeTab, setActiveTab] = useState<"requests" | "regular">(
@@ -16,6 +44,11 @@ export const TeacherAppointments = () => {
   );
   const [page, setPage] = useState(1);
   const limit = 10;
+  const [regularStudents, setRegularStudents] = useState<Appointment[]>(
+    getInitialRegularStudents,
+  );
+  const [isScheduleOpen, setIsScheduleOpen] = useState(false);
+  const [schedule, setSchedule] = useState<TimeSlot[]>([]);
 
   const { open: openModal } = useModalStore();
   const { confirmStartCall } = useVideoCall();
@@ -32,6 +65,65 @@ export const TeacherAppointments = () => {
 
   const updateAppointmentMutation = useUpdateAppointmentMutation();
   const deleteAppointmentMutation = useDeleteAppointmentMutation();
+
+  const handleAddToRegular = (appointment: Appointment) => {
+    const isAlreadyAdded = regularStudents.some(
+      (student) => student.id === appointment.id,
+    );
+    if (!isAlreadyAdded) {
+      const updated = [...regularStudents, appointment];
+      setRegularStudents(updated);
+      localStorage.setItem(REGULAR_STUDENTS_KEY, JSON.stringify(updated));
+    }
+  };
+
+  const handleRemoveFromRegular = (appointmentId: string) => {
+    openModal("confirmDelete", {
+      title: "Remove from Regular Students",
+      message:
+        "Are you sure you want to remove this student from regular students?",
+      onConfirm: () => {
+        const updated = regularStudents.filter(
+          (student) => student.id !== appointmentId,
+        );
+        setRegularStudents(updated);
+        localStorage.setItem(REGULAR_STUDENTS_KEY, JSON.stringify(updated));
+      },
+    });
+  };
+
+  const handleOpenSchedule = async () => {
+    try {
+      const availability = await getMyWeeklyScheduleApi();
+      setSchedule(mapWeekAvailabilityToUiSlots(availability));
+    } catch (error) {
+      console.error("Failed to load weekly availability", error);
+    } finally {
+      setIsScheduleOpen(true);
+    }
+  };
+
+  const handleScheduleSave = async (slots: TimeSlot[]) => {
+    try {
+      setSchedule(slots);
+      const availability = mapUiSlotsToMergedWeekAvailability(slots);
+      await updateMyWeeklyScheduleApi({ availability });
+      openModal("alert", {
+        title: "Success",
+        message: "Schedule saved successfully",
+      });
+    } catch (error) {
+      const axiosError = error as {
+        response?: { data?: { errorsMessages?: Array<{ message: string }> } };
+      };
+      openModal("alert", {
+        title: "Error",
+        message:
+          axiosError?.response?.data?.errorsMessages?.[0]?.message ||
+          "Failed to save schedule. Please try again.",
+      });
+    }
+  };
 
   const handleStatusChange = (
     appointmentId: string,
@@ -118,6 +210,8 @@ export const TeacherAppointments = () => {
               onStatusChange={handleStatusChange}
               onStartCall={confirmStartCall}
               onDelete={handleDelete}
+              onAddToRegular={handleAddToRegular}
+              regularStudentIds={regularStudents.map((student) => student.id)}
             />
 
             <div className="mt-auto pt-4 mb-6 flex justify-center">
@@ -131,19 +225,37 @@ export const TeacherAppointments = () => {
             </div>
           </>
         ) : (
-          <div className="mt-6 text-white">
-            <div className="text-center py-12">
-              <p className="text-gray-400 mb-4">
-                Regular students feature coming soon
-              </p>
-              <p className="text-sm text-gray-500">
-                Here you&apos;ll be able to manage recurring lessons with your
-                regular students
-              </p>
-            </div>
+          <div className="mt-6">
+            {regularStudents.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-gray-400 mb-4">No regular students yet</p>
+                <p className="text-sm text-gray-500">
+                  Add approved appointments to your regular students list
+                </p>
+              </div>
+            ) : (
+              <TeacherAppointmentsList
+                appointments={regularStudents}
+                isPastAppointment={isPastAppointment}
+                onStatusChange={handleStatusChange}
+                onStartCall={confirmStartCall}
+                onDelete={handleRemoveFromRegular}
+                onRemoveFromRegular={handleRemoveFromRegular}
+                onScheduleClick={handleOpenSchedule}
+                isRegularTab
+              />
+            )}
           </div>
         )}
       </div>
+
+      <LessonSchedule
+        key={JSON.stringify(schedule)}
+        isOpen={isScheduleOpen}
+        onClose={() => setIsScheduleOpen(false)}
+        onSave={handleScheduleSave}
+        initialSlots={schedule}
+      />
     </div>
   );
 };
