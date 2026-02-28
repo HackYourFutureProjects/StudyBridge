@@ -44,7 +44,7 @@ export const TeacherAppointmentActions = ({
         <Button
           as="button"
           variant="link"
-          className="text-orange-400 underline text-[14px] hover:text-orange-300"
+          className="text-purple-400 underline text-[14px] hover:text-purple-300"
           onClick={onRemoveFromRegular}
         >
           Remove from Regular

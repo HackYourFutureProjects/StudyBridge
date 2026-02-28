@@ -145,6 +145,45 @@ export const TeacherAppointments = () => {
     });
   };
 
+  const getBookedSlots = () => {
+    const allAppointments = data?.appointments || [];
+    const DAYS_MAP: Record<string, string> = {
+      Monday: "Monday",
+      Tuesday: "Tuesday",
+      Wednesday: "Wednesday",
+      Thursday: "Thursday",
+      Friday: "Friday",
+      Saturday: "Saturday",
+      Sunday: "Sunday",
+    };
+
+    const now = new Date();
+
+    return allAppointments
+      .filter((apt) => {
+        if (apt.status !== "approved") return false;
+        if (!apt.studentName) return false;
+
+        const appointmentDate = new Date(apt.date);
+        const [hours, minutes] = apt.time.split(":").map(Number);
+        appointmentDate.setHours(hours, minutes, 0, 0);
+
+        return appointmentDate > now;
+      })
+      .map((apt) => {
+        const date = new Date(apt.date);
+        const dayName = date.toLocaleDateString("en-US", { weekday: "long" });
+        const hour = parseInt(apt.time.split(":")[0], 10);
+
+        return {
+          day: DAYS_MAP[dayName] || dayName,
+          hour,
+          studentName: apt.studentName!,
+          lesson: apt.lesson,
+        };
+      });
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen">
@@ -255,6 +294,7 @@ export const TeacherAppointments = () => {
         onClose={() => setIsScheduleOpen(false)}
         onSave={handleScheduleSave}
         initialSlots={schedule}
+        bookedSlots={getBookedSlots()}
       />
     </div>
   );

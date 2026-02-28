@@ -19,6 +19,7 @@ import {
 import { useMyProfileQuery } from "../../../features/teachers/query/useMyProfileQuery";
 import { useUpdateMyProfileMutation } from "../../../features/teachers/mutations/useUpdateMyProfileMutation";
 import { useModalStore } from "../../../store/modals.store";
+import { useTeacherAppointmentsQuery } from "../../../features/appointments/query/useTeacherAppointmentsQuery";
 
 export type { LessonPrice } from "../../../components/teacherProfileSection/types";
 
@@ -31,6 +32,11 @@ export const TeacherProfile = () => {
   const { data: profile, isLoading } = useMyProfileQuery();
   const updateProfileMutation = useUpdateMyProfileMutation();
   const openModal = useModalStore((s) => s.open);
+  const { data: appointmentsData } = useTeacherAppointmentsQuery(
+    undefined,
+    1,
+    1000,
+  );
 
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState("");
@@ -293,6 +299,45 @@ export const TeacherProfile = () => {
 
   const handleChangePassword = async () => {};
 
+  const getBookedSlots = () => {
+    const appointments = appointmentsData?.appointments || [];
+    const DAYS_MAP: Record<string, string> = {
+      Monday: "Monday",
+      Tuesday: "Tuesday",
+      Wednesday: "Wednesday",
+      Thursday: "Thursday",
+      Friday: "Friday",
+      Saturday: "Saturday",
+      Sunday: "Sunday",
+    };
+
+    const now = new Date();
+
+    return appointments
+      .filter((apt) => {
+        if (apt.status !== "approved") return false;
+        if (!apt.studentName) return false;
+
+        const appointmentDate = new Date(apt.date);
+        const [hours, minutes] = apt.time.split(":").map(Number);
+        appointmentDate.setHours(hours, minutes, 0, 0);
+
+        return appointmentDate > now;
+      })
+      .map((apt) => {
+        const date = new Date(apt.date);
+        const dayName = date.toLocaleDateString("en-US", { weekday: "long" });
+        const hour = parseInt(apt.time.split(":")[0], 10);
+
+        return {
+          day: DAYS_MAP[dayName] || dayName,
+          hour,
+          studentName: apt.studentName!,
+          lesson: apt.lesson,
+        };
+      });
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[#15141D]">
@@ -382,6 +427,7 @@ export const TeacherProfile = () => {
         onClose={() => setIsScheduleOpen(false)}
         onSave={handleScheduleSave}
         initialSlots={schedule}
+        bookedSlots={getBookedSlots()}
       />
 
       <ChangePasswordModal
