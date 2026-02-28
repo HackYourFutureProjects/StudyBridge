@@ -20,3 +20,32 @@
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
 }
+
+.scrollbar-visible::-webkit-scrollbar {
+  width: 14px;
+  height: 14px;
+}
+
+.scrollbar-visible::-webkit-scrollbar-track {
+  background: rgba(147, 51, 234, 0.2);
+  border-radius: 8px;
+}
+
+.scrollbar-visible::-webkit-scrollbar-thumb {
+  background: #9333ea;
+  border-radius: 8px;
+  border: 3px solid rgba(42, 36, 51, 0.5);
+}
+
+.scrollbar-visible::-webkit-scrollbar-thumb:hover {
+  background: #a855f7;
+}
+
+.scrollbar-visible::-webkit-scrollbar-corner {
+  background: rgba(147, 51, 234, 0.2);
+}
+
+.scrollbar-visible {
+  scrollbar-width: auto;
+  scrollbar-color: #9333ea rgba(147, 51, 234, 0.2);
+}
