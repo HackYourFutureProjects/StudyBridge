@@ -36,16 +36,18 @@ export const TeacherCard = ({
   };
   return (
     <div
-      className="flex flex-col items-center xl:flex-row border bg-[#15141D80] border-blue-500
+      className="flex flex-col items-center sm:flex-row border bg-[#15141D80] border-blue-500
                 px-4 sm:px-6 md:px-9 py-6 md:py-9 rounded-[25px]"
     >
       <div
-        className="flex-1 min-w-0 flex flex-col xl:flex-row gap-3.75
-                  xl:border-r border-[#ffffff10] xl:pr-5.75"
+        className="flex-1 min-w-0 flex flex-col items-center sm:items-start xl:flex-row gap-3.75
+                   xl:pr-5.75"
       >
         <div className="flex items-center flex-col gap-3.75">
           <div
-            className=" w-28 h-28
+            className="block
+                md:block lg:hidden xl:block
+                w-28 h-28
                 md:w-37.5 md:h-37.5
                 lg:w-43.25 lg:h-43.25
                 xl:w-48 xl:h-48
@@ -55,7 +57,7 @@ export const TeacherCard = ({
           >
             {avatarUrl ? (
               <img
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover "
                 src={avatarUrl}
                 alt="person"
               />
@@ -64,14 +66,14 @@ export const TeacherCard = ({
             )}
           </div>
           <div className="pb-2.25 border-b border-light-200">
-            <p className="text-light-100 text-[16px] md:text-[18px] lg:text-[20px] xl:text-[22px]">
+            <p className="text-light-100 text-[16px] md:text-[24px] lg:text-[24px] xl:text-[24px]">
               {firstName} {lastName}
             </p>
           </div>
         </div>
-        <div className="flex flex-col items-center gap-5">
+        <div className="flex flex-col items-center sm:items-start xl:items-center gap-5">
           {subjects.length > 0 && (
-            <div className="flex flex-wrap gap-2 justify-center">
+            <div className="flex flex-col gap-2 justify-start xl:justify-start xl:flex-wrap xl:flex-row">
               {subjects.map((subject) => (
                 <span
                   key={subject._id}
@@ -110,7 +112,8 @@ export const TeacherCard = ({
           </div>
         </div>
       </div>
-      <div className="w-full md:w-50 flex flex-col items-center justify-center gap-3.75 md:pl-9.25">
+      <div className="w-px self-stretch bg-[#ffffff10]" />
+      <div className="w-50 flex flex-col items-center justify-center gap-3.75 md:pl-9.25">
         <span className="text-[22px] md:text-[30px] lg:text-[34px] xl:text-[36px] text-light-100">
           {priceFrom} euro
         </span>
