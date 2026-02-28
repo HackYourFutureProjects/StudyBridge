@@ -19,19 +19,7 @@ export const ReviewsTeacher = ({
   return (
     <section className="py-12 sm:py-16 lg:py-20 section-spacing">
       <div className="mx-auto px-4 sm:px-6 lg:px-8 container-centered">
-        <div className="text-center">
-          <h2 className="mb-6 sm:mb-8 lg:mb-10 font-bold text-white xl:text-[56px] text-3xl sm:text-4xl lg:text-5xl">
-            What our clients say
-          </h2>
-          <p className="mx-auto mb-12 sm:mb-16 lg:mb-20 px-4 max-w-3xl text-white/70 text-sm sm:text-base lg:text-lg leading-relaxed">
-            Students appreciate the practical approach, supportive instructors,
-            and clear learning structure across all courses. Many international
-            students highlight fast progress, increased confidence, and a
-            comfortable learning environment.
-          </p>
-        </div>
-
-        <div className="gap-x-8 gap-y-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full">
+        <div className="gap-x-8 gap-y-12 grid grid-cols-1 w-full">
           {reviews.map((review) => (
             <div
               key={review._id}
