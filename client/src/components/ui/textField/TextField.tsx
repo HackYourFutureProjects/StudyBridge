@@ -228,7 +228,9 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
             )}
           </div>
           {errorMessage && (
-            <span className="mt-1 text-sm text-danger">{errorMessage}</span>
+            <span className="mt-1 ml-6 text-sm text-danger">
+              {errorMessage}
+            </span>
           )}
         </div>
       </>
