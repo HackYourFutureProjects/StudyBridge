@@ -1,8 +1,8 @@
 import { Appointment, AppointmentStatus } from "../../types/appointments.types";
-import { TeacherAppointmentStatusBar } from "./TeacherAppointmentStatusBar";
-import { TeacherAppointmentAvatar } from "./TeacherAppointmentAvatar";
-import { TeacherAppointmentInfo } from "./TeacherAppointmentInfo";
-import { TeacherAppointmentActions } from "./TeacherAppointmentActions";
+import { TeacherAppointmentStatusBar } from "./TeacherAppointmentStatusBar.tsx";
+import { TeacherAppointmentAvatar } from "./TeacherAppointmentAvatar.tsx";
+import { TeacherAppointmentInfo } from "./TeacherAppointmentInfo.tsx";
+import { TeacherAppointmentActions } from "./TeacherAppointmentActions.tsx";
 import { getStatusStyles } from "../appointmentCard/appointmentCard.utils";
 
 type TeacherAppointmentCardProps = {

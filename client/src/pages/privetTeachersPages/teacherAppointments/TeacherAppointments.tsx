@@ -21,6 +21,7 @@ import {
   mapUiSlotsToMergedWeekAvailability,
   mapWeekAvailabilityToUiSlots,
 } from "../teacherProfile/scheduleMappers";
+import { mapAppointmentsToBookedSlots } from "../../../util/appointmentSchedule.util";
 
 export interface TimeSlot {
   day: string;
@@ -145,6 +146,11 @@ export const TeacherAppointments = () => {
     });
   };
 
+  const getBookedSlots = () => {
+    const allAppointments = data?.appointments || [];
+    return mapAppointmentsToBookedSlots(allAppointments);
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen">
@@ -255,6 +261,7 @@ export const TeacherAppointments = () => {
         onClose={() => setIsScheduleOpen(false)}
         onSave={handleScheduleSave}
         initialSlots={schedule}
+        bookedSlots={getBookedSlots()}
       />
     </div>
   );
