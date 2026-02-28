@@ -23,6 +23,17 @@ export const TeacherAppointmentActions = ({
         <StatusButtons initialStatus={status} onStatusChange={onStatusChange} />
       )}
 
+      {status === "approved" && !isPast && (
+        <Button
+          as="button"
+          variant="link"
+          className="text-green-400 underline text-[14px] hover:text-green-300"
+          onClick={() => {}}
+        >
+          Add to Regular Students
+        </Button>
+      )}
+
       <Button
         as="button"
         variant="link"
