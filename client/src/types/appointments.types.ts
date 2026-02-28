@@ -8,6 +8,7 @@ export interface Appointment {
   studentId: string;
   teacherName?: string;
   studentName?: string;
+  studentProfileImageUrl?: string | null;
   price: string;
   date: string;
   time: string;

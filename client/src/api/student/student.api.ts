@@ -6,6 +6,11 @@ export const getMyStudentProfile = async (): Promise<StudentType> => {
   return response.data;
 };
 
+export const getStudentByIdApi = async (id: string): Promise<StudentType> => {
+  const response = await apiProtected.get(`/api/students/${id}`);
+  return response.data;
+};
+
 export const updateMyStudentProfile = async (
   data: UpdateStudentProfile,
 ): Promise<StudentType> => {
