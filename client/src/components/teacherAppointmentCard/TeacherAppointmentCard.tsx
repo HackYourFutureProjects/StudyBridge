@@ -15,6 +15,7 @@ type TeacherAppointmentCardProps = {
   onAddToRegular?: () => void;
   onRemoveFromRegular?: () => void;
   isRegularTab?: boolean;
+  onScheduleClick?: () => void;
 };
 
 export const TeacherAppointmentCard = ({
@@ -27,6 +28,7 @@ export const TeacherAppointmentCard = ({
   onAddToRegular,
   onRemoveFromRegular,
   isRegularTab = false,
+  onScheduleClick,
 }: TeacherAppointmentCardProps) => {
   const statusStyles = getStatusStyles(appointment.status);
 
@@ -44,6 +46,7 @@ export const TeacherAppointmentCard = ({
         time={appointment.time}
         statusStyles={statusStyles}
         showScheduleButton={isRegularTab}
+        onScheduleClick={onScheduleClick}
       />
 
       <div className="flex items-center px-6 py-6 gap-6">
@@ -66,6 +69,7 @@ export const TeacherAppointmentCard = ({
           onDelete={onDelete}
           onAddToRegular={onAddToRegular}
           onRemoveFromRegular={onRemoveFromRegular}
+          isRegularTab={isRegularTab}
         />
       </div>
     </div>

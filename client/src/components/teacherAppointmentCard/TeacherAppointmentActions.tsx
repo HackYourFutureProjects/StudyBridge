@@ -10,6 +10,7 @@ type TeacherAppointmentActionsProps = {
   onDelete?: () => void;
   onAddToRegular?: () => void;
   onRemoveFromRegular?: () => void;
+  isRegularTab?: boolean;
 };
 
 export const TeacherAppointmentActions = ({
@@ -20,10 +21,11 @@ export const TeacherAppointmentActions = ({
   onDelete,
   onAddToRegular,
   onRemoveFromRegular,
+  isRegularTab = false,
 }: TeacherAppointmentActionsProps) => {
   return (
     <div className="flex flex-col items-end gap-3 min-w-[200px]">
-      {!isPast && onStatusChange && (
+      {!isPast && onStatusChange && !isRegularTab && (
         <StatusButtons initialStatus={status} onStatusChange={onStatusChange} />
       )}
 
@@ -58,7 +60,7 @@ export const TeacherAppointmentActions = ({
         Start call!
       </Button>
 
-      {isPast && onDelete && (
+      {onDelete && (
         <Button
           as="button"
           variant="link"

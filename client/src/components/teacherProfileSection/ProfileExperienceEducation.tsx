@@ -57,8 +57,12 @@ export const ProfileExperienceEducation = ({
 
     <button
       type="button"
-      onClick={onScheduleClick}
-      className="text-purple-400 underline hover:text-purple-300 transition-colors sm:ml-32 text-sm sm:text-base"
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        onScheduleClick?.();
+      }}
+      className="text-purple-400 underline hover:text-purple-300 transition-colors sm:ml-32 text-sm sm:text-base cursor-pointer"
     >
       Lesson schedule
     </button>

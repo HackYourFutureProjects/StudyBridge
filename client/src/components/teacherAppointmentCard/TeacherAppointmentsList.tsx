@@ -11,6 +11,7 @@ type TeacherAppointmentsListProps = {
   onRemoveFromRegular?: (appointmentId: string) => void;
   regularStudentIds?: string[];
   isRegularTab?: boolean;
+  onScheduleClick?: () => void;
 };
 
 export const TeacherAppointmentsList = ({
@@ -23,6 +24,7 @@ export const TeacherAppointmentsList = ({
   onRemoveFromRegular,
   regularStudentIds = [],
   isRegularTab = false,
+  onScheduleClick,
 }: TeacherAppointmentsListProps) => {
   if (appointments.length === 0) {
     return (
@@ -43,7 +45,7 @@ export const TeacherAppointmentsList = ({
             studentAvatar={appointment.studentProfileImageUrl}
             isPast={isPast}
             onStatusChange={
-              !isPast
+              !isPast && !isRegularTab
                 ? (newStatus: AppointmentStatus) =>
                     onStatusChange(appointment.id, newStatus)
                 : undefined
@@ -51,7 +53,11 @@ export const TeacherAppointmentsList = ({
             onStartCall={() =>
               onStartCall(appointment.studentId, appointment.id)
             }
-            onDelete={isPast ? () => onDelete(appointment.id) : undefined}
+            onDelete={
+              isRegularTab || isPast
+                ? () => onDelete(appointment.id)
+                : undefined
+            }
             onAddToRegular={
               !isRegularTab && !isInRegular && onAddToRegular
                 ? () => onAddToRegular(appointment)
@@ -63,6 +69,7 @@ export const TeacherAppointmentsList = ({
                 : undefined
             }
             isRegularTab={isRegularTab}
+            onScheduleClick={onScheduleClick}
           />
         );
       })}

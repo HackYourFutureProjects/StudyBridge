@@ -9,6 +9,7 @@ type TeacherAppointmentStatusBarProps = {
   time: string;
   statusStyles: StatusStyles;
   showScheduleButton?: boolean;
+  onScheduleClick?: () => void;
 };
 
 export const TeacherAppointmentStatusBar = ({
@@ -16,6 +17,7 @@ export const TeacherAppointmentStatusBar = ({
   time,
   statusStyles,
   showScheduleButton = false,
+  onScheduleClick,
 }: TeacherAppointmentStatusBarProps) => {
   return (
     <div
@@ -26,7 +28,11 @@ export const TeacherAppointmentStatusBar = ({
       </span>
       {showScheduleButton ? (
         <button
-          onClick={() => {}}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onScheduleClick?.();
+          }}
           className={`px-4 py-2 rounded-full text-sm font-medium transition-colors bg-white/20 hover:bg-white/30 ${statusStyles.text} border border-white/30`}
         >
           Choose schedule
