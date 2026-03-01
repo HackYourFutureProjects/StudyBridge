@@ -7,7 +7,7 @@ import { Appointment } from "../../../types/appointments.types";
 import { Loader } from "../../loader/Loader";
 import { useNotificationStore } from "../../../store/notification.store";
 import { ReviewType } from "../../../api/review/review.type";
-import { SelectComponent } from "../../ui/select/select";
+import { SelectComponent } from "../../ui/select/Select";
 
 interface AddReviewFormProps {
   teacherId: string;
