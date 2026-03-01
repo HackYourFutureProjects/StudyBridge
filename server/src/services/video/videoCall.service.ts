@@ -13,6 +13,7 @@ import {
   VideoCallViewType,
 } from "../../types/video/video.types.js";
 import { randomUUID } from "node:crypto";
+import { io } from "../../socket/socket.server.js";
 
 const ACCEPTED_CALL_TTL_MS = 3 * 60 * 60 * 1000; // 3 hours
 
@@ -103,6 +104,17 @@ export class VideoCallService {
     };
 
     const call = await this.videoCallCommand.startVideoCall(newVideo);
+    // Notify the target student immediately that a new call is incoming.
+    io?.to(`user:${call.studentId}`).emit("video:incoming", {
+      callId: call.id,
+      streamCallId: call.streamCallId,
+      streamCallType: call.streamCallType,
+      teacherId: call.teacherId,
+      studentId: call.studentId,
+      status: "incoming",
+      expiresAt: call.expiresAt.getTime(),
+    });
+
     return call;
   }
 
@@ -183,6 +195,16 @@ export class VideoCallService {
       throw new HttpError(409, "Call is no longer joinable");
     }
 
+    // Student accepted: notify the teacher so their UI can react in real time.
+    io?.to(`user:${acceptedCall.teacherId}`).emit("video:accepted", {
+      callId: acceptedCall.id,
+      streamCallId: acceptedCall.streamCallId,
+      streamCallType: acceptedCall.streamCallType,
+      teacherId: acceptedCall.teacherId,
+      studentId: acceptedCall.studentId,
+      status: "accepted",
+    });
+
     return acceptedCall;
   }
 
@@ -217,6 +239,18 @@ export class VideoCallService {
     }
 
     const declinedCall = await this.videoCallCommand.declineCallById(callId);
+
+    if (declinedCall) {
+      // Student declined: notify the teacher to stop ringing/clear incoming state.
+      io?.to(`user:${declinedCall.teacherId}`).emit("video:declined", {
+        callId: declinedCall.id,
+        streamCallId: declinedCall.streamCallId,
+        streamCallType: declinedCall.streamCallType,
+        teacherId: declinedCall.teacherId,
+        studentId: declinedCall.studentId,
+        status: "declined",
+      });
+    }
 
     return declinedCall ?? null;
   }
