@@ -28,20 +28,17 @@ const HOURS = Array.from({ length: 17 }, (_, i) => ({
   label: `${i + 7}:00`,
 }));
 
-export const RegularStudentScheduleModal = ({
-  isOpen,
+const ModalContent = ({
   onClose,
   onSave,
   studentName,
   initialSchedule = [],
   occupiedSlots = [],
-}: RegularStudentScheduleModalProps) => {
+}: Omit<RegularStudentScheduleModalProps, "isOpen">) => {
   const [savedSlots, setSavedSlots] =
     useState<WeeklyScheduleSlot[]>(initialSchedule);
   const [currentDay, setCurrentDay] = useState<string>("Monday");
   const [currentHour, setCurrentHour] = useState<number>(7);
-
-  if (!isOpen) return null;
 
   const isDuplicate = savedSlots.some(
     (slot) => slot.day === currentDay && slot.hour === currentHour,
@@ -59,8 +56,20 @@ export const RegularStudentScheduleModal = ({
     const newSlot = { day: currentDay, hour: currentHour };
     const updatedSlots = [...savedSlots, newSlot];
     setSavedSlots(updatedSlots);
-    setCurrentDay("Monday");
-    setCurrentHour(7);
+
+    const nextHour = currentHour + 1;
+    if (nextHour <= 23) {
+      setCurrentHour(nextHour);
+    } else {
+      const currentDayIndex = DAYS.findIndex((d) => d.value === currentDay);
+      if (currentDayIndex < DAYS.length - 1) {
+        setCurrentDay(DAYS[currentDayIndex + 1].value);
+        setCurrentHour(7);
+      } else {
+        setCurrentDay("Monday");
+        setCurrentHour(7);
+      }
+    }
   };
 
   const handleRemoveSlot = (index: number) => {
@@ -73,9 +82,6 @@ export const RegularStudentScheduleModal = ({
   };
 
   const handleCancel = () => {
-    setSavedSlots(initialSchedule);
-    setCurrentDay("Monday");
-    setCurrentHour(7);
     onClose();
   };
 
@@ -202,5 +208,21 @@ export const RegularStudentScheduleModal = ({
         </div>
       </div>
     </div>
+  );
+};
+
+export const RegularStudentScheduleModal = ({
+  isOpen,
+  studentName,
+  ...props
+}: RegularStudentScheduleModalProps) => {
+  if (!isOpen) return null;
+
+  return (
+    <ModalContent
+      key={`${studentName}-${isOpen}`}
+      studentName={studentName}
+      {...props}
+    />
   );
 };
