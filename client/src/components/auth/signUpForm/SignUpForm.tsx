@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ControlledTextField } from "../../ui/controlled/controlledTextField/ControlledTextField";
 import { Button } from "../../ui/button/Button";
 import { signUpSchema } from "./signUpForm.validation";
-import Google from "../../icons/Google";
 import { NavLink } from "react-router-dom";
 import { authRoutesVariables } from "../../../router/routesVariables/pathVariables";
 import {
@@ -13,6 +12,7 @@ import {
   Role,
 } from "../../../api/auth/types";
 import { Loader } from "../../loader/Loader.tsx";
+import { GoogleAuthButton } from "../../ui/button/GoogleAuthButton.tsx";
 
 type SignUpFormTypes = {
   loading: boolean;
@@ -123,13 +123,11 @@ export const SignUpForm = ({
 
           <div className="auth-divider">
             <div className="auth-divider-line" />
-            <span className="auth-divider-text">Or Continue with</span>
+            <span className="auth-divider-text">Or</span>
             <div className="auth-divider-line" />
           </div>
 
-          <Button variant="link" type="button">
-            <Google />
-          </Button>
+          <GoogleAuthButton role={role} intent="register" />
         </div>
       </div>
 

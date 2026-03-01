@@ -15,6 +15,7 @@ import {
   sendPasswordResetValidationMiddleware,
   updatePasswordValidationMiddleware,
 } from "../validation/auth/passwordResetMiddleware.js";
+import { googleAuthValidationMiddleware } from "../validation/auth/googleAuthValidation.js";
 
 export const authRouter = Router();
 const authController = container.get<AuthController>(TYPES.AuthController);
@@ -89,4 +90,20 @@ authRouter.post(
   updatePasswordValidationMiddleware(),
   errorMiddleware,
   authController.updatePasswordController.bind(authController),
+);
+
+authRouter.post(
+  "/google/login",
+  accessCounterMiddleware,
+  googleAuthValidationMiddleware(),
+  errorMiddleware,
+  authController.googleLoginController.bind(authController),
+);
+
+authRouter.post(
+  "/google/register",
+  accessCounterMiddleware,
+  googleAuthValidationMiddleware(),
+  errorMiddleware,
+  authController.googleRegisterController.bind(authController),
 );

@@ -1,7 +1,7 @@
 import { injectable } from "inversify";
-import { TeacherTypeDB } from "../../db/schemes/types/teacher.types.js";
 import { TeacherModel } from "../../db/schemes/teacherSchema.js";
 import { HttpError } from "../../utils/error.util.js";
+import { TeacherTypeDB } from "../../db/schemes/types/teacher.types.js";
 
 @injectable()
 export class TeacherCommand {

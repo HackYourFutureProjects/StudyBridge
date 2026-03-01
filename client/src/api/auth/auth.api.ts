@@ -1,4 +1,9 @@
-import { LoginFinalType, RegisterFinalType, UserType } from "./types";
+import {
+  GoogleAuthRequest,
+  LoginFinalType,
+  RegisterFinalType,
+  UserType,
+} from "./types";
 import { apiProtected, apiPublic } from "../api";
 
 export async function registerApi(data: RegisterFinalType) {
@@ -45,3 +50,13 @@ export async function updatePasswordApi(data: {
 }) {
   await apiProtected.post("/api/auth/update-password", data);
 }
+
+export const googleLoginApi = async (args: GoogleAuthRequest) => {
+  const { data } = await apiPublic.post("/api/auth/google/login", args);
+  return data as { accessToken: string };
+};
+
+export const googleRegisterApi = async (args: GoogleAuthRequest) => {
+  const { data } = await apiPublic.post("/api/auth/google/register", args);
+  return data as { accessToken: string };
+};

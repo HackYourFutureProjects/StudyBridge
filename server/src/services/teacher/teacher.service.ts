@@ -78,7 +78,8 @@ export class TeacherService {
         zipCode: null,
         country: null,
       },
-
+      authProvider: "local",
+      googleSub: null,
       createdAt: new Date(),
 
       role,

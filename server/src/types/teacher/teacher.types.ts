@@ -62,6 +62,8 @@ export type TeacherViewType = {
   address: AddressView;
   createdAt: Date;
   role: string;
+  authProvider: "local" | "google";
+  googleSub: string | null;
 };
 
 type SortDirection = "asc" | "desc";

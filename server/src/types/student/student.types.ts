@@ -1,3 +1,5 @@
+import { Role } from "../common.types.js";
+
 export type StudentViewType = {
   id: string;
   firstName: string;
@@ -7,7 +9,9 @@ export type StudentViewType = {
   address: string | null;
   mainLanguage: string | null;
   createdAt: Date;
-  role: string;
+  role: Role;
+  authProvider: "local" | "google";
+  googleSub: string | null;
 };
 
 export type UpdateStudentProfileType = {
