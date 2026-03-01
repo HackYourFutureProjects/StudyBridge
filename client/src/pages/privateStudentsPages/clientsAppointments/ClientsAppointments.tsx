@@ -9,16 +9,25 @@ import { getTeacherByIdApi } from "../../../api/teacher/teacher.api";
 import { TeacherType } from "../../../api/teacher/teacher.type";
 import { useAppointmentTime } from "../../../features/appointments/hooks/useAppointmentTime";
 import { useModalStore } from "../../../store/modals.store";
+import { useRegularTeachersQuery } from "../../../features/appointments/query/useRegularTeachersQuery";
+import { ViewScheduleModal } from "../../../components/regularStudentScheduleModal/ViewScheduleModal";
+import { Appointment } from "../../../types/appointments.types";
 
 export const ClientsAppointments = () => {
   const [activeTab, setActiveTab] = useState<"requests" | "regular">(
     "requests",
   );
   const [page, setPage] = useState(1);
+  const [regularPage, setRegularPage] = useState(1);
   const [teachersData, setTeachersData] = useState<Record<string, TeacherType>>(
     {},
   );
+  const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
+  const [selectedTeacher, setSelectedTeacher] = useState<Appointment | null>(
+    null,
+  );
   const limit = 5;
+  const regularLimit = 5;
   const user = useAuthSessionStore((state) => state.user);
   const { isPastAppointment } = useAppointmentTime();
   const { open: openModal } = useModalStore();
@@ -29,10 +38,17 @@ export const ClientsAppointments = () => {
     error,
   } = useStudentAppointmentsQuery(user?.id || "", page, limit);
 
+  const { data: regularTeachersData } = useRegularTeachersQuery(
+    regularPage,
+    regularLimit,
+  );
+
   const deleteAppointmentMutation = useDeleteAppointmentMutation();
 
   const appointments = studentData?.appointments || [];
   const totalPages = studentData?.totalPages || 1;
+  const regularTeachers = regularTeachersData?.appointments || [];
+  const regularTotalPages = regularTeachersData?.totalPages || 1;
 
   useEffect(() => {
     const fetchTeachersData = async () => {
@@ -70,6 +86,11 @@ export const ClientsAppointments = () => {
         deleteAppointmentMutation.mutate(appointmentId);
       },
     });
+  };
+
+  const handleShowSchedule = (appointment: Appointment) => {
+    setSelectedTeacher(appointment);
+    setIsScheduleModalOpen(true);
   };
 
   if (isLoading) {
@@ -123,7 +144,7 @@ export const ClientsAppointments = () => {
                 : "text-gray-400 hover:text-gray-300"
             }`}
           >
-            Regular Students
+            Regular Teachers
           </button>
         </div>
 
@@ -169,19 +190,57 @@ export const ClientsAppointments = () => {
             </div>
           </div>
         ) : (
-          <div className="mt-4 md:mt-6 text-white">
-            <div className="text-center py-8 md:py-12">
-              <p className="text-gray-400 mb-4">
-                Regular students feature coming soon
-              </p>
-              <p className="text-sm text-gray-500">
-                Here you&apos;ll be able to manage recurring lessons with your
-                regular teachers
-              </p>
-            </div>
+          <div className="mt-4 md:mt-6">
+            {regularTeachers.length === 0 ? (
+              <div className="text-center py-8 md:py-12">
+                <p className="text-gray-400 mb-4">No regular teachers yet</p>
+                <p className="text-sm text-gray-500">
+                  Your regular teachers will appear here
+                </p>
+              </div>
+            ) : (
+              <>
+                <div className="flex flex-col gap-4">
+                  {regularTeachers.map((appointment) => (
+                    <AppointmentCard
+                      key={appointment.id}
+                      appointment={appointment}
+                      teacherAvatar={
+                        teachersData[appointment.teacherId]?.profileImageUrl
+                      }
+                      isPast={false}
+                      isRegularTeacher={true}
+                      onShowSchedule={() => handleShowSchedule(appointment)}
+                    />
+                  ))}
+                </div>
+
+                {regularTotalPages > 1 && (
+                  <div className="mt-8 flex justify-center">
+                    <Pagination
+                      activeIndex={regularPage}
+                      onIndexChange={setRegularPage}
+                      totalPages={regularTotalPages}
+                      theme="secondary"
+                      shape="square"
+                    />
+                  </div>
+                )}
+              </>
+            )}
           </div>
         )}
       </div>
+
+      <ViewScheduleModal
+        isOpen={isScheduleModalOpen}
+        onClose={() => {
+          setIsScheduleModalOpen(false);
+          setSelectedTeacher(null);
+        }}
+        teacherName={selectedTeacher?.teacherName || "Unknown Teacher"}
+        schedule={selectedTeacher?.weeklySchedule || []}
+      />
     </div>
   );
 };

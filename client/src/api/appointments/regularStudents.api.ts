@@ -70,24 +70,3 @@ export const getRegularTeachersApi = async (
   );
   return response.data;
 };
-
-export const getAllRegularStudentsSlotsApi = async (): Promise<
-  WeeklyScheduleSlot[]
-> => {
-  const response = await api.get(
-    `/api/appointments/regular/students?limit=1000`,
-  );
-  const appointments: Appointment[] = response.data.appointments;
-
-  const allSlots: WeeklyScheduleSlot[] = [];
-  appointments.forEach((appointment) => {
-    if (
-      appointment.weeklySchedule &&
-      Array.isArray(appointment.weeklySchedule)
-    ) {
-      allSlots.push(...appointment.weeklySchedule);
-    }
-  });
-
-  return allSlots;
-};

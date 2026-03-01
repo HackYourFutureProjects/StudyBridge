@@ -7,92 +7,37 @@ import { useDeleteAppointmentMutation } from "../../../features/appointments/mut
 import {
   Appointment,
   AppointmentStatus,
+  WeeklyScheduleSlot,
 } from "../../../types/appointments.types";
 import { useModalStore } from "../../../store/modals.store";
 import { useVideoCall } from "../../../features/appointments/hooks/useVideoCall";
 import { useAppointmentTime } from "../../../features/appointments/hooks/useAppointmentTime";
 import { TeacherAppointmentsList } from "../../../components/teacherAppointmentCard/TeacherAppointmentsList";
-import { LessonSchedule } from "../../../components/teacherProfileSection/LessonSchedule";
-import {
-  getMyWeeklyScheduleApi,
-  updateMyWeeklyScheduleApi,
-} from "../../../api/teacher/teacher.api";
-import {
-  mapUiSlotsToMergedWeekAvailability,
-  mapWeekAvailabilityToUiSlots,
-} from "../teacherProfile/scheduleMappers";
-import { mapAppointmentsToBookedSlots } from "../../../util/appointmentSchedule.util";
-
-export interface TimeSlot {
-  day: string;
-  hour: number;
-}
-
-const REGULAR_STUDENTS_KEY = "regularStudents";
-
-const getInitialRegularStudents = (): Appointment[] => {
-  try {
-    const stored = localStorage.getItem(REGULAR_STUDENTS_KEY);
-    if (!stored) return [];
-
-    const parsed = JSON.parse(stored);
-    if (!Array.isArray(parsed)) return [];
-
-    let needsUpdate = false;
-
-    const migratedStudents = parsed
-      .filter((item): item is Appointment => {
-        return (
-          typeof item === "object" &&
-          item !== null &&
-          typeof item.id === "string" &&
-          typeof item.date === "string"
-        );
-      })
-      .map((student) => {
-        if (!student.addedToRegularAt) {
-          const parsedDate = Date.parse(student.date);
-          if (!isNaN(parsedDate)) {
-            needsUpdate = true;
-            return {
-              ...student,
-              addedToRegularAt: new Date(parsedDate).toISOString(),
-            };
-          }
-        }
-        return student;
-      });
-
-    if (needsUpdate) {
-      localStorage.setItem(
-        REGULAR_STUDENTS_KEY,
-        JSON.stringify(migratedStudents),
-      );
-    }
-
-    return migratedStudents;
-  } catch {
-    return [];
-  }
-};
+import { RegularStudentScheduleModal } from "../../../components/regularStudentScheduleModal/RegularStudentScheduleModal";
+import { useSetRegularStudentMutation } from "../../../features/appointments/mutations/useSetRegularStudentMutation";
+import { useUpdateWeeklyScheduleMutation } from "../../../features/appointments/mutations/useUpdateWeeklyScheduleMutation";
+import { useRemoveRegularStudentMutation } from "../../../features/appointments/mutations/useRemoveRegularStudentMutation";
+import { useRegularStudentsQuery } from "../../../features/appointments/query/useRegularStudentsQuery";
 
 export const TeacherAppointments = () => {
   const [activeTab, setActiveTab] = useState<"requests" | "regular">(
     "requests",
   );
   const [page, setPage] = useState(1);
-  const [regularPage, setRegularPage] = useState(1);
   const limit = 5;
-  const regularLimit = 5;
-  const [regularStudents, setRegularStudents] = useState<Appointment[]>(
-    getInitialRegularStudents,
+  const [isRegularStudentModalOpen, setIsRegularStudentModalOpen] =
+    useState(false);
+  const [selectedStudent, setSelectedStudent] = useState<Appointment | null>(
+    null,
   );
-  const [isScheduleOpen, setIsScheduleOpen] = useState(false);
-  const [schedule, setSchedule] = useState<TimeSlot[]>([]);
 
   const { open: openModal } = useModalStore();
   const { confirmStartCall } = useVideoCall();
   const { isPastAppointment } = useAppointmentTime();
+  const setRegularStudentMutation = useSetRegularStudentMutation();
+  const updateWeeklyScheduleMutation = useUpdateWeeklyScheduleMutation();
+  const removeRegularStudentMutation = useRemoveRegularStudentMutation();
+  const { data: regularStudentsData } = useRegularStudentsQuery();
 
   const { data, isLoading, error } = useTeacherAppointmentsQuery(
     undefined,
@@ -107,18 +52,7 @@ export const TeacherAppointments = () => {
   const deleteAppointmentMutation = useDeleteAppointmentMutation();
 
   const handleAddToRegular = (appointment: Appointment) => {
-    const isAlreadyAdded = regularStudents.some(
-      (student) => student.id === appointment.id,
-    );
-    if (!isAlreadyAdded) {
-      const appointmentWithTimestamp = {
-        ...appointment,
-        addedToRegularAt: new Date().toISOString(),
-      };
-      const updated = [...regularStudents, appointmentWithTimestamp];
-      setRegularStudents(updated);
-      localStorage.setItem(REGULAR_STUDENTS_KEY, JSON.stringify(updated));
-    }
+    setRegularStudentMutation.mutate(appointment.id);
   };
 
   const handleRemoveFromRegular = (appointmentId: string) => {
@@ -126,47 +60,14 @@ export const TeacherAppointments = () => {
       title: "Remove from Regular Students",
       message:
         "Are you sure you want to remove this student from regular students?",
-      onConfirm: () => {
-        const updated = regularStudents.filter(
-          (student) => student.id !== appointmentId,
-        );
-        setRegularStudents(updated);
-        localStorage.setItem(REGULAR_STUDENTS_KEY, JSON.stringify(updated));
+      onConfirm: async () => {
+        try {
+          await removeRegularStudentMutation.mutateAsync(appointmentId);
+        } catch (error) {
+          console.error("Failed to remove from regular students", error);
+        }
       },
     });
-  };
-
-  const handleOpenSchedule = async () => {
-    try {
-      const availability = await getMyWeeklyScheduleApi();
-      setSchedule(mapWeekAvailabilityToUiSlots(availability));
-    } catch (error) {
-      console.error("Failed to load weekly availability", error);
-    } finally {
-      setIsScheduleOpen(true);
-    }
-  };
-
-  const handleScheduleSave = async (slots: TimeSlot[]) => {
-    try {
-      setSchedule(slots);
-      const availability = mapUiSlotsToMergedWeekAvailability(slots);
-      await updateMyWeeklyScheduleApi({ availability });
-      openModal("alert", {
-        title: "Success",
-        message: "Schedule saved successfully",
-      });
-    } catch (error) {
-      const axiosError = error as {
-        response?: { data?: { errorsMessages?: Array<{ message: string }> } };
-      };
-      openModal("alert", {
-        title: "Error",
-        message:
-          axiosError?.response?.data?.errorsMessages?.[0]?.message ||
-          "Failed to save schedule. Please try again.",
-      });
-    }
   };
 
   const handleStatusChange = (
@@ -189,26 +90,40 @@ export const TeacherAppointments = () => {
     });
   };
 
-  const getSortedRegularStudents = () => {
-    return [...regularStudents].sort((a, b) => {
-      const dateA = new Date(a.addedToRegularAt || a.date).getTime();
-      const dateB = new Date(b.addedToRegularAt || b.date).getTime();
-      return dateB - dateA;
-    });
+  const handleUpdateStudentSchedule = async (
+    schedule: WeeklyScheduleSlot[],
+  ) => {
+    if (!selectedStudent) return;
+
+    try {
+      await updateWeeklyScheduleMutation.mutateAsync({
+        appointmentId: selectedStudent.id,
+        weeklySchedule: schedule,
+      });
+
+      setIsRegularStudentModalOpen(false);
+      setSelectedStudent(null);
+
+      openModal("alert", {
+        title: "Success",
+        message: "Schedule updated successfully",
+      });
+    } catch (error) {
+      const axiosError = error as {
+        response?: { data?: { errorsMessages?: Array<{ message: string }> } };
+      };
+      openModal("alert", {
+        title: "Error",
+        message:
+          axiosError?.response?.data?.errorsMessages?.[0]?.message ||
+          "Failed to update schedule",
+      });
+    }
   };
 
-  const getPaginatedRegularStudents = () => {
-    const sorted = getSortedRegularStudents();
-    const startIndex = (regularPage - 1) * regularLimit;
-    const endIndex = startIndex + regularLimit;
-    return sorted.slice(startIndex, endIndex);
-  };
-
-  const regularTotalPages = Math.ceil(regularStudents.length / regularLimit);
-
-  const getBookedSlots = () => {
-    const allAppointments = data?.appointments || [];
-    return mapAppointmentsToBookedSlots(allAppointments);
+  const handleEditStudentSchedule = (appointment: Appointment) => {
+    setSelectedStudent(appointment);
+    setIsRegularStudentModalOpen(true);
   };
 
   if (isLoading) {
@@ -275,7 +190,10 @@ export const TeacherAppointments = () => {
               onStartCall={confirmStartCall}
               onDelete={handleDelete}
               onAddToRegular={handleAddToRegular}
-              regularStudentIds={regularStudents.map((student) => student.id)}
+              onRemoveFromRegular={handleRemoveFromRegular}
+              regularStudentIds={
+                regularStudentsData?.appointments?.map((apt) => apt.id) || []
+              }
             />
 
             <div className="mt-8 flex justify-center">
@@ -290,7 +208,7 @@ export const TeacherAppointments = () => {
           </div>
         ) : (
           <div className="mt-4 md:mt-6">
-            {regularStudents.length === 0 ? (
+            {regularStudentsData?.appointments?.length === 0 ? (
               <div className="text-center py-8 md:py-12">
                 <p className="text-gray-400 mb-4">No regular students yet</p>
                 <p className="text-sm text-gray-500">
@@ -298,42 +216,35 @@ export const TeacherAppointments = () => {
                 </p>
               </div>
             ) : (
-              <>
-                <TeacherAppointmentsList
-                  appointments={getPaginatedRegularStudents()}
-                  isPastAppointment={isPastAppointment}
-                  onStatusChange={handleStatusChange}
-                  onStartCall={confirmStartCall}
-                  onDelete={handleDelete}
-                  onRemoveFromRegular={handleRemoveFromRegular}
-                  onScheduleClick={handleOpenSchedule}
-                  isRegularTab
-                />
-
-                {regularTotalPages > 1 && (
-                  <div className="mt-8 flex justify-center">
-                    <Pagination
-                      activeIndex={regularPage}
-                      onIndexChange={setRegularPage}
-                      totalPages={regularTotalPages}
-                      theme="secondary"
-                      shape="square"
-                    />
-                  </div>
-                )}
-              </>
+              <TeacherAppointmentsList
+                appointments={regularStudentsData?.appointments || []}
+                isPastAppointment={isPastAppointment}
+                onStatusChange={handleStatusChange}
+                onStartCall={confirmStartCall}
+                onDelete={handleDelete}
+                onRemoveFromRegular={handleRemoveFromRegular}
+                onScheduleClick={handleEditStudentSchedule}
+                isRegularTab
+              />
             )}
           </div>
         )}
       </div>
 
-      <LessonSchedule
-        key={JSON.stringify(schedule)}
-        isOpen={isScheduleOpen}
-        onClose={() => setIsScheduleOpen(false)}
-        onSave={handleScheduleSave}
-        initialSlots={schedule}
-        bookedSlots={getBookedSlots()}
+      <RegularStudentScheduleModal
+        isOpen={isRegularStudentModalOpen}
+        onClose={() => {
+          setIsRegularStudentModalOpen(false);
+          setSelectedStudent(null);
+        }}
+        onSave={handleUpdateStudentSchedule}
+        studentName={selectedStudent?.studentName || ""}
+        initialSchedule={selectedStudent?.weeklySchedule || []}
+        occupiedSlots={
+          regularStudentsData?.appointments
+            ?.filter((apt) => apt.id !== selectedStudent?.id)
+            .flatMap((apt) => apt.weeklySchedule || []) || []
+        }
       />
     </div>
   );

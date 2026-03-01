@@ -11,7 +11,7 @@ type TeacherAppointmentsListProps = {
   onRemoveFromRegular?: (appointmentId: string) => void;
   regularStudentIds?: string[];
   isRegularTab?: boolean;
-  onScheduleClick?: () => void;
+  onScheduleClick?: (appointment: Appointment) => void;
 };
 
 export const TeacherAppointmentsList = ({
@@ -45,7 +45,7 @@ export const TeacherAppointmentsList = ({
             studentAvatar={appointment.studentProfileImageUrl}
             isPast={isPast}
             onStatusChange={
-              !isPast && !isRegularTab
+              !isRegularTab && !isPast
                 ? (newStatus: AppointmentStatus) =>
                     onStatusChange(appointment.id, newStatus)
                 : undefined
@@ -54,22 +54,30 @@ export const TeacherAppointmentsList = ({
               onStartCall(appointment.studentId, appointment.id)
             }
             onDelete={
-              isRegularTab || isPast
+              isPast || isRegularTab
                 ? () => onDelete(appointment.id)
                 : undefined
             }
             onAddToRegular={
-              !isRegularTab && !isInRegular && onAddToRegular
+              !isRegularTab &&
+              !isPast &&
+              !isInRegular &&
+              onAddToRegular &&
+              appointment.status === "approved"
                 ? () => onAddToRegular(appointment)
                 : undefined
             }
             onRemoveFromRegular={
-              isRegularTab && onRemoveFromRegular
+              !isPast && isInRegular && onRemoveFromRegular
                 ? () => onRemoveFromRegular(appointment.id)
                 : undefined
             }
             isRegularTab={isRegularTab}
-            onScheduleClick={onScheduleClick}
+            onScheduleClick={
+              isRegularTab && onScheduleClick
+                ? () => onScheduleClick(appointment)
+                : undefined
+            }
           />
         );
       })}

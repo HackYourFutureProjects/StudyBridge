@@ -31,9 +31,15 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
   const { data } = useTeacherAppointmentsQuery(
     isAuthenticated ? teacher?.id : undefined,
   );
+
   const appointments = useMemo(() => {
     const allAppointments = data?.appointments || [];
     return allAppointments.filter((apt) => apt.date && apt.time);
+  }, [data?.appointments]);
+
+  const regularStudents = useMemo(() => {
+    const allAppointments = data?.appointments || [];
+    return allAppointments.filter((apt) => apt.isRegularStudent === true);
   }, [data?.appointments]);
 
   const subjectOptions = useMemo(() => {
@@ -160,9 +166,13 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
       }
 
       const startHour = parseInt(startMatch[1], 10);
-      const endHour = parseInt(endMatch[1], 10);
+      let endHour = parseInt(endMatch[1], 10);
 
-      if (startHour < 0 || startHour > 23 || endHour < 0 || endHour > 23) {
+      if (slot.end === "23:59") {
+        endHour = 24;
+      }
+
+      if (startHour < 0 || startHour > 23) {
         return;
       }
 
@@ -184,6 +194,23 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
       approvedAppointments.map((apt) => apt.time.substring(0, 5)),
     );
 
+    const regularStudentSlots = new Set<string>();
+    regularStudents.forEach(
+      (student: { weeklySchedule?: Array<{ day: string; hour: number }> }) => {
+        if (student.weeklySchedule && Array.isArray(student.weeklySchedule)) {
+          student.weeklySchedule.forEach(
+            (slot: { day: string; hour: number }) => {
+              const slotDayName = slot.day.toLowerCase();
+              if (slotDayName === dayName) {
+                const slotTime = `${slot.hour.toString().padStart(2, "0")}:00`;
+                regularStudentSlots.add(slotTime);
+              }
+            },
+          );
+        }
+      },
+    );
+
     const now = new Date();
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -193,7 +220,7 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
     const isToday = selectedDateOnly.getTime() === today.getTime();
 
     return slots.filter((slot) => {
-      if (bookedTimes.has(slot)) {
+      if (bookedTimes.has(slot) || regularStudentSlots.has(slot)) {
         return false;
       }
 

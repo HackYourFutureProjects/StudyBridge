@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import type { LessonPrice } from "../../../components/teacherProfileSection/types";
 import { ProfileAvatar } from "../../../components/teacherProfileSection/ProfileAvatar";
 import { ProfileHeader } from "../../../components/teacherProfileSection/ProfileHeader";
@@ -18,7 +19,9 @@ import {
 } from "../../../api/teacher/teacher.api";
 import { useMyProfileQuery } from "../../../features/teachers/query/useMyProfileQuery";
 import { useUpdateMyProfileMutation } from "../../../features/teachers/mutations/useUpdateMyProfileMutation";
+import { useRegularStudentsQuery } from "../../../features/appointments/query/useRegularStudentsQuery";
 import { useModalStore } from "../../../store/modals.store";
+import { queryKeys } from "../../../features/queryKeys";
 
 export type { LessonPrice } from "../../../components/teacherProfileSection/types";
 
@@ -34,7 +37,9 @@ export interface TimeSlot {
 export const TeacherProfile = () => {
   const { data: profile, isLoading } = useMyProfileQuery();
   const updateProfileMutation = useUpdateMyProfileMutation();
+  const { data: regularStudentsData } = useRegularStudentsQuery();
   const openModal = useModalStore((s) => s.open);
+  const queryClient = useQueryClient();
 
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState("");
@@ -270,6 +275,17 @@ export const TeacherProfile = () => {
       setSchedule(slots);
       const availability = mapUiSlotsToMergedWeekAvailability(slots);
       await updateMyWeeklyScheduleApi({ availability });
+
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.teachers.myProfile(),
+      });
+
+      if (profile?.id) {
+        await queryClient.invalidateQueries({
+          queryKey: queryKeys.teacher(profile.id),
+        });
+      }
+
       openModal("alert", {
         title: "Success",
         message: "Schedule saved successfully",
@@ -296,6 +312,22 @@ export const TeacherProfile = () => {
     } finally {
       setIsScheduleOpen(true);
     }
+  };
+
+  const getBookedSlots = (): TimeSlot[] => {
+    const regularStudents = regularStudentsData?.appointments || [];
+    const regularSlots: TimeSlot[] = [];
+    regularStudents.forEach((student) => {
+      if (student.weeklySchedule && Array.isArray(student.weeklySchedule)) {
+        student.weeklySchedule.forEach((slot) => {
+          regularSlots.push({
+            day: slot.day,
+            hour: slot.hour,
+          });
+        });
+      }
+    });
+    return regularSlots;
   };
 
   const handleChangePassword = async (
@@ -404,6 +436,7 @@ export const TeacherProfile = () => {
         onClose={() => setIsScheduleOpen(false)}
         onSave={handleScheduleSave}
         initialSlots={schedule}
+        bookedSlots={getBookedSlots()}
       />
 
       <ChangePasswordModal

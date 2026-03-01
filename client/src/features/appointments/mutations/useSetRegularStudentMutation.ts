@@ -12,7 +12,13 @@ export const useSetRegularStudentMutation = () => {
         queryKey: queryKeys.regularStudents(),
       });
       queryClient.invalidateQueries({
+        queryKey: queryKeys.regularTeachers(),
+      });
+      queryClient.invalidateQueries({
         queryKey: queryKeys.appointments,
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["appointments", "teacher"],
       });
     },
   });

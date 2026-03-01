@@ -1,9 +1,9 @@
 import { Outlet } from "react-router-dom";
+import { Sidebar } from "../components/sidebar/Sidebar.tsx";
 import {
   defaultStudentMenuItems,
   defaultTeacherMenuItems,
-  Sidebar,
-} from "../components/sidebar/Sidebar.tsx";
+} from "../components/sidebar/sidebarMenuItems.ts";
 import { TopBar } from "../components/headerPrivate/TopBar.tsx";
 import { useAuthSessionStore } from "../store/authSession.store.ts";
 import { useEffect } from "react";
