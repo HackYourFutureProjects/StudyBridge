@@ -27,7 +27,7 @@
   }
 
   .auth-fields {
-    @apply flex flex-col items-center justify-center lg:grid lg:grid-cols-2 gap-[24px];
+    @apply flex flex-col justify-center lg:grid lg:grid-cols-2 gap-[24px];
   }
 
   .auth-fields > :only-child {

@@ -18,7 +18,7 @@ export const ClientsAppointments = () => {
   const [teachersData, setTeachersData] = useState<Record<string, TeacherType>>(
     {},
   );
-  const limit = 10;
+  const limit = 5;
   const user = useAuthSessionStore((state) => state.user);
   const { isPastAppointment } = useAppointmentTime();
   const { open: openModal } = useModalStore();
@@ -101,13 +101,13 @@ export const ClientsAppointments = () => {
   }
 
   return (
-    <div className="px-6 lg:px-10 flex flex-col min-h-screen">
-      <div className="pt-[40px] flex flex-col flex-1">
+    <div className="px-4 md:px-6 lg:px-10 flex flex-col">
+      <div className="pt-6 md:pt-8 lg:pt-[40px] flex flex-col">
         <PageTitle title="My Appointments" />
-        <div className="mt-6 flex gap-4 border-b border-gray-700">
+        <div className="mt-4 md:mt-6 flex gap-2 md:gap-4 border-b border-gray-700 overflow-x-auto">
           <button
             onClick={() => setActiveTab("requests")}
-            className={`px-6 py-3 font-medium transition-colors ${
+            className={`px-4 md:px-6 py-2 md:py-3 font-medium transition-colors whitespace-nowrap text-sm md:text-base ${
               activeTab === "requests"
                 ? "text-purple-400 border-b-2 border-purple-400"
                 : "text-gray-400 hover:text-gray-300"
@@ -117,7 +117,7 @@ export const ClientsAppointments = () => {
           </button>
           <button
             onClick={() => setActiveTab("regular")}
-            className={`px-6 py-3 font-medium transition-colors ${
+            className={`px-4 md:px-6 py-2 md:py-3 font-medium transition-colors whitespace-nowrap text-sm md:text-base ${
               activeTab === "regular"
                 ? "text-purple-400 border-b-2 border-purple-400"
                 : "text-gray-400 hover:text-gray-300"
@@ -128,9 +128,7 @@ export const ClientsAppointments = () => {
         </div>
 
         {activeTab === "requests" ? (
-          <>
-            <div className="mt-6" />
-
+          <div className="mt-4 md:mt-6">
             {appointments.length === 0 ? (
               <div className="text-white text-center py-8">
                 No appointments found
@@ -160,7 +158,7 @@ export const ClientsAppointments = () => {
               </div>
             )}
 
-            <div className="mt-auto pt-4 mb-6 flex justify-center">
+            <div className="mt-8 flex justify-center">
               <Pagination
                 activeIndex={page}
                 onIndexChange={setPage}
@@ -169,10 +167,10 @@ export const ClientsAppointments = () => {
                 shape="square"
               />
             </div>
-          </>
+          </div>
         ) : (
-          <div className="mt-6 text-white">
-            <div className="text-center py-12">
+          <div className="mt-4 md:mt-6 text-white">
+            <div className="text-center py-8 md:py-12">
               <p className="text-gray-400 mb-4">
                 Regular students feature coming soon
               </p>

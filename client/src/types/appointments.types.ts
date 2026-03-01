@@ -14,4 +14,5 @@ export interface Appointment {
   time: string;
   status: AppointmentStatus;
   videoCall?: string;
+  addedToRegularAt?: string;
 }
