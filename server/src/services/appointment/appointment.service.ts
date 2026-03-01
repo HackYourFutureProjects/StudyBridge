@@ -75,6 +75,8 @@ export class AppointmentService {
       time: data.time,
       status: "pending" as const,
       videoCall: `https://meet.google.com/${data.teacherId}-${data.studentId}-${Date.now()}`,
+      isRegularStudent: false,
+      weeklySchedule: [],
       createdAt: new Date(),
       updatedAt: new Date(),
     };

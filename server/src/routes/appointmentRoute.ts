@@ -33,7 +33,6 @@ appointmentRouter.post(
   appointmentController.createAppointmentController.bind(appointmentController),
 );
 
-// Regular Students endpoints - MUST BE BEFORE /:id routes!
 appointmentRouter.get(
   "/regular/students",
   authMiddleware.handle,
