@@ -24,3 +24,10 @@ export type LoginFormTypes = {
 export type LoginFinalType = LoginFormTypes & {
   role: Role;
 };
+
+export type GoogleAuthRequest = {
+  idToken: string;
+  role: Role;
+};
+
+export type Intent = "login" | "register";
