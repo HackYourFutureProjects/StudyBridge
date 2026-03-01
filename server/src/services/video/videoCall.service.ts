@@ -111,6 +111,8 @@ export class VideoCallService {
       streamCallType: call.streamCallType,
       teacherId: call.teacherId,
       studentId: call.studentId,
+      teacherName: `${teacher.firstName} ${teacher.lastName}`,
+      teacherAvatarUrl: teacher.profileImageUrl ?? null,
       status: "incoming",
       expiresAt: call.expiresAt.getTime(),
     });
