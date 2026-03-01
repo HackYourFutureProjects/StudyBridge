@@ -189,4 +189,106 @@ export class AppointmentQuery {
       };
     });
   }
+
+  async getRegularStudentsByTeacher(
+    teacherId: string,
+    page?: number,
+    limit?: number,
+  ): Promise<{
+    appointments: WithId<AppointmentTypeDB>[];
+    total: number;
+    totalPages: number;
+  }> {
+    try {
+      const query = {
+        teacherId,
+        isRegularStudent: true,
+      };
+      const total = await AppointmentModel.countDocuments(query);
+
+      if (page !== undefined && limit !== undefined) {
+        if (page < 1 || limit < 1) {
+          throw new Error("Page and limit must be positive numbers");
+        }
+
+        const skip = (page - 1) * limit;
+        const appointments = await AppointmentModel.find(query)
+          .sort({ addedToRegularAt: -1 })
+          .skip(skip)
+          .limit(limit)
+          .lean();
+
+        return {
+          appointments,
+          total,
+          totalPages: Math.ceil(total / limit),
+        };
+      }
+
+      const appointments = await AppointmentModel.find(query)
+        .sort({ addedToRegularAt: -1 })
+        .lean();
+
+      return {
+        appointments,
+        total,
+        totalPages: Math.ceil(total / 10) || 1,
+      };
+    } catch (err: unknown) {
+      throw new Error("Something went wrong with regular students search", {
+        cause: err,
+      });
+    }
+  }
+
+  async getRegularTeachersByStudent(
+    studentId: string,
+    page?: number,
+    limit?: number,
+  ): Promise<{
+    appointments: WithId<AppointmentTypeDB>[];
+    total: number;
+    totalPages: number;
+  }> {
+    try {
+      const query = {
+        studentId,
+        isRegularStudent: true,
+      };
+      const total = await AppointmentModel.countDocuments(query);
+
+      if (page !== undefined && limit !== undefined) {
+        if (page < 1 || limit < 1) {
+          throw new Error("Page and limit must be positive numbers");
+        }
+
+        const skip = (page - 1) * limit;
+        const appointments = await AppointmentModel.find(query)
+          .sort({ addedToRegularAt: -1 })
+          .skip(skip)
+          .limit(limit)
+          .lean();
+
+        return {
+          appointments,
+          total,
+          totalPages: Math.ceil(total / limit),
+        };
+      }
+
+      const appointments = await AppointmentModel.find(query)
+        .sort({ addedToRegularAt: -1 })
+        .lean();
+
+      return {
+        appointments,
+        total,
+        totalPages: Math.ceil(total / 10) || 1,
+      };
+    } catch (err: unknown) {
+      throw new Error("Something went wrong with regular teachers search", {
+        cause: err,
+      });
+    }
+  }
 }

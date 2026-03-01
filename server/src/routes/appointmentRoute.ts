@@ -34,6 +34,50 @@ appointmentRouter.post(
 );
 
 appointmentRouter.get(
+  "/regular/students",
+  authMiddleware.handle,
+  appointmentController.getRegularStudentsController.bind(
+    appointmentController,
+  ),
+);
+
+appointmentRouter.get(
+  "/regular/teachers",
+  authMiddleware.handle,
+  appointmentController.getRegularTeachersController.bind(
+    appointmentController,
+  ),
+);
+
+appointmentRouter.post(
+  "/:id/set-regular",
+  idParamValidationMiddleware(),
+  errorMiddleware,
+  authMiddleware.handle,
+  appointmentController.setRegularStudentController.bind(appointmentController),
+);
+
+appointmentRouter.delete(
+  "/:id/remove-regular",
+  idParamValidationMiddleware(),
+  errorMiddleware,
+  authMiddleware.handle,
+  appointmentController.removeRegularStudentController.bind(
+    appointmentController,
+  ),
+);
+
+appointmentRouter.put(
+  "/:id/weekly-schedule",
+  idParamValidationMiddleware(),
+  errorMiddleware,
+  authMiddleware.handle,
+  appointmentController.updateWeeklyScheduleController.bind(
+    appointmentController,
+  ),
+);
+
+appointmentRouter.get(
   "/:id",
   idParamValidationMiddleware(),
   errorMiddleware,

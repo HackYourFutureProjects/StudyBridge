@@ -1,3 +1,8 @@
+export interface WeeklyScheduleSlot {
+  day: string;
+  hour: number;
+}
+
 export interface AppointmentTypeDB {
   id: string;
   studentId: string;
@@ -11,6 +16,9 @@ export interface AppointmentTypeDB {
   time: string;
   status: "pending" | "approved" | "rejected";
   videoCall?: string;
+  isRegularStudent?: boolean;
+  weeklySchedule?: WeeklyScheduleSlot[];
+  addedToRegularAt?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
