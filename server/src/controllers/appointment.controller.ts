@@ -181,4 +181,136 @@ export class AppointmentController {
       return next(error);
     }
   }
+
+  async setRegularStudentController(
+    req: RequestWithParams<ParamsType>,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const teacherId = req.auth?.userId;
+      if (!teacherId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const appointment = await this.appointmentService.setRegularStudent(
+        req.params.id,
+        teacherId,
+      );
+
+      if (!appointment) {
+        return res.status(404).json({ message: "Appointment not found" });
+      }
+
+      res.json(appointment);
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  async removeRegularStudentController(
+    req: RequestWithParams<ParamsType>,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const teacherId = req.auth?.userId;
+      if (!teacherId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const appointment = await this.appointmentService.removeRegularStudent(
+        req.params.id,
+        teacherId,
+      );
+
+      if (!appointment) {
+        return res.status(404).json({ message: "Appointment not found" });
+      }
+
+      res.json(appointment);
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  async updateWeeklyScheduleController(
+    req: RequestWithBody<{ weeklySchedule: { day: string; hour: number }[] }> &
+      RequestWithParams<ParamsType>,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const teacherId = req.auth?.userId;
+      if (!teacherId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const appointment = await this.appointmentService.updateWeeklySchedule(
+        req.params.id,
+        teacherId,
+        req.body.weeklySchedule,
+      );
+
+      if (!appointment) {
+        return res.status(404).json({ message: "Appointment not found" });
+      }
+
+      res.json(appointment);
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  async getRegularStudentsController(
+    req: RequestWithQuery<{ page?: string; limit?: string }>,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const teacherId = req.auth?.userId;
+      if (!teacherId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const page = req.query.page ? parseInt(req.query.page) : undefined;
+      const limit = req.query.limit ? parseInt(req.query.limit) : undefined;
+
+      const result = await this.appointmentService.getRegularStudentsByTeacher(
+        teacherId,
+        page,
+        limit,
+      );
+
+      res.json(result);
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  async getRegularTeachersController(
+    req: RequestWithQuery<{ page?: string; limit?: string }>,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const studentId = req.auth?.userId;
+      if (!studentId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const page = req.query.page ? parseInt(req.query.page) : undefined;
+      const limit = req.query.limit ? parseInt(req.query.limit) : undefined;
+
+      const result = await this.appointmentService.getRegularTeachersByStudent(
+        studentId,
+        page,
+        limit,
+      );
+
+      res.json(result);
+    } catch (error) {
+      return next(error);
+    }
+  }
 }
