@@ -20,6 +20,10 @@ import { StudentCommand } from "../../repositories/commandRepositories/student.c
 import { TeacherCommand } from "../../repositories/commandRepositories/teacher.command.js";
 import { sendPasswordResetEmail } from "../email/mailSender.js";
 import { logError, logWarning } from "../../utils/logging.js";
+import {
+  buildGoogleStudent,
+  buildGoogleTeacher,
+} from "../../utils/builders/user.builders.js";
 
 @injectable()
 export class AuthService {
@@ -411,36 +415,24 @@ export class AuthService {
     }
 
     if (role === "student") {
-      return await this.studentCommand.createStudent({
-        id: randomUUID(),
-        role,
+      const student = buildGoogleStudent({
         email: goggle.email,
         firstName: goggle.firstName,
         lastName: goggle.lastName,
-        profileImageUrl: goggle.picture ?? null,
-        address: null,
-        mainLanguage: null,
-        authProvider: "google",
+        picture: goggle.picture,
         googleSub: goggle.googleSub,
-        passwordReset: { tokenHash: null, expiresAt: null },
-        createdAt: new Date(),
       });
-    } else {
-      return await this.teacherCommand.createTeacher({
-        id: randomUUID(),
-        role,
-        email: goggle.email,
-        firstName: goggle.firstName,
-        lastName: goggle.lastName,
-        profileImageUrl: goggle.picture ?? null,
-        address: null,
-        mainLanguage: null,
-        authProvider: "google",
-        googleSub: goggle.googleSub,
-        passwordReset: { tokenHash: null, expiresAt: null },
-        createdAt: new Date(),
-      });
+      return await this.studentCommand.createStudent(student);
     }
+
+    const teacher = buildGoogleTeacher({
+      email: goggle.email,
+      firstName: goggle.firstName,
+      lastName: goggle.lastName,
+      picture: goggle.picture,
+      googleSub: goggle.googleSub,
+    });
+    return await this.teacherCommand.createTeacher(teacher);
   }
 
   async googleLogin(args: GoogleAuthRequest) {

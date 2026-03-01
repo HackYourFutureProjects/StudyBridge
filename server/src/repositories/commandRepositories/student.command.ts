@@ -3,14 +3,10 @@ import { StudentTypeDB } from "../../db/schemes/types/student.types.js";
 import { StudentModel } from "../../db/schemes/studentSchema.js";
 import { HttpError } from "../../utils/error.util.js";
 import { isMongoDuplicateKeyError } from "../../utils/duplicateType.guard.js";
-import {
-  CreateGoogleStudent,
-  CreateLocalStudent,
-} from "../../types/student/student.types.js";
 
 @injectable()
 export class StudentCommand {
-  async createStudent(newStudent: CreateLocalStudent | CreateGoogleStudent) {
+  async createStudent(newStudent: StudentTypeDB) {
     try {
       const created = await StudentModel.create(newStudent);
       return created.toObject();

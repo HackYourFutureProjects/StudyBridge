@@ -52,6 +52,8 @@ export class StudentService {
       createdAt: new Date(),
       profileImageUrl: null,
       mainLanguage: null,
+      authProvider: "local",
+      googleSub: null,
       role,
     };
     try {

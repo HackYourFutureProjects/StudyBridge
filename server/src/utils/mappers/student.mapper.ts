@@ -15,7 +15,5 @@ export const studentMapper = (
     mainLanguage: student.mainLanguage,
     createdAt: student.createdAt,
     role: student.role,
-    authProvider: student.authProvider,
-    googleSub: student.googleSub,
   };
 };

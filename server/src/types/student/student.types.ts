@@ -10,8 +10,6 @@ export type StudentViewType = {
   mainLanguage: string | null;
   createdAt: Date;
   role: string;
-  authProvider: "local" | "google";
-  googleSub: string | null;
 };
 
 export type UpdateStudentProfileType = {

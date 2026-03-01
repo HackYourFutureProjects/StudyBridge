@@ -1,4 +1,5 @@
-import { Role } from "../../../index.js";
+import { AddressItem } from "../../db/schemes/types/teacher.types.js";
+import { Role } from "../common.types.js";
 
 export type EducationViewItem = {
   degree: string;
@@ -64,8 +65,6 @@ export type TeacherViewType = {
   address: AddressView;
   createdAt: Date;
   role: string;
-  authProvider: "local" | "google";
-  googleSub: string | null;
 };
 
 type SortDirection = "asc" | "desc";
@@ -116,7 +115,7 @@ export type TeacherCreateBase = {
   lastName: string;
 
   profileImageUrl?: string | null;
-  address?: string | null;
+  address?: AddressItem;
   mainLanguage?: string | null;
 
   authProvider: "local" | "google";

@@ -1,14 +1,11 @@
 import { injectable } from "inversify";
 import { TeacherModel } from "../../db/schemes/teacherSchema.js";
 import { HttpError } from "../../utils/error.util.js";
-import {
-  CreateGoogleTeacher,
-  CreateLocalTeacher,
-} from "../../types/teacher/teacher.types.js";
+import { TeacherTypeDB } from "../../db/schemes/types/teacher.types.js";
 
 @injectable()
 export class TeacherCommand {
-  async createTeacher(newTeacher: CreateLocalTeacher | CreateGoogleTeacher) {
+  async createTeacher(newTeacher: TeacherTypeDB) {
     try {
       const created = await TeacherModel.create(newTeacher);
       return created.toObject();
