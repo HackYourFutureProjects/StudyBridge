@@ -370,17 +370,27 @@ export class AuthService {
   }
 
   async verifyGoogleIdToken(idToken: string) {
-    const ticket = await this.googleClient.verifyIdToken({
-      idToken,
-      audience: process.env.GOOGLE_CLIENT_ID,
-    });
-
-    const payload = ticket.getPayload();
-    if (!payload?.email) {
+    if (!idToken) {
       throw new HttpError(401, "Invalid Google token");
     }
 
-    if (!payload.email_verified) {
+    let ticket;
+    try {
+      ticket = await this.googleClient.verifyIdToken({
+        idToken,
+        audience: process.env.GOOGLE_CLIENT_ID,
+      });
+    } catch {
+      throw new HttpError(401, "Invalid Google token");
+    }
+
+    const payload = ticket.getPayload();
+
+    if (!payload?.email || !payload.sub) {
+      throw new HttpError(401, "Invalid Google token");
+    }
+
+    if (payload.email_verified === false) {
       throw new HttpError(401, "Email not verified");
     }
 

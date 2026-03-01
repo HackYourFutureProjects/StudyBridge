@@ -34,5 +34,7 @@ export const teacherMapper = (
     address: teacher.address,
     createdAt: teacher.createdAt,
     role: teacher.role,
+    authProvider: teacher.authProvider,
+    googleSub: teacher.googleSub,
   };
 };

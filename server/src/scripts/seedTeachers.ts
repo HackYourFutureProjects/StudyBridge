@@ -131,6 +131,8 @@ const createTeacherDoc = async (index: number): Promise<TeacherTypeDB> => {
     },
     createdAt: new Date(),
     role: "teacher",
+    authProvider: "local",
+    googleSub: null,
   };
 };
 
