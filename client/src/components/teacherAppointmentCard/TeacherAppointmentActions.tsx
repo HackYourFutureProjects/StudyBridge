@@ -23,31 +23,39 @@ export const TeacherAppointmentActions = ({
   onRemoveFromRegular,
   isRegularTab = false,
 }: TeacherAppointmentActionsProps) => {
+  const isInRegular = !!onRemoveFromRegular;
+
   return (
     <div className="flex flex-col items-center min-[540px]:items-end gap-2 md:gap-3 w-full sm:w-auto sm:min-w-[200px] min-[540px]:ml-auto">
-      {!isPast && onStatusChange && !isRegularTab && (
+      {/* Status buttons - ЗАВЖДИ показуються в Requests табі для не-past appointments */}
+      {!isPast && !isRegularTab && onStatusChange && (
         <StatusButtons initialStatus={status} onStatusChange={onStatusChange} />
       )}
 
-      {status === "approved" && !isPast && onAddToRegular && (
-        <Button
-          as="button"
-          variant="link"
-          className="text-green-400 underline text-[12px] md:text-[14px] hover:text-green-300"
-          onClick={onAddToRegular}
-        >
-          Add to Regular Students
-        </Button>
-      )}
+      {/* Add to Regular Students - показується тільки для approved appointments в Requests табі, якщо студент НЕ в regular */}
+      {!isPast &&
+        !isRegularTab &&
+        status === "approved" &&
+        !isInRegular &&
+        onAddToRegular && (
+          <Button
+            as="button"
+            variant="link"
+            className="text-green-400 underline text-[12px] md:text-[14px] hover:text-green-300"
+            onClick={onAddToRegular}
+          >
+            Add to Regular Students
+          </Button>
+        )}
 
-      {onRemoveFromRegular && (
+      {!isPast && onRemoveFromRegular && (
         <Button
           as="button"
           variant="link"
           className="text-purple-400 underline text-[12px] md:text-[14px] hover:text-purple-300"
           onClick={onRemoveFromRegular}
         >
-          Remove from Regular
+          Remove from Regular Students
         </Button>
       )}
 

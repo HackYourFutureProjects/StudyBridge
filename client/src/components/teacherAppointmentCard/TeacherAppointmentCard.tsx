@@ -59,6 +59,8 @@ export const TeacherAppointmentCard = ({
           lesson={appointment.lesson}
           studentName={appointment.studentName}
           price={appointment.price}
+          weeklySchedule={appointment.weeklySchedule}
+          isRegularTab={isRegularTab}
         />
 
         <TeacherAppointmentActions

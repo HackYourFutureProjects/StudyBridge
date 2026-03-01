@@ -24,6 +24,9 @@ export const useUpdateWeeklyScheduleMutation = () => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.appointments,
       });
+      queryClient.invalidateQueries({
+        queryKey: ["appointments", "teacher"],
+      });
     },
   });
 };
