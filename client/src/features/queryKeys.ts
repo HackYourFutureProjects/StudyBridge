@@ -20,6 +20,10 @@ export const queryKeys = {
     ["appointments", "teacher", teacherId, page, limit] as const,
   studentAppointments: (studentId: string, page?: number, limit?: number) =>
     ["appointments", "student", studentId, page, limit] as const,
+  regularStudents: (page?: number, limit?: number) =>
+    ["appointments", "regularStudents", page, limit] as const,
+  regularTeachers: (page?: number, limit?: number) =>
+    ["appointments", "regularTeachers", page, limit] as const,
 
   // Reviews
   reviews: (teacherId: string, page?: number, limit?: number) =>
