@@ -27,12 +27,10 @@ export const TeacherAppointmentActions = ({
 
   return (
     <div className="flex flex-col items-center min-[540px]:items-end gap-2 md:gap-3 w-full sm:w-auto sm:min-w-[200px] min-[540px]:ml-auto">
-      {/* Status buttons - ЗАВЖДИ показуються в Requests табі для не-past appointments */}
       {!isPast && !isRegularTab && onStatusChange && (
         <StatusButtons initialStatus={status} onStatusChange={onStatusChange} />
       )}
 
-      {/* Add to Regular Students - показується тільки для approved appointments в Requests табі, якщо студент НЕ в regular */}
       {!isPast &&
         !isRegularTab &&
         status === "approved" &&
