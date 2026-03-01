@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "../ui/button/Button";
 import Cross from "../icons/Cross";
 import { SelectComponent } from "../ui/select/Select";
@@ -35,8 +35,9 @@ const ModalContent = ({
   initialSchedule = [],
   occupiedSlots = [],
 }: Omit<RegularStudentScheduleModalProps, "isOpen">) => {
+  const initialSavedSlots = useMemo(() => initialSchedule, [initialSchedule]);
   const [savedSlots, setSavedSlots] =
-    useState<WeeklyScheduleSlot[]>(initialSchedule);
+    useState<WeeklyScheduleSlot[]>(initialSavedSlots);
   const [currentDay, setCurrentDay] = useState<string>("Monday");
   const [currentHour, setCurrentHour] = useState<number>(7);
 
@@ -213,16 +214,9 @@ const ModalContent = ({
 
 export const RegularStudentScheduleModal = ({
   isOpen,
-  studentName,
   ...props
 }: RegularStudentScheduleModalProps) => {
   if (!isOpen) return null;
 
-  return (
-    <ModalContent
-      key={`${studentName}-${isOpen}`}
-      studentName={studentName}
-      {...props}
-    />
-  );
+  return <ModalContent {...props} />;
 };

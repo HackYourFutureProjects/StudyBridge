@@ -28,7 +28,9 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
   const isAuthenticated = !!user;
   const isTeacher = user?.role === "teacher";
 
-  const { data } = useTeacherAppointmentsQuery(teacher?.id);
+  const { data } = useTeacherAppointmentsQuery(
+    isAuthenticated ? teacher?.id : undefined,
+  );
 
   const appointments = useMemo(() => {
     const allAppointments = data?.appointments || [];

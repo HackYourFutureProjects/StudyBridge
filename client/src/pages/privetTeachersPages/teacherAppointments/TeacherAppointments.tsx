@@ -13,17 +13,11 @@ import { useModalStore } from "../../../store/modals.store";
 import { useVideoCall } from "../../../features/appointments/hooks/useVideoCall";
 import { useAppointmentTime } from "../../../features/appointments/hooks/useAppointmentTime";
 import { TeacherAppointmentsList } from "../../../components/teacherAppointmentCard/TeacherAppointmentsList";
-import { LessonSchedule } from "../../../components/teacherProfileSection/LessonSchedule";
 import { RegularStudentScheduleModal } from "../../../components/regularStudentScheduleModal/RegularStudentScheduleModal";
 import { useSetRegularStudentMutation } from "../../../features/appointments/mutations/useSetRegularStudentMutation";
 import { useUpdateWeeklyScheduleMutation } from "../../../features/appointments/mutations/useUpdateWeeklyScheduleMutation";
 import { useRemoveRegularStudentMutation } from "../../../features/appointments/mutations/useRemoveRegularStudentMutation";
 import { useRegularStudentsQuery } from "../../../features/appointments/query/useRegularStudentsQuery";
-
-export interface TimeSlot {
-  day: string;
-  hour: number;
-}
 
 export const TeacherAppointments = () => {
   const [activeTab, setActiveTab] = useState<"requests" | "regular">(
@@ -125,21 +119,6 @@ export const TeacherAppointments = () => {
           "Failed to update schedule",
       });
     }
-  };
-
-  const getBookedSlots = () => {
-    const regularSlots: TimeSlot[] = [];
-    regularStudentsData?.appointments?.forEach((student) => {
-      if (student.weeklySchedule && Array.isArray(student.weeklySchedule)) {
-        student.weeklySchedule.forEach((slot) => {
-          regularSlots.push({
-            day: slot.day,
-            hour: slot.hour,
-          });
-        });
-      }
-    });
-    return regularSlots;
   };
 
   const handleEditStudentSchedule = (appointment: Appointment) => {
@@ -251,14 +230,6 @@ export const TeacherAppointments = () => {
           </div>
         )}
       </div>
-
-      <LessonSchedule
-        isOpen={false}
-        onClose={() => {}}
-        onSave={async () => {}}
-        initialSlots={[]}
-        bookedSlots={getBookedSlots()}
-      />
 
       <RegularStudentScheduleModal
         isOpen={isRegularStudentModalOpen}

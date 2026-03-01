@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "../ui/button/Button.tsx";
 import Cross from "../icons/Cross.tsx";
 
@@ -33,11 +33,17 @@ const ModalContent = ({
   initialSlots = [],
   bookedSlots = [],
 }: Omit<LessonScheduleProps, "isOpen">) => {
-  const [selectedSlots, setSelectedSlots] = useState<Set<string>>(
+  const initialSelectedSlots = useMemo(
     () => new Set(initialSlots.map((slot) => `${slot.day}-${slot.hour}`)),
+    [initialSlots],
   );
-  const [blockedSlots] = useState<Set<string>>(
+
+  const [selectedSlots, setSelectedSlots] =
+    useState<Set<string>>(initialSelectedSlots);
+
+  const blockedSlots = useMemo(
     () => new Set(bookedSlots.map((slot) => `${slot.day}-${slot.hour}`)),
+    [bookedSlots],
   );
 
   const toggleSlot = (day: string, hour: number) => {
@@ -159,20 +165,8 @@ const ModalContent = ({
   );
 };
 
-export const LessonSchedule = ({
-  isOpen,
-  initialSlots,
-  bookedSlots,
-  ...props
-}: LessonScheduleProps) => {
+export const LessonSchedule = ({ isOpen, ...props }: LessonScheduleProps) => {
   if (!isOpen) return null;
 
-  return (
-    <ModalContent
-      key={`${initialSlots?.length}-${bookedSlots?.length}-${isOpen}`}
-      initialSlots={initialSlots}
-      bookedSlots={bookedSlots}
-      {...props}
-    />
-  );
+  return <ModalContent {...props} />;
 };
