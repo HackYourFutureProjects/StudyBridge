@@ -34,7 +34,7 @@ export const TeacherAppointmentCard = ({
 
   return (
     <div
-      className={`relative flex flex-col border rounded-[25px] overflow-hidden ${
+      className={`relative flex flex-col border rounded-[15px] md:rounded-[20px] lg:rounded-[25px] overflow-hidden ${
         isPast ? "opacity-50" : ""
       } ${statusStyles.borderCard}`}
       style={{
@@ -49,7 +49,7 @@ export const TeacherAppointmentCard = ({
         onScheduleClick={onScheduleClick}
       />
 
-      <div className="flex items-center px-6 py-6 gap-6">
+      <div className="flex flex-col min-[540px]:flex-row items-center min-[540px]:items-center px-3 sm:px-4 md:px-6 py-3 sm:py-4 md:py-6 gap-3 sm:gap-4 md:gap-6">
         <TeacherAppointmentAvatar
           studentAvatar={studentAvatar}
           studentName={appointment.studentName}

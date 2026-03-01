@@ -75,6 +75,8 @@ export class AppointmentService {
       time: data.time,
       status: "pending" as const,
       videoCall: `https://meet.google.com/${data.teacherId}-${data.studentId}-${Date.now()}`,
+      isRegularStudent: false,
+      weeklySchedule: [],
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -303,6 +305,9 @@ export class AppointmentService {
       time: string;
       status: string;
       videoCall?: string;
+      isRegularStudent?: boolean;
+      weeklySchedule?: { day: string; hour: number }[];
+      addedToRegularAt?: Date;
     };
 
     const priceStr =
@@ -322,6 +327,111 @@ export class AppointmentService {
       time: apt.time,
       status: apt.status,
       videoCall: apt.videoCall,
+      isRegularStudent: apt.isRegularStudent,
+      weeklySchedule: apt.weeklySchedule,
+      addedToRegularAt: apt.addedToRegularAt,
+    };
+  }
+
+  async setRegularStudent(id: string, teacherId: string) {
+    const appointment = await this.appointmentQuery.getAppointmentById(id);
+
+    if (!appointment) {
+      throw new Error("Appointment not found");
+    }
+
+    if (appointment.teacherId !== teacherId) {
+      throw new Error("Unauthorized to modify this appointment");
+    }
+
+    const updated = await this.appointmentCommand.setRegularStudent(id);
+    return updated ? this.formatAppointmentResponse(updated) : null;
+  }
+
+  async removeRegularStudent(id: string, teacherId: string) {
+    const appointment = await this.appointmentQuery.getAppointmentById(id);
+
+    if (!appointment) {
+      throw new Error("Appointment not found");
+    }
+
+    if (appointment.teacherId !== teacherId) {
+      throw new Error("Unauthorized to modify this appointment");
+    }
+
+    const updated = await this.appointmentCommand.removeRegularStudent(id);
+    return updated ? this.formatAppointmentResponse(updated) : null;
+  }
+
+  async updateWeeklySchedule(
+    id: string,
+    teacherId: string,
+    weeklySchedule: { day: string; hour: number }[],
+  ) {
+    const appointment = await this.appointmentQuery.getAppointmentById(id);
+
+    if (!appointment) {
+      throw new Error("Appointment not found");
+    }
+
+    if (appointment.teacherId !== teacherId) {
+      throw new Error("Unauthorized to modify this appointment");
+    }
+
+    if (!appointment.isRegularStudent) {
+      throw new Error("Cannot set weekly schedule for a non-regular student");
+    }
+
+    const updated = await this.appointmentCommand.updateWeeklySchedule(
+      id,
+      weeklySchedule,
+    );
+    return updated ? this.formatAppointmentResponse(updated) : null;
+  }
+
+  async getRegularStudentsByTeacher(
+    teacherId: string,
+    page?: number,
+    limit?: number,
+  ) {
+    const result = await this.appointmentQuery.getRegularStudentsByTeacher(
+      teacherId,
+      page,
+      limit,
+    );
+    const appointmentsWithNames = await this.appointmentQuery.populateNames(
+      result.appointments,
+    );
+
+    return {
+      appointments: appointmentsWithNames.map((apt) =>
+        this.formatAppointmentResponse(apt),
+      ),
+      total: result.total,
+      totalPages: result.totalPages,
+    };
+  }
+
+  async getRegularTeachersByStudent(
+    studentId: string,
+    page?: number,
+    limit?: number,
+  ) {
+    const result = await this.appointmentQuery.getRegularTeachersByStudent(
+      studentId,
+      page,
+      limit,
+    );
+    const appointmentsWithNames = await this.appointmentQuery.populateNames(
+      result.appointments,
+    );
+
+    return {
+      appointments: appointmentsWithNames.map((apt) =>
+        this.formatAppointmentResponse(apt),
+      ),
+      total: result.total,
+      totalPages: result.totalPages,
     };
   }
 }

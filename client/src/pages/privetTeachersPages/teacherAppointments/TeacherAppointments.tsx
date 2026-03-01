@@ -33,7 +33,44 @@ const REGULAR_STUDENTS_KEY = "regularStudents";
 const getInitialRegularStudents = (): Appointment[] => {
   try {
     const stored = localStorage.getItem(REGULAR_STUDENTS_KEY);
-    return stored ? JSON.parse(stored) : [];
+    if (!stored) return [];
+
+    const parsed = JSON.parse(stored);
+    if (!Array.isArray(parsed)) return [];
+
+    let needsUpdate = false;
+
+    const migratedStudents = parsed
+      .filter((item): item is Appointment => {
+        return (
+          typeof item === "object" &&
+          item !== null &&
+          typeof item.id === "string" &&
+          typeof item.date === "string"
+        );
+      })
+      .map((student) => {
+        if (!student.addedToRegularAt) {
+          const parsedDate = Date.parse(student.date);
+          if (!isNaN(parsedDate)) {
+            needsUpdate = true;
+            return {
+              ...student,
+              addedToRegularAt: new Date(parsedDate).toISOString(),
+            };
+          }
+        }
+        return student;
+      });
+
+    if (needsUpdate) {
+      localStorage.setItem(
+        REGULAR_STUDENTS_KEY,
+        JSON.stringify(migratedStudents),
+      );
+    }
+
+    return migratedStudents;
   } catch {
     return [];
   }
@@ -44,7 +81,9 @@ export const TeacherAppointments = () => {
     "requests",
   );
   const [page, setPage] = useState(1);
-  const limit = 10;
+  const [regularPage, setRegularPage] = useState(1);
+  const limit = 5;
+  const regularLimit = 5;
   const [regularStudents, setRegularStudents] = useState<Appointment[]>(
     getInitialRegularStudents,
   );
@@ -72,7 +111,11 @@ export const TeacherAppointments = () => {
       (student) => student.id === appointment.id,
     );
     if (!isAlreadyAdded) {
-      const updated = [...regularStudents, appointment];
+      const appointmentWithTimestamp = {
+        ...appointment,
+        addedToRegularAt: new Date().toISOString(),
+      };
+      const updated = [...regularStudents, appointmentWithTimestamp];
       setRegularStudents(updated);
       localStorage.setItem(REGULAR_STUDENTS_KEY, JSON.stringify(updated));
     }
@@ -146,6 +189,23 @@ export const TeacherAppointments = () => {
     });
   };
 
+  const getSortedRegularStudents = () => {
+    return [...regularStudents].sort((a, b) => {
+      const dateA = new Date(a.addedToRegularAt || a.date).getTime();
+      const dateB = new Date(b.addedToRegularAt || b.date).getTime();
+      return dateB - dateA;
+    });
+  };
+
+  const getPaginatedRegularStudents = () => {
+    const sorted = getSortedRegularStudents();
+    const startIndex = (regularPage - 1) * regularLimit;
+    const endIndex = startIndex + regularLimit;
+    return sorted.slice(startIndex, endIndex);
+  };
+
+  const regularTotalPages = Math.ceil(regularStudents.length / regularLimit);
+
   const getBookedSlots = () => {
     const allAppointments = data?.appointments || [];
     return mapAppointmentsToBookedSlots(allAppointments);
@@ -180,13 +240,13 @@ export const TeacherAppointments = () => {
   }
 
   return (
-    <div className="px-6 lg:px-10 flex flex-col min-h-screen">
-      <div className="pt-[40px] flex flex-col flex-1">
+    <div className="px-4 md:px-6 lg:px-10 flex flex-col">
+      <div className="pt-6 md:pt-8 lg:pt-[40px] flex flex-col">
         <PageTitle title="My Appointments" />
-        <div className="mt-6 flex gap-4 border-b border-gray-700">
+        <div className="mt-4 md:mt-6 flex gap-2 md:gap-4 border-b border-gray-700 overflow-x-auto">
           <button
             onClick={() => setActiveTab("requests")}
-            className={`px-6 py-3 font-medium transition-colors ${
+            className={`px-4 md:px-6 py-2 md:py-3 font-medium transition-colors whitespace-nowrap text-sm md:text-base ${
               activeTab === "requests"
                 ? "text-purple-400 border-b-2 border-purple-400"
                 : "text-gray-400 hover:text-gray-300"
@@ -196,7 +256,7 @@ export const TeacherAppointments = () => {
           </button>
           <button
             onClick={() => setActiveTab("regular")}
-            className={`px-6 py-3 font-medium transition-colors ${
+            className={`px-4 md:px-6 py-2 md:py-3 font-medium transition-colors whitespace-nowrap text-sm md:text-base ${
               activeTab === "regular"
                 ? "text-purple-400 border-b-2 border-purple-400"
                 : "text-gray-400 hover:text-gray-300"
@@ -207,9 +267,7 @@ export const TeacherAppointments = () => {
         </div>
 
         {activeTab === "requests" ? (
-          <>
-            <div className="mt-6" />
-
+          <div className="mt-4 md:mt-6">
             <TeacherAppointmentsList
               appointments={appointments}
               isPastAppointment={isPastAppointment}
@@ -220,7 +278,7 @@ export const TeacherAppointments = () => {
               regularStudentIds={regularStudents.map((student) => student.id)}
             />
 
-            <div className="mt-auto pt-4 mb-6 flex justify-center">
+            <div className="mt-8 flex justify-center">
               <Pagination
                 activeIndex={page}
                 onIndexChange={setPage}
@@ -229,27 +287,41 @@ export const TeacherAppointments = () => {
                 shape="square"
               />
             </div>
-          </>
+          </div>
         ) : (
-          <div className="mt-6">
+          <div className="mt-4 md:mt-6">
             {regularStudents.length === 0 ? (
-              <div className="text-center py-12">
+              <div className="text-center py-8 md:py-12">
                 <p className="text-gray-400 mb-4">No regular students yet</p>
                 <p className="text-sm text-gray-500">
                   Add approved appointments to your regular students list
                 </p>
               </div>
             ) : (
-              <TeacherAppointmentsList
-                appointments={regularStudents}
-                isPastAppointment={isPastAppointment}
-                onStatusChange={handleStatusChange}
-                onStartCall={confirmStartCall}
-                onDelete={handleRemoveFromRegular}
-                onRemoveFromRegular={handleRemoveFromRegular}
-                onScheduleClick={handleOpenSchedule}
-                isRegularTab
-              />
+              <>
+                <TeacherAppointmentsList
+                  appointments={getPaginatedRegularStudents()}
+                  isPastAppointment={isPastAppointment}
+                  onStatusChange={handleStatusChange}
+                  onStartCall={confirmStartCall}
+                  onDelete={handleDelete}
+                  onRemoveFromRegular={handleRemoveFromRegular}
+                  onScheduleClick={handleOpenSchedule}
+                  isRegularTab
+                />
+
+                {regularTotalPages > 1 && (
+                  <div className="mt-8 flex justify-center">
+                    <Pagination
+                      activeIndex={regularPage}
+                      onIndexChange={setRegularPage}
+                      totalPages={regularTotalPages}
+                      theme="secondary"
+                      shape="square"
+                    />
+                  </div>
+                )}
+              </>
             )}
           </div>
         )}

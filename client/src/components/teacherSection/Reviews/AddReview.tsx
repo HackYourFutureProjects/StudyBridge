@@ -7,6 +7,7 @@ import { Appointment } from "../../../types/appointments.types";
 import { Loader } from "../../loader/Loader";
 import { useNotificationStore } from "../../../store/notification.store";
 import { ReviewType } from "../../../api/review/review.type";
+import { SelectComponent } from "../../ui/select/Select";
 
 interface AddReviewFormProps {
   teacherId: string;
@@ -29,6 +30,15 @@ export const AddReview = ({
   const { data, isLoading } = useStudentAppointmentsQuery(studentId);
   const { mutate, isPending } = useCreateReviewMutation(teacherId);
 
+  // If not logged in, don't show the review form
+  if (!isLoggedIn) return null;
+  if (isLoading)
+    return (
+      <div className="flex justify-center p-4">
+        <Loader />
+      </div>
+    );
+
   // Get the set of bookingIds that already have reviews
   const reviewedBookingIds = new Set(
     accumulatedReviews.map((r) => r.bookingId),
@@ -43,14 +53,22 @@ export const AddReview = ({
         !reviewedBookingIds.has(app.id),
     ) || [];
 
-  // If not logged in, don't show the review form
-  if (!isLoggedIn) return null;
-  if (isLoading)
-    return (
-      <div className="flex justify-center p-4">
-        <Loader />
-      </div>
-    );
+  if (approvedLessons.length === 0) {
+    return null;
+  }
+
+  // Options list for the select dropdown
+  const lessonOptions = approvedLessons.map((app: Appointment) => ({
+    value: app.id,
+    label: `${app.lesson} ---- ${new Date(app.date).toLocaleDateString(
+      "en-GB",
+      {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      },
+    )}`,
+  }));
 
   // Find the selected booking details for use in the review
   const selectBooking = approvedLessons?.find(
@@ -101,35 +119,13 @@ export const AddReview = ({
           >
             Select a lesson
           </label>
-          <select
-            id="lesson-select"
-            className="bg-dark px-4 py-3 border border-white/10 focus:border-primary-500 rounded-lg outline-none w-full text-white cursor-pointer"
-            value={selectedBookingId}
-            onChange={(e) => setSelectedBookingId(e.target.value)}
-            required
-          >
-            <option value="" className="bg-[#1A1926] text-white">
-              -- Choose a lesson --
-            </option>
 
-            {approvedLessons?.map((app: Appointment) => (
-              <option
-                key={app.id}
-                value={app.id}
-                className="bg-purple-500/80 text-white cursor-pointer"
-              >
-                {`${app.lesson} ---- ${new Date(app.date).toLocaleDateString(
-                  "en-GB",
-                  {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                  },
-                )}
-                 `}
-              </option>
-            ))}
-          </select>
+          <SelectComponent
+            options={lessonOptions}
+            value={selectedBookingId}
+            onChange={(value) => setSelectedBookingId(value)}
+            placeholder="Choose a lesson to review"
+          />
         </div>
 
         {/* Rating Stars */}

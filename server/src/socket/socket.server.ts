@@ -1,5 +1,5 @@
 import type http from "http";
-import { Server, type Socket } from "socket.io";
+import { Server, Socket } from "socket.io";
 
 import { container } from "../composition/compositionRoot.js";
 import { TYPES } from "../composition/composition.types.js";
@@ -77,6 +77,9 @@ export function initSocketServer(httpServer: http.Server): Server {
 
   _io.on("connection", (socket: Socket) => {
     const { userId } = socket.data as SocketData;
+
+    //add socket.join(user:{id}) on connection to enable targeted incoming-call events
+    socket.join(`user:${userId}`);
 
     const becameOnline = markOnline(userId);
     if (becameOnline) {

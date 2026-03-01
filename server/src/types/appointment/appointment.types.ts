@@ -1,3 +1,7 @@
+import { WeeklyScheduleSlot } from "../../db/schemes/types/appointment.types.js";
+
+export { WeeklyScheduleSlot };
+
 export interface CreateAppointmentType {
   studentId: string;
   teacherId: string;
@@ -10,4 +14,8 @@ export interface CreateAppointmentType {
 
 export interface UpdateAppointmentStatusType {
   status: "pending" | "approved" | "rejected";
+}
+
+export interface UpdateWeeklyScheduleType {
+  weeklySchedule: WeeklyScheduleSlot[];
 }

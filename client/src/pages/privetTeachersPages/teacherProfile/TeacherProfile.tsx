@@ -19,8 +19,6 @@ import {
 import { useMyProfileQuery } from "../../../features/teachers/query/useMyProfileQuery";
 import { useUpdateMyProfileMutation } from "../../../features/teachers/mutations/useUpdateMyProfileMutation";
 import { useModalStore } from "../../../store/modals.store";
-import { useTeacherAppointmentsQuery } from "../../../features/appointments/query/useTeacherAppointmentsQuery";
-import { mapAppointmentsToBookedSlots } from "../../../util/appointmentSchedule.util";
 
 export type { LessonPrice } from "../../../components/teacherProfileSection/types";
 
@@ -37,11 +35,6 @@ export const TeacherProfile = () => {
   const { data: profile, isLoading } = useMyProfileQuery();
   const updateProfileMutation = useUpdateMyProfileMutation();
   const openModal = useModalStore((s) => s.open);
-  const { data: appointmentsData } = useTeacherAppointmentsQuery(
-    undefined,
-    1,
-    1000,
-  );
 
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState("");
@@ -322,11 +315,6 @@ export const TeacherProfile = () => {
     }
   };
 
-  const getBookedSlots = () => {
-    const appointments = appointmentsData?.appointments || [];
-    return mapAppointmentsToBookedSlots(appointments);
-  };
-
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[#15141D]">
@@ -416,7 +404,6 @@ export const TeacherProfile = () => {
         onClose={() => setIsScheduleOpen(false)}
         onSave={handleScheduleSave}
         initialSlots={schedule}
-        bookedSlots={getBookedSlots()}
       />
 
       <ChangePasswordModal

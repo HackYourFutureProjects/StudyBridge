@@ -17,16 +17,22 @@ export const AppointmentStatusBar = ({
 }: AppointmentStatusBarProps) => {
   return (
     <div
-      className={`w-full px-6 py-3 flex items-center justify-between ${statusStyles.bgStatus}`}
+      className={`w-full px-4 md:px-6 py-2 md:py-3 flex items-center justify-between ${statusStyles.bgStatus}`}
     >
-      <span className={`text-[14px] font-medium ${statusStyles.text}`}>
+      <span
+        className={`text-[12px] md:text-[14px] font-medium ${statusStyles.text}`}
+      >
         {statusStyles.label}
       </span>
       <div className="text-right">
-        <div className={`text-[14px] font-medium ${statusStyles.text}`}>
+        <div
+          className={`text-[12px] md:text-[14px] font-medium ${statusStyles.text}`}
+        >
           {date}
         </div>
-        <div className={`text-[14px] ${statusStyles.text}`}>{time}</div>
+        <div className={`text-[12px] md:text-[14px] ${statusStyles.text}`}>
+          {time}
+        </div>
       </div>
     </div>
   );
