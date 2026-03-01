@@ -41,6 +41,17 @@ export const ReviewsManager = () => {
 
   return (
     <>
+      <div className="text-center">
+        <h2 className="mb-6 sm:mb-8 lg:mb-10 font-bold text-white xl:text-[56px] text-3xl sm:text-4xl lg:text-5xl">
+          What our clients say
+        </h2>
+        <p className="mx-auto mb-12 sm:mb-16 lg:mb-20 px-4 max-w-3xl text-white/70 text-sm sm:text-base lg:text-lg text-justify leading-relaxed">
+          Students appreciate the practical approach, supportive instructors,
+          and clear learning structure across all courses. Many international
+          students highlight fast progress, increased confidence, and a
+          comfortable learning environment.
+        </p>
+      </div>
       <AddReview
         teacherId={teacherId ?? ""}
         accumulatedReviews={accumulatedReviews}

@@ -56,7 +56,7 @@ export const ReviewCardTeacher = ({
           </div>
 
           {review && (
-            <p className="text-white/80 text-xs md:text-base wrap-break-word">
+            <p className="text-white/80 text-xs md:text-base text-justify wrap-break-word">
               {review}
             </p>
           )}
