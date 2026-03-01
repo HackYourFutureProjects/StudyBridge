@@ -32,4 +32,42 @@ export class AppointmentCommand {
       });
     }
   }
+
+  async setRegularStudent(
+    id: string,
+  ): Promise<WithId<AppointmentTypeDB> | null> {
+    return await AppointmentModel.findOneAndUpdate(
+      { id },
+      {
+        isRegularStudent: true,
+        addedToRegularAt: new Date(),
+      },
+      { new: true },
+    ).exec();
+  }
+
+  async removeRegularStudent(
+    id: string,
+  ): Promise<WithId<AppointmentTypeDB> | null> {
+    return await AppointmentModel.findOneAndUpdate(
+      { id },
+      {
+        isRegularStudent: false,
+        weeklySchedule: [],
+        addedToRegularAt: null,
+      },
+      { new: true },
+    ).exec();
+  }
+
+  async updateWeeklySchedule(
+    id: string,
+    weeklySchedule: { day: string; hour: number }[],
+  ): Promise<WithId<AppointmentTypeDB> | null> {
+    return await AppointmentModel.findOneAndUpdate(
+      { id },
+      { weeklySchedule },
+      { new: true },
+    ).exec();
+  }
 }
