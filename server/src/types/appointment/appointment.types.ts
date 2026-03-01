@@ -1,7 +1,6 @@
-export interface WeeklyScheduleSlot {
-  day: string;
-  hour: number;
-}
+import { WeeklyScheduleSlot } from "../../db/schemes/types/appointment.types.js";
+
+export { WeeklyScheduleSlot };
 
 export interface CreateAppointmentType {
   studentId: string;

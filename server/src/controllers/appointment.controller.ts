@@ -12,6 +12,7 @@ import { AppointmentService } from "../services/appointment/appointment.service.
 import {
   CreateAppointmentType,
   UpdateAppointmentStatusType,
+  UpdateWeeklyScheduleType,
 } from "../types/appointment/appointment.types.js";
 
 @injectable()
@@ -235,7 +236,7 @@ export class AppointmentController {
   }
 
   async updateWeeklyScheduleController(
-    req: RequestWithBody<{ weeklySchedule: { day: string; hour: number }[] }> &
+    req: RequestWithBody<UpdateWeeklyScheduleType> &
       RequestWithParams<ParamsType>,
     res: Response,
     next: NextFunction,
@@ -273,8 +274,22 @@ export class AppointmentController {
         return res.status(401).json({ message: "Unauthorized" });
       }
 
-      const page = req.query.page ? parseInt(req.query.page) : undefined;
-      const limit = req.query.limit ? parseInt(req.query.limit) : undefined;
+      let page: number | undefined;
+      let limit: number | undefined;
+
+      if (req.query.page) {
+        page = parseInt(req.query.page, 10);
+        if (isNaN(page)) {
+          return res.status(400).json({ message: "Invalid page parameter" });
+        }
+      }
+
+      if (req.query.limit) {
+        limit = parseInt(req.query.limit, 10);
+        if (isNaN(limit)) {
+          return res.status(400).json({ message: "Invalid limit parameter" });
+        }
+      }
 
       const result = await this.appointmentService.getRegularStudentsByTeacher(
         teacherId,
@@ -299,8 +314,22 @@ export class AppointmentController {
         return res.status(401).json({ message: "Unauthorized" });
       }
 
-      const page = req.query.page ? parseInt(req.query.page) : undefined;
-      const limit = req.query.limit ? parseInt(req.query.limit) : undefined;
+      let page: number | undefined;
+      let limit: number | undefined;
+
+      if (req.query.page) {
+        page = parseInt(req.query.page, 10);
+        if (isNaN(page)) {
+          return res.status(400).json({ message: "Invalid page parameter" });
+        }
+      }
+
+      if (req.query.limit) {
+        limit = parseInt(req.query.limit, 10);
+        if (isNaN(limit)) {
+          return res.status(400).json({ message: "Invalid limit parameter" });
+        }
+      }
 
       const result = await this.appointmentService.getRegularTeachersByStudent(
         studentId,

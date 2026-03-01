@@ -378,6 +378,10 @@ export class AppointmentService {
       throw new Error("Unauthorized to modify this appointment");
     }
 
+    if (!appointment.isRegularStudent) {
+      throw new Error("Cannot set weekly schedule for a non-regular student");
+    }
+
     const updated = await this.appointmentCommand.updateWeeklySchedule(
       id,
       weeklySchedule,
