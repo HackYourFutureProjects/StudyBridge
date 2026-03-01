@@ -17,6 +17,8 @@ export type VideoCallResponse = {
   id: string;
   teacherId: string;
   studentId: string;
+  teacherName?: string;
+  teacherAvatarUrl?: string | null;
   appointmentId?: string | null;
   streamCallType: string;
   streamCallId: string;
