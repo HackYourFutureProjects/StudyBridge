@@ -1,3 +1,8 @@
+export interface WeeklyScheduleSlot {
+  day: string;
+  hour: number;
+}
+
 export interface CreateAppointmentType {
   studentId: string;
   teacherId: string;
@@ -10,4 +15,8 @@ export interface CreateAppointmentType {
 
 export interface UpdateAppointmentStatusType {
   status: "pending" | "approved" | "rejected";
+}
+
+export interface UpdateWeeklyScheduleType {
+  weeklySchedule: WeeklyScheduleSlot[];
 }
