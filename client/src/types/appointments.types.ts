@@ -14,5 +14,12 @@ export interface Appointment {
   time: string;
   status: AppointmentStatus;
   videoCall?: string;
+  isRegularStudent?: boolean;
   addedToRegularAt?: string;
+  weeklySchedule?: WeeklyScheduleSlot[];
+}
+
+export interface WeeklyScheduleSlot {
+  day: string;
+  hour: number;
 }
