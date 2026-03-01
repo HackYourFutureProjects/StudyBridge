@@ -12,6 +12,7 @@ interface LessonScheduleProps {
   onClose: () => void;
   onSave: (slots: TimeSlot[]) => Promise<void> | void;
   initialSlots?: TimeSlot[];
+  bookedSlots?: TimeSlot[];
 }
 
 const DAYS = [
@@ -26,20 +27,25 @@ const DAYS = [
 
 const HOURS = Array.from({ length: 17 }, (_, i) => i + 7);
 
-export const LessonSchedule = ({
-  isOpen,
+const ModalContent = ({
   onClose,
   onSave,
   initialSlots = [],
-}: LessonScheduleProps) => {
+  bookedSlots = [],
+}: Omit<LessonScheduleProps, "isOpen">) => {
   const [selectedSlots, setSelectedSlots] = useState<Set<string>>(
     () => new Set(initialSlots.map((slot) => `${slot.day}-${slot.hour}`)),
   );
-
-  if (!isOpen) return null;
+  const [blockedSlots] = useState<Set<string>>(
+    () => new Set(bookedSlots.map((slot) => `${slot.day}-${slot.hour}`)),
+  );
 
   const toggleSlot = (day: string, hour: number) => {
     const key = `${day}-${hour}`;
+
+    if (blockedSlots.has(key)) {
+      return;
+    }
 
     setSelectedSlots((prev) => {
       const newSet = new Set(prev);
@@ -107,15 +113,18 @@ export const LessonSchedule = ({
                     {HOURS.map((hour) => {
                       const key = `${day}-${hour}`;
                       const isSelected = selectedSlots.has(key);
+                      const isBlocked = blockedSlots.has(key);
 
                       return (
                         <td
                           key={hour}
-                          onClick={() => toggleSlot(day, hour)}
+                          onClick={() => !isBlocked && toggleSlot(day, hour)}
                           className={`border border-gray-600 p-1 transition-colors min-w-[60px] min-h-[50px] ${
-                            isSelected
-                              ? "bg-purple-500 hover:bg-purple-600 cursor-pointer"
-                              : "bg-gray-700 hover:bg-gray-600 cursor-pointer"
+                            isBlocked
+                              ? "bg-red-900 cursor-not-allowed"
+                              : isSelected
+                                ? "bg-purple-500 hover:bg-purple-600 cursor-pointer"
+                                : "bg-gray-700 hover:bg-gray-600 cursor-pointer"
                           }`}
                         ></td>
                       );
@@ -130,8 +139,14 @@ export const LessonSchedule = ({
         <div className="mt-6 flex items-center gap-4">
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 bg-purple-500 rounded"></div>
-            <span className="text-white text-sm">free time lesson</span>
+            <span className="text-white text-sm">Available time</span>
           </div>
+          {bookedSlots.length > 0 && (
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 bg-red-900 rounded"></div>
+              <span className="text-white text-sm">Regular Students</span>
+            </div>
+          )}
         </div>
 
         <div className="mt-6 flex justify-center">
@@ -141,5 +156,23 @@ export const LessonSchedule = ({
         </div>
       </div>
     </div>
+  );
+};
+
+export const LessonSchedule = ({
+  isOpen,
+  initialSlots,
+  bookedSlots,
+  ...props
+}: LessonScheduleProps) => {
+  if (!isOpen) return null;
+
+  return (
+    <ModalContent
+      key={`${initialSlots?.length}-${bookedSlots?.length}-${isOpen}`}
+      initialSlots={initialSlots}
+      bookedSlots={bookedSlots}
+      {...props}
+    />
   );
 };
