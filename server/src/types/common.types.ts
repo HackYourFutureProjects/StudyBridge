@@ -7,4 +7,5 @@ export type ResponseWithData<D> = Response<D>;
 export type RequestWithParams<P> = Request<P, object, object, object>;
 export type RequestWithParamsAndBody<P, B> = Request<P, object, B, object>;
 export type RequestWithQuery<Q> = Request<object, object, object, Q>;
-export type Role = "student" | "teacher";
+export type Role = "student" | "teacher" | "moderator";
+export type UsersRole = "student" | "teacher";

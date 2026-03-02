@@ -4,10 +4,11 @@ import {
   RefreshTokenPayload,
   PasswordResetTokenPayload,
 } from "../../types/auth/auth.types.js";
+import { Role } from "../../types/common.types.js";
 
 type AccessTokenPayload = {
   userId: string;
-  role: "student" | "teacher";
+  role: Role;
 };
 
 @injectable()

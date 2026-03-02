@@ -48,4 +48,5 @@ export const TYPES = {
   SubjectsQuery: Symbol.for("SubjectsQuery"),
   //moderator
   ModeratorController: Symbol.for("ModeratorController"),
+  ModeratorQuery: Symbol.for("ModeratorQuery"),
 };

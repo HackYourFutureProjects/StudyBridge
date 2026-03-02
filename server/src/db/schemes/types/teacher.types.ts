@@ -1,4 +1,4 @@
-import { Role } from "../../../types/common.types.js";
+import { UsersRole } from "../../../types/common.types.js";
 import { ObjectId } from "mongodb";
 export type TeacherStatus =
   | "draft"
@@ -70,7 +70,7 @@ export type TeacherTypeDB = {
   availability: AvailabilityItem;
   address: AddressItem;
   createdAt: Date;
-  role: Role;
+  role: UsersRole;
   authProvider: "local" | "google";
   googleSub: string | null;
   status: TeacherStatus;

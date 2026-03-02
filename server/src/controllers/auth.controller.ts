@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import { RequestWithBody } from "../types/common.types.js";
+import { RequestWithBody, UsersRole } from "../types/common.types.js";
 import { StudentViewType } from "../types/student/student.types.js";
 import { inject } from "inversify";
 import { TYPES } from "../composition/composition.types.js";
@@ -16,14 +16,15 @@ import {
   LoginType,
   RegistrationType,
 } from "../types/auth/auth.types.js";
-import { Role } from "../../index.js";
-
+import { ModeratorQuery } from "../repositories/queryRepositories/moderator.query.js";
+import { HttpError } from "../utils/error.util.js";
 @injectable()
 export class AuthController {
   constructor(
     @inject(TYPES.StudentService) protected studentService: StudentService,
     @inject(TYPES.TeacherService) protected teacherService: TeacherService,
     @inject(TYPES.AuthService) protected authService: AuthService,
+    @inject(TYPES.ModeratorQuery) protected moderatorQuery: ModeratorQuery,
     @inject(TYPES.JwtService) protected jwtService: JwtService,
     @inject(TYPES.StudentQuery) protected studentQuery: StudentQuery,
     @inject(TYPES.TeacherQuery) protected teacherQuery: TeacherQuery,
@@ -68,7 +69,7 @@ export class AuthController {
     const { email, password, role } = req.body;
     try {
       const credentialCheck: Record<
-        Role,
+        UsersRole,
         (e: string, p: string) => Promise<StudentViewType | TeacherViewType>
       > = {
         student: this.authService.checkAuthStudentCredentials.bind(
@@ -108,10 +109,17 @@ export class AuthController {
     try {
       const { userId, role } = req.auth!;
 
-      const me =
-        role === "student"
-          ? await this.studentQuery.getStudentById(userId)
-          : await this.teacherQuery.getTeacherById(userId);
+      let me = null;
+
+      if (role === "student") {
+        me = await this.studentQuery.getStudentById(userId);
+      } else if (role === "teacher") {
+        me = await this.teacherQuery.getTeacherById(userId);
+      } else if (role === "moderator") {
+        me = await this.moderatorQuery.getModeratorById(userId);
+      } else {
+        return res.sendStatus(403);
+      }
 
       if (!me) {
         return res.sendStatus(401);
@@ -229,6 +237,12 @@ export class AuthController {
       const auth = req.auth;
       if (!auth) return res.sendStatus(401);
 
+      if (auth.role !== "student" && auth.role !== "teacher") {
+        throw new HttpError(
+          403,
+          "Password change is not allowed for this role",
+        );
+      }
       await this.authService.changePasswordForAuthenticatedUser({
         userId: auth.userId,
         role: auth.role,

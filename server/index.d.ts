@@ -1,4 +1,4 @@
-type Role = "student" | "teacher" | "moderator";
+export type Role = "student" | "teacher" | "moderator";
 export declare global {
   namespace Express {
     export interface Request {

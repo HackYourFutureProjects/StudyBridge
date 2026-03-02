@@ -16,6 +16,7 @@ import {
   updatePasswordValidationMiddleware,
 } from "../validation/auth/passwordResetMiddleware.js";
 import { googleAuthValidationMiddleware } from "../validation/auth/googleAuthValidation.js";
+import { requireRole } from "../middlewares/requireRole.middleware.js";
 
 export const authRouter = Router();
 const authController = container.get<AuthController>(TYPES.AuthController);
@@ -87,6 +88,7 @@ authRouter.post(
 authRouter.post(
   "/update-password",
   authMiddleware.handle,
+  requireRole("student", "teacher"),
   updatePasswordValidationMiddleware(),
   errorMiddleware,
   authController.updatePasswordController.bind(authController),
