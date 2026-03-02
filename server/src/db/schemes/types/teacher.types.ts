@@ -1,6 +1,11 @@
 import { Role } from "../../../types/common.types.js";
 import { ObjectId } from "mongodb";
-
+export type TeacherStatus =
+  | "draft"
+  | "pending"
+  | "active"
+  | "rejected"
+  | "blocked";
 type EducationItem = {
   degree: string;
   institution: string;
@@ -68,4 +73,5 @@ export type TeacherTypeDB = {
   role: Role;
   authProvider: "local" | "google";
   googleSub: string | null;
+  status: TeacherStatus;
 };

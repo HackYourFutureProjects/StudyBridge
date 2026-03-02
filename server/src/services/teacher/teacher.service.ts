@@ -3,7 +3,10 @@ import { TeacherCommand } from "../../repositories/commandRepositories/teacher.c
 import { TYPES } from "../../composition/composition.types.js";
 import bcrypt from "bcryptjs";
 import { randomUUID } from "node:crypto";
-import { TeacherTypeDB } from "../../db/schemes/types/teacher.types.js";
+import {
+  TeacherStatus,
+  TeacherTypeDB,
+} from "../../db/schemes/types/teacher.types.js";
 import { teacherMapper } from "../../utils/mappers/teacher.mapper.js";
 import { HttpError, NotFoundError } from "../../utils/error.util.js";
 import { StudentQuery } from "../../repositories/queryRepositories/student.query.js";
@@ -81,7 +84,7 @@ export class TeacherService {
       authProvider: "local",
       googleSub: null,
       createdAt: new Date(),
-
+      status: "draft",
       role,
     };
 
@@ -102,6 +105,22 @@ export class TeacherService {
     if (!deleted) {
       throw new NotFoundError("Teacher not found", { id });
     }
+  }
+
+  async changeTeacherStatus({
+    id,
+    status,
+  }: {
+    id: string;
+    status: TeacherStatus;
+  }) {
+    const isTeacherExist = await this.teacherQuery.getTeacherById(id);
+
+    if (!isTeacherExist) {
+      throw new NotFoundError("Teacher not found", { id });
+    }
+
+    return await this.teacherCommand.updateTeacherStatus(id, status);
   }
 
   async _generateHash(password: string, salt: string) {

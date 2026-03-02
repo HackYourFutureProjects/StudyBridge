@@ -1,7 +1,10 @@
 import { injectable } from "inversify";
 import { TeacherModel } from "../../db/schemes/teacherSchema.js";
 import { HttpError } from "../../utils/error.util.js";
-import { TeacherTypeDB } from "../../db/schemes/types/teacher.types.js";
+import {
+  TeacherStatus,
+  TeacherTypeDB,
+} from "../../db/schemes/types/teacher.types.js";
 
 @injectable()
 export class TeacherCommand {
@@ -68,6 +71,25 @@ export class TeacherCommand {
       return updated.modifiedCount === 1;
     } catch (err: unknown) {
       throw new HttpError(500, "Password was not updated", { cause: err });
+    }
+  }
+
+  async updateTeacherStatus(id: string, status: TeacherStatus) {
+    try {
+      const updated = await TeacherModel.updateOne(
+        { id },
+        {
+          $set: {
+            status,
+          },
+        },
+      );
+
+      return updated.modifiedCount === 1;
+    } catch (err: unknown) {
+      throw new HttpError(500, "Teacher status was not updated", {
+        cause: err,
+      });
     }
   }
 
