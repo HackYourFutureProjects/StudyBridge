@@ -73,6 +73,7 @@ export class AppointmentService {
       price: data.price,
       date: data.date,
       time: data.time,
+      description: data.description || "",
       status: "pending" as const,
       videoCall: `https://meet.google.com/${data.teacherId}-${data.studentId}-${Date.now()}`,
       isRegularStudent: false,
@@ -303,6 +304,7 @@ export class AppointmentService {
       price: string | number;
       date: string;
       time: string;
+      description?: string;
       status: string;
       videoCall?: string;
       isRegularStudent?: boolean;
@@ -325,6 +327,7 @@ export class AppointmentService {
       price: priceStr,
       date: apt.date,
       time: apt.time,
+      description: apt.description,
       status: apt.status,
       videoCall: apt.videoCall,
       isRegularStudent: apt.isRegularStudent,
