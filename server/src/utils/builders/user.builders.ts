@@ -75,5 +75,6 @@ export function buildGoogleTeacher(args: {
     createdAt: new Date(),
     authProvider: "google",
     googleSub: args.googleSub,
+    status: "draft",
   };
 }

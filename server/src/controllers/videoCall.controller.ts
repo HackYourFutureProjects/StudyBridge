@@ -19,7 +19,9 @@ export class VideoCallController {
     try {
       const auth = req.auth;
       if (!auth) return res.sendStatus(401);
-
+      if (auth.role !== "student" && auth.role !== "teacher") {
+        return res.sendStatus(403);
+      }
       const videoCall = await this.videoCallService.startCall({
         ...req.body,
         authUserId: auth.userId,
@@ -44,7 +46,9 @@ export class VideoCallController {
       if (!userId || !role) {
         return res.status(401).json({ message: "Unauthorized" });
       }
-
+      if (role !== "student" && role !== "teacher") {
+        return res.sendStatus(403);
+      }
       const incoming = await this.videoCallService.incomingCall({
         authUserId: userId,
         authRole: role,
@@ -69,7 +73,9 @@ export class VideoCallController {
       if (!userId || !role) {
         return res.status(401).json({ message: "Unauthorized" });
       }
-
+      if (role !== "student" && role !== "teacher") {
+        return res.sendStatus(403);
+      }
       const acceptedCall = await this.videoCallService.acceptCall({
         callId,
         authUserId: userId,
@@ -99,7 +105,9 @@ export class VideoCallController {
       if (!userId || !role) {
         return res.status(401).json({ message: "Unauthorized" });
       }
-
+      if (role !== "student" && role !== "teacher") {
+        return res.sendStatus(403);
+      }
       const declinedCall = await this.videoCallService.declineCall({
         callId,
         authUserId: userId,

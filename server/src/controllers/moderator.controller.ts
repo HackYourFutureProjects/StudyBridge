@@ -10,7 +10,7 @@ import { JwtService } from "../services/jwt/jwt.service.js";
 @injectable()
 export class ModeratorController {
   constructor(
-    @inject(TYPES.ReviewService) private teacherService: TeacherService,
+    @inject(TYPES.TeacherService) private teacherService: TeacherService,
     @inject(TYPES.AuthService) protected authService: AuthService,
     @inject(TYPES.JwtService) protected jwtService: JwtService,
   ) {}
