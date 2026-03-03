@@ -348,7 +348,8 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
                         </span>
                         {!isDescriptionValid && (
                           <span className="text-xs text-red-400">
-                            Maximum {descriptionValidation.maxWords} words allowed
+                            Maximum {descriptionValidation.maxWords} words
+                            allowed
                           </span>
                         )}
                       </div>

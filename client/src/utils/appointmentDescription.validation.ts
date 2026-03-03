@@ -15,7 +15,7 @@ export const isDescriptionValid = (description: string): boolean => {
 export const getDescriptionValidation = (description: string) => {
   const wordCount = countWords(description);
   const isValid = wordCount <= MAX_DESCRIPTION_WORDS;
-  
+
   return {
     wordCount,
     isValid,
