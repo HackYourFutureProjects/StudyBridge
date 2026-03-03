@@ -15,6 +15,7 @@ import {
   QueryTeacherInput,
   TeacherOutputModel,
   UpdateTeacherProfileInput,
+  QueryTeacherForModeratorInput,
 } from "../types/teacher/teacher.types.js";
 
 @injectable()
@@ -55,13 +56,36 @@ export class TeacherController {
         maxRating: req.query.maxRating,
       };
 
-      const teachers = await this.teacherQuery.getAllTeachers(sortData);
+      const teachers = await this.teacherQuery.getAllActiveTeachers(sortData);
 
       return res.status(200).send(teachers);
     } catch (err) {
       return next(err);
     }
   }
+
+  async getAllTeachersForModerator(
+    req: RequestWithQuery<QueryTeacherForModeratorInput>,
+    res: ResponseWithData<TeacherOutputModel>,
+    next: NextFunction,
+  ) {
+    try {
+      const sortData: QueryTeacherForModeratorInput = {
+        sortBy: req.query.sortBy,
+        sortDirection: req.query.sortDirection,
+        pageNumber: req.query.pageNumber,
+        pageSize: req.query.pageSize,
+      };
+
+      const teachers =
+        await this.teacherQuery.getAllTeachersForModerator(sortData);
+
+      return res.status(200).send(teachers);
+    } catch (err) {
+      return next(err);
+    }
+  }
+
   async getTeacherById(
     req: RequestWithParams<ParamsType>,
     res: Response,
@@ -70,10 +94,29 @@ export class TeacherController {
     try {
       const teacher = await this.teacherQuery.getTeacherById(req.params.id);
 
-      if (!teacher) {
+      if (!teacher || teacher.status !== "active") {
         return res.status(404).json({ message: "Teacher not found" });
       }
 
+      return res.status(200).json(teacher);
+    } catch (err) {
+      return next(err);
+    }
+  }
+
+  async getTeacherByIdForModerator(
+    req: RequestWithParams<ParamsType>,
+    res: Response,
+    next: NextFunction,
+  ) {
+    const { id } = req.params;
+
+    try {
+      const teacher = await this.teacherQuery.getTeacherById(id);
+
+      if (!teacher) {
+        return res.status(404).json({ message: "Teacher not found" });
+      }
       return res.status(200).json(teacher);
     } catch (err) {
       return next(err);

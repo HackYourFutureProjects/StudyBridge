@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import type { UserType } from "../api/auth/types";
 
-type AccountType = "student" | "teacher";
+type AccountType = "student" | "teacher" | "moderator";
 
 type AuthSessionState = {
   user: UserType | null;

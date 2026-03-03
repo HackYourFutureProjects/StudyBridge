@@ -1,12 +1,18 @@
 import { TeacherCard } from "../teacherCard/teacherCard";
-import { TeacherType } from "../../api/teacher/teacher.type";
+import { TeacherStatus, TeacherType } from "../../api/teacher/teacher.type";
 import { motion, type Variants, useReducedMotion } from "framer-motion";
 import { useRef } from "react";
 type CardsListType = {
   cards: TeacherType[];
+  changeStatus?: (id: string, status: TeacherStatus) => void;
+  isStatusPending?: boolean;
 };
 
-export const CardsList = ({ cards }: CardsListType) => {
+export const CardsList = ({
+  cards,
+  changeStatus,
+  isStatusPending,
+}: CardsListType) => {
   const reduceMotion = useReducedMotion();
 
   const listVariants: Variants = {
@@ -44,7 +50,11 @@ export const CardsList = ({ cards }: CardsListType) => {
     >
       {cards.map((teacher) => (
         <motion.div key={teacher.id} variants={itemVariants}>
-          <TeacherCard teacher={teacher} />
+          <TeacherCard
+            isStatusPending={isStatusPending}
+            changeStatus={changeStatus}
+            teacher={teacher}
+          />
         </motion.div>
       ))}
     </motion.div>

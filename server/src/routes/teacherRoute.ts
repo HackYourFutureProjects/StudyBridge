@@ -22,6 +22,13 @@ teacherRouter.get(
 );
 
 teacherRouter.get(
+  "/get-teachers-moderator",
+  authMiddleware.handle,
+  requireRole("moderator"),
+  teacherController.getAllTeachersForModerator.bind(teacherController),
+);
+
+teacherRouter.get(
   "/me",
   authMiddleware.handle,
   requireRole("teacher"),
@@ -55,6 +62,13 @@ teacherRouter.get(
 teacherRouter.get(
   "/:id",
   teacherController.getTeacherById.bind(teacherController),
+);
+
+teacherRouter.get(
+  "/:id/moderator",
+  authMiddleware.handle,
+  requireRole("moderator"),
+  teacherController.getTeacherByIdForModerator.bind(teacherController),
 );
 
 teacherRouter.delete(

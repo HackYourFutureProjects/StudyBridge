@@ -1,18 +1,19 @@
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
-
-import { TeachersQuery } from "../../../api/teacher/teacher.type.ts";
-import { queryKeys } from "../../queryKeys.ts";
-import { getAllTeachersApi } from "../../../api/teacher/teacher.api.ts";
-import { useEffect } from "react";
+import { TeachersForModeratorQuery } from "../../../api/teacher/teacher.type.ts";
 import { useNotificationStore } from "../../../store/notification.store.ts";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { queryKeys } from "../../queryKeys.ts";
+import { getAllTeachersForModeratorApi } from "../../../api/teacher/teacher.api.ts";
+import { useEffect } from "react";
 import { getErrorMessage } from "../../../util/ErrorUtil.ts";
 
-export function useTeachersQuery(params: TeachersQuery) {
+export function useTeachersForModeratorQuery(
+  params: TeachersForModeratorQuery,
+) {
   const notifyError = useNotificationStore((s) => s.error);
 
   const query = useQuery({
-    queryKey: queryKeys.teachers.publicList(params),
-    queryFn: () => getAllTeachersApi(params),
+    queryKey: queryKeys.teachers.moderatorList(params),
+    queryFn: () => getAllTeachersForModeratorApi(params),
     retry: false,
     placeholderData: keepPreviousData,
     staleTime: 20 * 60 * 1000,

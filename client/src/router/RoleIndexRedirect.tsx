@@ -1,6 +1,9 @@
 import { useAuthSessionStore } from "../store/authSession.store.ts";
 import { Navigate, useLocation } from "react-router-dom";
-import { teacherPrivatesRoutesVariables } from "./routesVariables/pathVariables.ts";
+import {
+  moderatorPrivatesRoutesVariables,
+  teacherPrivatesRoutesVariables,
+} from "./routesVariables/pathVariables.ts";
 
 export const RoleIndexRedirect = () => {
   const user = useAuthSessionStore((s) => s.user);
@@ -9,12 +12,22 @@ export const RoleIndexRedirect = () => {
     return <Navigate to="/" replace state={{ from: location }} />;
   }
 
-  return user.role === "teacher" ? (
-    <Navigate
-      to={`/teacher/${teacherPrivatesRoutesVariables.dashboard}`}
-      replace
-    />
-  ) : (
-    <Navigate to={`/clients-dashboard`} replace />
-  );
+  if (user.role === "teacher") {
+    return (
+      <Navigate
+        to={`/teacher/${teacherPrivatesRoutesVariables.dashboard}`}
+        replace
+      />
+    );
+  } else if (user.role === "student") {
+    return <Navigate to={`/clients-dashboard`} replace />;
+  } else if (user.role === "moderator") {
+    return (
+      <Navigate
+        to={`/moderator/${moderatorPrivatesRoutesVariables.teachers}`}
+        replace
+      />
+    );
+  }
+  return <Navigate to="/" replace state={{ from: location }} />;
 };

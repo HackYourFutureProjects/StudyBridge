@@ -5,6 +5,8 @@ import Chat from "../icons/Chat";
 import UsersIcon from "../icons/UsersIcon";
 import {
   chatRoutes,
+  moderatorBase,
+  moderatorPrivatesRoutesVariables,
   studentBase,
   studentPrivatesRoutesVariables,
   teacherBase,
@@ -60,6 +62,19 @@ export const defaultTeacherMenuItems: MenuItem[] = [
   {
     name: "Chat",
     link: joinPath(teacherBase, chatRoutes.root),
+    icon: Chat,
+  },
+];
+
+export const defaultModeratorMenuItems: MenuItem[] = [
+  {
+    name: "Teachers",
+    link: joinPath(moderatorBase, moderatorPrivatesRoutesVariables.teachers),
+    icon: DashboardIcon,
+  },
+  {
+    name: "Chat",
+    link: joinPath(moderatorBase, chatRoutes.root),
     icon: Chat,
   },
 ];

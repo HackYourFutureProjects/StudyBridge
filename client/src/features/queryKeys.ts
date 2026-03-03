@@ -1,4 +1,7 @@
-import { TeachersQuery } from "../api/teacher/teacher.type.ts";
+import {
+  TeachersForModeratorQuery,
+  TeachersQuery,
+} from "../api/teacher/teacher.type.ts";
 
 export const queryKeys = {
   me: ["auth", "me"] as const,
@@ -10,10 +13,16 @@ export const queryKeys = {
   teachers: {
     all: ["teachers"] as const,
     myProfile: () => ["teachers", "me"] as const,
-    list: (params: TeachersQuery) => ["teachers", "list", params] as const,
+    publicList: (params: TeachersQuery) =>
+      ["teachers", "publicList", params] as const,
+
+    moderatorList: (params: TeachersForModeratorQuery) =>
+      ["teachers", "moderatorList", params] as const,
   },
-  teacher: (id: string) => ["teachers", id] as const,
-  teachersList: (params: TeachersQuery) => ["teachers", params] as const,
+
+  teacherPublic: (id: string) => ["teachers", "publicDetail", id] as const,
+  teacherModerator: (id: string) =>
+    ["teachers", "moderatorDetail", id] as const,
 
   appointments: ["appointments"] as const,
   teacherAppointments: (teacherId: string, page?: number, limit?: number) =>

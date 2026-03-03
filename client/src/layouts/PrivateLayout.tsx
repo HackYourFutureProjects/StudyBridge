@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { Sidebar } from "../components/sidebar/Sidebar.tsx";
 import {
+  defaultModeratorMenuItems,
   defaultStudentMenuItems,
   defaultTeacherMenuItems,
 } from "../components/sidebar/sidebarMenuItems.ts";
@@ -15,12 +16,16 @@ export const PrivateLayout = () => {
   const accessToken = useAuthSessionStore((s) => s.accessToken);
   const connect = useSocketStore((s) => s.connect);
   const disconnect = useSocketStore((s) => s.disconnect);
-  const items =
-    user?.role === "teacher"
-      ? defaultTeacherMenuItems
-      : defaultStudentMenuItems;
-
   usePresenceSubscribe();
+  let items;
+
+  if (user?.role === "teacher") {
+    items = defaultTeacherMenuItems;
+  } else if (user?.role === "student") {
+    items = defaultStudentMenuItems;
+  } else {
+    items = defaultModeratorMenuItems;
+  }
 
   useEffect(() => {
     if (!accessToken) {
