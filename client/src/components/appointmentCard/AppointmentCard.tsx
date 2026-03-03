@@ -57,6 +57,7 @@ export const AppointmentCard = ({
           lesson={appointment.lesson}
           teacherName={appointment.teacherName}
           price={appointment.price}
+          description={appointment.description}
           weeklySchedule={appointment.weeklySchedule}
           isRegularTeacher={isRegularTeacher}
         />

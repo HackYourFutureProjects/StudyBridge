@@ -12,6 +12,7 @@ export interface Appointment {
   price: string;
   date: string;
   time: string;
+  description?: string;
   status: AppointmentStatus;
   videoCall?: string;
   isRegularStudent?: boolean;

@@ -4,6 +4,7 @@ export type AppointmentInfoProps = {
   lesson?: string;
   teacherName?: string;
   price: string;
+  description?: string;
   weeklySchedule?: WeeklyScheduleSlot[];
   isRegularTeacher?: boolean;
 };
@@ -33,6 +34,7 @@ export const AppointmentInfo = ({
   lesson,
   teacherName,
   price,
+  description,
   weeklySchedule,
   isRegularTeacher = false,
 }: AppointmentInfoProps) => {
@@ -49,6 +51,12 @@ export const AppointmentInfo = ({
       <h3 className="text-white text-[16px] md:text-[18px] font-semibold">
         {teacherName || "Teacher"}
       </h3>
+
+      {description && (
+        <div className="text-[12px] md:text-[14px] text-gray-300 mt-1 max-w-full">
+          {description}
+        </div>
+      )}
 
       <div className="text-[14px] md:text-[16px] text-white">
         {price} euro /hour

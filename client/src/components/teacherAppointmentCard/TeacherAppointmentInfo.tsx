@@ -4,6 +4,7 @@ export type TeacherAppointmentInfoProps = {
   lesson?: string;
   studentName?: string;
   price: string;
+  description?: string;
   weeklySchedule?: WeeklyScheduleSlot[];
   isRegularTab?: boolean;
 };
@@ -33,6 +34,7 @@ export const TeacherAppointmentInfo = ({
   lesson,
   studentName,
   price,
+  description,
   weeklySchedule,
   isRegularTab = false,
 }: TeacherAppointmentInfoProps) => {
@@ -53,6 +55,12 @@ export const TeacherAppointmentInfo = ({
       <div className="text-[14px] md:text-[16px] text-white">
         {price} euro /hour
       </div>
+
+      {description && (
+        <div className="text-[12px] md:text-[14px] text-gray-300 mt-1 max-w-full">
+          {description}
+        </div>
+      )}
 
       {isRegularTab && weeklySchedule && weeklySchedule.length > 0 && (
         <div className="text-[11px] md:text-[13px] text-gray-400 mt-1 max-w-full">

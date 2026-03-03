@@ -12,6 +12,7 @@ interface CreateAppointmentRequest {
   time: string;
   lesson: string;
   price: string;
+  description?: string;
 }
 
 const createAppointment = async (
