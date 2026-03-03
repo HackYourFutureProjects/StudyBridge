@@ -9,16 +9,22 @@ import { useState } from "react";
 import { useTeacherQuery } from "../../features/teachers/query/useTeacherQuery";
 import { TeacherCardSkeleton } from "../../components/skeletons/TeacherCardSkeleton";
 import { ReviewsManager } from "../../components/teacherSection/Reviews/ReviewsManager";
-
+import { useMatch } from "react-router-dom";
+import { useChangeStatusMutation } from "../../features/moderator/mutation/useChangeStatus.ts";
+import { TeacherStatus } from "../../api/teacher/teacher.type.ts";
 type TabType = "about" | "subjects" | "schedule";
 
 export const TeacherDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [activeTab, setActiveTab] = useState<TabType>("subjects");
-
+  const isModeratorRoute = Boolean(useMatch("/moderator/*"));
   const { data: teacher, isLoading, error } = useTeacherQuery(id || "");
-
+  const { mutate: changeStatusMutation, isPending: isChangeStatusPrnding } =
+    useChangeStatusMutation();
+  const changeStatus = (id: string, status: TeacherStatus) => {
+    changeStatusMutation({ id, status });
+  };
   const handleBack = () => {
     navigate(-1);
   };
@@ -82,7 +88,12 @@ export const TeacherDetail = () => {
             Back
           </Button>
         </div>
-        <TeacherCard teacher={teacher} showBookButton={false} />
+        <TeacherCard
+          teacher={teacher}
+          showBookButton={false}
+          changeStatus={isModeratorRoute ? changeStatus : undefined}
+          isStatusPending={isModeratorRoute ? isChangeStatusPrnding : undefined}
+        />
         <div className="section-spacing">
           <TeacherNavigation activeTab={activeTab} onTabChange={setActiveTab} />
         </div>

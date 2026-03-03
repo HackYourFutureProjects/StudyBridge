@@ -33,6 +33,13 @@ export async function getTeacherByIdApi(teacherId: string) {
   return res.data;
 }
 
+export async function getTeacherByIdForModeratorApi(teacherId: string) {
+  const res = await apiProtected.get<TeacherType>(
+    `/api/teachers/${teacherId}/moderator`,
+  );
+  return res.data;
+}
+
 type ApiSlot = { start: string; end: string };
 type ApiAvailability = {
   monday: ApiSlot[];

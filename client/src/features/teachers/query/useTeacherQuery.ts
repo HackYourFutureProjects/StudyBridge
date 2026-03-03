@@ -1,11 +1,21 @@
 import { useQuery } from "@tanstack/react-query";
 import { queryKeys } from "../../queryKeys";
-import { getTeacherByIdApi } from "../../../api/teacher/teacher.api";
+import {
+  getTeacherByIdApi,
+  getTeacherByIdForModeratorApi,
+} from "../../../api/teacher/teacher.api";
+import { useAuthSessionStore } from "../../../store/authSession.store.ts";
 
 export const useTeacherQuery = (teacherId: string) => {
+  const role = useAuthSessionStore((s) => s.user?.role);
+
+  const isModerator = role === "moderator";
   return useQuery({
     queryKey: queryKeys.teacher(teacherId),
-    queryFn: () => getTeacherByIdApi(teacherId),
+    queryFn: () =>
+      isModerator
+        ? getTeacherByIdForModeratorApi(teacherId)
+        : getTeacherByIdApi(teacherId),
     enabled: !!teacherId,
   });
 };

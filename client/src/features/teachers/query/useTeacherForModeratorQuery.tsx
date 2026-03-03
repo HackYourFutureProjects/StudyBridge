@@ -17,6 +17,7 @@ export function useTeachersForModeratorQuery(
     retry: false,
     placeholderData: keepPreviousData,
     staleTime: 20 * 60 * 1000,
+    refetchOnMount: "always",
   });
 
   useEffect(() => {

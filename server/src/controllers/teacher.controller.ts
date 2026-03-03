@@ -94,9 +94,25 @@ export class TeacherController {
     try {
       const teacher = await this.teacherQuery.getTeacherById(req.params.id);
 
-      if (!teacher) {
+      if (!teacher || teacher.status !== "active") {
         return res.status(404).json({ message: "Teacher not found" });
       }
+
+      return res.status(200).json(teacher);
+    } catch (err) {
+      return next(err);
+    }
+  }
+
+  async getTeacherByIdForModerator(
+    req: RequestWithParams<ParamsType>,
+    res: Response,
+    next: NextFunction,
+  ) {
+    const { id } = req.params;
+
+    try {
+      const teacher = await this.teacherQuery.getTeacherById(id);
 
       return res.status(200).json(teacher);
     } catch (err) {

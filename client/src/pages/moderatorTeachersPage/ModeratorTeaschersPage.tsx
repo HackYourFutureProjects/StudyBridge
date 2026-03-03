@@ -2,13 +2,19 @@ import { CardsList } from "../../components/cardsList/CardsList";
 import { Pagination } from "../../components/ui/pagination/Pagination";
 import { useRef, useState } from "react";
 import { TeachersCardsSkeletonList } from "../../components/skeletons/TeachersCardsSkeletonList.tsx";
-import { SortByTeachersForModerator } from "../../api/teacher/teacher.type.ts";
+import {
+  SortByTeachersForModerator,
+  TeacherStatus,
+} from "../../api/teacher/teacher.type.ts";
 import { useTeachersForModeratorQuery } from "../../features/teachers/query/useTeacherForModeratorQuery.tsx";
+import { useChangeStatusMutation } from "../../features/moderator/mutation/useChangeStatus.ts";
 
 export const ModeratorTeachersPage = () => {
   const [page, setPage] = useState(1);
   const [sortBy] = useState<SortByTeachersForModerator>("status");
   const listTopRef = useRef<HTMLDivElement | null>(null);
+
+  const { mutate, isPending } = useChangeStatusMutation();
 
   const handlePageChange = (page: number) => {
     setPage(page);
@@ -18,6 +24,10 @@ export const ModeratorTeachersPage = () => {
         block: "start",
       });
     });
+  };
+
+  const changeStatus = (id: string, status: TeacherStatus) => {
+    mutate({ id, status });
   };
 
   const { data, isFetching } = useTeachersForModeratorQuery({
@@ -43,7 +53,11 @@ export const ModeratorTeachersPage = () => {
           {isFetching ? (
             <TeachersCardsSkeletonList count={10} />
           ) : data?.items?.length ? (
-            <CardsList cards={data.items} />
+            <CardsList
+              isStatusPending={isPending}
+              changeStatus={changeStatus}
+              cards={data.items}
+            />
           ) : (
             <div className="text-light-100 text-center">No teachers</div>
           )}

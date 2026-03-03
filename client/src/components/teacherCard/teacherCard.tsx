@@ -1,21 +1,20 @@
 import { Button } from "../ui/button/Button";
 import { Rating } from "../rating/Rating";
-import { TeacherType } from "../../api/teacher/teacher.type";
+import { TeacherStatus, TeacherType } from "../../api/teacher/teacher.type";
 import { useNavigate } from "react-router-dom";
 import { getAvatarUrl } from "../../api/upload/upload.api";
 import DefaultAvatarIcon from "../icons/DefaultAvatarIcon";
 import { cva, VariantProps } from "class-variance-authority";
 import { twMerge } from "tailwind-merge";
 import { useAuthSessionStore } from "../../store/authSession.store.ts";
-import {
-  getStatusButtonClass,
-  statusOptions,
-  statusUi,
-} from "../../util/statusButtons.tsx";
+import { Loader } from "../loader/Loader.tsx";
+import { StatusChange } from "../statusChanger/StatusChange.tsx";
 
 type TeacherCardType = {
   teacher: TeacherType;
   showBookButton?: boolean;
+  changeStatus?: (id: string, status: TeacherStatus) => void;
+  isStatusPending?: boolean;
 };
 
 const teacherCardVariants = cva(
@@ -42,7 +41,9 @@ const teacherCardClassName = (
 
 export const TeacherCard = ({
   teacher,
+  changeStatus,
   showBookButton = true,
+  isStatusPending,
 }: TeacherCardType) => {
   const {
     id,
@@ -63,24 +64,21 @@ export const TeacherCard = ({
   const avatarUrl = getAvatarUrl(profileImageUrl || null);
 
   const handleBookClick = () => {
+    if (user?.role === "moderator") {
+      navigate(`/moderator/teachers/${id}`);
+      return;
+    }
     navigate(`/teacher/${id}`);
   };
+
+  const onChangeStatus = (id: string, status: TeacherStatus) => {
+    changeStatus?.(id, status);
+  };
+
   return (
     <div className={teacherCardClassName({ status }, "flex flex-col gap-4")}>
-      {user?.role === "moderator" && (
-        <div className="flex flex-wrap items-center gap-2">
-          {statusOptions.map((s) => (
-            <Button
-              key={s}
-              type="button"
-              variant="link"
-              className={getStatusButtonClass(s, s === status)}
-              onClick={() => {}}
-            >
-              {statusUi[s].label}
-            </Button>
-          ))}
-        </div>
+      {Boolean(changeStatus) && (
+        <StatusChange changeStatus={onChangeStatus} id={id} status={status} />
       )}
       <div className="flex flex-col items-center sm:flex-row">
         <div
@@ -173,6 +171,7 @@ export const TeacherCard = ({
           <span className="text-[14px] text-dark-400">First lesson - free</span>
         </div>
       </div>
+      {isStatusPending && <Loader />}
     </div>
   );
 };
