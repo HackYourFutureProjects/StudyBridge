@@ -15,10 +15,11 @@ import {
 
 type Vars = { id: string; status: TeacherStatus };
 type Ctx = {
-  prevTeachersQueries: Array<
+  prevPublicLists: Array<[readonly unknown[], TeacherOutputModel | undefined]>;
+  prevModeratorLists: Array<
     [readonly unknown[], TeacherOutputModel | undefined]
   >;
-  prevTeacherDetail: TeacherType | undefined;
+  prevTeacherModeratorDetail: TeacherType | undefined;
 };
 
 export function useChangeStatusMutation() {
@@ -33,20 +34,15 @@ export function useChangeStatusMutation() {
       await qc.cancelQueries({ queryKey: queryKeys.teachers.all });
 
       const prevPublicLists = qc.getQueriesData<TeacherOutputModel>({
-        queryKey: ["teachers", "list"],
+        queryKey: ["teachers", "publicList"],
       });
 
-      const prevModeratorLists = qc
-        .getQueriesData<TeacherOutputModel>({ queryKey: ["teachers"] })
-        .filter(
-          ([key]) =>
-            key.length === 2 &&
-            key[0] === "teachers" &&
-            typeof key[1] === "object",
-        );
+      const prevModeratorLists = qc.getQueriesData<TeacherOutputModel>({
+        queryKey: ["teachers", "moderatorList"],
+      });
 
-      const prevTeacherDetail = qc.getQueryData<TeacherType>(
-        queryKeys.teacher(id),
+      const prevTeacherModeratorDetail = qc.getQueryData<TeacherType>(
+        queryKeys.teacherModerator(id),
       );
 
       prevPublicLists.forEach(([key, data]) => {
@@ -69,26 +65,22 @@ export function useChangeStatusMutation() {
         );
       });
 
-      if (prevTeacherDetail) {
-        qc.setQueryData<TeacherType>(queryKeys.teacher(id), {
-          ...prevTeacherDetail,
+      if (prevTeacherModeratorDetail) {
+        qc.setQueryData<TeacherType>(queryKeys.teacherModerator(id), {
+          ...prevTeacherModeratorDetail,
           status,
         });
       }
 
       return {
-        prevTeachersQueries: [...prevPublicLists, ...prevModeratorLists],
-        prevTeacherDetail,
+        prevPublicLists,
+        prevModeratorLists,
+        prevTeacherModeratorDetail,
       };
     },
     onSuccess: async () => {
       success("Status has been successfully changed");
-      await qc.invalidateQueries({
-        predicate: (q) => {
-          const key = q.queryKey;
-          return key[0] === "teachers" && key[1] === "list";
-        },
-      });
+      await qc.invalidateQueries({ queryKey: ["teachers", "publicList"] });
     },
     onError: (error, _vars, ctx) => {
       const msg = getErrorMessage(error);
@@ -96,22 +88,31 @@ export function useChangeStatusMutation() {
       if (!ctx) {
         return;
       }
-      ctx.prevTeachersQueries.forEach(([key, data]) => {
-        if (data === undefined) {
+      ctx.prevPublicLists.forEach(([key, data]) => {
+        if (!data) {
           return;
         }
         qc.setQueryData<TeacherOutputModel>(key, data);
       });
 
-      if (ctx.prevTeacherDetail !== undefined) {
+      ctx.prevModeratorLists.forEach(([key, data]) => {
+        if (!data) {
+          return;
+        }
+        qc.setQueryData<TeacherOutputModel>(key, data);
+      });
+
+      if (ctx.prevTeacherModeratorDetail) {
         qc.setQueryData<TeacherType>(
-          queryKeys.teacher(_vars.id),
-          ctx.prevTeacherDetail,
+          _vars ? queryKeys.teacherModerator(_vars.id) : ["_"],
+          ctx.prevTeacherModeratorDetail,
         );
       }
     },
-    onSettled: (_data, _error, { id }) => {
-      qc.invalidateQueries({ queryKey: queryKeys.teacher(id) });
+    onSettled: async (_d, _e, vars) => {
+      await qc.invalidateQueries({
+        queryKey: queryKeys.teacherModerator(vars.id),
+      });
     },
   });
 }

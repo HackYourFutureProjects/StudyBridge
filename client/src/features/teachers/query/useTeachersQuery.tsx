@@ -11,7 +11,7 @@ export function useTeachersQuery(params: TeachersQuery) {
   const notifyError = useNotificationStore((s) => s.error);
 
   const query = useQuery({
-    queryKey: queryKeys.teachersList(params),
+    queryKey: queryKeys.teachers.publicList(params),
     queryFn: () => getAllTeachersApi(params),
     retry: false,
     placeholderData: keepPreviousData,

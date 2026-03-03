@@ -12,9 +12,14 @@ export const useUpdateMyProfileMutation = () => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.teachers.myProfile(),
       });
+
       queryClient.invalidateQueries({ queryKey: queryKeys.teachers.all });
+
       queryClient.invalidateQueries({
-        queryKey: queryKeys.teacher(updatedTeacher.id),
+        queryKey: queryKeys.teacherPublic(updatedTeacher.id),
+      });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.teacherModerator(updatedTeacher.id),
       });
     },
   });

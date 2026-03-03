@@ -114,6 +114,9 @@ export class TeacherController {
     try {
       const teacher = await this.teacherQuery.getTeacherById(id);
 
+      if (!teacher) {
+        return res.status(404).json({ message: "Teacher not found" });
+      }
       return res.status(200).json(teacher);
     } catch (err) {
       return next(err);

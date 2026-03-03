@@ -20,7 +20,7 @@ export const TeacherDetail = () => {
   const [activeTab, setActiveTab] = useState<TabType>("subjects");
   const isModeratorRoute = Boolean(useMatch("/moderator/*"));
   const { data: teacher, isLoading, error } = useTeacherQuery(id || "");
-  const { mutate: changeStatusMutation, isPending: isChangeStatusPrnding } =
+  const { mutate: changeStatusMutation, isPending: isChangeStatusPending } =
     useChangeStatusMutation();
   const changeStatus = (id: string, status: TeacherStatus) => {
     changeStatusMutation({ id, status });
@@ -92,7 +92,7 @@ export const TeacherDetail = () => {
           teacher={teacher}
           showBookButton={false}
           changeStatus={isModeratorRoute ? changeStatus : undefined}
-          isStatusPending={isModeratorRoute ? isChangeStatusPrnding : undefined}
+          isStatusPending={isModeratorRoute ? isChangeStatusPending : undefined}
         />
         <div className="section-spacing">
           <TeacherNavigation activeTab={activeTab} onTabChange={setActiveTab} />

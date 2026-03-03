@@ -12,7 +12,7 @@ export function useTeachersForModeratorQuery(
   const notifyError = useNotificationStore((s) => s.error);
 
   const query = useQuery({
-    queryKey: queryKeys.teachersList(params),
+    queryKey: queryKeys.teachers.moderatorList(params),
     queryFn: () => getAllTeachersForModeratorApi(params),
     retry: false,
     placeholderData: keepPreviousData,
