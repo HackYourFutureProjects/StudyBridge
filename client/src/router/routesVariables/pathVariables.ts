@@ -17,6 +17,7 @@ export const authRoutesVariables = {
   recoveryTeacher: "/recovery/teacher",
 
   resetPassword: "/reset-password",
+  loginModerator: "/login/moderator",
 };
 
 export const chatRoutes = {

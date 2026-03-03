@@ -4,6 +4,7 @@ import { SignUpPage } from "../../pages/signUpPage/SignUpPage";
 import { LoginPage } from "../../pages/loginPage/LoginPage";
 import { RecoveryPage } from "../../pages/recoveryPage/RecoveryPage";
 import { ResetPasswordPage } from "../../pages/resetPasswordPage/resetPasswordPage";
+import { LoginModeratorPage } from "../../pages/loginModeratorPage/loginModeratorPage.tsx";
 
 export const authRoutes: RouteObject[] = [
   {
@@ -14,7 +15,10 @@ export const authRoutes: RouteObject[] = [
     path: `${authRoutesVariables.loginTutor}`,
     element: <LoginPage role="teacher" />,
   },
-
+  {
+    path: `${authRoutesVariables.loginModerator}`,
+    element: <LoginModeratorPage />,
+  },
   {
     path: `${authRoutesVariables.registerStudent}`,
     element: <SignUpPage role="student" />,

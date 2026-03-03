@@ -11,6 +11,7 @@ import {
   teacherIdParamValidationMiddleware,
   updateAppointmentStatusValidationMiddleware,
 } from "../validation/appointment/appointmentValidationMiddleware.js";
+import { requireRole } from "../middlewares/requireRole.middleware.js";
 
 export const appointmentRouter = Router();
 const appointmentController = container.get<AppointmentController>(
@@ -30,6 +31,7 @@ appointmentRouter.post(
   createAppointmentValidationMiddleware(),
   errorMiddleware,
   authMiddleware.handle,
+  requireRole("student"),
   appointmentController.createAppointmentController.bind(appointmentController),
 );
 

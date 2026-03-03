@@ -1,4 +1,4 @@
-import { Role } from "../common.types.js";
+import { Role, UsersRole } from "../common.types.js";
 
 export type RefreshTokenPayload = {
   userId: string;
@@ -32,7 +32,7 @@ export type RegistrationType = {
   lastName: string;
   email: string;
   password: string;
-  role: Role;
+  role: UsersRole;
 };
 
 export type LoginType = {
