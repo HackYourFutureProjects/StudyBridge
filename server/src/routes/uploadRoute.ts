@@ -9,7 +9,7 @@ const router = Router();
 const uploadController = new UploadController();
 const authMiddleware = container.get<AuthMiddleware>(TYPES.AuthMiddleware);
 
-// POST /api/upload/avatar - Завантажити/змінити аватар
+// POST /api/upload/avatar - Upload/change avatar
 router.post(
   "/avatar",
   authMiddleware.handle,
@@ -17,7 +17,7 @@ router.post(
   (req, res) => uploadController.uploadAvatar(req, res),
 );
 
-// DELETE /api/upload/avatar - Видалити аватар
+// DELETE /api/upload/avatar - Delete avatar
 router.delete("/avatar", authMiddleware.handle, (req, res) =>
   uploadController.deleteAvatar(req, res),
 );

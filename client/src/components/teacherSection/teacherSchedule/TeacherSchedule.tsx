@@ -7,6 +7,7 @@ import { useAuthSessionStore } from "../../../store/authSession.store";
 import { useTeacherAppointmentsQuery } from "../../../features/appointments/query/useTeacherAppointmentsQuery";
 import { SelectComponent } from "../../ui/select/Select.tsx";
 import { Button } from "../../ui/button/Button";
+import { getDescriptionValidation } from "../../../utils/appointmentDescription.validation";
 
 interface TeacherScheduleProps {
   teacher?: TeacherType;
@@ -18,6 +19,7 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
   const [selectedSubject, setSelectedSubject] = useState<string>("");
   const [selectedLevel, setSelectedLevel] = useState<string>("");
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const [description, setDescription] = useState<string>("");
   const [showSubjectLevelSelection, setShowSubjectLevelSelection] =
     useState<boolean>(false);
 
@@ -87,6 +89,12 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
     return levelItem.price;
   }, [selectedSubject, selectedLevel, teacher]);
 
+  const descriptionValidation = useMemo(() => {
+    return getDescriptionValidation(description);
+  }, [description]);
+
+  const { wordCount, isValid: isDescriptionValid } = descriptionValidation;
+
   const handleDateSelection = (date: Date): void => {
     setSelectedDate(date);
     setShowTimeAndBook(true);
@@ -128,6 +136,7 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
         selectedSubject,
         selectedLevel,
         selectedPrice: selectedPrice || undefined,
+        description,
         onSuccess: () => {
           setSelectedDate(null);
           setShowTimeAndBook(false);
@@ -135,6 +144,7 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
           setShowSubjectLevelSelection(false);
           setSelectedSubject("");
           setSelectedLevel("");
+          setDescription("");
         },
       });
     }
@@ -313,11 +323,45 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
                     </div>
                   )}
 
+                  {selectedSubject && selectedLevel && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                        Description (optional)
+                      </label>
+                      <textarea
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        placeholder="Tell the teacher about your goals, current level, or any specific topics you'd like to focus on..."
+                        className={`w-full p-3 bg-[#15141D] border rounded-lg text-white placeholder-gray-400 resize-none ${
+                          isDescriptionValid
+                            ? "border-[#7286FF]"
+                            : "border-red-500"
+                        }`}
+                        rows={3}
+                        maxLength={500}
+                      />
+                      <div className="flex justify-between items-center mt-1">
+                        <span
+                          className={`text-xs ${isDescriptionValid ? "text-gray-400" : "text-red-400"}`}
+                        >
+                          {wordCount}/{descriptionValidation.maxWords} words
+                        </span>
+                        {!isDescriptionValid && (
+                          <span className="text-xs text-red-400">
+                            Maximum {descriptionValidation.maxWords} words
+                            allowed
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
                   <Button
                     onClick={handleBooking}
                     disabled={
                       !selectedSubject ||
                       !selectedLevel ||
+                      !isDescriptionValid ||
                       isOwnProfile ||
                       isTeacher
                     }
@@ -328,7 +372,9 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
                       ? "You cannot book lessons with yourself"
                       : isTeacher
                         ? "Teachers cannot book lessons"
-                        : "Book Now"}
+                        : !isDescriptionValid
+                          ? `Please limit description to ${descriptionValidation.maxWords} words`
+                          : "Book Now"}
                   </Button>
                 </div>
               </div>

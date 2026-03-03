@@ -19,6 +19,7 @@ type ModalPayload = {
     selectedSubject?: string;
     selectedLevel?: string;
     selectedPrice?: number;
+    description?: string;
     onSuccess?: () => void;
   };
   signIn?: never;

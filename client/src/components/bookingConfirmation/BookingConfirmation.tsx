@@ -28,6 +28,7 @@ export const BookingConfirmation = ({
     selectedSubject,
     selectedLevel,
     selectedPrice,
+    description,
     onSuccess: onSuccessCallback,
   } = payload;
 
@@ -52,6 +53,7 @@ export const BookingConfirmation = ({
         "General Lesson",
       price: selectedPrice?.toString() || teacher.priceFrom?.toString() || "0",
       level: selectedLevel || "",
+      description: description || "",
     };
 
     createAppointment(appointmentData, {
@@ -93,6 +95,11 @@ export const BookingConfirmation = ({
         <p>
           <strong>Price:</strong> €{selectedPrice || teacher?.priceFrom}
         </p>
+        {description && (
+          <p>
+            <strong>Description:</strong> {description}
+          </p>
+        )}
         <p className="text-sm text-gray-600 mt-4">
           The lesson request will be sent to the teacher.
         </p>

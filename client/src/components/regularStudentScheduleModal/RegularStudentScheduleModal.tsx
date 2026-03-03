@@ -3,6 +3,7 @@ import { Button } from "../ui/button/Button";
 import Cross from "../icons/Cross";
 import { SelectComponent } from "../ui/select/Select";
 import { WeeklyScheduleSlot } from "../../types/appointments.types";
+import { useModalStore } from "../../store/modals.store";
 
 interface RegularStudentScheduleModalProps {
   isOpen: boolean;
@@ -40,6 +41,7 @@ const ModalContent = ({
     useState<WeeklyScheduleSlot[]>(initialSavedSlots);
   const [currentDay, setCurrentDay] = useState<string>("Monday");
   const [currentHour, setCurrentHour] = useState<number>(7);
+  const { open: openModal } = useModalStore();
 
   const isDuplicate = savedSlots.some(
     (slot) => slot.day === currentDay && slot.hour === currentHour,
@@ -78,6 +80,15 @@ const ModalContent = ({
   };
 
   const handleSave = () => {
+    if (!hasScheduleChanged) {
+      openModal("alert", {
+        title: "No Changes Made",
+        message:
+          "Please click on 'Add to Schedule' button to add lessons before saving.",
+      });
+      return;
+    }
+
     onSave(savedSlots);
     onClose();
   };
@@ -85,6 +96,27 @@ const ModalContent = ({
   const handleCancel = () => {
     onClose();
   };
+
+  const hasScheduleChanged = (() => {
+    if (savedSlots.length !== initialSavedSlots.length) {
+      return true;
+    }
+
+    const sortSlots = (slots: WeeklyScheduleSlot[]) =>
+      [...slots].sort((a, b) => {
+        if (a.day !== b.day) return a.day.localeCompare(b.day);
+        return a.hour - b.hour;
+      });
+
+    const sortedSaved = sortSlots(savedSlots);
+    const sortedInitial = sortSlots(initialSavedSlots);
+
+    return !sortedSaved.every(
+      (slot, index) =>
+        slot.day === sortedInitial[index]?.day &&
+        slot.hour === sortedInitial[index]?.hour,
+    );
+  })();
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
