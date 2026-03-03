@@ -5,6 +5,7 @@ import {
   TeacherViewType,
   AvailabilityView,
   UpdateTeacherProfileInput,
+  QueryTeacherForModeratorInput,
 } from "../../types/teacher/teacher.types.js";
 import { TeacherModel } from "../../db/schemes/teacherSchema.js";
 import { teacherMapper } from "../../utils/mappers/teacher.mapper.js";
@@ -30,6 +31,39 @@ export class TeacherQuery {
         .lean();
 
       const totalCount = await TeacherModel.countDocuments(filter);
+
+      const pagesCount = Math.ceil(totalCount / +pageSize);
+
+      return {
+        pagesCount,
+        page: pageNumber,
+        pageSize,
+        totalCount,
+        items: items.map(teacherMapper),
+      };
+    } catch (err: unknown) {
+      throw new Error("Something went wrong with getting all teachers", {
+        cause: err,
+      });
+    }
+  }
+
+  async getAllTeachersForModerator(
+    queries: QueryTeacherForModeratorInput,
+  ): Promise<TeacherOutputModel> {
+    try {
+      const pageNumber = queries.pageNumber ?? 1;
+      const pageSize = queries.pageSize ?? 10;
+      const sortBy = queries.sortBy ?? "createdAt";
+      const sortDirection = queries.sortDirection ?? "desc";
+
+      const items = await TeacherModel.find()
+        .sort(filterForSort(sortBy, sortDirection))
+        .skip((pageNumber - 1) * +pageSize)
+        .limit(+pageSize)
+        .lean();
+
+      const totalCount = await TeacherModel.countDocuments();
 
       const pagesCount = Math.ceil(totalCount / +pageSize);
 

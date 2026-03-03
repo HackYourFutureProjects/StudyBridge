@@ -22,6 +22,13 @@ teacherRouter.get(
 );
 
 teacherRouter.get(
+  "/get-teachers-moderator",
+  authMiddleware.handle,
+  requireRole("moderator"),
+  teacherController.getAllTeachersForModerator.bind(teacherController),
+);
+
+teacherRouter.get(
   "/me",
   authMiddleware.handle,
   requireRole("teacher"),

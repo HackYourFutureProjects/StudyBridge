@@ -11,6 +11,7 @@ import { RequireRole } from "./RequireRole.tsx";
 import { RoleIndexRedirect } from "./RoleIndexRedirect.tsx";
 import { teacherPrivateRoutes } from "./routesVariables/teacherPrivateRoutes.tsx";
 import { VideoCallPage } from "../pages/videoCall/VideoCallPage.tsx";
+import { moderatorPrivateRoutes } from "./routesVariables/moderatorPrivateRoutes.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -32,6 +33,17 @@ export const router = createBrowserRouter([
             <RoleIndexRedirect />
           </RequireAuth>
         ),
+      },
+      {
+        path: "/moderator",
+        element: (
+          <RequireAuth>
+            <RequireRole allow={["moderator"]}>
+              <PrivateLayout />
+            </RequireRole>
+          </RequireAuth>
+        ),
+        children: moderatorPrivateRoutes,
       },
       {
         path: "/clients-dashboard",

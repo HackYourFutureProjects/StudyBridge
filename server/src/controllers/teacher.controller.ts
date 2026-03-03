@@ -15,6 +15,7 @@ import {
   QueryTeacherInput,
   TeacherOutputModel,
   UpdateTeacherProfileInput,
+  QueryTeacherForModeratorInput,
 } from "../types/teacher/teacher.types.js";
 
 @injectable()
@@ -62,6 +63,29 @@ export class TeacherController {
       return next(err);
     }
   }
+
+  async getAllTeachersForModerator(
+    req: RequestWithQuery<QueryTeacherForModeratorInput>,
+    res: ResponseWithData<TeacherOutputModel>,
+    next: NextFunction,
+  ) {
+    try {
+      const sortData: QueryTeacherForModeratorInput = {
+        sortBy: req.query.sortBy,
+        sortDirection: req.query.sortDirection,
+        pageNumber: req.query.pageNumber,
+        pageSize: req.query.pageSize,
+      };
+
+      const teachers =
+        await this.teacherQuery.getAllTeachersForModerator(sortData);
+
+      return res.status(200).send(teachers);
+    } catch (err) {
+      return next(err);
+    }
+  }
+
   async getTeacherById(
     req: RequestWithParams<ParamsType>,
     res: Response,

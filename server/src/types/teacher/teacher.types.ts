@@ -84,6 +84,13 @@ export type QueryTeacherInput = {
   pageSize?: number;
 };
 
+export type QueryTeacherForModeratorInput = {
+  sortBy?: SortBy;
+  sortDirection?: SortDirection;
+  pageNumber?: number;
+  pageSize?: number;
+};
+
 export type TeacherOutputModel = {
   pagesCount?: number;
   page?: number;

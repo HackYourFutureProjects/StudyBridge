@@ -71,6 +71,7 @@ export type TeacherOutputModel = {
 
 export type SortDirection = "asc" | "desc";
 export type SortBy = "createdAt" | "priceFrom" | "rating";
+export type SortByTeachersForModerator = "status" | "createdAt";
 
 export type TeachersQuery = {
   subject?: string;
@@ -78,6 +79,13 @@ export type TeachersQuery = {
   maxPrice?: number;
   ratings?: number[];
   sortBy?: SortBy;
+  sortDirection?: SortDirection;
+  pageNumber?: number;
+  pageSize?: number;
+};
+
+export type TeachersForModeratorQuery = {
+  sortBy?: SortByTeachersForModerator;
   sortDirection?: SortDirection;
   pageNumber?: number;
   pageSize?: number;

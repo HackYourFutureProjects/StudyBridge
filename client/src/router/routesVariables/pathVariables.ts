@@ -1,5 +1,6 @@
 export const studentBase = "/clients-dashboard";
 export const teacherBase = "/teacher";
+export const moderatorBase = "/moderator";
 
 export const publicRoutesVariables = {
   home: "/",
@@ -40,4 +41,9 @@ export const teacherPrivatesRoutesVariables = {
   billings: "my-billings",
   profile: "profile",
   appointments: "teacher-appointments",
+};
+
+export const moderatorPrivatesRoutesVariables = {
+  teachers: "teachers",
+  teacher: "teachers/:id",
 };

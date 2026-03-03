@@ -1,5 +1,6 @@
 import { StudentType } from "../student/student.type";
 import { TeacherType } from "../teacher/teacher.type";
+import { ModeratorType } from "../moderator/moderator.type.ts";
 
 export type Role = "student" | "teacher" | "moderator";
 
@@ -14,7 +15,7 @@ export type RegisterFinalType = RegisterFormTypes & {
   role: Role;
 };
 
-export type UserType = StudentType | TeacherType;
+export type UserType = StudentType | TeacherType | ModeratorType;
 
 export type LoginFormTypes = {
   email: string;

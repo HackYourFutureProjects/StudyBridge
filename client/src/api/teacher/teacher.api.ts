@@ -1,6 +1,7 @@
 import { apiProtected, apiPublic } from "../api.ts";
 import {
   TeacherOutputModel,
+  TeachersForModeratorQuery,
   TeachersQuery,
   TeacherType,
   UpdateTeacherProfileInput,
@@ -10,6 +11,19 @@ export async function getAllTeachersApi(query: TeachersQuery) {
   const res = await apiPublic.get<TeacherOutputModel>("/api/teachers", {
     params: query,
   });
+
+  return res.data;
+}
+
+export async function getAllTeachersForModeratorApi(
+  query: TeachersForModeratorQuery,
+) {
+  const res = await apiProtected.get<TeacherOutputModel>(
+    "/api/teachers/get-teachers-moderator",
+    {
+      params: query,
+    },
+  );
 
   return res.data;
 }
