@@ -36,5 +36,6 @@ export const teacherMapper = (
     role: teacher.role,
     authProvider: teacher.authProvider,
     googleSub: teacher.googleSub,
+    status: teacher.status,
   };
 };

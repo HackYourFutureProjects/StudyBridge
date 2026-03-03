@@ -16,7 +16,9 @@ export class StreamController {
       if (!auth) return res.sendStatus(401);
 
       const { userId, role } = auth;
-
+      if (role !== "student" && role !== "teacher") {
+        return res.sendStatus(403);
+      }
       const streamData = createStreamToken({ userId, role });
       return res.status(200).json(streamData);
     } catch (error) {

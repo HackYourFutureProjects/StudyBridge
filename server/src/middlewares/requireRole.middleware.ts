@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { Role } from "../../index.js";
+import { Role } from "../types/common.types.js";
 
 export const requireRole =
   (...roles: Role[]) =>

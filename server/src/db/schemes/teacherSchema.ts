@@ -28,7 +28,12 @@ export const TeacherSchema = new mongoose.Schema<TeacherTypeDB>(
     phoneNumber: { type: String, default: null },
     dateOfBirth: { type: Date, default: null },
     gender: { type: String, default: null },
-
+    status: {
+      type: String,
+      enum: ["draft", "pending", "active", "rejected", "blocked"],
+      required: true,
+      default: "draft",
+    },
     mainLanguage: { type: String, default: null },
     education: {
       type: [

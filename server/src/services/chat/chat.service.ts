@@ -51,7 +51,7 @@ export class ChatService {
 
   async getConversationList(args: {
     userId: string;
-    role: "student" | "teacher";
+    role: "student" | "teacher" | "moderator";
   }): Promise<ConversationListItemDTO[]> {
     const { userId, role } = args;
 

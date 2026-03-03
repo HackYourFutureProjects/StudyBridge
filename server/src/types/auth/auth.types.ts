@@ -1,4 +1,5 @@
-export type Role = "teacher" | "student";
+import { Role, UsersRole } from "../common.types.js";
+
 export type RefreshTokenPayload = {
   userId: string;
   role: Role;
@@ -31,11 +32,11 @@ export type RegistrationType = {
   lastName: string;
   email: string;
   password: string;
-  role: Role;
+  role: UsersRole;
 };
 
 export type LoginType = {
   email: string;
   password: string;
-  role: Role;
+  role: "student" | "teacher";
 };

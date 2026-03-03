@@ -1,4 +1,4 @@
-import { Role } from "../common.types.js";
+import { UsersRole } from "../common.types.js";
 
 export type StudentViewType = {
   id: string;
@@ -9,7 +9,7 @@ export type StudentViewType = {
   address: string | null;
   mainLanguage: string | null;
   createdAt: Date;
-  role: Role;
+  role: UsersRole;
   authProvider: "local" | "google";
   googleSub: string | null;
 };

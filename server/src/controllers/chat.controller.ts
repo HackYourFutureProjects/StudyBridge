@@ -15,7 +15,6 @@ export class ChatController {
   async getConversations(req: Request, res: Response, next: NextFunction) {
     try {
       const { userId, role } = req.auth!;
-
       const items = await this.chatService.getConversationList({
         userId,
         role,

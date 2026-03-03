@@ -24,6 +24,9 @@ import {
   buildGoogleStudent,
   buildGoogleTeacher,
 } from "../../utils/builders/user.builders.js";
+import { ModeratorQuery } from "../../repositories/queryRepositories/moderator.query.js";
+import { moderatorMapper } from "../../utils/mappers/moderator.mapper.js";
+import { Role } from "../../types/common.types.js";
 
 @injectable()
 export class AuthService {
@@ -34,6 +37,7 @@ export class AuthService {
     @inject(TYPES.StudentCommand) private studentCommand: StudentCommand,
     @inject(TYPES.TeacherCommand) private teacherCommand: TeacherCommand,
     @inject(TYPES.JwtService) protected jwtService: JwtService,
+    @inject(TYPES.ModeratorQuery) protected moderatorQuery: ModeratorQuery,
     @inject(TYPES.RefreshSessionRepository)
     protected refreshSessionRepository: RefreshSessionRepository,
   ) {}
@@ -59,6 +63,33 @@ export class AuthService {
 
     if (student.passwordHash === passwordHash) {
       return studentMapper(student);
+    } else {
+      throw new HttpError(401, "Invalid credentials");
+    }
+  }
+
+  async checkAuthModeratorCredentials(email: string, password: string) {
+    const moderator =
+      await this.moderatorQuery.getModeratorByEmailWithHash(email);
+
+    if (!moderator) {
+      throw new HttpError(401, "Invalid credentials");
+    }
+
+    if (moderator.passwordSalt == null || moderator.passwordHash == null) {
+      throw new HttpError(
+        409,
+        "Password login is not available for this account",
+      );
+    }
+
+    const passwordHash = await this._generateHash(
+      password,
+      moderator.passwordSalt,
+    );
+
+    if (moderator.passwordHash === passwordHash) {
+      return moderatorMapper(moderator);
     } else {
       throw new HttpError(401, "Invalid credentials");
     }
@@ -91,13 +122,7 @@ export class AuthService {
     }
   }
 
-  async createRefreshSession({
-    userId,
-    role,
-  }: {
-    userId: string;
-    role: "teacher" | "student";
-  }) {
+  async createRefreshSession({ userId, role }: { userId: string; role: Role }) {
     const sessionId = randomUUID();
     const refreshToken = this.jwtService.createJWTRefreshToken({
       userId,

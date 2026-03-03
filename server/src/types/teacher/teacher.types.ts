@@ -1,3 +1,5 @@
+import { TeacherStatus } from "../../db/schemes/types/teacher.types.js";
+
 export type EducationViewItem = {
   degree: string;
   institution: string;
@@ -64,6 +66,7 @@ export type TeacherViewType = {
   role: string;
   authProvider: "local" | "google";
   googleSub: string | null;
+  status: TeacherStatus;
 };
 
 type SortDirection = "asc" | "desc";

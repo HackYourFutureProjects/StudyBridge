@@ -1,7 +1,7 @@
 import { StudentType } from "../student/student.type";
 import { TeacherType } from "../teacher/teacher.type";
 
-export type Role = "student" | "teacher";
+export type Role = "student" | "teacher" | "moderator";
 
 export type RegisterFormTypes = {
   firstName: string;

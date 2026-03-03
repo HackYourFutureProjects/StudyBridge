@@ -1,4 +1,4 @@
-import { Role } from "../../../types/common.types.js";
+import { UsersRole } from "../../../types/common.types.js";
 
 export type StudentTypeDB = {
   id: string;
@@ -15,7 +15,7 @@ export type StudentTypeDB = {
   address: string | null;
   mainLanguage: string | null;
   createdAt: Date;
-  role: Role;
+  role: UsersRole;
   authProvider: "local" | "google";
   googleSub: string | null;
 };

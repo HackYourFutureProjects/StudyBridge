@@ -61,22 +61,24 @@ export const LoginForm = ({
             type="password"
           />
         </div>
-
         <div className="auth-actions">
           <div className="auth-actions-inner">
-            <Button
-              as={NavLink}
-              variant="link"
-              to={
-                role === "teacher"
-                  ? authRoutesVariables.recoveryTeacher
-                  : authRoutesVariables.recoveryStudent
-              }
-              className="auth-link-underline"
-              type="button"
-            >
-              Forgot Password?
-            </Button>
+            {role !== "moderator" && (
+              <Button
+                as={NavLink}
+                variant="link"
+                to={
+                  role === "teacher"
+                    ? authRoutesVariables.recoveryTeacher
+                    : authRoutesVariables.recoveryStudent
+                }
+                className="auth-link-underline"
+                type="button"
+              >
+                Forgot Password?
+              </Button>
+            )}
+
             <Button
               variant="secondary"
               size="auth"
@@ -85,27 +87,32 @@ export const LoginForm = ({
             >
               Sign In
             </Button>
-            <Button
-              as={NavLink}
-              to={
-                role === "teacher"
-                  ? authRoutesVariables.registerTutor
-                  : authRoutesVariables.registerStudent
-              }
-              variant="tertiary"
-              size="auth"
-              type="button"
-            >
-              Sign Up
-            </Button>
+            {role !== "moderator" && (
+              <Button
+                as={NavLink}
+                to={
+                  role === "teacher"
+                    ? authRoutesVariables.registerTutor
+                    : authRoutesVariables.registerStudent
+                }
+                variant="tertiary"
+                size="auth"
+                type="button"
+              >
+                Sign Up
+              </Button>
+            )}
           </div>
-
-          <div className="auth-divider">
-            <div className="auth-divider-line" />
-            <span className="auth-divider-text">Or</span>
-            <div className="auth-divider-line" />
-          </div>
-          <GoogleAuthButton role={role} intent="login" />
+          {role !== "moderator" && (
+            <>
+              <div className="auth-divider">
+                <div className="auth-divider-line" />
+                <span className="auth-divider-text">Or</span>
+                <div className="auth-divider-line" />
+              </div>
+              <GoogleAuthButton role={role} intent="login" />
+            </>
+          )}
         </div>
       </div>
       {loading && <Loader />}

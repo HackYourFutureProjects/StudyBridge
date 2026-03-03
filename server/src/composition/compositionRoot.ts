@@ -35,6 +35,8 @@ import { VideoCallQuery } from "../repositories/queryRepositories/videoCall.quer
 import { VideoCallService } from "../services/video/videoCall.service.js";
 import { SubjectsController } from "../controllers/subjects.controller.js";
 import { SubjectsQuery } from "../repositories/queryRepositories/subjects.query.js";
+import { ModeratorController } from "../controllers/moderator.controller.js";
+import { ModeratorQuery } from "../repositories/queryRepositories/moderator.query.js";
 
 export const container = new Container();
 
@@ -104,3 +106,8 @@ container
   .to(VideoCallController);
 container.bind<VideoCallQuery>(TYPES.VideoCallQuery).to(VideoCallQuery);
 container.bind<VideoCallCommand>(TYPES.VideoCallCommand).to(VideoCallCommand);
+//moderator
+container
+  .bind<ModeratorController>(TYPES.ModeratorController)
+  .to(ModeratorController);
+container.bind<ModeratorQuery>(TYPES.ModeratorQuery).to(ModeratorQuery);
