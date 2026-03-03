@@ -14,7 +14,7 @@ import { buildTeacherFilter } from "../../utils/teachersFilter.js";
 
 @injectable()
 export class TeacherQuery {
-  async getAllTeachers(
+  async getAllActiveTeachers(
     queries: QueryTeacherInput,
   ): Promise<TeacherOutputModel> {
     try {
@@ -23,7 +23,7 @@ export class TeacherQuery {
       const sortBy = queries.sortBy ?? "createdAt";
       const sortDirection = queries.sortDirection ?? "desc";
       const filter = buildTeacherFilter(queries);
-
+      filter.status = "active";
       const items = await TeacherModel.find(filter)
         .sort(filterForSort(sortBy, sortDirection))
         .skip((pageNumber - 1) * +pageSize)

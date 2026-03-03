@@ -1,5 +1,10 @@
 import { Role } from "../auth/types";
-
+export type TeacherStatus =
+  | "draft"
+  | "pending"
+  | "active"
+  | "rejected"
+  | "blocked";
 type EducationItem = {
   degree: string;
   institution: string;
@@ -58,6 +63,7 @@ export type TeacherType = {
   availability: AvailabilityItem;
   address: AddressItem;
   createdAt: Date;
+  status: TeacherStatus;
   role: Role;
 };
 

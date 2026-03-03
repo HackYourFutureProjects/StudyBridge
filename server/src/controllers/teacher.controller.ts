@@ -56,7 +56,7 @@ export class TeacherController {
         maxRating: req.query.maxRating,
       };
 
-      const teachers = await this.teacherQuery.getAllTeachers(sortData);
+      const teachers = await this.teacherQuery.getAllActiveTeachers(sortData);
 
       return res.status(200).send(teachers);
     } catch (err) {
