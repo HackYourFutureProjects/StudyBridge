@@ -14,6 +14,7 @@ export interface AppointmentTypeDB {
   price: string;
   date: string;
   time: string;
+  description?: string;
   status: "pending" | "approved" | "rejected";
   videoCall?: string;
   isRegularStudent?: boolean;

@@ -22,6 +22,7 @@ export const AppointmentSchema = new mongoose.Schema<AppointmentTypeDB>(
     price: { type: String, required: true },
     date: { type: String, required: true },
     time: { type: String, required: true },
+    description: { type: String, default: "" },
     status: {
       type: String,
       required: true,

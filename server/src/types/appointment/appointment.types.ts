@@ -10,6 +10,7 @@ export interface CreateAppointmentType {
   price: string;
   date: string;
   time: string;
+  description?: string;
 }
 
 export interface UpdateAppointmentStatusType {
