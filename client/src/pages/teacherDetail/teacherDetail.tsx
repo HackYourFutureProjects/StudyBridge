@@ -82,7 +82,7 @@ export const TeacherDetail = () => {
 
   return (
     <div className="h-auto min-h-screen">
-      <div className="mx-auto px-4 sm:px-6 lg:px-8 pt-20 max-w-6xl container-centered">
+      <div className="mx-auto px-4 sm:px-6 lg:px-8 pt-3 max-w-6xl container-centered">
         <div className="section-spacing">
           <Button variant="secondary" onClick={handleBack} className="h-auto">
             Back

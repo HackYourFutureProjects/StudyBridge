@@ -2,6 +2,10 @@ import ReviewsIcon from "../../icons/Reviews";
 import { Rating } from "../../rating/Rating";
 import UsersIcon from "../../icons/UsersIcon";
 import { ReviewType } from "../../../api/review/review.type";
+import { Button } from "../../ui/button/Button.tsx";
+import Delete from "../../icons/Delete.tsx";
+import { useModalStore } from "../../../store/modals.store.ts";
+import { useAuthSessionStore } from "../../../store/authSession.store.ts";
 
 interface ReviewCardProps {
   reviewData: ReviewType;
@@ -9,6 +13,8 @@ interface ReviewCardProps {
 
 export const ReviewCardTeacher = ({
   reviewData: {
+    _id,
+    teacherId,
     studentName,
     studentAvatar,
     rating,
@@ -17,9 +23,24 @@ export const ReviewCardTeacher = ({
     createdAt,
   },
 }: ReviewCardProps) => {
+  const openModal = useModalStore((s) => s.open);
+  const user = useAuthSessionStore((state) => state.user);
+
   return (
     <div className="w-full h-full">
       <div className="flex flex-col bg-[#15141D] p-[16px] md:p-[25px] rounded-2xl h-full">
+        {user?.role === "moderator" && (
+          <Button
+            variant="link"
+            className="self-end hover:shadow-[0_0_18px_rgba(239,68,68,0.55)] mb-5"
+            onClick={() =>
+              openModal("deleteReview", { teacherId, reviewId: _id })
+            }
+          >
+            <Delete />
+          </Button>
+        )}
+
         {/* Header Part (Avatar , Name, Icon ) */}
         <div className="flex items-center gap-[10px] md:gap-[16px] mb-[12px] md:mb-[20px]">
           {studentAvatar ? (
@@ -43,7 +64,6 @@ export const ReviewCardTeacher = ({
 
           <ReviewsIcon className="opacity-20 w-3.5 md:w-auto h-3.5 md:h-auto shrink-0" />
         </div>
-
         {/* Rieview Section */}
         <div className="flex flex-col gap-[12px]">
           <div className="flex justify-between items-center">

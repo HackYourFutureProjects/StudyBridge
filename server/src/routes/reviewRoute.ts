@@ -3,6 +3,7 @@ import { container } from "../composition/compositionRoot.js";
 import { TYPES } from "../composition/composition.types.js";
 import { ReviewController } from "../controllers/review.controller.js";
 import { AuthMiddleware } from "../middlewares/authMiddlewareWithBearer.js";
+import { requireRole } from "../middlewares/requireRole.middleware.js";
 
 export const reviewRouter = Router();
 
@@ -32,4 +33,11 @@ reviewRouter.post(
   "/",
   authMiddleware.handle,
   reviewController.createReview.bind(reviewController),
+);
+
+reviewRouter.delete(
+  "/:reviewId/moderator",
+  authMiddleware.handle,
+  requireRole("moderator"),
+  reviewController.deleteReviewByModerator.bind(reviewController),
 );

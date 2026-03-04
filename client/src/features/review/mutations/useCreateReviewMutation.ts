@@ -11,18 +11,21 @@ export const useCreateReviewMutation = (teacherId: string) => {
 
   return useMutation({
     mutationFn: createReviewApi,
-    onSuccess: () => {
-      // refresh the reviews list
-      queryClient.invalidateQueries({
-        queryKey: ["reviews", teacherId],
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["reviews", teacherId] });
+
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.reviewAverageRating(teacherId),
+      });
+
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.teacherPublic(teacherId),
+      });
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.teacherModerator(teacherId),
       });
 
       notifySuccess("Review submitted successfully!");
-
-      // refresh the teacher profile to update the average rating
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.teacher(teacherId),
-      });
     },
     onError: (error) => {
       const msg = getErrorMessage(error);

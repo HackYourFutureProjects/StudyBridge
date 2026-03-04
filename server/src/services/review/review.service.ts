@@ -126,4 +126,12 @@ export class ReviewService {
       throw new HttpError(500, "Could not create review", { cause: err });
     }
   }
+
+  async deleteReview(reviewId: string) {
+    const deleted = await this.reviewCommand.deleteReview(reviewId);
+
+    if (!deleted) {
+      throw new HttpError(404, "Review not found");
+    }
+  }
 }
