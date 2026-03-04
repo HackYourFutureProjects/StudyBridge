@@ -23,12 +23,6 @@ const DAYS = [
 ] as const;
 
 const toHHmm = (hour: number) => `${String(hour).padStart(2, "0")}:00`;
-const toHHmmEnd = (hour: number) => {
-  if (hour >= 24) {
-    return "23:59";
-  }
-  return `${String(hour).padStart(2, "0")}:00`;
-};
 const fromHHmmToHour = (time: string) => Number(time.split(":")[0]);
 const toUiDay = (day: (typeof DAYS)[number]) =>
   day.charAt(0).toUpperCase() + day.slice(1);
@@ -36,7 +30,8 @@ const toUiDay = (day: (typeof DAYS)[number]) =>
 export const mergeHoursToSlots = (hours: number[]): ApiSlot[] => {
   if (!hours.length) return [];
 
-  const validHours = hours.filter((h) => h >= 0 && h < 24);
+  const validHours = hours.filter((h) => h >= 7 && h <= 22);
+
   if (!validHours.length) return [];
 
   const sorted = [...new Set(validHours)].sort((a, b) => a - b);
@@ -53,19 +48,21 @@ export const mergeHoursToSlots = (hours: number[]): ApiSlot[] => {
       continue;
     }
 
-    slots.push({
+    const slot = {
       start: toHHmm(rangeStart),
-      end: toHHmmEnd(prev + 1),
-    });
+      end: toHHmm(prev + 1),
+    };
+    slots.push(slot);
 
     rangeStart = current;
     prev = current;
   }
 
-  slots.push({
+  const finalSlot = {
     start: toHHmm(rangeStart),
-    end: toHHmmEnd(prev + 1),
-  });
+    end: toHHmm(prev + 1),
+  };
+  slots.push(finalSlot);
 
   return slots;
 };
@@ -110,12 +107,13 @@ export const mapWeekAvailabilityToUiSlots = (
       const startHour = fromHHmmToHour(range.start);
       let endHour = fromHHmmToHour(range.end);
 
-      if (range.end === "23:59") {
-        endHour = 24;
-      }
+      const validStartHour = Math.max(7, startHour);
+      const validEndHour = Math.min(23, endHour);
 
-      for (let hour = startHour; hour < endHour; hour++) {
-        slots.push({ day: toUiDay(day), hour });
+      for (let hour = validStartHour; hour < validEndHour; hour++) {
+        if (hour >= 7 && hour <= 22) {
+          slots.push({ day: toUiDay(day), hour });
+        }
       }
     }
   }

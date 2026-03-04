@@ -274,6 +274,7 @@ export const TeacherProfile = () => {
     try {
       setSchedule(slots);
       const availability = mapUiSlotsToMergedWeekAvailability(slots);
+
       await updateMyWeeklyScheduleApi({ availability });
 
       await queryClient.invalidateQueries({
@@ -282,24 +283,20 @@ export const TeacherProfile = () => {
 
       if (profile?.id) {
         await queryClient.invalidateQueries({
-          queryKey: queryKeys.teacher(profile.id),
+          queryKey: queryKeys.teacherPublic(profile.id),
         });
       }
 
-      openModal("alert", {
-        title: "Success",
-        message: "Schedule saved successfully",
-      });
+      success("Schedule saved successfully!");
     } catch (error) {
+      console.error("Schedule save error:", error);
       const axiosError = error as {
         response?: { data?: { errorsMessages?: Array<{ message: string }> } };
       };
-      openModal("alert", {
-        title: "Error",
-        message:
-          axiosError?.response?.data?.errorsMessages?.[0]?.message ||
+      notifyError(
+        axiosError?.response?.data?.errorsMessages?.[0]?.message ||
           "Failed to save schedule. Please try again.",
-      });
+      );
     }
   };
 

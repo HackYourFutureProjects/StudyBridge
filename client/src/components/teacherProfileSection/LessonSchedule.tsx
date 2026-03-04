@@ -25,7 +25,7 @@ const DAYS = [
   "Sunday",
 ];
 
-const HOURS = Array.from({ length: 17 }, (_, i) => i + 7);
+const HOURS = Array.from({ length: 16 }, (_, i) => i + 7);
 
 const ModalContent = ({
   onClose,
