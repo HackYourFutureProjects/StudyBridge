@@ -7,7 +7,6 @@ import DefaultAvatarIcon from "../icons/DefaultAvatarIcon";
 import { cva, VariantProps } from "class-variance-authority";
 import { twMerge } from "tailwind-merge";
 import { useAuthSessionStore } from "../../store/authSession.store.ts";
-import { Loader } from "../loader/Loader.tsx";
 import { StatusChange } from "../statusChanger/StatusChange.tsx";
 
 type TeacherCardType = {
@@ -62,7 +61,9 @@ export const TeacherCard = ({
   const navigate = useNavigate();
   const user = useAuthSessionStore((state) => state.user);
   const avatarUrl = getAvatarUrl(profileImageUrl || null);
-
+  const pulseClass = isStatusPending
+    ? `pulse-border pulse-border--${status}`
+    : "";
   const handleBookClick = () => {
     if (user?.role === "moderator") {
       navigate(`/moderator/teachers/${id}`);
@@ -76,7 +77,12 @@ export const TeacherCard = ({
   };
 
   return (
-    <div className={teacherCardClassName({ status }, "flex flex-col gap-4")}>
+    <div
+      className={teacherCardClassName(
+        { status },
+        twMerge("flex flex-col gap-4", pulseClass),
+      )}
+    >
       {Boolean(changeStatus) && (
         <StatusChange changeStatus={onChangeStatus} id={id} status={status} />
       )}
@@ -171,7 +177,6 @@ export const TeacherCard = ({
           <span className="text-[14px] text-dark-400">First lesson - free</span>
         </div>
       </div>
-      {isStatusPending && <Loader />}
     </div>
   );
 };

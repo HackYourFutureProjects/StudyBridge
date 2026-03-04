@@ -4,6 +4,7 @@
 @import "./styles/theme.css";
 @import "./styles/auth.css";
 @import "./styles/scroll.css";
+@import "./styles/statusPulse.css";
 
 @font-face {
   font-family: "Raleway";

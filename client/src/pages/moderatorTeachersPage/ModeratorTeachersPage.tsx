@@ -22,8 +22,8 @@ export const ModeratorTeachersPage = () => {
     useState<TeacherStatusQuery>("all");
   const listTopRef = useRef<HTMLDivElement | null>(null);
 
-  const { mutate, isPending } = useChangeStatusMutation();
-
+  const { mutate, variables, isPending } = useChangeStatusMutation();
+  const pendingId = isPending ? variables?.id : null;
   const handlePageChange = (page: number) => {
     setPage(page);
 
@@ -86,7 +86,7 @@ export const ModeratorTeachersPage = () => {
             <TeachersCardsSkeletonList count={10} />
           ) : data?.items?.length ? (
             <CardsList
-              isStatusPending={isPending}
+              pendingTeacherId={pendingId}
               changeStatus={changeStatus}
               cards={data.items}
             />
