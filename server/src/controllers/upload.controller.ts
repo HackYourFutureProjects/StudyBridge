@@ -3,6 +3,7 @@ import { TeacherModel } from "../db/schemes/teacherSchema.js";
 import { StudentModel } from "../db/schemes/studentSchema.js";
 import { v2 as cloudinary, UploadApiResponse } from "cloudinary";
 import { Readable } from "stream";
+import { validateAuthorization } from "../utils/validation/requestValidation.util.js";
 
 interface AuthRequest extends Request {
   auth?: {
@@ -15,11 +16,11 @@ export class UploadController {
   async uploadAvatar(req: Request, res: Response) {
     try {
       const authReq = req as AuthRequest;
-      const userId = authReq.auth?.userId;
+      const userId = validateAuthorization(authReq.auth?.userId);
       const role = authReq.auth?.role;
 
-      if (!userId || !role) {
-        return res.status(401).json({ message: "Unauthorized" });
+      if (!role) {
+        return res.status(401).json({ message: "Role not specified" });
       }
 
       if (!req.file) {
@@ -73,11 +74,11 @@ export class UploadController {
   async deleteAvatar(req: Request, res: Response) {
     try {
       const authReq = req as AuthRequest;
-      const userId = authReq.auth?.userId;
+      const userId = validateAuthorization(authReq.auth?.userId);
       const role = authReq.auth?.role;
 
-      if (!userId || !role) {
-        return res.status(401).json({ message: "Unauthorized" });
+      if (!role) {
+        return res.status(401).json({ message: "Role not specified" });
       }
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -2,9 +2,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateWeeklyScheduleApi } from "../../../api/appointments/regularStudents.api";
 import { queryKeys } from "../../queryKeys";
 import { WeeklyScheduleSlot } from "../../../types/appointments.types";
+import { useNotificationStore } from "../../../store/notification.store";
 
 export const useUpdateWeeklyScheduleMutation = () => {
   const queryClient = useQueryClient();
+  const success = useNotificationStore((s) => s.success);
 
   return useMutation({
     mutationFn: ({
@@ -27,6 +29,7 @@ export const useUpdateWeeklyScheduleMutation = () => {
       queryClient.invalidateQueries({
         queryKey: ["appointments", "teacher"],
       });
+      success("Weekly schedule updated successfully!");
     },
   });
 };

@@ -1,4 +1,5 @@
 import { body, param } from "express-validator";
+import { MAX_DESCRIPTION_CHARACTERS } from "../../constants/validation.constants.js";
 
 export const createAppointmentValidationMiddleware = () => [
   body("studentId").exists().withMessage("Student ID is needed"),
@@ -7,6 +8,19 @@ export const createAppointmentValidationMiddleware = () => [
   body("price").exists().withMessage("Price is needed"),
   body("date").exists().withMessage("Date is needed"),
   body("time").exists().withMessage("Time is needed"),
+  body("description")
+    .optional()
+    .custom((value) => {
+      if (value) {
+        const trimmedDescription = value.trim();
+        if (trimmedDescription.length > MAX_DESCRIPTION_CHARACTERS) {
+          throw new Error(
+            `Description must be no more than ${MAX_DESCRIPTION_CHARACTERS} characters`,
+          );
+        }
+      }
+      return true;
+    }),
 ];
 
 export const updateAppointmentStatusValidationMiddleware = () => [

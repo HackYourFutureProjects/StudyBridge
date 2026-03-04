@@ -14,6 +14,10 @@ import {
   UpdateAppointmentStatusType,
   UpdateWeeklyScheduleType,
 } from "../types/appointment/appointment.types.js";
+import {
+  validatePaginationParams,
+  validateAuthorization,
+} from "../utils/validation/requestValidation.util.js";
 
 @injectable()
 export class AppointmentController {
@@ -64,23 +68,10 @@ export class AppointmentController {
     next: NextFunction,
   ) {
     try {
-      let page: number | undefined;
-      let limit: number | undefined;
-
-      if (req.query.page) {
-        page = parseInt(req.query.page, 10);
-        if (isNaN(page)) {
-          return res.status(400).json({ message: "Invalid page parameter" });
-        }
-      }
-
-      if (req.query.limit) {
-        limit = parseInt(req.query.limit, 10);
-        if (isNaN(limit)) {
-          return res.status(400).json({ message: "Invalid limit parameter" });
-        }
-      }
-
+      const { page, limit } = validatePaginationParams(
+        req.query.page,
+        req.query.limit,
+      );
       const result = await this.appointmentService.getAppointmentsByStudent(
         req.params.studentId,
         page,
@@ -99,23 +90,10 @@ export class AppointmentController {
     next: NextFunction,
   ) {
     try {
-      let page: number | undefined;
-      let limit: number | undefined;
-
-      if (req.query.page) {
-        page = parseInt(req.query.page, 10);
-        if (isNaN(page)) {
-          return res.status(400).json({ message: "Invalid page parameter" });
-        }
-      }
-
-      if (req.query.limit) {
-        limit = parseInt(req.query.limit, 10);
-        if (isNaN(limit)) {
-          return res.status(400).json({ message: "Invalid limit parameter" });
-        }
-      }
-
+      const { page, limit } = validatePaginationParams(
+        req.query.page,
+        req.query.limit,
+      );
       const result = await this.appointmentService.getAppointmentsByTeacher(
         req.params.teacherId,
         page,
@@ -171,11 +149,7 @@ export class AppointmentController {
     next: NextFunction,
   ) {
     try {
-      const userId = req.auth?.userId;
-      if (!userId) {
-        return res.status(401).json({ message: "Unauthorized" });
-      }
-
+      const userId = validateAuthorization(req.auth?.userId);
       await this.appointmentService.deleteAppointment(req.params.id, userId);
       return res.status(204).send();
     } catch (error) {
@@ -189,11 +163,7 @@ export class AppointmentController {
     next: NextFunction,
   ) {
     try {
-      const teacherId = req.auth?.userId;
-      if (!teacherId) {
-        return res.status(401).json({ message: "Unauthorized" });
-      }
-
+      const teacherId = validateAuthorization(req.auth?.userId);
       const appointment = await this.appointmentService.setRegularStudent(
         req.params.id,
         teacherId,
@@ -215,11 +185,7 @@ export class AppointmentController {
     next: NextFunction,
   ) {
     try {
-      const teacherId = req.auth?.userId;
-      if (!teacherId) {
-        return res.status(401).json({ message: "Unauthorized" });
-      }
-
+      const teacherId = validateAuthorization(req.auth?.userId);
       const appointment = await this.appointmentService.removeRegularStudent(
         req.params.id,
         teacherId,
@@ -242,11 +208,7 @@ export class AppointmentController {
     next: NextFunction,
   ) {
     try {
-      const teacherId = req.auth?.userId;
-      if (!teacherId) {
-        return res.status(401).json({ message: "Unauthorized" });
-      }
-
+      const teacherId = validateAuthorization(req.auth?.userId);
       const appointment = await this.appointmentService.updateWeeklySchedule(
         req.params.id,
         teacherId,
@@ -269,34 +231,16 @@ export class AppointmentController {
     next: NextFunction,
   ) {
     try {
-      const teacherId = req.auth?.userId;
-      if (!teacherId) {
-        return res.status(401).json({ message: "Unauthorized" });
-      }
-
-      let page: number | undefined;
-      let limit: number | undefined;
-
-      if (req.query.page) {
-        page = parseInt(req.query.page, 10);
-        if (isNaN(page)) {
-          return res.status(400).json({ message: "Invalid page parameter" });
-        }
-      }
-
-      if (req.query.limit) {
-        limit = parseInt(req.query.limit, 10);
-        if (isNaN(limit)) {
-          return res.status(400).json({ message: "Invalid limit parameter" });
-        }
-      }
-
+      const teacherId = validateAuthorization(req.auth?.userId);
+      const { page, limit } = validatePaginationParams(
+        req.query.page,
+        req.query.limit,
+      );
       const result = await this.appointmentService.getRegularStudentsByTeacher(
         teacherId,
         page,
         limit,
       );
-
       res.json(result);
     } catch (error) {
       return next(error);
@@ -309,34 +253,16 @@ export class AppointmentController {
     next: NextFunction,
   ) {
     try {
-      const studentId = req.auth?.userId;
-      if (!studentId) {
-        return res.status(401).json({ message: "Unauthorized" });
-      }
-
-      let page: number | undefined;
-      let limit: number | undefined;
-
-      if (req.query.page) {
-        page = parseInt(req.query.page, 10);
-        if (isNaN(page)) {
-          return res.status(400).json({ message: "Invalid page parameter" });
-        }
-      }
-
-      if (req.query.limit) {
-        limit = parseInt(req.query.limit, 10);
-        if (isNaN(limit)) {
-          return res.status(400).json({ message: "Invalid limit parameter" });
-        }
-      }
-
+      const studentId = validateAuthorization(req.auth?.userId);
+      const { page, limit } = validatePaginationParams(
+        req.query.page,
+        req.query.limit,
+      );
       const result = await this.appointmentService.getRegularTeachersByStudent(
         studentId,
         page,
         limit,
       );
-
       res.json(result);
     } catch (error) {
       return next(error);

@@ -103,11 +103,6 @@ export const TeacherAppointments = () => {
 
       setIsRegularStudentModalOpen(false);
       setSelectedStudent(null);
-
-      openModal("alert", {
-        title: "Success",
-        message: "Schedule updated successfully",
-      });
     } catch (error) {
       const axiosError = error as {
         response?: { data?: { errorsMessages?: Array<{ message: string }> } };

@@ -4,6 +4,10 @@ import { TYPES } from "../composition/composition.types.js";
 import { ReviewService } from "../services/review/review.service.js";
 import { ReviewInputType } from "../types/review/review.types.js";
 import { ReviewQuery } from "../repositories/queryRepositories/review.query.js";
+import {
+  validateAuthorization,
+  validatePaginationParams,
+} from "../utils/validation/requestValidation.util.js";
 
 @injectable()
 export class ReviewController {
@@ -15,14 +19,7 @@ export class ReviewController {
   // POST - Review. Let Student to create a review
   async createReview(req: Request, res: Response, next: NextFunction) {
     try {
-      const studentId = req.auth?.userId;
-
-      if (!studentId) {
-        return res
-          .status(401)
-          .json({ message: " User not authenticated, please log in." });
-      }
-
+      const studentId = validateAuthorization(req.auth?.userId);
       const review = await this.reviewService.createReview(
         studentId,
         req.body as ReviewInputType,
@@ -37,24 +34,19 @@ export class ReviewController {
   async getReviewsForTeacher(req: Request, res: Response, next: NextFunction) {
     try {
       const teacherId = req.params.teacherId as string;
-      const { pageNumber, pageSize } = req.query;
+      const { page, limit } = validatePaginationParams(
+        req.query.pageNumber as string,
+        req.query.pageSize as string,
+      );
 
       const DEFAULT_PAGE_NUMBER = 1;
       const DEFAULT_PAGE_SIZE = 10;
       const MAX_PAGE_SIZE = 50;
 
-      const parsedPageNumber = pageNumber
-        ? Number(pageNumber)
-        : DEFAULT_PAGE_NUMBER;
-      const safePageNumber =
-        Number.isNaN(parsedPageNumber) || parsedPageNumber < 1
-          ? DEFAULT_PAGE_NUMBER
-          : parsedPageNumber;
-      const parsedPageSize = pageSize ? Number(pageSize) : DEFAULT_PAGE_SIZE;
-      const safePageSize =
-        Number.isNaN(parsedPageSize) || parsedPageSize < 1
-          ? DEFAULT_PAGE_SIZE
-          : Math.min(parsedPageSize, MAX_PAGE_SIZE);
+      const safePageNumber = page || DEFAULT_PAGE_NUMBER;
+      const safePageSize = limit
+        ? Math.min(limit, MAX_PAGE_SIZE)
+        : DEFAULT_PAGE_SIZE;
 
       const result = await this.reviewQuery.getReviewsByTeacherId({
         teacherId,
