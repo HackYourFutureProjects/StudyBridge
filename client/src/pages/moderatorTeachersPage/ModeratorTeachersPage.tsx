@@ -5,13 +5,21 @@ import { TeachersCardsSkeletonList } from "../../components/skeletons/TeachersCa
 import {
   SortByTeachersForModerator,
   TeacherStatus,
+  TeacherStatusQuery,
 } from "../../api/teacher/teacher.type.ts";
 import { useTeachersForModeratorQuery } from "../../features/teachers/query/useTeacherForModeratorQuery.tsx";
 import { useChangeStatusMutation } from "../../features/moderator/mutation/useChangeStatus.ts";
+import { SelectComponent } from "../../components/ui/select/Select.tsx";
+import {
+  sortByOptions,
+  sortByStatus,
+} from "../../dummyData/ModeratorFiltersVariables.ts";
 
 export const ModeratorTeachersPage = () => {
   const [page, setPage] = useState(1);
-  const [sortBy] = useState<SortByTeachersForModerator>("status");
+  const [sortBy, setSortBy] = useState<SortByTeachersForModerator>("status");
+  const [sortByStatusTeacher, setSortByStatusTeacher] =
+    useState<TeacherStatusQuery>("all");
   const listTopRef = useRef<HTMLDivElement | null>(null);
 
   const { mutate, isPending } = useChangeStatusMutation();
@@ -26,6 +34,14 @@ export const ModeratorTeachersPage = () => {
     });
   };
 
+  const onSortBy = (item: SortByTeachersForModerator) => {
+    setSortBy(item);
+  };
+
+  const onSortByStatus = (item: TeacherStatusQuery) => {
+    setSortByStatusTeacher(item);
+  };
+
   const changeStatus = (id: string, status: TeacherStatus) => {
     mutate({ id, status });
   };
@@ -34,6 +50,7 @@ export const ModeratorTeachersPage = () => {
     pageNumber: page,
     pageSize: 10,
     sortBy,
+    status: sortByStatusTeacher,
   });
 
   return (
@@ -48,6 +65,21 @@ export const ModeratorTeachersPage = () => {
             "
     >
       <h1 className="auth-title">TEACHERS</h1>
+      <div className="flex flex-row gap-4 content-start w-full mb-10">
+        <SelectComponent
+          options={sortByOptions}
+          defaultValue="status"
+          onChange={onSortBy}
+          value={sortBy}
+        ></SelectComponent>
+        <SelectComponent
+          options={sortByStatus}
+          defaultValue="all"
+          onChange={onSortByStatus}
+          value={sortByStatusTeacher}
+        ></SelectComponent>
+      </div>
+
       <div className="flex flex-col gap-10 lg:flex-row lg:items-start w-full">
         <div className="w-full lg:flex-1 min-w-0">
           {isFetching ? (

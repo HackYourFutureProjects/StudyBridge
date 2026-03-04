@@ -5,6 +5,9 @@ export type TeacherStatus =
   | "active"
   | "rejected"
   | "blocked";
+
+export type TeacherStatusQuery = TeacherStatus | "all";
+
 type EducationItem = {
   degree: string;
   institution: string;
@@ -95,6 +98,7 @@ export type TeachersForModeratorQuery = {
   sortDirection?: SortDirection;
   pageNumber?: number;
   pageSize?: number;
+  status?: TeacherStatusQuery;
 };
 
 export type UpdateTeacherProfileInput = {
