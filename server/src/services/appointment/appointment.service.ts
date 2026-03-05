@@ -8,11 +8,10 @@ import {
 } from "../../types/appointment/appointment.types.js";
 import { AppointmentCommand } from "../../repositories/commandRepositories/appointment.command.js";
 import { AppointmentQuery } from "../../repositories/queryRepositories/appointment.query.js";
-import { StudentModel } from "../../db/schemes/studentSchema.js";
-import { TeacherModel } from "../../db/schemes/teacherSchema.js";
 import { ConversationCommand } from "../../repositories/commandRepositories/conversation.command.js";
 import { logError, logWarning } from "../../utils/logging.js";
 import { VideoCallModel } from "../../db/schemes/videoCallSchema.js";
+import { AppointmentBusinessValidation } from "../../validation/appointment/appointmentBusinessValidation.js";
 
 @injectable()
 export class AppointmentService {
@@ -26,41 +25,7 @@ export class AppointmentService {
   ) {}
 
   async createAppointment(data: CreateAppointmentType) {
-    const student = await StudentModel.findOne({ id: data.studentId });
-    if (!student) {
-      throw new Error("Student not found");
-    }
-
-    const teacher = await TeacherModel.findOne({ id: data.teacherId });
-    if (!teacher) {
-      throw new Error("Teacher not found");
-    }
-
-    if (data.teacherId === data.studentId) {
-      throw new Error("Teachers cannot book appointments with themselves");
-    }
-
-    const appointmentDate = new Date(data.date);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    appointmentDate.setHours(0, 0, 0, 0);
-
-    if (appointmentDate < today) {
-      throw new Error("Cannot create appointments in the past");
-    }
-
-    if (appointmentDate.getTime() === today.getTime()) {
-      const [hours, minutes] = data.time.split(":").map(Number);
-      const appointmentDateTime = new Date(data.date);
-      appointmentDateTime.setHours(hours, minutes, 0, 0);
-
-      const now = new Date();
-      if (appointmentDateTime < now) {
-        throw new Error(
-          "Cannot create appointments for times that have already passed",
-        );
-      }
-    }
+    await AppointmentBusinessValidation.validateCreateAppointment(data);
 
     const appointment = {
       id: randomUUID(),
@@ -187,13 +152,11 @@ export class AppointmentService {
   async deleteAppointment(id: string, userId: string) {
     const appointment = await this.appointmentQuery.getAppointmentById(id);
 
-    if (!appointment) {
-      throw new Error("Appointment not found");
-    }
-
-    if (appointment.teacherId !== userId && appointment.studentId !== userId) {
-      throw new Error("Unauthorized to delete this appointment");
-    }
+    AppointmentBusinessValidation.validateAppointmentExists(appointment);
+    AppointmentBusinessValidation.validateDeleteAuthorization(
+      appointment,
+      userId,
+    );
 
     const updateData = {
       status: "rejected" as const,
@@ -339,13 +302,11 @@ export class AppointmentService {
   async setRegularStudent(id: string, teacherId: string) {
     const appointment = await this.appointmentQuery.getAppointmentById(id);
 
-    if (!appointment) {
-      throw new Error("Appointment not found");
-    }
-
-    if (appointment.teacherId !== teacherId) {
-      throw new Error("Unauthorized to modify this appointment");
-    }
+    AppointmentBusinessValidation.validateAppointmentExists(appointment);
+    AppointmentBusinessValidation.validateTeacherAuthorization(
+      appointment,
+      teacherId,
+    );
 
     const updated = await this.appointmentCommand.setRegularStudent(id);
     return updated ? this.formatAppointmentResponse(updated) : null;
@@ -354,13 +315,11 @@ export class AppointmentService {
   async removeRegularStudent(id: string, teacherId: string) {
     const appointment = await this.appointmentQuery.getAppointmentById(id);
 
-    if (!appointment) {
-      throw new Error("Appointment not found");
-    }
-
-    if (appointment.teacherId !== teacherId) {
-      throw new Error("Unauthorized to modify this appointment");
-    }
+    AppointmentBusinessValidation.validateAppointmentExists(appointment);
+    AppointmentBusinessValidation.validateTeacherAuthorization(
+      appointment,
+      teacherId,
+    );
 
     const updated = await this.appointmentCommand.removeRegularStudent(id);
     return updated ? this.formatAppointmentResponse(updated) : null;
@@ -373,17 +332,13 @@ export class AppointmentService {
   ) {
     const appointment = await this.appointmentQuery.getAppointmentById(id);
 
-    if (!appointment) {
-      throw new Error("Appointment not found");
-    }
-
-    if (appointment.teacherId !== teacherId) {
-      throw new Error("Unauthorized to modify this appointment");
-    }
-
-    if (!appointment.isRegularStudent) {
-      throw new Error("Cannot set weekly schedule for a non-regular student");
-    }
+    AppointmentBusinessValidation.validateAppointmentExists(appointment);
+    AppointmentBusinessValidation.validateTeacherAuthorization(
+      appointment,
+      teacherId,
+    );
+    AppointmentBusinessValidation.validateRegularStudent(appointment);
+    AppointmentBusinessValidation.validateWeeklyScheduleData(weeklySchedule);
 
     const updated = await this.appointmentCommand.updateWeeklySchedule(
       id,
