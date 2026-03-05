@@ -27,6 +27,8 @@ import {
 } from "../../router/routesVariables/pathVariables";
 import { joinPath } from "../../util/joinPath.util";
 import { SharedWhiteboard } from "../../components/video/SharedWhiteboard";
+import WhiteboardOpenIcon from "../../components/icons/WhiteboardOpenIcon";
+import WhiteboardClosedIcon from "../../components/icons/WhiteboardClosedIcon";
 
 const VideoLayout = () => {
   const { useHasOngoingScreenShare } = useCallStateHooks();
@@ -173,8 +175,14 @@ const CallContent = ({
           type="button"
           onClick={() => void toggleWhiteboard()}
           className="rounded bg-[#2A2433] px-4 py-2 text-white hover:bg-[#3A3346]"
+          title={whiteboardOpen ? "Hide whiteboard" : "Show whiteboard"}
         >
-          {whiteboardOpen ? "Hide Whiteboard" : "Whiteboard"}
+          {/* Show different icon when whiteboard is open/closed */}
+          {whiteboardOpen ? (
+            <WhiteboardOpenIcon className="h-5 w-5" />
+          ) : (
+            <WhiteboardClosedIcon className="h-5 w-5" />
+          )}
         </button>
         <button
           onClick={onEnd}

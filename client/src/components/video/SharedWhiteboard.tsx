@@ -2,6 +2,8 @@ import { useRef, useState } from "react";
 import type { Call } from "@stream-io/video-client";
 import { useWhiteboardSync } from "../../hooks/useWhiteboardSync";
 import type { DrawTool } from "../../hooks/useWhiteboardSync";
+import PenIcon from "../icons/PenIcon";
+import EraserIcon from "../icons/EraserIcon";
 
 // Preset pen colors
 const COLORS = ["#111827", "#2563EB", "#EF4444", "#16A34A"] as const;
@@ -68,8 +70,9 @@ export const SharedWhiteboard = ({
               ? "bg-[#3A3346] text-white"
               : "bg-[#2A2433] text-[#C6CAD3]"
           }`}
+          title="Pen"
         >
-          Pen
+          <PenIcon className="h-5 w-5" />
         </button>
         <button
           type="button"
@@ -79,8 +82,10 @@ export const SharedWhiteboard = ({
               ? "bg-[#3A3346] text-white"
               : "bg-[#2A2433] text-[#C6CAD3]"
           }`}
+          title="Eraser"
         >
-          Eraser
+          {/* eraser icon is highlighted only when eraser tool is active */}
+          <EraserIcon className="h-5 w-5" />
         </button>
 
         {/* user can choose eraser size */}
