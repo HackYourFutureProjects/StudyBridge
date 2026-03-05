@@ -5,7 +5,7 @@
 @import "./styles/auth.css";
 @import "./styles/scroll.css";
 @import "./styles/statusPulse.css";
-
+@import "./styles/loader.css";
 @font-face {
   font-family: "Raleway";
   font-style: normal;

@@ -10,13 +10,14 @@ import { useModalStore } from "../../store/modals.store.ts";
 import { cva } from "class-variance-authority";
 import { twMerge } from "tailwind-merge";
 import { DeleteReviewByModeratorConfirmation } from "../deleteReviewConfirmation/DeleteReviewConfirmation.tsx";
+import { FullScreenLoader } from "../fullScreenLoader/FullScreenLoader.tsx";
 
 const overlayClass = cva(
   "fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-200",
   {
     variants: {
       opened: {
-        true: "opacity-100 bg-black/50 pointer-events-auto",
+        true: "opacity-100 bg-bg-main/50 pointer-events-auto",
         false: "opacity-0 bg-black/0 pointer-events-none",
       },
     },
@@ -61,6 +62,9 @@ export const ModalHost = () => {
         )}
         {activeModal === "signIn" && (
           <SignInConfirmation isOpen={opened} onClose={close} />
+        )}
+        {activeModal === "fullScreenLoader" && (
+          <FullScreenLoader isOpen={opened} />
         )}
         {activeModal === "deleteReview" &&
           payload &&

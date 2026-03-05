@@ -49,7 +49,6 @@ authRouter.get(
 
 authRouter.post(
   "/refresh-token",
-  accessCounterMiddleware,
   refreshTokenMiddleware.handle,
   authController.refreshController.bind(authController),
 );

@@ -4,8 +4,11 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { TextField } from "../../ui/textField/TextField.tsx";
 import { useMediaQuery } from "../../../hooks/useMediaQuery.tsx";
+type HeroProps = {
+  onLoaded: () => void;
+};
 
-export const Hero = () => {
+export const Hero = ({ onLoaded }: HeroProps) => {
   const navigate = useNavigate();
   const isMobile = useMediaQuery("(max-width: 640px)");
   const [subject, setSubject] = useState<string>("english");
@@ -20,6 +23,8 @@ export const Hero = () => {
           src={heroImage}
           alt="Students learning together"
           className="w-full h-full object-cover object-top scale-110"
+          onLoad={onLoaded}
+          onError={onLoaded}
         />
       </div>
 
@@ -46,7 +51,9 @@ export const Hero = () => {
             id="site-search"
             autoComplete="off"
             containerClassName="w-[200px] sm:w-[300px] md:w-[400px]"
-            placeholder={isMobile ? "Search..." : "What do you want to learn?"}
+            placeholder={
+              isMobile ? "Search..." : "What language do you want to learn?"
+            }
             variant="hero"
             onValueChange={setSubject}
           />

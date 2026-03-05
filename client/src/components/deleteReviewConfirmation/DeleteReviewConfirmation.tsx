@@ -1,6 +1,6 @@
 import { Button } from "../ui/button/Button.tsx";
-import { Loader } from "../loader/Loader.tsx";
 import { useDeleteReviewByModeratorMutation } from "../../features/review/mutations/useDeleteReviewByModeratorMutation.ts";
+import { LogoPulseIcon } from "../LogoPulsIcon/LogoPulseIcon.tsx";
 
 interface Props {
   isOpen: boolean;
@@ -41,7 +41,7 @@ export const DeleteReviewByModeratorConfirmation = ({
           Confirm
         </Button>
       </div>
-      {isPending && <Loader />}
+      {isPending && <LogoPulseIcon size="sm" />}
     </div>
   );
 };

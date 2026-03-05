@@ -1,11 +1,22 @@
 import { SubjectCard } from "./SubjectCard";
 import { Button } from "../../ui/button/Button";
 import bgImage from "../../../assets/images/bg-popular-subjects.png";
-import { Subjects } from "../../../constants/subjects";
+import { SubjectsType } from "../../../api/subjects/subjects.type.ts";
+import { NavLink } from "react-router-dom";
+import { publicRoutesVariables } from "../../../router/routesVariables/pathVariables.ts";
+import { SubjectCardsSkeletonList } from "../../skeletons/SubjectsSceleton.tsx";
 
-const subjectLabels = Subjects.map((subject) => subject.label);
+type PopularSubjectsProps = {
+  subjects?: SubjectsType[];
+  isLoading?: boolean;
+};
 
-export const PopularSubjects = () => {
+export const PopularSubjects = ({
+  subjects = [],
+  isLoading,
+}: PopularSubjectsProps) => {
+  const subjectLabels = subjects.map((s) => s.name).slice(0, 5);
+  const isEmpty = !isLoading && subjectLabels.length === 0;
   return (
     <section className="relative section-spacing overflow-hidden">
       <div className="absolute inset-0 z-0 px-4 sm:px-6 lg:px-8 hidden xl:block">
@@ -32,9 +43,17 @@ export const PopularSubjects = () => {
           </Button>
 
           <div className="flex flex-col gap-3.5 w-full max-w-md md:pr-8 lg:text-left lg:ml-12 lg:pr-8 max-[1166px]:text-center max-[1166px]:pr-0 max-[1166px]:ml-0 min-[1167px]:text-right min-[1167px]:pr-8 min-[1167px]:ml-0">
-            {subjectLabels.map((subject, index) => (
-              <SubjectCard key={index} title={subject} />
-            ))}
+            {isLoading ? (
+              <SubjectCardsSkeletonList count={5} />
+            ) : isEmpty ? (
+              <div className="card-subject">
+                <p className="text-white/70 text-center">No subjects yet</p>
+              </div>
+            ) : (
+              subjectLabels.map((subject) => (
+                <SubjectCard key={subject} title={subject} />
+              ))
+            )}
           </div>
         </div>
 
@@ -45,7 +64,13 @@ export const PopularSubjects = () => {
                 On our platform, you can learn a wide range of foreign languages
                 and programming subjects — all in one place.
               </p>
-              <Button variant="secondary">Start</Button>
+              <Button
+                as={NavLink}
+                to={publicRoutesVariables.teachers}
+                variant="secondary"
+              >
+                Tutors
+              </Button>
             </div>
 
             <h2 className="text-[74px] font-bold w-[394px] leading-tight">
@@ -56,9 +81,17 @@ export const PopularSubjects = () => {
           </div>
 
           <div className="flex flex-col gap-[32px]">
-            {subjectLabels.map((subject, index) => (
-              <SubjectCard key={index} title={subject} />
-            ))}
+            {isLoading ? (
+              <SubjectCardsSkeletonList count={5} />
+            ) : isEmpty ? (
+              <div className="card-subject">
+                <p className="text-white/70 text-center">No subjects yet</p>
+              </div>
+            ) : (
+              subjectLabels.map((subject) => (
+                <SubjectCard key={subject} title={subject} />
+              ))
+            )}
           </div>
         </div>
       </div>

@@ -20,8 +20,8 @@ export function useLoginModeratorMutation() {
       setAccessToken(accessToken);
       success("Successfully logged in");
       localStorage.setItem("hadSession", "1");
-      navigate("/", { replace: true });
       await qc.invalidateQueries({ queryKey: queryKeys.me });
+      navigate("/", { replace: true });
     },
     onError: (error) => {
       const msg = getErrorMessage(error);

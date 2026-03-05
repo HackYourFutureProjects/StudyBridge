@@ -7,8 +7,8 @@ import { ControlledTextField } from "../../ui/controlled/controlledTextField/Con
 import { Button } from "../../ui/button/Button";
 import { NavLink } from "react-router-dom";
 import { authRoutesVariables } from "../../../router/routesVariables/pathVariables";
-import { Loader } from "../../loader/Loader.tsx";
 import { GoogleAuthButton } from "../../ui/button/GoogleAuthButton.tsx";
+import { LogoPulseIcon } from "../../LogoPulsIcon/LogoPulseIcon.tsx";
 
 type LoginFormComponentTypes = {
   loading: boolean;
@@ -115,7 +115,7 @@ export const LoginForm = ({
           )}
         </div>
       </div>
-      {loading && <Loader />}
+      {loading && <LogoPulseIcon size="sm" />}
     </form>
   );
 };

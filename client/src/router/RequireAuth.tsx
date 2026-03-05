@@ -1,8 +1,8 @@
 import { Navigate, useLocation } from "react-router-dom";
 import type { ReactNode } from "react";
 import { useAuthSessionStore } from "../store/authSession.store.ts";
-import { Loader } from "../components/loader/Loader.tsx";
 import { ModalOverlay } from "../components/ui/modal/ModalOverlay.tsx";
+import { LogoPulseIcon } from "../components/LogoPulsIcon/LogoPulseIcon.tsx";
 
 export const RequireAuth = ({ children }: { children: ReactNode }) => {
   const user = useAuthSessionStore((s) => s.user);
@@ -15,7 +15,7 @@ export const RequireAuth = ({ children }: { children: ReactNode }) => {
   if (hadSession && !authInitDone) {
     return (
       <ModalOverlay>
-        <Loader />
+        <LogoPulseIcon size="sm" />
       </ModalOverlay>
     );
   }

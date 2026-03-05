@@ -7,24 +7,24 @@ import shapeImage from "../../../assets/images/Shape.png";
 const reviews = [
   {
     avatar: avatar1,
-    name: "Cameron Williamson",
+    name: "Sofia Martinez",
     course: "English",
     review:
-      "The classes are engaging and focused on real communication. Students see noticeable improvement.",
+      "The lessons are super clear and structured. We break down complex topics step by step, and I finally feel confident solving problems on my own.",
   },
   {
     avatar: avatar2,
-    name: "Esther Howard",
-    course: "Dutch",
+    name: "Liam Johnson",
+    course: "Spanish",
     review:
       "The classes are engaging and focused on real communication. Students see noticeable improvement.",
   },
   {
     avatar: avatar3,
-    name: "Darrell Steward",
-    course: "QA / Software Testing",
+    name: "Amina Hassan",
+    course: "German",
     review:
-      "The classes are engaging and focused on real communication. Students see noticeable improvement.",
+      "The focus is on speaking from the first lesson. The teacher corrects me gently, gives useful phrases, and my pronunciation has improved a lot in just a few weeks.",
   },
 ];
 
