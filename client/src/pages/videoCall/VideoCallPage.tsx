@@ -42,6 +42,7 @@ type CallContentProps = {
   whiteboardOpen: boolean;
   setWhiteboardOpen: Dispatch<SetStateAction<boolean>>;
   onEnd: () => void | Promise<void>;
+  endButtonLabel: string;
 };
 
 type WhiteboardVisibilityEvent = {
@@ -55,6 +56,7 @@ const CallContent = ({
   setWhiteboardOpen,
   onEnd,
   call,
+  endButtonLabel,
 }: CallContentProps) => {
   const { useHasOngoingScreenShare } = useCallStateHooks();
   const hasScreenShare = useHasOngoingScreenShare();
@@ -188,7 +190,7 @@ const CallContent = ({
           onClick={onEnd}
           className="rounded bg-red-600 px-4 py-2 text-white"
         >
-          End
+          {endButtonLabel}
         </button>
       </div>
     </>
@@ -207,15 +209,25 @@ export const VideoCallPage = () => {
 
   const streamCallId = searchParams.get("streamCallId");
   const streamCallType = searchParams.get("streamCallType") ?? "default";
+  const requestedReturnTo = searchParams.get("returnTo");
+  const safeReturnToPath =
+    requestedReturnTo &&
+    requestedReturnTo.startsWith("/") &&
+    !requestedReturnTo.startsWith("//")
+      ? requestedReturnTo
+      : null;
   const hasInvalidParams =
     !callId || !streamCallId || !streamCallType || !streamCallId.trim();
   const backToAppointmentsPath =
     user?.role === "teacher"
       ? joinPath(teacherBase, teacherPrivatesRoutesVariables.appointments)
       : joinPath(studentBase, studentPrivatesRoutesVariables.appointments);
+  const backPath = safeReturnToPath ?? backToAppointmentsPath;
+  const isTeacher = user?.role === "teacher";
+  const hasUserRole = user?.role === "teacher" || user?.role === "student";
 
   useEffect(() => {
-    if (hasInvalidParams) return;
+    if (hasInvalidParams || !hasUserRole) return;
 
     let mounted = true;
     let videoClient: StreamVideoClient | null = null;
@@ -223,6 +235,9 @@ export const VideoCallPage = () => {
 
     const setup = async () => {
       try {
+        if (mounted) {
+          setError(null);
+        }
         const { apiKey, token, userId } = await getStreamToken();
 
         videoClient = new StreamVideoClient({
@@ -232,7 +247,8 @@ export const VideoCallPage = () => {
         });
 
         videoCall = videoClient.call(streamCallType, streamCallId);
-        await videoCall.join({ create: true });
+        // Only teachers can create a new call room; students can join only if it already exists.
+        await videoCall.join({ create: isTeacher });
 
         if (!mounted) return;
 
@@ -259,18 +275,20 @@ export const VideoCallPage = () => {
       void videoClient?.disconnectUser();
       setCall(null);
     };
-  }, [hasInvalidParams, streamCallType, streamCallId]);
+  }, [hasInvalidParams, hasUserRole, streamCallType, streamCallId, isTeacher]);
 
   const handleEndCall = async () => {
     if (!callId) {
-      navigate(backToAppointmentsPath);
+      navigate(backPath);
       return;
     }
 
-    try {
-      await endCallApi(callId);
-    } catch (e) {
-      console.error("Failed to end call in backend", e);
+    if (isTeacher) {
+      try {
+        await endCallApi(callId);
+      } catch (e) {
+        console.error("Failed to end call in backend", e);
+      }
     }
 
     try {
@@ -284,7 +302,7 @@ export const VideoCallPage = () => {
       return;
     }
 
-    navigate(backToAppointmentsPath);
+    navigate(backPath);
   };
 
   if (hasInvalidParams) {
@@ -299,10 +317,10 @@ export const VideoCallPage = () => {
           </p>
           <button
             type="button"
-            onClick={() => navigate(backToAppointmentsPath)}
+            onClick={() => navigate(backPath)}
             className="mt-5 rounded bg-white px-4 py-2 text-sm font-medium text-[#1B1823] hover:bg-[#E9ECF1]"
           >
-            Back to appointments
+            Back
           </button>
         </div>
       </div>
@@ -319,15 +337,18 @@ export const VideoCallPage = () => {
           <p className="mt-2 text-sm text-[#C6CAD3]">{error}</p>
           <button
             type="button"
-            onClick={() => navigate(backToAppointmentsPath)}
+            onClick={() => navigate(backPath)}
             className="mt-5 rounded bg-white px-4 py-2 text-sm font-medium text-[#1B1823] hover:bg-[#E9ECF1]"
           >
-            Back to appointments
+            Back
           </button>
         </div>
       </div>
     );
   }
+
+  if (!hasUserRole)
+    return <div className="p-6 text-white">Loading call...</div>;
 
   if (!call) return <div className="p-6 text-white">Loading call...</div>;
 
@@ -341,6 +362,7 @@ export const VideoCallPage = () => {
               whiteboardOpen={whiteboardOpen}
               setWhiteboardOpen={setWhiteboardOpen}
               onEnd={handleEndCall}
+              endButtonLabel={isTeacher ? "End" : "Leave"}
             />
           </StreamCall>
         </StreamTheme>
