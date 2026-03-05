@@ -94,7 +94,7 @@ export const Pagination = ({
   }
 
   return (
-    <div className="flex items-center justify-center gap-4">
+    <div className="flex items-center justify-center gap-4 mb-4">
       <Button
         variant="link"
         className={paginationButtonStyles({ theme, shape, state: "inactive" })}

@@ -82,10 +82,12 @@ const ModalContent = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-[#2A2433] rounded-2xl p-8 w-full max-w-[95vw] max-h-[95vh] overflow-y-auto">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-3xl font-bold text-white">Lesson schedule</h2>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4">
+      <div className="bg-[#2A2433] rounded-2xl p-4 sm:p-6 lg:p-8 w-full max-w-[95vw] max-h-[95vh] overflow-y-auto">
+        <div className="flex items-center justify-between mb-4 sm:mb-6">
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">
+            Lesson schedule
+          </h2>
           <button
             onClick={onClose}
             className="text-white hover:text-purple-400 transition-colors"
@@ -99,11 +101,11 @@ const ModalContent = ({
             <table className="w-full border-collapse">
               <thead>
                 <tr>
-                  <th className="border border-gray-600 p-2 sticky left-0 bg-[#2A2433] z-10"></th>
+                  <th className="border border-gray-600 p-1 sm:p-2 sticky left-0 bg-[#2A2433] z-10"></th>
                   {HOURS.map((hour) => (
                     <th
                       key={hour}
-                      className="border border-gray-600 p-2 text-white text-sm min-w-[60px]"
+                      className="border border-gray-600 p-1 sm:p-2 text-white text-xs sm:text-sm min-w-[50px] sm:min-w-[60px]"
                     >
                       {formatHour(hour)}
                     </th>
@@ -113,8 +115,9 @@ const ModalContent = ({
               <tbody>
                 {DAYS.map((day) => (
                   <tr key={day}>
-                    <td className="border border-gray-600 p-3 text-white font-medium sticky left-0 bg-[#2A2433] z-10 min-w-[100px]">
-                      {day}
+                    <td className="border border-gray-600 p-2 sm:p-3 text-white font-medium sticky left-0 bg-[#2A2433] z-10 min-w-[80px] sm:min-w-[100px] text-xs sm:text-sm">
+                      <span className="hidden sm:inline">{day}</span>
+                      <span className="sm:hidden">{day.slice(0, 3)}</span>
                     </td>
                     {HOURS.map((hour) => {
                       const key = `${day}-${hour}`;
@@ -125,7 +128,7 @@ const ModalContent = ({
                         <td
                           key={hour}
                           onClick={() => !isBlocked && toggleSlot(day, hour)}
-                          className={`border border-gray-600 p-1 transition-colors min-w-[60px] min-h-[50px] ${
+                          className={`border border-gray-600 p-1 transition-colors min-w-[50px] sm:min-w-[60px] min-h-[40px] sm:min-h-[50px] ${
                             isBlocked
                               ? "bg-red-900 cursor-not-allowed"
                               : isSelected
@@ -142,21 +145,29 @@ const ModalContent = ({
           </div>
         </div>
 
-        <div className="mt-6 flex items-center gap-4">
+        <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-purple-500 rounded"></div>
-            <span className="text-white text-sm">Available time</span>
+            <div className="w-4 h-4 sm:w-6 sm:h-6 bg-purple-500 rounded"></div>
+            <span className="text-white text-xs sm:text-sm">
+              Available time
+            </span>
           </div>
           {bookedSlots.length > 0 && (
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-red-900 rounded"></div>
-              <span className="text-white text-sm">Regular Students</span>
+              <div className="w-4 h-4 sm:w-6 sm:h-6 bg-red-900 rounded"></div>
+              <span className="text-white text-xs sm:text-sm">
+                Regular Students
+              </span>
             </div>
           )}
         </div>
 
-        <div className="mt-6 flex justify-center">
-          <Button onClick={handleSave} variant="primary" className="px-12">
+        <div className="mt-4 sm:mt-6 flex justify-center">
+          <Button
+            onClick={handleSave}
+            variant="primary"
+            className="px-8 sm:px-12 py-2 sm:py-3 text-sm sm:text-base"
+          >
             Save
           </Button>
         </div>
