@@ -44,7 +44,7 @@ export const Calendar = () => {
     );
 
   return (
-    <div className="w-[306px] h-[319px] rounded-[24px] bg-[#1E1927] px-[24px] py-[20px] shadow-[0px_6px_58px_0px_rgba(196,203,214,0.1)]">
+    <div className="w-[306px] h-[280px] rounded-[24px] bg-[#1E1927] px-[20px] py-[12px] shadow-[0px_6px_58px_0px_rgba(196,203,214,0.1)]">
       <div className="flex items-center justify-between">
         <Button
           as="button"
@@ -67,7 +67,7 @@ export const Calendar = () => {
         </Button>
       </div>
 
-      <div className="mt-[12px] grid grid-cols-7 gap-y-[6px] text-[10px] text-[#9A9A9A]">
+      <div className="mt-[8px] grid grid-cols-7 gap-y-[3px] text-[10px] text-[#9A9A9A]">
         {WEEKDAYS.map((day) => (
           <div key={day} className="text-center font-medium">
             {day}
@@ -75,7 +75,7 @@ export const Calendar = () => {
         ))}
       </div>
 
-      <div className="mt-[8px] grid grid-cols-7 gap-y-[6px] text-[12px] text-[#EDEDED]">
+      <div className="mt-[4px] grid grid-cols-7 gap-y-[3px] text-[12px] text-[#EDEDED]">
         {days.map((date, index) => {
           if (!date) {
             return <div key={`empty-${index}`} />;
