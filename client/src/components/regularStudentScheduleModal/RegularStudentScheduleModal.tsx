@@ -120,9 +120,9 @@ const ModalContent = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-[#2A2433] rounded-2xl p-10 w-full max-w-5xl max-h-[85vh] flex flex-col">
-        <div className="flex items-center justify-between mb-10">
-          <h2 className="text-3xl font-bold text-white">
+      <div className="bg-[#2A2433] rounded-2xl p-4 sm:p-6 lg:p-10 w-full max-w-5xl max-h-[85vh] flex flex-col">
+        <div className="flex items-center justify-between mb-6 lg:mb-10">
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">
             Weekly Schedule for {studentName}
           </h2>
           <button
@@ -135,22 +135,22 @@ const ModalContent = ({
 
         <div className="flex-1 overflow-y-auto pr-2">
           {savedSlots.length > 0 && (
-            <div className="mb-8">
-              <h3 className="text-white text-lg font-semibold mb-4">
+            <div className="mb-6 lg:mb-8">
+              <h3 className="text-white text-base sm:text-lg font-semibold mb-3 lg:mb-4">
                 Scheduled Lessons ({savedSlots.length})
               </h3>
-              <div className="space-y-3">
+              <div className="space-y-2 lg:space-y-3">
                 {savedSlots.map((slot, index) => (
                   <div
                     key={index}
-                    className="bg-[#1E1D28] rounded-lg px-6 py-4 flex items-center justify-between"
+                    className="bg-[#1E1D28] rounded-lg px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between"
                   >
-                    <span className="text-white text-base">
+                    <span className="text-white text-sm sm:text-base">
                       {slot.day}, {slot.hour}:00
                     </span>
                     <button
                       onClick={() => handleRemoveSlot(index)}
-                      className="text-red-400 hover:text-red-300 text-sm font-medium px-3 py-1 rounded hover:bg-red-400/10 transition-colors"
+                      className="text-red-400 hover:text-red-300 text-xs sm:text-sm font-medium px-2 sm:px-3 py-1 rounded hover:bg-red-400/10 transition-colors"
                     >
                       Remove
                     </button>
@@ -160,13 +160,15 @@ const ModalContent = ({
             </div>
           )}
 
-          <div className="space-y-6">
-            <h3 className="text-white text-xl font-semibold">Add Lesson</h3>
+          <div className="space-y-4 lg:space-y-6">
+            <h3 className="text-white text-lg sm:text-xl font-semibold">
+              Add Lesson
+            </h3>
 
-            <div className="bg-[#1E1D28] rounded-xl p-10">
-              <div className="grid grid-cols-2 gap-10 mb-8">
+            <div className="bg-[#1E1D28] rounded-xl p-4 sm:p-6 lg:p-10">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-10 mb-6 lg:mb-8">
                 <div>
-                  <label className="block text-gray-300 text-lg font-medium mb-5">
+                  <label className="block text-gray-300 text-sm sm:text-base lg:text-lg font-medium mb-3 lg:mb-5">
                     Day
                   </label>
                   <SelectComponent
@@ -178,7 +180,7 @@ const ModalContent = ({
                 </div>
 
                 <div>
-                  <label className="block text-gray-300 text-lg font-medium mb-5">
+                  <label className="block text-gray-300 text-sm sm:text-base lg:text-lg font-medium mb-3 lg:mb-5">
                     Time
                   </label>
                   <SelectComponent
@@ -191,16 +193,16 @@ const ModalContent = ({
               </div>
 
               {isDuplicate && (
-                <div className="mb-4 px-4 py-3 bg-red-500/20 border border-red-500/50 rounded-lg">
-                  <p className="text-red-300 text-sm">
+                <div className="mb-4 px-3 sm:px-4 py-2 sm:py-3 bg-red-500/20 border border-red-500/50 rounded-lg">
+                  <p className="text-red-300 text-xs sm:text-sm">
                     This time slot is already added to the schedule
                   </p>
                 </div>
               )}
 
               {isOccupied && !isDuplicate && (
-                <div className="mb-4 px-4 py-3 bg-red-500/20 border border-red-500/50 rounded-lg">
-                  <p className="text-red-300 text-sm">
+                <div className="mb-4 px-3 sm:px-4 py-2 sm:py-3 bg-red-500/20 border border-red-500/50 rounded-lg">
+                  <p className="text-red-300 text-xs sm:text-sm">
                     This time slot is already occupied by another Regular
                     Student
                   </p>
@@ -210,7 +212,7 @@ const ModalContent = ({
               <Button
                 onClick={handleAddLesson}
                 variant="secondary"
-                className="w-full text-base py-4"
+                className="w-full text-sm sm:text-base py-3 sm:py-4"
                 disabled={cannotAdd}
               >
                 {isDuplicate
@@ -223,18 +225,18 @@ const ModalContent = ({
           </div>
         </div>
 
-        <div className="mt-6 pt-6 border-t border-gray-700 flex justify-end gap-5">
+        <div className="mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-gray-700 flex flex-col lg:flex-row justify-end gap-3 sm:gap-5">
           <Button
             onClick={handleCancel}
             variant="secondary"
-            className="px-10 py-3 text-base"
+            className="px-6 sm:px-10 py-2 sm:py-3 text-sm sm:text-base order-2 lg:order-1"
           >
             Cancel
           </Button>
           <Button
             onClick={handleSave}
             variant="primary"
-            className="px-10 py-3 text-base"
+            className="px-6 sm:px-10 py-2 sm:py-3 text-sm sm:text-base order-1 lg:order-2"
           >
             Save Schedule
           </Button>
