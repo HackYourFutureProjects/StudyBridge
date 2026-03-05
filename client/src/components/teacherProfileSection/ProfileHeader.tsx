@@ -7,6 +7,7 @@ type ProfileHeaderProps = {
   onNameChange: (value: string) => void;
   onEdit: () => void;
   onSave: () => void;
+  error?: string;
 };
 
 export const ProfileHeader = ({
@@ -15,6 +16,7 @@ export const ProfileHeader = ({
   onNameChange,
   onEdit,
   onSave,
+  error,
 }: ProfileHeaderProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -26,8 +28,11 @@ export const ProfileHeader = ({
     }
   }, [isEditing]);
 
-  const inputClass =
-    "w-full max-w-md px-4 py-2 bg-transparent border border-purple-500 rounded-lg text-white focus:outline-none focus:border-purple-400 read-only:opacity-50 read-only:cursor-pointer";
+  const inputClass = `w-full max-w-md px-4 py-2 bg-transparent border rounded-lg text-white focus:outline-none read-only:opacity-50 read-only:cursor-pointer ${
+    error
+      ? "border-red-500 focus:border-red-400"
+      : "border-purple-500 focus:border-purple-400"
+  }`;
 
   return (
     <div className="space-y-4">
@@ -54,6 +59,7 @@ export const ProfileHeader = ({
             onFocus={onEdit}
             className={inputClass}
           />
+          {error && <div className="text-red-500 text-sm mt-1">{error}</div>}
         </div>
       </div>
     </div>

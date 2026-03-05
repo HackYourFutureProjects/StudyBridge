@@ -10,6 +10,7 @@ import {
   validateWeekSlotRules,
   validateWeekAvailabilityPayload,
 } from "../validation/availabilitySchedule/teacher/teacherScheduleValidationMiddleware.js";
+import { teacherProfileUpdateValidationMiddleware } from "../validation/profile/profileValidationMiddleware.js";
 
 export const teacherRouter = Router();
 const teacherController = container.get<TeacherController>(
@@ -39,6 +40,8 @@ teacherRouter.put(
   "/me",
   authMiddleware.handle,
   requireRole("teacher"),
+  teacherProfileUpdateValidationMiddleware(),
+  errorMiddleware,
   teacherController.updateMyProfile.bind(teacherController),
 );
 

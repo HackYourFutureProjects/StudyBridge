@@ -10,6 +10,7 @@ export const studentMapper = (
     firstName: student.firstName,
     lastName: student.lastName,
     email: student.email,
+    phoneNumber: student.phoneNumber,
     profileImageUrl: student.profileImageUrl,
     address: student.address,
     mainLanguage: student.mainLanguage,

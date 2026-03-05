@@ -28,6 +28,7 @@ export type { LessonPrice } from "../../../components/teacherProfileSection/type
 import { updatePasswordApi } from "../../../api/auth/auth.api";
 import { useNotificationStore } from "../../../store/notification.store";
 import { getErrorMessage } from "../../../util/ErrorUtil";
+import { teacherProfileSchema } from "../../../components/teacherProfileSection/teacherProfile.validation";
 
 export interface TimeSlot {
   day: string;
@@ -50,6 +51,12 @@ export const TeacherProfile = () => {
   const [education, setEducation] = useState("");
   const [aboutMe, setAboutMe] = useState("");
 
+  const [validationErrors, setValidationErrors] = useState<{
+    name?: string;
+    phone?: string;
+    aboutMe?: string;
+  }>({});
+
   const [newSubject, setNewSubject] = useState("");
   const [newDescription, setNewDescription] = useState("");
   const [newLevels, setNewLevels] = useState<
@@ -62,6 +69,30 @@ export const TeacherProfile = () => {
   const [isScheduleOpen, setIsScheduleOpen] = useState(false);
   const [schedule, setSchedule] = useState<TimeSlot[]>([]);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+
+  const clearFieldError = (fieldName: string) => {
+    if (validationErrors[fieldName as keyof typeof validationErrors]) {
+      setValidationErrors((prev) => ({
+        ...prev,
+        [fieldName]: undefined,
+      }));
+    }
+  };
+
+  const handleNameChange = (value: string) => {
+    setName(value);
+    clearFieldError("name");
+  };
+
+  const handlePhoneChange = (value: string) => {
+    setPhone(value);
+    clearFieldError("phone");
+  };
+
+  const handleAboutMeChange = (value: string) => {
+    setAboutMe(value);
+    clearFieldError("aboutMe");
+  };
 
   const success = useNotificationStore((s) => s.success);
   const notifyError = useNotificationStore((s) => s.error);
@@ -101,6 +132,28 @@ export const TeacherProfile = () => {
   }, [profile]);
 
   const handleSaveProfile = async () => {
+    // Clear previous validation errors
+    setValidationErrors({});
+
+    const formData = {
+      name: name.trim(),
+      phone: phone.trim(),
+      aboutMe: aboutMe.trim(),
+    };
+
+    const validation = teacherProfileSchema.safeParse(formData);
+
+    if (!validation.success) {
+      const errors: { [key: string]: string } = {};
+      validation.error.issues.forEach((issue) => {
+        if (issue.path[0]) {
+          errors[issue.path[0] as string] = issue.message;
+        }
+      });
+      setValidationErrors(errors);
+      return;
+    }
+
     const nameParts = name.trim().split(" ");
     const firstName = nameParts[0] || "";
     const lastName = nameParts.slice(1).join(" ") || "";
@@ -371,18 +424,19 @@ export const TeacherProfile = () => {
             <ProfileHeader
               name={name}
               isEditing={isEditing}
-              onNameChange={setName}
+              onNameChange={handleNameChange}
               onEdit={() => setIsEditing(true)}
               onSave={handleSaveProfile}
+              error={validationErrors.name}
             />
             <ProfileContactFields
               email={email}
               phone={phone}
               isEditing={isEditing}
-              onEmailChange={setEmail}
-              onPhoneChange={setPhone}
+              onPhoneChange={handlePhoneChange}
               onFocusField={() => setIsEditing(true)}
               onChangePassword={() => setIsPasswordModalOpen(true)}
+              phoneError={validationErrors.phone}
             />
           </div>
         </div>
@@ -421,8 +475,9 @@ export const TeacherProfile = () => {
           <ProfileAboutMe
             aboutMe={aboutMe}
             isEditing={isEditing}
-            onAboutMeChange={setAboutMe}
+            onAboutMeChange={handleAboutMeChange}
             onFocus={() => setIsEditing(true)}
+            error={validationErrors.aboutMe}
           />
         </div>
       </div>

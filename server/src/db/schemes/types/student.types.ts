@@ -5,6 +5,7 @@ export type StudentTypeDB = {
   firstName: string;
   lastName: string;
   email: string;
+  phoneNumber?: string | null;
   passwordHash?: string | null;
   passwordSalt?: string | null;
   passwordReset: {

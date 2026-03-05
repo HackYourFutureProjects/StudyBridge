@@ -2,23 +2,29 @@ type ProfileContactFieldsProps = {
   email: string;
   phone: string;
   isEditing: boolean;
-  onEmailChange: (value: string) => void;
   onPhoneChange: (value: string) => void;
   onFocusField: () => void;
   onChangePassword?: () => void;
+  emailError?: string;
+  phoneError?: string;
 };
 
 export const ProfileContactFields = ({
   email,
   phone,
   isEditing,
-  onEmailChange,
   onPhoneChange,
   onFocusField,
   onChangePassword,
+  emailError,
+  phoneError,
 }: ProfileContactFieldsProps) => {
-  const inputClass =
-    "w-full max-w-md px-4 py-2 bg-transparent border border-purple-500 rounded-lg text-white focus:outline-none focus:border-purple-400 read-only:opacity-50 read-only:cursor-pointer";
+  const getInputClass = (hasError: boolean) =>
+    `w-full max-w-md px-4 py-2 bg-transparent border rounded-lg text-white focus:outline-none read-only:opacity-50 read-only:cursor-pointer ${
+      hasError
+        ? "border-red-500 focus:border-red-400"
+        : "border-purple-500 focus:border-purple-400"
+    }`;
 
   return (
     <div className="space-y-4">
@@ -30,11 +36,14 @@ export const ProfileContactFields = ({
           <input
             type="email"
             value={email}
-            onChange={(e) => onEmailChange(e.target.value)}
-            readOnly={!isEditing}
-            onFocus={onFocusField}
-            className={inputClass}
+            onChange={() => {}}
+            readOnly={true}
+            className={getInputClass(!!emailError)}
+            style={{ cursor: "not-allowed" }}
           />
+          {emailError && (
+            <div className="text-red-500 text-sm mt-1">{emailError}</div>
+          )}
         </div>
       </div>
 
@@ -49,8 +58,11 @@ export const ProfileContactFields = ({
             onChange={(e) => onPhoneChange(e.target.value)}
             readOnly={!isEditing}
             onFocus={onFocusField}
-            className={inputClass}
+            className={getInputClass(!!phoneError)}
           />
+          {phoneError && (
+            <div className="text-red-500 text-sm mt-1">{phoneError}</div>
+          )}
         </div>
       </div>
 

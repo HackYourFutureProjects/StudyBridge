@@ -1,6 +1,10 @@
 import { check } from "express-validator";
+import {
+  createPasswordValidator,
+  createConfirmPasswordValidator,
+  createOldPasswordValidator,
+} from "../../utils/validation/password.validation.js";
 
-//check email exists (not empty) and is a valid format
 export const passwordResetValidationMiddleware = () => [
   check("email")
     .trim()
@@ -27,17 +31,7 @@ export const sendPasswordResetValidationMiddleware = () => [
 ];
 
 export const updatePasswordValidationMiddleware = () => [
-  check("oldPassword").notEmpty().withMessage("old password is required"),
-
-  check("newPassword")
-    .notEmpty()
-    .withMessage("Password is required")
-    .isLength({ min: 5 })
-    .withMessage("Password must be at least 5 characters long"),
-
-  check("confirmPassword")
-    .notEmpty()
-    .withMessage("Confirm password is required")
-    .custom((value, { req }) => value === req.body.newPassword)
-    .withMessage("Passwords do not match"),
+  createOldPasswordValidator(),
+  createPasswordValidator("newPassword"),
+  createConfirmPasswordValidator("newPassword", "confirmPassword"),
 ];

@@ -8,6 +8,7 @@ export const StudentSchema = new mongoose.Schema<StudentTypeDB>(
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
     email: { type: String, required: true, index: true, unique: true },
+    phoneNumber: { type: String, default: null },
     passwordHash: { type: String, required: false, default: null },
     passwordSalt: { type: String, required: false, default: null },
     passwordReset: {

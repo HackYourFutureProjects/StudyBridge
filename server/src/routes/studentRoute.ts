@@ -5,6 +5,8 @@ import { StudentController } from "../controllers/student.controller.js";
 import { requireRole } from "../middlewares/requireRole.middleware.js";
 import { requireSelf } from "../middlewares/requireSelf.middleware.js";
 import { AuthMiddleware } from "../middlewares/authMiddlewareWithBearer.js";
+import { errorMiddleware } from "../middlewares/error.middleware.js";
+import { studentProfileUpdateValidationMiddleware } from "../validation/profile/profileValidationMiddleware.js";
 
 export const studentRouter = Router();
 const studentController = container.get<StudentController>(
@@ -23,6 +25,8 @@ studentRouter.put(
   "/me",
   authMiddleware.handle,
   requireRole("student"),
+  studentProfileUpdateValidationMiddleware(),
+  errorMiddleware,
   studentController.updateMyProfile.bind(studentController),
 );
 
