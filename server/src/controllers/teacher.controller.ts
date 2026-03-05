@@ -17,6 +17,7 @@ import {
   UpdateTeacherProfileInput,
   QueryTeacherForModeratorInput,
 } from "../types/teacher/teacher.types.js";
+import { validateAuthorization } from "../utils/validation/requestValidation.util.js";
 
 @injectable()
 export class TeacherController {
@@ -129,11 +130,7 @@ export class TeacherController {
     next: NextFunction,
   ) {
     try {
-      const teacherId = req.auth?.userId;
-      if (!teacherId) {
-        return res.status(401).send({ message: "Unauthorized" });
-      }
-
+      const teacherId = validateAuthorization(req.auth?.userId);
       const availability =
         await this.teacherQuery.findTeacherWeeklyAvailability(teacherId);
 
@@ -152,9 +149,7 @@ export class TeacherController {
     next: NextFunction,
   ) {
     try {
-      const teacherId = req.auth?.userId;
-      if (!teacherId) return res.status(401).send({ message: "Unauthorized" });
-
+      const teacherId = validateAuthorization(req.auth?.userId);
       const { availability, timezone } = req.body;
       const updated = await this.teacherQuery.replaceAvailabilityForWeek(
         teacherId,
@@ -171,11 +166,7 @@ export class TeacherController {
 
   async getMyProfile(req: Request, res: Response, next: NextFunction) {
     try {
-      const teacherId = req.auth?.userId;
-      if (!teacherId) {
-        return res.status(401).send({ message: "Unauthorized" });
-      }
-
+      const teacherId = validateAuthorization(req.auth?.userId);
       const teacher = await this.teacherQuery.getTeacherById(teacherId);
 
       if (!teacher) {
@@ -194,11 +185,7 @@ export class TeacherController {
     next: NextFunction,
   ) {
     try {
-      const teacherId = req.auth?.userId;
-      if (!teacherId) {
-        return res.status(401).send({ message: "Unauthorized" });
-      }
-
+      const teacherId = validateAuthorization(req.auth?.userId);
       const updatedTeacher = await this.teacherQuery.updateMyProfile(
         teacherId,
         req.body,

@@ -93,7 +93,7 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
     return getDescriptionValidation(description);
   }, [description]);
 
-  const { wordCount, isValid: isDescriptionValid } = descriptionValidation;
+  const { characterCount, isValid: isDescriptionValid } = descriptionValidation;
 
   const handleDateSelection = (date: Date): void => {
     setSelectedDate(date);
@@ -325,10 +325,14 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
 
                   {selectedSubject && selectedLevel && (
                     <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                      <label
+                        htmlFor="appointment-description"
+                        className="block text-sm font-medium text-gray-300 mb-2"
+                      >
                         Description (optional)
                       </label>
                       <textarea
+                        id="appointment-description"
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                         placeholder="Tell the teacher about your goals, current level, or any specific topics you'd like to focus on..."
@@ -344,12 +348,13 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
                         <span
                           className={`text-xs ${isDescriptionValid ? "text-gray-400" : "text-red-400"}`}
                         >
-                          {wordCount}/{descriptionValidation.maxWords} words
+                          {characterCount}/{descriptionValidation.maxCharacters}{" "}
+                          characters
                         </span>
                         {!isDescriptionValid && (
                           <span className="text-xs text-red-400">
-                            Maximum {descriptionValidation.maxWords} words
-                            allowed
+                            Maximum {descriptionValidation.maxCharacters}{" "}
+                            characters allowed
                           </span>
                         )}
                       </div>
@@ -373,7 +378,7 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
                       : isTeacher
                         ? "Teachers cannot book lessons"
                         : !isDescriptionValid
-                          ? `Please limit description to ${descriptionValidation.maxWords} words`
+                          ? `Please limit description to ${descriptionValidation.maxCharacters} characters`
                           : "Book Now"}
                   </Button>
                 </div>

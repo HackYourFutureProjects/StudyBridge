@@ -8,6 +8,7 @@ export type StudentType = {
   profileImageUrl: string | null;
   address: string | null;
   mainLanguage: string | null;
+  phoneNumber: string | null;
   createdAt: string;
   role: Role;
 };
@@ -17,4 +18,5 @@ export interface UpdateStudentProfile {
   lastName?: string;
   email?: string;
   profileImageUrl?: string;
+  phoneNumber?: string;
 }

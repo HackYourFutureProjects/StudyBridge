@@ -8,6 +8,7 @@ import { useUpdateMyStudentProfileMutation } from "../../../features/students/mu
 import { updatePasswordApi } from "../../../api/auth/auth.api";
 import { useNotificationStore } from "../../../store/notification.store";
 import { getErrorMessage } from "../../../util/ErrorUtil";
+import { studentProfileSchema } from "../../../components/studentProfileSection/studentProfile.validation";
 
 export const StudentProfile = () => {
   const { data: profile, isLoading, error } = useMyStudentProfileQuery();
@@ -16,10 +17,35 @@ export const StudentProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState<string | null>(null);
   const [email, setEmail] = useState<string | null>(null);
+  const [phone, setPhone] = useState<string | null>(null);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+
+  const [validationErrors, setValidationErrors] = useState<{
+    name?: string;
+    phone?: string;
+  }>({});
 
   const success = useNotificationStore((s) => s.success);
   const notifyError = useNotificationStore((s) => s.error);
+
+  const clearFieldError = (fieldName: string) => {
+    if (validationErrors[fieldName as keyof typeof validationErrors]) {
+      setValidationErrors((prev) => ({
+        ...prev,
+        [fieldName]: undefined,
+      }));
+    }
+  };
+
+  const handleNameChange = (value: string) => {
+    setName(value);
+    clearFieldError("name");
+  };
+
+  const handlePhoneChange = (value: string) => {
+    setPhone(value);
+    clearFieldError("phone");
+  };
 
   const displayName =
     name !== null
@@ -28,9 +54,29 @@ export const StudentProfile = () => {
         ? `${profile.firstName} ${profile.lastName}`
         : "";
   const displayEmail = email !== null ? email : profile?.email || "";
-  const phone = "+";
+  const displayPhone = phone !== null ? phone : profile?.phoneNumber || "+";
 
   const handleSaveProfile = async () => {
+    setValidationErrors({});
+
+    const formData = {
+      name: displayName.trim(),
+      phone: displayPhone.trim(),
+    };
+
+    const validation = studentProfileSchema.safeParse(formData);
+
+    if (!validation.success) {
+      const errors: { [key: string]: string } = {};
+      validation.error.issues.forEach((issue) => {
+        if (issue.path[0]) {
+          errors[issue.path[0] as string] = issue.message;
+        }
+      });
+      setValidationErrors(errors);
+      return;
+    }
+
     const nameParts = displayName.trim().split(" ");
     const firstName = nameParts[0] || "";
     const lastName = nameParts.slice(1).join(" ") || "";
@@ -40,10 +86,12 @@ export const StudentProfile = () => {
         firstName,
         lastName,
         email: displayEmail || undefined,
+        phoneNumber: displayPhone !== "+" ? displayPhone : undefined,
       });
 
       setName(null);
       setEmail(null);
+      setPhone(null);
       setIsEditing(false);
     } catch (error) {
       console.error("Failed to save profile:", error);
@@ -110,18 +158,19 @@ export const StudentProfile = () => {
             <ProfileHeader
               name={displayName}
               isEditing={isEditing}
-              onNameChange={setName}
+              onNameChange={handleNameChange}
               onEdit={() => setIsEditing(true)}
               onSave={handleSaveProfile}
+              error={validationErrors.name}
             />
             <ProfileContactFields
               email={displayEmail}
-              phone={phone}
+              phone={displayPhone}
               isEditing={isEditing}
-              onEmailChange={setEmail}
-              onPhoneChange={() => {}}
+              onPhoneChange={handlePhoneChange}
               onFocusField={() => setIsEditing(true)}
               onChangePassword={() => setIsPasswordModalOpen(true)}
+              phoneError={validationErrors.phone}
             />
           </div>
         </div>

@@ -1,24 +1,16 @@
-export const MAX_DESCRIPTION_WORDS = 50;
-
-export const countWords = (text: string): number => {
-  return text
-    .trim()
-    .split(/\s+/)
-    .filter((word) => word.length > 0).length;
-};
+export const MAX_DESCRIPTION_CHARACTERS = 500;
 
 export const isDescriptionValid = (description: string): boolean => {
-  const wordCount = countWords(description);
-  return wordCount <= MAX_DESCRIPTION_WORDS;
+  return description.trim().length <= MAX_DESCRIPTION_CHARACTERS;
 };
 
 export const getDescriptionValidation = (description: string) => {
-  const wordCount = countWords(description);
-  const isValid = wordCount <= MAX_DESCRIPTION_WORDS;
+  const characterCount = description.trim().length;
+  const isValid = characterCount <= MAX_DESCRIPTION_CHARACTERS;
 
   return {
-    wordCount,
+    characterCount,
     isValid,
-    maxWords: MAX_DESCRIPTION_WORDS,
+    maxCharacters: MAX_DESCRIPTION_CHARACTERS,
   };
 };

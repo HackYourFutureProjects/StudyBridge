@@ -8,6 +8,7 @@ import { NextFunction, Response } from "express";
 import { TYPES } from "../composition/composition.types.js";
 import { StudentService } from "../services/student/student.service.js";
 import { UpdateStudentProfileType } from "../types/student/student.types.js";
+import { validateAuthorization } from "../utils/validation/requestValidation.util.js";
 
 @injectable()
 export class StudentController {
@@ -21,11 +22,7 @@ export class StudentController {
     next: NextFunction,
   ) {
     try {
-      const userId = req.auth?.userId;
-      if (!userId) {
-        return res.status(401).json({ message: "Unauthorized" });
-      }
-
+      const userId = validateAuthorization(req.auth?.userId);
       const student = await this.studentService.getStudentById(userId);
       if (!student) {
         return res.status(404).json({ message: "Student not found" });
@@ -43,11 +40,7 @@ export class StudentController {
     next: NextFunction,
   ) {
     try {
-      const userId = req.auth?.userId;
-      if (!userId) {
-        return res.status(401).json({ message: "Unauthorized" });
-      }
-
+      const userId = validateAuthorization(req.auth?.userId);
       const updated = await this.studentService.updateStudentProfile(
         userId,
         req.body,

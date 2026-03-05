@@ -2,9 +2,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateMyProfileApi } from "../../../api/teacher/teacher.api";
 import { UpdateTeacherProfileInput } from "../../../api/teacher/teacher.type";
 import { queryKeys } from "../../queryKeys";
+import { useNotificationStore } from "../../../store/notification.store";
 
 export const useUpdateMyProfileMutation = () => {
   const queryClient = useQueryClient();
+  const success = useNotificationStore((s) => s.success);
 
   return useMutation({
     mutationFn: (data: UpdateTeacherProfileInput) => updateMyProfileApi(data),
@@ -21,6 +23,7 @@ export const useUpdateMyProfileMutation = () => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.teacherModerator(updatedTeacher.id),
       });
+      success("Profile updated successfully!");
     },
   });
 };

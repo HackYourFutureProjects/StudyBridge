@@ -85,6 +85,7 @@ export class StudentService {
       firstName?: string;
       lastName?: string;
       email?: string;
+      phoneNumber?: string;
       profileImageUrl?: string;
     },
   ) {
@@ -106,6 +107,9 @@ export class StudentService {
       }
       updateData.email = data.email;
     }
+
+    if (data.phoneNumber !== undefined)
+      updateData.phoneNumber = data.phoneNumber;
 
     if (data.profileImageUrl !== undefined)
       updateData.profileImageUrl = data.profileImageUrl;

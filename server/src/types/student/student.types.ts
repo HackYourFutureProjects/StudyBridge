@@ -5,6 +5,7 @@ export type StudentViewType = {
   firstName: string;
   lastName: string;
   email: string;
+  phoneNumber?: string | null;
   profileImageUrl: string | null;
   address: string | null;
   mainLanguage: string | null;
@@ -18,6 +19,7 @@ export type UpdateStudentProfileType = {
   firstName?: string;
   lastName?: string;
   email?: string;
+  phoneNumber?: string;
   profileImageUrl?: string;
   password?: string;
 };

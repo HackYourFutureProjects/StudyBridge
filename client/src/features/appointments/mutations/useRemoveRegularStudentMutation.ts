@@ -1,9 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { removeRegularStudentApi } from "../../../api/appointments/regularStudents.api";
 import { queryKeys } from "../../queryKeys";
+import { useNotificationStore } from "../../../store/notification.store";
 
 export const useRemoveRegularStudentMutation = () => {
   const queryClient = useQueryClient();
+  const success = useNotificationStore((s) => s.success);
 
   return useMutation({
     mutationFn: (appointmentId: string) =>
@@ -21,6 +23,7 @@ export const useRemoveRegularStudentMutation = () => {
       queryClient.invalidateQueries({
         queryKey: ["appointments", "teacher"],
       });
+      success("Student removed from regular list successfully!");
     },
     onError: (error: Error) => {
       console.error("Failed to remove regular student:", error);
