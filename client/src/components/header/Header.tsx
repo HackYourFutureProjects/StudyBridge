@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Button } from "../ui/button/Button";
 import { NavLink } from "react-router-dom";
-import { ControlPanel } from "../controlPanel/ControlPanel";
 import { MenuButton, MobileMenu } from "../ui/mobileMenu/MobileMenu";
 import {
   authRoutesVariables,
@@ -9,10 +8,16 @@ import {
 } from "../../router/routesVariables/pathVariables";
 import { Logo } from "../logo/Logo";
 import { useAuthSessionStore } from "../../store/authSession.store";
-import { ProfileIndicator } from "../profileIndicator/ProfileIndicator.tsx";
 import { useMeStatusQuery } from "../../features/auth/query/useMeStatusQuery.tsx";
 import { ProfileIndicatorSkeleton } from "../skeletons/ProfileIndicatorSkeleton.tsx";
 import { HeaderNavSkeleton } from "../skeletons/HeaderNavSkeleton.tsx";
+import {
+  linkOptions,
+  makePrivateLinkOptions,
+} from "../../dummyData/LinkOptionsVariables.tsx";
+import { ControlPanelTrigger } from "../controlPanel/ControlPanelTrigger.tsx";
+import { IndicatorTrigger } from "../controlPanel/IndicatorTrigger.tsx";
+import { useModalStore } from "../../store/modals.store.ts";
 
 export const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -22,6 +27,8 @@ export const Header = () => {
   const handleMobileMenuToggle = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
+  const open = useModalStore((s) => s.open);
+
   const authInitDone = useAuthSessionStore((s) => s.authInitDone);
 
   const [hadSession] = useState(
@@ -81,9 +88,9 @@ export const Header = () => {
           {isMeLoading ? (
             <ProfileIndicatorSkeleton />
           ) : isAuth ? (
-            <ProfileIndicator />
+            <IndicatorTrigger options={makePrivateLinkOptions(open)} />
           ) : (
-            <ControlPanel />
+            <ControlPanelTrigger options={linkOptions} />
           )}
           <MenuButton
             onClick={handleMobileMenuToggle}

@@ -17,8 +17,8 @@ const SvgComponent = (
   return (
     <svg
       width="202"
-      height="130"
-      viewBox="0 0 702 130"
+      height="40"
+      viewBox="0 10 702 110"
       xmlns="http://www.w3.org/2000/svg"
       ref={ref}
       {...props}
