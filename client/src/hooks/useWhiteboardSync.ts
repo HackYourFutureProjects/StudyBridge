@@ -44,12 +44,12 @@ type UseBoardSyncArgs = {
   call?: Call | null;
   selectedColor: string;
   activeTool: DrawTool;
+  eraserSize: number;
   canvasRef: RefObject<HTMLCanvasElement | null>;
   canvasHostRef: RefObject<HTMLDivElement | null>;
 };
 
 const PEN_WIDTH = 3;
-const ERASER_WIDTH = 14;
 const ERASER_COLOR = "#FFFFFF";
 
 // Send message; retry once if network is shaky.
@@ -75,6 +75,7 @@ export const useWhiteboardSync = ({
   call = null,
   selectedColor,
   activeTool,
+  eraserSize,
   canvasRef,
   canvasHostRef,
 }: UseBoardSyncArgs) => {
@@ -319,7 +320,7 @@ export const useWhiteboardSync = ({
       const { x, y } = getPointerPosition(e);
       currentStrokeStyleRef.current = {
         color: activeTool === "eraser" ? ERASER_COLOR : selectedColor,
-        lineWidth: activeTool === "eraser" ? ERASER_WIDTH : PEN_WIDTH,
+        lineWidth: activeTool === "eraser" ? eraserSize : PEN_WIDTH,
         tool: activeTool,
       };
 
@@ -332,7 +333,14 @@ export const useWhiteboardSync = ({
       currentStrokePointsRef.current = [toCanvasRatio(x, y)];
       lastPointerRef.current = { x, y };
     },
-    [activeTool, canvasRef, getPointerPosition, selectedColor, toCanvasRatio],
+    [
+      activeTool,
+      canvasRef,
+      eraserSize,
+      getPointerPosition,
+      selectedColor,
+      toCanvasRatio,
+    ],
   );
 
   const handlePointerMove = useCallback(

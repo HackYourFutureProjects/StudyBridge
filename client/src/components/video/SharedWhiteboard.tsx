@@ -21,6 +21,7 @@ export const SharedWhiteboard = ({
     COLORS[0], // default color
   );
   const [activeTool, setActiveTool] = useState<DrawTool>("pen");
+  const [eraserSize, setEraserSize] = useState(24);
 
   // Hook that handles drawing + syncing with other users
   const {
@@ -32,6 +33,7 @@ export const SharedWhiteboard = ({
     call,
     selectedColor,
     activeTool,
+    eraserSize,
     canvasRef,
     canvasHostRef,
   });
@@ -80,6 +82,23 @@ export const SharedWhiteboard = ({
         >
           Eraser
         </button>
+
+        {/* user can choose eraser size */}
+        {activeTool === "eraser" && (
+          <div className="ml-2 flex items-center gap-2 text-xs text-[#C6CAD3]">
+            <span>Size</span>
+            <input
+              type="range"
+              min={8}
+              max={48}
+              step={1}
+              value={eraserSize}
+              onChange={(e) => setEraserSize(Number(e.target.value))}
+              className="w-24"
+            />
+            <span className="w-6 text-right">{eraserSize}</span>
+          </div>
+        )}
 
         {/* Clear the board for everyone */}
         <button
