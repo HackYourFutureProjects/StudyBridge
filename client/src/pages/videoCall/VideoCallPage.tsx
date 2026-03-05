@@ -42,6 +42,12 @@ type CallContentProps = {
   onEnd: () => void | Promise<void>;
 };
 
+type WhiteboardVisibilityEvent = {
+  action: "visibility";
+  open: boolean;
+  senderClientId: string;
+};
+
 const CallContent = ({
   whiteboardOpen,
   setWhiteboardOpen,
@@ -51,6 +57,7 @@ const CallContent = ({
   const { useHasOngoingScreenShare } = useCallStateHooks();
   const hasScreenShare = useHasOngoingScreenShare();
   const splitContainerRef = useRef<HTMLDivElement | null>(null);
+  const myClientIdRef = useRef(crypto.randomUUID());
   const [leftPanelPercent, setLeftPanelPercent] = useState(50);
   const [isResizing, setIsResizing] = useState(false);
 
@@ -82,6 +89,38 @@ const CallContent = ({
       window.removeEventListener("pointerup", onPointerUp);
     };
   }, [isResizing]);
+
+  useEffect(() => {
+    // Keep whiteboard visibility in sync between both participants.
+    const off = call.on("custom", (event) => {
+      const payload = event.custom?.whiteboardVisibility as
+        | WhiteboardVisibilityEvent
+        | undefined;
+      if (!payload) return;
+      if (payload.action !== "visibility") return;
+      if (payload.senderClientId === myClientIdRef.current) return;
+      setWhiteboardOpen(payload.open);
+    });
+
+    return () => off();
+  }, [call, setWhiteboardOpen]);
+
+  const toggleWhiteboard = async () => {
+    const nextOpenState = !whiteboardOpen;
+    setWhiteboardOpen(nextOpenState);
+
+    try {
+      await call.sendCustomEvent({
+        whiteboardVisibility: {
+          action: "visibility",
+          open: nextOpenState,
+          senderClientId: myClientIdRef.current,
+        },
+      });
+    } catch (error) {
+      console.error("Failed to sync whiteboard visibility", error);
+    }
+  };
 
   return (
     <>
@@ -132,7 +171,7 @@ const CallContent = ({
         <ScreenShareButton />
         <button
           type="button"
-          onClick={() => setWhiteboardOpen((prev) => !prev)}
+          onClick={() => void toggleWhiteboard()}
           className="rounded bg-[#2A2433] px-4 py-2 text-white hover:bg-[#3A3346]"
         >
           {whiteboardOpen ? "Hide Whiteboard" : "Whiteboard"}

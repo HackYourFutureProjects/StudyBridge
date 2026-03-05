@@ -1,7 +1,7 @@
 // This function sets how the drawing pen should look
 // It controls the thickness and how the lines end and connect
-export const applyPenStyle = (ctx: CanvasRenderingContext2D) => {
-  ctx.lineWidth = 3; // thickness of the line
+export const applyPenStyle = (ctx: CanvasRenderingContext2D, lineWidth = 3) => {
+  ctx.lineWidth = lineWidth; // thickness of the line
   ctx.lineCap = "round"; // makes the ends of lines rounded instead of sharp
   ctx.lineJoin = "round"; // makes corners between lines smooth
 };
@@ -36,7 +36,7 @@ export const resizeCanvasPreserveDrawing = (
   if (!ctx) return;
 
   // Reapply the drawing style after resizing
-  applyPenStyle(ctx);
+  applyPenStyle(ctx, 3);
 
   // Put the saved drawing back onto the resized canvas
   if (snapshot.width > 0 && snapshot.height > 0) {

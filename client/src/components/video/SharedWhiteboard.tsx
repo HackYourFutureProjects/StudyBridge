@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import type { Call } from "@stream-io/video-client";
 import { useWhiteboardSync } from "../../hooks/useWhiteboardSync";
+import type { DrawTool } from "../../hooks/useWhiteboardSync";
 
 // Preset pen colors
 const COLORS = ["#111827", "#2563EB", "#EF4444", "#16A34A"] as const;
@@ -19,6 +20,7 @@ export const SharedWhiteboard = ({
   const [selectedColor, setSelectedColor] = useState<(typeof COLORS)[number]>(
     COLORS[0], // default color
   );
+  const [activeTool, setActiveTool] = useState<DrawTool>("pen");
 
   // Hook that handles drawing + syncing with other users
   const {
@@ -29,6 +31,7 @@ export const SharedWhiteboard = ({
   } = useWhiteboardSync({
     call,
     selectedColor,
+    activeTool,
     canvasRef,
     canvasHostRef,
   });
@@ -53,6 +56,30 @@ export const SharedWhiteboard = ({
             title="Pen color"
           />
         ))}
+
+        {/* Switch between normal drawing and erasing */}
+        <button
+          type="button"
+          onClick={() => setActiveTool("pen")}
+          className={`ml-1 rounded px-3 py-1 text-sm ${
+            activeTool === "pen"
+              ? "bg-[#3A3346] text-white"
+              : "bg-[#2A2433] text-[#C6CAD3]"
+          }`}
+        >
+          Pen
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTool("eraser")}
+          className={`rounded px-3 py-1 text-sm ${
+            activeTool === "eraser"
+              ? "bg-[#3A3346] text-white"
+              : "bg-[#2A2433] text-[#C6CAD3]"
+          }`}
+        >
+          Eraser
+        </button>
 
         {/* Clear the board for everyone */}
         <button
