@@ -17,7 +17,6 @@ export const ClientsClasses = () => {
     accountType ?? (pathname.startsWith("/teacher") ? "teacher" : "student");
   const isTeacher = inferredType === "teacher";
   const isMyStudents = pathname === "/teacher/my-students";
-  // const appointment = { studentId: "20e8ad65-9712-4826-b0d5-2f34a2799262" };
 
   const handleStartCall = async (studentId: string) => {
     if (!user?.id) return;
@@ -85,8 +84,6 @@ export const ClientsClasses = () => {
                     as="button"
                     variant="link"
                     className="rounded-none min-w-0 min-h-0 font-normal text-inherit underline"
-                    // // TODO: [VIDEO] Replace hardcoded studentId with appointment.studentId after appointments integration is merged. Like this way
-                    // onClick={() => handleStartCall(appointment.studentId)}
                     onClick={() =>
                       handleStartCall("20e8ad65-9712-4826-b0d5-2f34a2799262")
                     }
@@ -111,8 +108,6 @@ export const ClientsClasses = () => {
                     as="button"
                     variant="link"
                     className="rounded-none min-w-0 min-h-0 font-normal text-inherit underline"
-                    // // TODO: [VIDEO] Replace hardcoded studentId with appointment.studentId after appointments integration is merged. Like this way
-                    // onClick={() => handleStartCall(appointment.studentId)}
                     onClick={() =>
                       handleStartCall("ee3dce21-be6e-423a-92f2-1d0ad0460a9b")
                     }
@@ -136,8 +131,6 @@ export const ClientsClasses = () => {
                     as="button"
                     variant="link"
                     className="rounded-none min-w-0 min-h-0 font-normal text-inherit underline"
-                    // // TODO: [VIDEO] Replace hardcoded studentId with appointment.studentId after appointments integration is merged. Like this way
-                    // onClick={() => handleStartCall(appointment.studentId)}
                     onClick={() =>
                       handleStartCall("76a73bb5-dcbb-454a-88a0-6adee35f5bbf")
                     }
