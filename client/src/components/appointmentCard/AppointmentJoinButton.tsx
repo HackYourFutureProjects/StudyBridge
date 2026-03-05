@@ -13,6 +13,15 @@ export const AppointmentJoinButton = ({
   isPast,
   onDelete,
 }: AppointmentJoinButtonProps) => {
+  const openCallTab = () => {
+    if (!videoCall) return;
+
+    const opened = window.open(videoCall, "_blank");
+    if (!opened) {
+      window.location.href = videoCall;
+    }
+  };
+
   if (isPast && onDelete) {
     return (
       <div className="flex items-center justify-center min-[480px]:ml-auto">
@@ -32,10 +41,8 @@ export const AppointmentJoinButton = ({
     <div className="flex items-center justify-center min-[480px]:ml-auto">
       {canJoin ? (
         <Button
-          as="a"
-          href={videoCall}
-          target="_blank"
-          rel="noopener noreferrer"
+          as="button"
+          onClick={openCallTab}
           variant="link"
           className="text-white underline text-[14px] md:text-[16px] hover:text-gray-300"
         >
