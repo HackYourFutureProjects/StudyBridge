@@ -45,3 +45,7 @@ export async function createReviewApi(
   const res = await apiProtected.post<ReviewType>("/api/reviews", data);
   return res.data;
 }
+
+export async function deleteReviewByModeratorApi(reviewId: string) {
+  return await apiProtected.delete(`/api/reviews/${reviewId}/moderator`);
+}

@@ -8,6 +8,7 @@ import {
   validateAuthorization,
   validatePaginationParams,
 } from "../utils/validation/requestValidation.util.js";
+import { RequestWithParams } from "../types/common.types.js";
 
 @injectable()
 export class ReviewController {
@@ -69,6 +70,20 @@ export class ReviewController {
       const teacherId = req.params.teacherId as string;
       const result = await this.reviewQuery.getTeacherAverageRating(teacherId);
       return res.status(200).send(result);
+    } catch (err) {
+      return next(err);
+    }
+  }
+
+  async deleteReviewByModerator(
+    req: RequestWithParams<{ reviewId: string }>,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const reviewId = req.params.reviewId as string;
+      await this.reviewService.deleteReview(reviewId);
+      return res.sendStatus(204);
     } catch (err) {
       return next(err);
     }

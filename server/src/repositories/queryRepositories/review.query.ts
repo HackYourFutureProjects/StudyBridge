@@ -84,6 +84,20 @@ export class ReviewQuery {
     }
   }
 
+  async getReviewById(id: string) {
+    try {
+      const review = await ReviewModel.findOne({ _id: id }).lean();
+      if (!review) {
+        return null;
+      }
+      return review;
+    } catch (err: unknown) {
+      throw new Error("Something went wrong with review search", {
+        cause: err,
+      });
+    }
+  }
+
   // Check if the student has already reviewed the appointment
   async hasStudentReviewedAppointment(bookingId: string): Promise<boolean> {
     try {

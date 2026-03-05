@@ -56,8 +56,14 @@ export class TeacherQuery {
       const pageSize = queries.pageSize ?? 10;
       const sortBy = queries.sortBy ?? "createdAt";
       const sortDirection = queries.sortDirection ?? "desc";
+      const status = queries.status ?? "all";
 
-      const items = await TeacherModel.find()
+      const filter: Record<string, unknown> = {};
+      if (status !== "all") {
+        filter.status = status;
+      }
+
+      const items = await TeacherModel.find(filter)
         .sort(filterForSort(sortBy, sortDirection))
         .skip((pageNumber - 1) * +pageSize)
         .limit(+pageSize)

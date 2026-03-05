@@ -7,6 +7,7 @@ import {
   googleRegisterApi,
 } from "../../../api/auth/auth.api.ts";
 import { getErrorMessage } from "../../../util/ErrorUtil.ts";
+import { useNavigate } from "react-router-dom";
 
 type useLoginMutationProps = {
   onClose?: () => void;
@@ -21,7 +22,7 @@ export function useGoogleLoginMutation({
 }: useLoginMutationProps) {
   const setAccessToken = useAuthSessionStore((s) => s.setAccessToken);
   const notifyError = useNotificationStore((s) => s.error);
-
+  const navigate = useNavigate();
   return useMutation({
     mutationFn: (idToken: string) => {
       return intent === "login"
@@ -31,6 +32,7 @@ export function useGoogleLoginMutation({
     onSuccess: ({ accessToken }) => {
       setAccessToken(accessToken);
       localStorage.setItem("hadSession", "1");
+      navigate("/", { replace: true });
       onClose?.();
     },
     onError: (error) => {

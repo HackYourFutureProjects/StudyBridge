@@ -2,6 +2,7 @@ import { injectable } from "inversify";
 import { ReviewModel } from "../../db/schemes/review.schema.js";
 import { ReviewTypeDB } from "../../db/schemes/types/review.types.js";
 import { HttpError } from "../../utils/error.util.js";
+import { Types } from "mongoose";
 
 @injectable()
 export class ReviewCommand {
@@ -12,6 +13,18 @@ export class ReviewCommand {
       return created.toObject();
     } catch (err: unknown) {
       throw new HttpError(500, "Review was not created", { cause: err });
+    }
+  }
+
+  async deleteReview(reviewId: string) {
+    try {
+      if (!Types.ObjectId.isValid(reviewId)) {
+        return null;
+      }
+
+      return await ReviewModel.findByIdAndDelete(reviewId).lean();
+    } catch (err: unknown) {
+      throw new HttpError(500, "Review was not deleted", { cause: err });
     }
   }
 }

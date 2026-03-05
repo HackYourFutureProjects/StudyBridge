@@ -6,6 +6,9 @@ export type TeacherStatus =
   | "active"
   | "rejected"
   | "blocked";
+
+export type TeacherStatusQuery = TeacherStatus | "all";
+
 type EducationItem = {
   degree: string;
   institution: string;

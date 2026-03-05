@@ -126,4 +126,23 @@ export class ReviewService {
       throw new HttpError(500, "Could not create review", { cause: err });
     }
   }
+
+  async deleteReview(reviewId: string) {
+    const review = await this.reviewQuery.getReviewById(reviewId);
+    if (!review) {
+      throw new HttpError(404, "Review not found 1");
+    }
+
+    const deleted = await this.reviewCommand.deleteReview(reviewId);
+    if (!deleted) {
+      throw new HttpError(404, "Review not found 2");
+    }
+    const averageRating = await this.reviewQuery.getTeacherAverageRating(
+      review.teacherId,
+    );
+    await this.teacherCommand.updateTeacherAverageRating(
+      review.teacherId,
+      averageRating.averageRating,
+    );
+  }
 }

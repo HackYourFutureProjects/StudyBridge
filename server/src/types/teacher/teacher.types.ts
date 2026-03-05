@@ -1,4 +1,7 @@
-import { TeacherStatus } from "../../db/schemes/types/teacher.types.js";
+import {
+  TeacherStatus,
+  TeacherStatusQuery,
+} from "../../db/schemes/types/teacher.types.js";
 
 export type EducationViewItem = {
   degree: string;
@@ -89,6 +92,7 @@ export type QueryTeacherForModeratorInput = {
   sortDirection?: SortDirection;
   pageNumber?: number;
   pageSize?: number;
+  status?: TeacherStatusQuery;
 };
 
 export type TeacherOutputModel = {

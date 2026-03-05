@@ -76,6 +76,7 @@ export class TeacherController {
         sortDirection: req.query.sortDirection,
         pageNumber: req.query.pageNumber,
         pageSize: req.query.pageSize,
+        status: req.query.status,
       };
 
       const teachers =

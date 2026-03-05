@@ -8,7 +8,8 @@ export type ModalName =
   | "bookingConfirm"
   | "signIn"
   | "confirmDelete"
-  | "alert";
+  | "alert"
+  | "deleteReview";
 
 type ModalPayload = {
   logout?: never;
@@ -34,6 +35,10 @@ type ModalPayload = {
   alert?: {
     title: string;
     message: string;
+  };
+  deleteReview?: {
+    teacherId: string;
+    reviewId: string;
   };
 };
 

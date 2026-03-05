@@ -9,6 +9,7 @@ import { AlertDialog } from "../alertDialog/AlertDialog.tsx";
 import { useModalStore } from "../../store/modals.store.ts";
 import { cva } from "class-variance-authority";
 import { twMerge } from "tailwind-merge";
+import { DeleteReviewByModeratorConfirmation } from "../deleteReviewConfirmation/DeleteReviewConfirmation.tsx";
 
 const overlayClass = cva(
   "fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-200",
@@ -61,6 +62,17 @@ export const ModalHost = () => {
         {activeModal === "signIn" && (
           <SignInConfirmation isOpen={opened} onClose={close} />
         )}
+        {activeModal === "deleteReview" &&
+          payload &&
+          "teacherId" in payload &&
+          "reviewId" in payload && (
+            <DeleteReviewByModeratorConfirmation
+              isOpen={opened}
+              onClose={close}
+              teacherId={payload.teacherId}
+              reviewId={payload.reviewId}
+            />
+          )}
         {activeModal === "confirmDelete" &&
           payload &&
           "onConfirm" in payload && (

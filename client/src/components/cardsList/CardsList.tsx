@@ -5,13 +5,13 @@ import { useRef } from "react";
 type CardsListType = {
   cards: TeacherType[];
   changeStatus?: (id: string, status: TeacherStatus) => void;
-  isStatusPending?: boolean;
+  pendingTeacherId?: string | null;
 };
 
 export const CardsList = ({
   cards,
   changeStatus,
-  isStatusPending,
+  pendingTeacherId,
 }: CardsListType) => {
   const reduceMotion = useReducedMotion();
 
@@ -51,7 +51,7 @@ export const CardsList = ({
       {cards.map((teacher) => (
         <motion.div key={teacher.id} variants={itemVariants}>
           <TeacherCard
-            isStatusPending={isStatusPending}
+            isStatusPending={pendingTeacherId === teacher.id}
             changeStatus={changeStatus}
             teacher={teacher}
           />
