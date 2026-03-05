@@ -30,7 +30,7 @@ export const useDeleteReviewByModeratorMutation = (teacherId: string) => {
     },
     onError: (error) => {
       const msg = getErrorMessage(error);
-      notifyError(msg ?? "Failed to submit review. Please try again.");
+      notifyError(msg ?? "Failed to delete review. Please try again.");
     },
   });
 };

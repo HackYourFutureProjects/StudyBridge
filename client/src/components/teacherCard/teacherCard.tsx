@@ -61,9 +61,7 @@ export const TeacherCard = ({
   const navigate = useNavigate();
   const user = useAuthSessionStore((state) => state.user);
   const avatarUrl = getAvatarUrl(profileImageUrl || null);
-  const pulseClass = isStatusPending
-    ? `pulse-border pulse-border--${status}`
-    : "";
+  const pulseClass = isStatusPending ? `pulse-border--${status}` : "";
   const handleBookClick = () => {
     if (user?.role === "moderator") {
       navigate(`/moderator/teachers/${id}`);

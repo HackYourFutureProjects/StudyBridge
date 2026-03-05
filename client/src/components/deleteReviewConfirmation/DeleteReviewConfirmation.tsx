@@ -1,4 +1,3 @@
-import React from "react";
 import { Button } from "../ui/button/Button.tsx";
 import { Loader } from "../loader/Loader.tsx";
 import { useDeleteReviewByModeratorMutation } from "../../features/review/mutations/useDeleteReviewByModeratorMutation.ts";

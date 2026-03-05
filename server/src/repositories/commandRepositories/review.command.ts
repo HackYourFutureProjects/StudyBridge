@@ -19,12 +19,10 @@ export class ReviewCommand {
   async deleteReview(reviewId: string) {
     try {
       if (!Types.ObjectId.isValid(reviewId)) {
-        return false;
+        return null;
       }
-      const res = await ReviewModel.deleteOne({
-        _id: new Types.ObjectId(reviewId),
-      });
-      return res.deletedCount === 1;
+
+      return await ReviewModel.findByIdAndDelete(reviewId).lean();
     } catch (err: unknown) {
       throw new HttpError(500, "Review was not deleted", { cause: err });
     }

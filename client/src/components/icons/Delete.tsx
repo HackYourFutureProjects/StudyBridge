@@ -184,8 +184,8 @@ const SvgComponent = (
   </svg>
 );
 
-const DashboardIcon = memo(forwardRef(SvgComponent)) as MemoExoticComponent<
+const DeleteIcon = memo(forwardRef(SvgComponent)) as MemoExoticComponent<
   ForwardRefExoticComponent<SVGProps<SVGSVGElement>>
 >;
 
-export default DashboardIcon;
+export default DeleteIcon;

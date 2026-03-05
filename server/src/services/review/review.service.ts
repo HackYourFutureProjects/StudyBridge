@@ -128,10 +128,21 @@ export class ReviewService {
   }
 
   async deleteReview(reviewId: string) {
-    const deleted = await this.reviewCommand.deleteReview(reviewId);
-
-    if (!deleted) {
-      throw new HttpError(404, "Review not found");
+    const review = await this.reviewQuery.getReviewById(reviewId);
+    if (!review) {
+      throw new HttpError(404, "Review not found 1");
     }
+
+    const deleted = await this.reviewCommand.deleteReview(reviewId);
+    if (!deleted) {
+      throw new HttpError(404, "Review not found 2");
+    }
+    const averageRating = await this.reviewQuery.getTeacherAverageRating(
+      review.teacherId,
+    );
+    await this.teacherCommand.updateTeacherAverageRating(
+      review.teacherId,
+      averageRating.averageRating,
+    );
   }
 }
