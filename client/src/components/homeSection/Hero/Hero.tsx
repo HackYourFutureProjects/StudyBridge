@@ -1,17 +1,18 @@
 import heroImage from "../../../assets/images/hero.png";
-import { Button } from "../../ui/button/Button";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { TextField } from "../../ui/textField/TextField.tsx";
 import { useMediaQuery } from "../../../hooks/useMediaQuery.tsx";
+import { SearchPanel } from "../../searchPanel/SearchPanel.tsx";
+import { SubjectsType } from "../../../api/subjects/subjects.type.ts";
 type HeroProps = {
   onLoaded: () => void;
+  subjects?: SubjectsType[];
 };
 
-export const Hero = ({ onLoaded }: HeroProps) => {
+export const Hero = ({ onLoaded, subjects }: HeroProps) => {
   const navigate = useNavigate();
   const isMobile = useMediaQuery("(max-width: 640px)");
-  const [subject, setSubject] = useState<string>("english");
+  const [subject, setSubject] = useState<string>("");
 
   const onSearch = () => {
     navigate(`/teachers?subject=${encodeURIComponent(subject)}`);
@@ -43,24 +44,13 @@ export const Hero = ({ onLoaded }: HeroProps) => {
           Quickly choose, pay, and receive a video call with your tutor!
         </p>
 
-        <div className="relative flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 max-w-2xl lg:max-w-3xl mx-auto mb-16 sm:mb-20 lg:mb-24">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 hidden lg:block w-[620px] h-[80px] bg-[#27222EB3] rounded-[60px] -z-10"></div>
-          <TextField
-            type="search"
-            name="site-search"
-            id="site-search"
-            autoComplete="off"
-            containerClassName="w-[200px] sm:w-[300px] md:w-[400px]"
-            placeholder={
-              isMobile ? "Search..." : "What language do you want to learn?"
-            }
-            variant="hero"
-            onValueChange={setSubject}
-          />
-          <Button variant="secondary" onClick={onSearch}>
-            Search
-          </Button>
-        </div>
+        <SearchPanel
+          isMobile={isMobile}
+          onSearch={onSearch}
+          setSubject={setSubject}
+          subject={subject}
+          subjects={subjects}
+        />
       </div>
 
       <div className="absolute bottom-8 sm:bottom-12 left-0 right-0 z-10">

@@ -57,7 +57,7 @@ export const Home = () => {
   return (
     <div className="h-auto">
       <section className="section-spacing relative z-10 bg-bg-main">
-        <Hero onLoaded={() => setHeroLoaded(true)} />
+        <Hero onLoaded={() => setHeroLoaded(true)} subjects={data} />
       </section>
       <section className="section-spacing relative z-10 bg-bg-main">
         <Features />
