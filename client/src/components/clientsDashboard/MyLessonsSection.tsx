@@ -12,6 +12,7 @@ import {
   studentPrivatesRoutesVariables,
 } from "../../router/routesVariables/pathVariables";
 import { joinPath } from "../../util/joinPath.util";
+import { useMemo } from "react";
 
 export const MyLessonsSection = () => {
   const user = useAuthSessionStore((state) => state.user);
@@ -27,9 +28,7 @@ export const MyLessonsSection = () => {
   const appointments = data?.appointments || [];
 
   const today = new Date().toISOString().split("T")[0];
-  const todayAppointments = appointments.filter(
-    (appointment) => appointment.date === today,
-  );
+
   const openCallTab = (url: string) => {
     const opened = window.open(url, "_blank");
     if (!opened) {
@@ -37,37 +36,44 @@ export const MyLessonsSection = () => {
     }
   };
 
-  const tableRows = todayAppointments.map((appointment) => {
-    const isPast = isPastAppointment(appointment.date, appointment.time);
-    const callLink = appointment.videoCall ?? "";
-    const canJoin = !isPast && isInternalVideoCallLink(callLink) && callLink;
-    const videoCallHref = canJoin
-      ? `${callLink}${callLink.includes("?") ? "&" : "?"}returnTo=${encodeURIComponent(studentDashboardPath)}`
-      : "";
+  const tableRows = useMemo(() => {
+    const todayAppointments = appointments.filter(
+      (appointment) =>
+        appointment.date === today && appointment.status === "approved",
+    );
 
-    return {
-      id: appointment.id,
-      checked: appointment.status === "approved",
-      lesson: appointment.lesson,
-      teacher: appointment.teacherName || appointment.teacherId || "N/A",
-      price: appointment.price,
-      isPast,
-      videoCall: canJoin ? (
-        <Button
-          as="button"
-          onClick={() => openCallTab(videoCallHref)}
-          variant="link"
-          className="text-white underline text-[14px] md:text-[16px] hover:text-gray-300"
-        >
-          Join
-        </Button>
-      ) : isPast ? (
-        "Past"
-      ) : (
-        "N/A"
-      ),
-    };
-  });
+    return todayAppointments.map((appointment) => {
+      const isPast = isPastAppointment(appointment.date, appointment.time);
+      const callLink = appointment.videoCall ?? "";
+      const canJoin = !isPast && isInternalVideoCallLink(callLink) && callLink;
+      const videoCallHref = canJoin
+        ? `${callLink}${callLink.includes("?") ? "&" : "?"}returnTo=${encodeURIComponent(studentDashboardPath)}`
+        : "";
+
+      return {
+        id: appointment.id,
+        checked: appointment.status === "approved",
+        lesson: appointment.lesson,
+        teacher: appointment.teacherName || appointment.teacherId || "N/A",
+        price: appointment.price,
+        isPast,
+        videoCall: canJoin ? (
+          <Button
+            as="button"
+            onClick={() => openCallTab(videoCallHref)}
+            variant="link"
+            className="text-white underline text-[14px] md:text-[16px] hover:text-gray-300"
+          >
+            Join
+          </Button>
+        ) : isPast ? (
+          "Past"
+        ) : (
+          "N/A"
+        ),
+      };
+    });
+  }, [appointments, today, isPastAppointment, studentDashboardPath]);
 
   return (
     <div>
@@ -88,7 +94,7 @@ export const MyLessonsSection = () => {
           </div>
         ) : tableRows.length === 0 ? (
           <div className="text-white text-center py-8">
-            No lessons scheduled for today
+            No approved lessons scheduled for today
           </div>
         ) : (
           <LessonsTable

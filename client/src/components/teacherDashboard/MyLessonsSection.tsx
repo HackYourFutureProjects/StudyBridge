@@ -4,6 +4,7 @@ import { Calendar } from "../calendar/Calendar";
 import { PageTitle } from "../pageTitle/PageTitle";
 import { NumberOfStudentsCard } from "./NumberOfStudentsCard";
 import { useTeacherAppointmentsQuery } from "../../features/appointments/query/useTeacherAppointmentsQuery";
+import { useRegularStudentsQuery } from "../../features/appointments/query/useRegularStudentsQuery";
 import { useAppointmentTime } from "../../features/appointments/hooks/useAppointmentTime";
 import { useVideoCall } from "../../features/appointments/hooks/useVideoCall";
 import { Button } from "../ui/button/Button";
@@ -15,12 +16,15 @@ import { joinPath } from "../../util/joinPath.util";
 
 export const MyLessonsSection = () => {
   const { data, isLoading, error } = useTeacherAppointmentsQuery();
+  const { data: regularStudentsData } = useRegularStudentsQuery();
   const { isPastAppointment } = useAppointmentTime();
   const { confirmStartCall } = useVideoCall();
   const teacherDashboardPath = joinPath(
     teacherBase,
     teacherPrivatesRoutesVariables.dashboard,
   );
+
+  const regularStudentsCount = regularStudentsData?.total || 0;
 
   const today = new Date().toISOString().split("T")[0];
 
@@ -56,13 +60,13 @@ export const MyLessonsSection = () => {
           ),
         };
       });
-  }, [data, isPastAppointment, confirmStartCall, today]);
+  }, [data, isPastAppointment, confirmStartCall, today, teacherDashboardPath]);
 
   return (
     <div>
       <PageTitle title="General" />
       <div className="mt-6 flex flex-col items-center justify-center gap-[40px] lg:flex-row lg:justify-between">
-        <NumberOfStudentsCard count={789} />
+        <NumberOfStudentsCard count={regularStudentsCount} />
         <Calendar />
       </div>
 
