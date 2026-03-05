@@ -39,12 +39,10 @@ export const MyLessonsSection = () => {
 
   const tableRows = todayAppointments.map((appointment) => {
     const isPast = isPastAppointment(appointment.date, appointment.time);
-    const canJoin =
-      !isPast &&
-      isInternalVideoCallLink(appointment.videoCall) &&
-      appointment.videoCall;
+    const callLink = appointment.videoCall ?? "";
+    const canJoin = !isPast && isInternalVideoCallLink(callLink) && callLink;
     const videoCallHref = canJoin
-      ? `${appointment.videoCall}${appointment.videoCall.includes("?") ? "&" : "?"}returnTo=${encodeURIComponent(studentDashboardPath)}`
+      ? `${callLink}${callLink.includes("?") ? "&" : "?"}returnTo=${encodeURIComponent(studentDashboardPath)}`
       : "";
 
     return {

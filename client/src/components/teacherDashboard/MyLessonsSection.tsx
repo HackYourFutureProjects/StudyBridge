@@ -38,9 +38,7 @@ export const MyLessonsSection = () => {
           student: appointment.studentName || appointment.studentId || "N/A",
           price: appointment.price,
           isPast,
-          videoCall: isPast ? (
-            "Past"
-          ) : (
+          videoCall: (
             <Button
               as="button"
               variant="link"
