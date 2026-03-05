@@ -3,6 +3,7 @@ import LessonsTable from "../table/LessonsTable";
 import { Calendar } from "../calendar/Calendar";
 import { PageTitle } from "../pageTitle/PageTitle";
 import { NumberOfStudentsCard } from "./NumberOfStudentsCard";
+import { RequestStudentsCard } from "./RequestStudentsCard";
 import { useTeacherAppointmentsQuery } from "../../features/appointments/query/useTeacherAppointmentsQuery";
 import { useRegularStudentsQuery } from "../../features/appointments/query/useRegularStudentsQuery";
 import { useAppointmentTime } from "../../features/appointments/hooks/useAppointmentTime";
@@ -25,6 +26,14 @@ export const MyLessonsSection = () => {
   );
 
   const regularStudentsCount = regularStudentsData?.total || 0;
+
+  const requestStudentsCount = useMemo(() => {
+    const appointments = data?.appointments ?? [];
+    return appointments.filter(
+      (appointment) =>
+        appointment.status === "approved" || appointment.status === "pending",
+    ).length;
+  }, [data]);
 
   const today = new Date().toISOString().split("T")[0];
 
@@ -67,6 +76,7 @@ export const MyLessonsSection = () => {
       <PageTitle title="General" />
       <div className="mt-6 flex flex-col items-center justify-center gap-[40px] lg:flex-row lg:justify-between">
         <NumberOfStudentsCard count={regularStudentsCount} />
+        <RequestStudentsCard count={requestStudentsCount} />
         <Calendar />
       </div>
 
