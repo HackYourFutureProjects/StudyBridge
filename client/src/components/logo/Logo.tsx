@@ -1,7 +1,7 @@
-import { Button } from "../ui/button/Button";
 import { NavLink } from "react-router-dom";
 import { publicRoutesVariables } from "../../router/routesVariables/pathVariables";
 import { twMerge } from "tailwind-merge";
+import logoImage from "../../assets/logo.svg";
 
 type LogoProps = {
   className?: string;
@@ -9,21 +9,12 @@ type LogoProps = {
 
 export const Logo = ({ className }: LogoProps) => {
   return (
-    <Button
-      as={NavLink}
+    <NavLink
       to={publicRoutesVariables.home}
-      className={twMerge(
-        `
-          font-bold text-[25.2px]
-          leading-[100%]
-          tracking-[-0.14px]
-          text-light-100
-        `,
-        className,
-      )}
-      variant="link"
+      className={twMerge("inline-flex items-center gap-2", className)}
     >
-      StudyBridge
-    </Button>
+      <img src={logoImage} alt="StudyBridge" className="h-16 w-auto" />
+      <span className="text-white text-2xl font-bold">Study Bridge</span>
+    </NavLink>
   );
 };

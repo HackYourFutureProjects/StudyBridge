@@ -67,7 +67,7 @@ export const AddReview = ({
         month: "short",
         year: "numeric",
       },
-    )}`,
+    )} • ${app.time}`,
   }));
 
   // Find the selected booking details for use in the review
