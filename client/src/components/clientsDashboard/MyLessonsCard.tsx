@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 
-type NumberOfStudentsCardProps = {
+type MyLessonsCardProps = {
   count: number;
 };
 
-export const NumberOfStudentsCard = ({ count }: NumberOfStudentsCardProps) => {
+export const MyLessonsCard = ({ count }: MyLessonsCardProps) => {
   const [animatedCount, setAnimatedCount] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -54,7 +54,7 @@ export const NumberOfStudentsCard = ({ count }: NumberOfStudentsCardProps) => {
 
       <div className="relative z-10 w-full flex flex-col items-center gap-[20px]">
         <div className="text-[22px] font-bold leading-[100%] tracking-[-0.5px] text-white drop-shadow-sm">
-          My Regular Students
+          My Total Lessons
         </div>
 
         <div className="relative">

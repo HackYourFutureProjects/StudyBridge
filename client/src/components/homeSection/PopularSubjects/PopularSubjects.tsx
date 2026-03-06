@@ -2,10 +2,9 @@ import { SubjectCard } from "./SubjectCard";
 import { Button } from "../../ui/button/Button";
 import bgImage from "../../../assets/images/bg-popular-subjects.png";
 import { SubjectsType } from "../../../api/subjects/subjects.type.ts";
-import { NavLink } from "react-router-dom";
 import { publicRoutesVariables } from "../../../router/routesVariables/pathVariables.ts";
 import { SubjectCardsSkeletonList } from "../../skeletons/SubjectsSceleton.tsx";
-
+import { useNavigate } from "react-router-dom";
 type PopularSubjectsProps = {
   subjects?: SubjectsType[];
   isLoading?: boolean;
@@ -17,6 +16,12 @@ export const PopularSubjects = ({
 }: PopularSubjectsProps) => {
   const subjectLabels = subjects.map((s) => s.name).slice(0, 5);
   const isEmpty = !isLoading && subjectLabels.length === 0;
+  const navigate = useNavigate();
+
+  const handleStartClick = () => {
+    navigate(publicRoutesVariables.teachers);
+    window.scrollTo(0, 0);
+  };
   return (
     <section className="relative section-spacing overflow-hidden">
       <div className="absolute inset-0 z-0 px-4 sm:px-6 lg:px-8 hidden xl:block">
@@ -38,7 +43,11 @@ export const PopularSubjects = ({
             programming subjects — all in one place.
           </p>
 
-          <Button variant="secondary" className="mb-8">
+          <Button
+            onClick={handleStartClick}
+            variant="secondary"
+            className="mb-8"
+          >
             Start
           </Button>
 
@@ -64,12 +73,8 @@ export const PopularSubjects = ({
                 On our platform, you can learn a wide range of foreign languages
                 and programming subjects — all in one place.
               </p>
-              <Button
-                as={NavLink}
-                to={publicRoutesVariables.teachers}
-                variant="secondary"
-              >
-                Tutors
+              <Button onClick={handleStartClick} variant="secondary">
+                Start
               </Button>
             </div>
 

@@ -3,12 +3,14 @@ import { TeacherModel } from "../../db/schemes/teacherSchema.js";
 import { CreateAppointmentType } from "../../types/appointment/appointment.types.js";
 import { AppointmentScheduleValidation } from "./appointmentScheduleValidation.js";
 import { APPOINTMENT_VALIDATION_CONSTANTS } from "./appointmentValidation.constants.js";
+import { HttpError } from "../../utils/error.util.js";
 
 export class AppointmentBusinessValidation {
   static async validateStudentExists(studentId: string) {
     const student = await StudentModel.findOne({ id: studentId });
     if (!student) {
-      throw new Error(
+      throw new HttpError(
+        404,
         APPOINTMENT_VALIDATION_CONSTANTS.ERROR_MESSAGES.STUDENT_NOT_FOUND,
       );
     }
@@ -18,7 +20,8 @@ export class AppointmentBusinessValidation {
   static async validateTeacherExists(teacherId: string) {
     const teacher = await TeacherModel.findOne({ id: teacherId });
     if (!teacher) {
-      throw new Error(
+      throw new HttpError(
+        404,
         APPOINTMENT_VALIDATION_CONSTANTS.ERROR_MESSAGES.TEACHER_NOT_FOUND,
       );
     }
@@ -27,7 +30,8 @@ export class AppointmentBusinessValidation {
 
   static validateNotSelfBooking(teacherId: string, studentId: string) {
     if (teacherId === studentId) {
-      throw new Error(
+      throw new HttpError(
+        400,
         APPOINTMENT_VALIDATION_CONSTANTS.ERROR_MESSAGES.SELF_BOOKING,
       );
     }
@@ -40,7 +44,8 @@ export class AppointmentBusinessValidation {
     appointmentDate.setHours(0, 0, 0, 0);
 
     if (appointmentDate < today) {
-      throw new Error(
+      throw new HttpError(
+        400,
         APPOINTMENT_VALIDATION_CONSTANTS.ERROR_MESSAGES.PAST_DATE,
       );
     }
@@ -63,7 +68,8 @@ export class AppointmentBusinessValidation {
 
       const now = new Date();
       if (appointmentDateTime < now) {
-        throw new Error(
+        throw new HttpError(
+          400,
           APPOINTMENT_VALIDATION_CONSTANTS.ERROR_MESSAGES.PAST_TIME,
         );
       }
@@ -89,7 +95,8 @@ export class AppointmentBusinessValidation {
     userId: string,
   ) {
     if (appointment.teacherId !== userId && appointment.studentId !== userId) {
-      throw new Error(
+      throw new HttpError(
+        403,
         APPOINTMENT_VALIDATION_CONSTANTS.ERROR_MESSAGES.UNAUTHORIZED_DELETE,
       );
     }
@@ -100,7 +107,8 @@ export class AppointmentBusinessValidation {
     teacherId: string,
   ) {
     if (appointment.teacherId !== teacherId) {
-      throw new Error(
+      throw new HttpError(
+        403,
         APPOINTMENT_VALIDATION_CONSTANTS.ERROR_MESSAGES.UNAUTHORIZED_MODIFY,
       );
     }
@@ -108,7 +116,8 @@ export class AppointmentBusinessValidation {
 
   static validateRegularStudent(appointment: { isRegularStudent?: boolean }) {
     if (!appointment.isRegularStudent) {
-      throw new Error(
+      throw new HttpError(
+        400,
         APPOINTMENT_VALIDATION_CONSTANTS.ERROR_MESSAGES.NOT_REGULAR_STUDENT,
       );
     }
@@ -118,7 +127,8 @@ export class AppointmentBusinessValidation {
     appointment: unknown,
   ): asserts appointment is NonNullable<typeof appointment> {
     if (!appointment) {
-      throw new Error(
+      throw new HttpError(
+        404,
         APPOINTMENT_VALIDATION_CONSTANTS.ERROR_MESSAGES.APPOINTMENT_NOT_FOUND,
       );
     }

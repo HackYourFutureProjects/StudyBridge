@@ -1,4 +1,5 @@
 import { APPOINTMENT_VALIDATION_CONSTANTS } from "./appointmentValidation.constants.js";
+import { HttpError } from "../../utils/error.util.js";
 
 export class AppointmentScheduleValidation {
   static validateTimeFormat(time: string): boolean {
@@ -7,7 +8,8 @@ export class AppointmentScheduleValidation {
 
   static validateWorkingHours(time: string): boolean {
     if (!this.validateTimeFormat(time)) {
-      throw new Error(
+      throw new HttpError(
+        400,
         APPOINTMENT_VALIDATION_CONSTANTS.ERROR_MESSAGES.INVALID_TIME_FORMAT,
       );
     }
@@ -17,7 +19,8 @@ export class AppointmentScheduleValidation {
       APPOINTMENT_VALIDATION_CONSTANTS;
 
     if (hours < WORKING_HOURS_START || hours >= WORKING_HOURS_END) {
-      throw new Error(
+      throw new HttpError(
+        400,
         APPOINTMENT_VALIDATION_CONSTANTS.ERROR_MESSAGES.INVALID_WORKING_HOURS(
           WORKING_HOURS_START,
           WORKING_HOURS_END,
@@ -36,7 +39,8 @@ export class AppointmentScheduleValidation {
         day.toLowerCase() as (typeof VALID_WEEK_DAYS)[number],
       )
     ) {
-      throw new Error(
+      throw new HttpError(
+        400,
         APPOINTMENT_VALIDATION_CONSTANTS.ERROR_MESSAGES.INVALID_DAY(
           day,
           VALID_WEEK_DAYS,
@@ -49,7 +53,8 @@ export class AppointmentScheduleValidation {
 
   static validateScheduleHour(hour: number): boolean {
     if (!Number.isInteger(hour) || hour < 0 || hour > 23) {
-      throw new Error(
+      throw new HttpError(
+        400,
         APPOINTMENT_VALIDATION_CONSTANTS.ERROR_MESSAGES.INVALID_HOUR,
       );
     }
@@ -58,7 +63,8 @@ export class AppointmentScheduleValidation {
       APPOINTMENT_VALIDATION_CONSTANTS;
 
     if (hour < WORKING_HOURS_START || hour >= WORKING_HOURS_END) {
-      throw new Error(
+      throw new HttpError(
+        400,
         APPOINTMENT_VALIDATION_CONSTANTS.ERROR_MESSAGES.INVALID_SCHEDULE_HOUR(
           WORKING_HOURS_START,
           WORKING_HOURS_END,
@@ -73,11 +79,12 @@ export class AppointmentScheduleValidation {
     weeklySchedule: { day: string; hour: number }[],
   ): boolean {
     if (!Array.isArray(weeklySchedule)) {
-      throw new Error("Weekly schedule must be an array");
+      throw new HttpError(400, "Weekly schedule must be an array");
     }
 
     if (weeklySchedule.length === 0) {
-      throw new Error(
+      throw new HttpError(
+        400,
         APPOINTMENT_VALIDATION_CONSTANTS.ERROR_MESSAGES.EMPTY_WEEKLY_SCHEDULE,
       );
     }
@@ -86,7 +93,8 @@ export class AppointmentScheduleValidation {
       weeklySchedule.length >
       APPOINTMENT_VALIDATION_CONSTANTS.MAX_WEEKLY_SCHEDULE_ENTRIES
     ) {
-      throw new Error(
+      throw new HttpError(
+        400,
         APPOINTMENT_VALIDATION_CONSTANTS.ERROR_MESSAGES
           .TOO_MANY_SCHEDULE_ENTRIES,
       );
@@ -100,7 +108,8 @@ export class AppointmentScheduleValidation {
         typeof schedule.day !== "string" ||
         typeof schedule.hour !== "number"
       ) {
-        throw new Error(
+        throw new HttpError(
+          400,
           APPOINTMENT_VALIDATION_CONSTANTS.ERROR_MESSAGES
             .INVALID_SCHEDULE_ENTRY,
         );
@@ -111,7 +120,8 @@ export class AppointmentScheduleValidation {
 
       const dayLower = schedule.day.toLowerCase();
       if (uniqueDays.has(dayLower)) {
-        throw new Error(
+        throw new HttpError(
+          400,
           APPOINTMENT_VALIDATION_CONSTANTS.ERROR_MESSAGES.DUPLICATE_DAY(
             schedule.day,
           ),
@@ -131,7 +141,8 @@ export class AppointmentScheduleValidation {
       appointmentDateTime.getTime() - now.getTime() <
       APPOINTMENT_VALIDATION_CONSTANTS.MINIMUM_ADVANCE_TIME_MS
     ) {
-      throw new Error(
+      throw new HttpError(
+        400,
         APPOINTMENT_VALIDATION_CONSTANTS.ERROR_MESSAGES.MINIMUM_ADVANCE_TIME,
       );
     }
@@ -147,7 +158,8 @@ export class AppointmentScheduleValidation {
       appointmentDate.getTime() - now.getTime() >
       APPOINTMENT_VALIDATION_CONSTANTS.MAXIMUM_ADVANCE_TIME_MS
     ) {
-      throw new Error(
+      throw new HttpError(
+        400,
         APPOINTMENT_VALIDATION_CONSTANTS.ERROR_MESSAGES.MAXIMUM_ADVANCE_TIME,
       );
     }
