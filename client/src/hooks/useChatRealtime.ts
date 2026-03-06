@@ -4,12 +4,14 @@ import type { Socket } from "socket.io-client";
 import { NewMessageEvent } from "../features/chat/chat.socket.types.ts";
 import { ConversationListItemDTO, MessageDTO } from "../api/chat/chat.types.ts";
 import { chatKeys } from "../features/queryKeys.ts";
+import { markConversationAsRead } from "../api/chat/chai.api.ts";
 
 export function useChatRealtime(args: {
   socket: Socket | null;
   conversationId?: string;
+  myUserId?: string;
 }) {
-  const { socket, conversationId } = args;
+  const { socket, conversationId, myUserId } = args;
   const qc = useQueryClient();
 
   useEffect(() => {
@@ -42,6 +44,7 @@ export function useChatRealtime(args: {
           if (!old) {
             return old;
           }
+
           return old.map((c) =>
             c.id === conversationId
               ? {
@@ -57,6 +60,10 @@ export function useChatRealtime(args: {
           );
         },
       );
+
+      if (msg.senderId !== myUserId) {
+        void markConversationAsRead(conversationId);
+      }
     };
 
     socket.on("chat:newMessage", onNewMessage);
@@ -65,5 +72,5 @@ export function useChatRealtime(args: {
       socket.emit("chat:leave", { conversationId });
       socket.off("chat:newMessage", onNewMessage);
     };
-  }, [socket, conversationId, qc]);
+  }, [socket, conversationId, myUserId, qc]);
 }

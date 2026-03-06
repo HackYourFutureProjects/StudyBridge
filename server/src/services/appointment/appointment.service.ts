@@ -127,7 +127,6 @@ export class AppointmentService {
     try {
       if (updated.status === "approved") {
         const ok = await this.conversationCommand.upsertForAppointment({
-          appointmentId: updated.id,
           studentId: updated.studentId,
           teacherId: updated.teacherId,
           status: updated.status,

@@ -10,7 +10,6 @@ import type {
   LeavePayload,
   SendMessagePayload,
   SendAck,
-  NewMessageEvent,
 } from "./chat.socket.types.js";
 import { errorToMessage } from "../utils/errorToMessage.js";
 import { ChatService } from "../services/chat/chat.service.js";
@@ -85,6 +84,10 @@ export function initSocketServer(httpServer: http.Server): Server {
     if (becameOnline) {
       _io.emit("presence:online", { userId });
     }
+
+    socket.on("presence:requestSync", () => {
+      socket.emit("presence:sync", { userIds: Array.from(onlineCount.keys()) });
+    });
 
     socket.emit("presence:sync", { userIds: Array.from(onlineCount.keys()) });
 
@@ -180,19 +183,26 @@ function registerChatHandlers(_io: Server, socket: Socket) {
         cb?.({ ok: false, error: validation.error });
         return;
       }
+
       try {
         const { userId } = socket.data as SocketData;
 
-        const message = await chatService.sendMessage({
+        const result = await chatService.sendMessage({
           conversationId: payload.conversationId,
           senderId: userId,
           text: payload.text,
         });
 
-        const event: NewMessageEvent = { message };
-        _io.to(payload.conversationId).emit("chat:newMessage", event);
+        _io.to(payload.conversationId).emit("chat:newMessage", {
+          message: result.message,
+        });
 
-        cb?.({ ok: true, message });
+        _io.to(`user:${result.recipientId}`).emit("chat:unreadUpdated", {
+          conversationId: payload.conversationId,
+          unreadCount: result.unreadCount,
+        });
+
+        cb?.({ ok: true, message: result.message });
       } catch (e: unknown) {
         cb?.({ ok: false, error: errorToMessage(e) });
       }

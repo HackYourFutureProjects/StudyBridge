@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { ChatSideBarItem } from "../../../components/chat/chatSidebarItem/ChatSideBarItem.tsx";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { formatDate } from "../../../util/date.util.ts";
 import { TextField } from "../../../components/ui/textField/TextField.tsx";
 import { Button } from "../../../components/ui/button/Button.tsx";
@@ -15,6 +15,7 @@ import { useTypingEmitter } from "../../../hooks/useTypingEmitter.ts";
 import { useTypingIndicator } from "../../../hooks/useTypingIndicator.ts";
 import { useChatRealtime } from "../../../hooks/useChatRealtime.ts";
 import { usePresenceStore } from "../../../store/presence.store.ts";
+import { markConversationAsRead } from "../../../api/chat/chai.api.ts";
 
 export const ChatDialogPage = () => {
   const { id: conversationId } = useParams();
@@ -30,7 +31,7 @@ export const ChatDialogPage = () => {
   const peer = conversation?.peer;
   const peerId = peer?.id;
 
-  useChatRealtime({ socket, conversationId });
+  useChatRealtime({ socket, conversationId, myUserId });
 
   const { typingUserId } = useTypingIndicator({
     socket,
@@ -53,6 +54,13 @@ export const ChatDialogPage = () => {
   const isOnline = usePresenceStore((s) =>
     peerId ? s.isOnline(peerId) : false,
   );
+
+  useEffect(() => {
+    if (!conversationId || !socket) {
+      return;
+    }
+    void markConversationAsRead(conversationId);
+  }, [conversationId, socket]);
 
   if (!conversation) {
     return <div className="p-4 text-light-500">Conversation not found</div>;

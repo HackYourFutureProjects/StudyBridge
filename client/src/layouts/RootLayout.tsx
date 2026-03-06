@@ -13,7 +13,9 @@ import { useSocketStore } from "../store/socket.store.ts";
 import { useNotificationStore } from "../store/notification.store.ts";
 import { useMouseFollowEffect } from "../hooks/useMouseFollowEffect";
 import type { AxiosError } from "axios";
-
+import { useAudioUnlock } from "../hooks/useAudioUnlock.ts";
+import { useUnreadChatSync } from "../hooks/useUnreadChatSync.tsx";
+import { useSocketConnection } from "../hooks/useSocketConnection.ts";
 type IncomingCallSignal = VideoCallResponse & { callId?: string };
 
 export const RootLayout = () => {
@@ -22,7 +24,6 @@ export const RootLayout = () => {
   );
   const [incomingLoading, setIncomingLoading] = useState(false);
   const user = useAuthSessionStore((s) => s.user);
-  const accessToken = useAuthSessionStore((s) => s.accessToken);
   const isStudent = user?.role === "student";
   const isTeacher = user?.role === "teacher";
   const navigate = useNavigate();
@@ -30,52 +31,18 @@ export const RootLayout = () => {
   const notifyError = useNotificationStore((s) => s.error);
 
   const socket = useSocketStore((s) => s.socket);
-  const connect = useSocketStore((s) => s.connect);
-  const disconnect = useSocketStore((s) => s.disconnect);
 
   const timeoutRef = useRef<number | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const audioUnlockedRef = useRef(false);
 
   useAuthInit();
   useMeQuery();
   useMouseFollowEffect();
 
-  useEffect(() => {
-    // unlock audio once after first user interaction.
-    const unlockAudio = async () => {
-      if (audioUnlockedRef.current) return;
+  useAudioUnlock();
 
-      const probe = new Audio("/incomingCallTone.mp3");
-      probe.muted = true;
-      try {
-        await probe.play();
-        probe.pause();
-        probe.currentTime = 0;
-        audioUnlockedRef.current = true;
-      } catch {
-        // browser may still require a later interaction, ignore it
-      }
-    };
-
-    window.addEventListener("pointerdown", unlockAudio, { once: true });
-
-    return () => {
-      window.removeEventListener("pointerdown", unlockAudio);
-    };
-  }, []);
-
-  useEffect(() => {
-    // Keep socket connected while user has a valid access token.
-    if (!accessToken) {
-      disconnect();
-      return;
-    }
-
-    if (!socket) {
-      connect(accessToken);
-    }
-  }, [accessToken, socket, connect, disconnect]);
+  useUnreadChatSync();
+  useSocketConnection();
 
   useEffect(() => {
     // Student listens for incoming call event.

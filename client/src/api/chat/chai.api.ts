@@ -14,3 +14,7 @@ export async function getMessages(
   );
   return data;
 }
+
+export const markConversationAsRead = async (conversationId: string) => {
+  await apiProtected.patch(`/api/chat/conversations/${conversationId}/read`);
+};

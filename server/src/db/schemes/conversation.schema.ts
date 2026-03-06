@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, type InferSchemaType } from "mongoose";
 
 const lastMessageSchema = new Schema(
   {
@@ -9,8 +9,19 @@ const lastMessageSchema = new Schema(
   { _id: false },
 );
 
+const unreadCountSchema = new Schema(
+  {
+    student: { type: Number, required: true, default: 0 },
+    teacher: { type: Number, required: true, default: 0 },
+  },
+  { _id: false },
+);
+
 export const ConversationSchema = new Schema(
   {
+    studentId: { type: String, required: true, index: true },
+    teacherId: { type: String, required: true, index: true },
+
     participantIds: {
       type: [String],
       required: true,
@@ -35,6 +46,15 @@ export const ConversationSchema = new Schema(
       index: true,
     },
 
+    unreadCount: {
+      type: unreadCountSchema,
+      required: true,
+      default: () => ({
+        student: 0,
+        teacher: 0,
+      }),
+    },
+
     lastMessage: { type: lastMessageSchema, required: false },
     lastMessageAt: { type: Date, required: false, index: true },
   },
@@ -47,4 +67,5 @@ ConversationSchema.index({
   updatedAt: -1,
 });
 
+export type ConversationTypeDB = InferSchemaType<typeof ConversationSchema>;
 export const ConversationModel = model("conversation", ConversationSchema);

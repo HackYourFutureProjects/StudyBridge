@@ -5,6 +5,10 @@ export type ConversationListItemDB = {
   lastMessage?: { text: string; senderId: string; createdAt: string };
   updatedAt: string;
   lastMessageAt?: string;
+  unreadCount: {
+    student: number;
+    teacher: number;
+  };
 };
 
 export type MessageDB = {
