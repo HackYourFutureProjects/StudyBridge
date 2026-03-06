@@ -1,4 +1,4 @@
-import { Schema, model, type InferSchemaType } from "mongoose";
+import { Schema, model } from "mongoose";
 
 const lastMessageSchema = new Schema(
   {
@@ -18,10 +18,14 @@ export const ConversationSchema = new Schema(
         validator: (arr: string[]) => Array.isArray(arr) && arr.length === 2,
         message: "participantIds must contain exactly 2 ids",
       },
-      index: true,
     },
 
-    appointmentId: { type: String, required: true },
+    participantsKey: {
+      type: String,
+      required: true,
+      unique: true,
+      index: true,
+    },
 
     appointmentStatus: {
       type: String,
@@ -37,13 +41,10 @@ export const ConversationSchema = new Schema(
   { timestamps: true, versionKey: false },
 );
 
-ConversationSchema.index({ appointmentId: 1 }, { unique: true });
-
 ConversationSchema.index({
   participantIds: 1,
   lastMessageAt: -1,
   updatedAt: -1,
 });
 
-export type ConversationTypeDB = InferSchemaType<typeof ConversationSchema>;
 export const ConversationModel = model("conversation", ConversationSchema);

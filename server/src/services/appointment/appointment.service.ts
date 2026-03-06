@@ -125,15 +125,17 @@ export class AppointmentService {
     }
 
     try {
-      const ok = await this.conversationCommand.upsertForAppointment({
-        appointmentId: updated.id,
-        studentId: updated.studentId,
-        teacherId: updated.teacherId,
-        status: updated.status,
-      });
+      if (updated.status === "approved") {
+        const ok = await this.conversationCommand.upsertForAppointment({
+          appointmentId: updated.id,
+          studentId: updated.studentId,
+          teacherId: updated.teacherId,
+          status: updated.status,
+        });
 
-      if (!ok) {
-        logWarning("Conversation upsert returned false");
+        if (!ok) {
+          logWarning("Conversation upsert returned false");
+        }
       }
     } catch (err) {
       logError(err);
@@ -170,18 +172,6 @@ export class AppointmentService {
 
     if (!updated) {
       throw new Error("Failed to update appointment status");
-    }
-
-    try {
-      await this.conversationCommand.upsertForAppointment({
-        appointmentId: updated.id,
-        studentId: updated.studentId,
-        teacherId: updated.teacherId,
-        status: updated.status,
-      });
-    } catch (err) {
-      logError(err);
-      logWarning("Conversation upsert failed during appointment deletion");
     }
 
     await this.appointmentCommand.deleteAppointment(id);

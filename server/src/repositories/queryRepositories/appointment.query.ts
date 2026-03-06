@@ -291,4 +291,16 @@ export class AppointmentQuery {
       });
     }
   }
+  async hasActiveAppointmentsBetweenUsers(
+    studentId: string,
+    teacherId: string,
+  ) {
+    const count = await AppointmentModel.countDocuments({
+      studentId,
+      teacherId,
+      status: "approved",
+    });
+
+    return count > 0;
+  }
 }

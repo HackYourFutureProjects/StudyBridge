@@ -10,13 +10,14 @@ export class ConversationCommand {
     status: "pending" | "approved" | "rejected";
   }) {
     const participantIds = [args.studentId, args.teacherId].sort();
+    const participantsKey = participantIds.join(":");
 
     const updated = await ConversationModel.updateOne(
-      { appointmentId: args.appointmentId },
+      { participantsKey },
       {
         $setOnInsert: {
           participantIds,
-          appointmentId: args.appointmentId,
+          participantsKey,
         },
         $set: {
           appointmentStatus: args.status,
