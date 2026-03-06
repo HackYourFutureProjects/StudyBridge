@@ -2,11 +2,11 @@ import { ReactNode, useEffect, useRef } from "react";
 import { NavLink } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
 import { Button } from "../ui/button/Button";
-import { linkOption } from "../../types/linkOptionsType";
+import { LinkOption } from "../../types/linkOptionsType";
 
 type ControlPanelTypes = {
   classNames?: string;
-  options: linkOption[];
+  options: LinkOption[];
   children: ReactNode;
   openMenu: boolean;
   setOpenMenu: (open: boolean) => void;

@@ -2,13 +2,13 @@ import { DropdownMenu } from "./DropdownMenu.tsx";
 import { Button } from "../ui/button/Button.tsx";
 import ArrowDown from "../icons/ArrowDown.tsx";
 import { useState } from "react";
-import { linkOption } from "../../types/linkOptionsType.ts";
+import { LinkOption } from "../../types/linkOptionsType.ts";
 
-type ControlPanelZTypes = {
-  options: linkOption[];
+type ControlPanelTriggerProps = {
+  options: LinkOption[];
 };
 
-export const ControlPanelTrigger = ({ options }: ControlPanelZTypes) => {
+export const ControlPanelTrigger = ({ options }: ControlPanelTriggerProps) => {
   const [openMenu, setOpenMenu] = useState(false);
   const onSetOpenMenu = (open: boolean) => {
     setOpenMenu(open);

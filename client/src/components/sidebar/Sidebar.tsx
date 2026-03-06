@@ -43,7 +43,7 @@ export const Sidebar = ({ items, variant }: SidebarProps) => {
   // desktop
   return (
     <aside className="w-54.5 h-full">
-      <div className="flex items-center justify-center py-7.5">
+      <div className="flex items-center justify-center py-7.5 pr-1">
         <Logo />
       </div>
       <ul className="flex flex-col gap-2.5">

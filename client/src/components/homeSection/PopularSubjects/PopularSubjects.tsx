@@ -3,7 +3,7 @@ import { Button } from "../../ui/button/Button";
 import bgImage from "../../../assets/images/bg-popular-subjects.png";
 import { SubjectsType } from "../../../api/subjects/subjects.type.ts";
 import { publicRoutesVariables } from "../../../router/routesVariables/pathVariables.ts";
-import { SubjectCardsSkeletonList } from "../../skeletons/SubjectsSceleton.tsx";
+import { SubjectCardsSkeletonList } from "../../skeletons/SubjectCardsSkeletonList.tsx";
 import { useNavigate } from "react-router-dom";
 type PopularSubjectsProps = {
   subjects?: SubjectsType[];

@@ -5,10 +5,10 @@ import ArrowDown from "../icons/ArrowDown";
 import DefaultAvatarIcon from "../icons/DefaultAvatarIcon";
 import { useAuthSessionStore } from "../../store/authSession.store";
 import { getAvatarUrl } from "../../api/upload/upload.api";
-import type { linkOption } from "../../types/linkOptionsType";
+import type { LinkOption } from "../../types/linkOptionsType";
 
 type Props = {
-  options: linkOption[];
+  options: LinkOption[];
   variant?: "main" | "private";
 };
 

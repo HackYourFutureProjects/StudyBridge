@@ -4,7 +4,7 @@ import {
   SVGProps,
 } from "react";
 
-export type linkOption = {
+export type LinkOption = {
   id: string;
   title: string;
   link?: string;
