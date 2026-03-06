@@ -2,8 +2,8 @@ import { ReactNode } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { useAuthSessionStore } from "../store/authSession.store.ts";
 import { Role } from "../api/auth/types.ts";
-import { Loader } from "../components/loader/Loader.tsx";
 import { ModalOverlay } from "../components/ui/modal/ModalOverlay.tsx";
+import { LogoPulseIcon } from "../components/LogoPulsIcon/LogoPulseIcon.tsx";
 
 export const RequireRole = ({
   allow,
@@ -22,7 +22,7 @@ export const RequireRole = ({
   if (isLoading) {
     return (
       <ModalOverlay>
-        <Loader />
+        <LogoPulseIcon size="sm" />
       </ModalOverlay>
     );
   }

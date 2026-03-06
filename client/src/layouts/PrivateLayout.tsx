@@ -38,7 +38,7 @@ export const PrivateLayout = () => {
 
   return (
     <>
-      <div className="mx-auto max-w-360 grid grid-cols-1 md:grid-cols-[218px_1fr]">
+      <div className="mx-auto max-w-360 grid grid-cols-1 md:grid-cols-[240px_1fr]">
         <div className="hidden md:block">
           <div className="sticky top-0 h-dvh">
             <Sidebar items={items} variant="desktop" />

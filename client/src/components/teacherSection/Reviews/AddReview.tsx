@@ -4,10 +4,10 @@ import { useCreateReviewMutation } from "../../../features/review/mutations/useC
 import { useStudentAppointmentsQuery } from "../../../features/appointments/query/useAppointmentsQuery";
 import { useAuthSessionStore } from "../../../store/authSession.store";
 import { Appointment } from "../../../types/appointments.types";
-import { Loader } from "../../loader/Loader";
 import { useNotificationStore } from "../../../store/notification.store";
 import { ReviewType } from "../../../api/review/review.type";
 import { SelectComponent } from "../../ui/select/Select";
+import { LogoPulseIcon } from "../../LogoPulsIcon/LogoPulseIcon.tsx";
 
 interface AddReviewFormProps {
   teacherId: string;
@@ -35,7 +35,7 @@ export const AddReview = ({
   if (isLoading)
     return (
       <div className="flex justify-center p-4">
-        <Loader />
+        <LogoPulseIcon size="sm" />
       </div>
     );
 

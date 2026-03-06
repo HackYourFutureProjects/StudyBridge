@@ -11,10 +11,15 @@ export const Logo = ({ className }: LogoProps) => {
   return (
     <NavLink
       to={publicRoutesVariables.home}
-      className={twMerge("inline-flex items-center gap-2", className)}
+      className={twMerge("inline-flex items-center", className)}
     >
       <img src={logoImage} alt="StudyBridge" className="h-16 w-auto" />
-      <span className="text-white text-2xl font-bold">Study Bridge</span>
+      <span
+        className="text-gradient text-[25px] font-bold
+"
+      >
+        Study Bridge
+      </span>
     </NavLink>
   );
 };

@@ -1,14 +1,18 @@
 import heroImage from "../../../assets/images/hero.png";
-import { Button } from "../../ui/button/Button";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { TextField } from "../../ui/textField/TextField.tsx";
 import { useMediaQuery } from "../../../hooks/useMediaQuery.tsx";
+import { SearchPanel } from "../../searchPanel/SearchPanel.tsx";
+import { SubjectsType } from "../../../api/subjects/subjects.type.ts";
+type HeroProps = {
+  onLoaded: () => void;
+  subjects?: SubjectsType[];
+};
 
-export const Hero = () => {
+export const Hero = ({ onLoaded, subjects }: HeroProps) => {
   const navigate = useNavigate();
   const isMobile = useMediaQuery("(max-width: 640px)");
-  const [subject, setSubject] = useState<string>("english");
+  const [subject, setSubject] = useState<string>("");
 
   const onSearch = () => {
     navigate(`/teachers?subject=${encodeURIComponent(subject)}`);
@@ -20,12 +24,14 @@ export const Hero = () => {
           src={heroImage}
           alt="Students learning together"
           className="w-full h-full object-cover object-top scale-110"
+          onLoad={onLoaded}
+          onError={onLoaded}
         />
       </div>
 
       <div className="relative z-10 container-centered mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-6xl xl:text-7xl font-bold text-white mb-4 lg:mb-6">
-          Need a tutor?
+          Need a teacher?
         </h1>
 
         <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-6xl xl:text-7xl font-bold leading-tight mb-4 lg:mb-6">
@@ -35,25 +41,16 @@ export const Hero = () => {
         </h2>
 
         <p className="text-white/90 text-sm sm:text-base lg:text-lg xl:text-xl mb-8 sm:mb-12 lg:mb-16 max-w-2xl mx-auto px-4">
-          Quickly choose, pay, and receive a video call with your tutor!
+          Quickly choose, and receive a video call with your tutor!
         </p>
 
-        <div className="relative flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 max-w-2xl lg:max-w-3xl mx-auto mb-16 sm:mb-20 lg:mb-24">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 hidden lg:block w-[620px] h-[80px] bg-[#27222EB3] rounded-[60px] -z-10"></div>
-          <TextField
-            type="search"
-            name="site-search"
-            id="site-search"
-            autoComplete="off"
-            containerClassName="w-[200px] sm:w-[300px] md:w-[400px]"
-            placeholder={isMobile ? "Search..." : "What do you want to learn?"}
-            variant="hero"
-            onValueChange={setSubject}
-          />
-          <Button variant="secondary" onClick={onSearch}>
-            Search
-          </Button>
-        </div>
+        <SearchPanel
+          isMobile={isMobile}
+          onSearch={onSearch}
+          setSubject={setSubject}
+          subject={subject}
+          subjects={subjects}
+        />
       </div>
 
       <div className="absolute bottom-8 sm:bottom-12 left-0 right-0 z-10">

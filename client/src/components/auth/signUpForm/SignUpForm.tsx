@@ -11,8 +11,8 @@ import {
   RegisterFormTypes,
   Role,
 } from "../../../api/auth/types";
-import { Loader } from "../../loader/Loader.tsx";
 import { GoogleAuthButton } from "../../ui/button/GoogleAuthButton.tsx";
+import { LogoPulseIcon } from "../../LogoPulsIcon/LogoPulseIcon.tsx";
 
 type SignUpFormTypes = {
   loading: boolean;
@@ -131,7 +131,7 @@ export const SignUpForm = ({
         </div>
       </div>
 
-      {loading && <Loader />}
+      {loading && <LogoPulseIcon size="sm" />}
     </form>
   );
 };

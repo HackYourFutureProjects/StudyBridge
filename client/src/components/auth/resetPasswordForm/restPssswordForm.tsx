@@ -4,7 +4,7 @@ import { ControlledTextField } from "../../ui/controlled/controlledTextField/Con
 import { Button } from "../../ui/button/Button.tsx";
 import type { ResetPasswordFormValues } from "./resetPasswordFromTypes.ts";
 import { resetPasswordSchema } from "./resetPassword.validation.ts";
-import { Loader } from "../../loader/Loader.tsx";
+import { LogoPulseIcon } from "../../LogoPulsIcon/LogoPulseIcon.tsx";
 
 type ResetPasswordFormProps = {
   loading: boolean;
@@ -64,7 +64,7 @@ export const ResetPasswordForm = ({
         </div>
       </div>
 
-      {loading && <Loader />}
+      {loading && <LogoPulseIcon size="sm" />}
     </form>
   );
 };

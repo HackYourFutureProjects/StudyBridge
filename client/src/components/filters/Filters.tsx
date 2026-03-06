@@ -75,7 +75,7 @@ export const Filters = ({ radioGroupValues }: FiltersProps) => {
         <h4 className="text-light-100 text-[12px]">FILTER BY PRICE</h4>
         <SliderRange
           min={0}
-          max={500}
+          max={200}
           value={[minPriceDraft, maxPriceDraft]}
           onValueChange={(v) => setPriceDraft(v[0], v[1])}
         />

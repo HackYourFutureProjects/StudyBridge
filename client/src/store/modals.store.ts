@@ -9,7 +9,8 @@ export type ModalName =
   | "signIn"
   | "confirmDelete"
   | "alert"
-  | "deleteReview";
+  | "deleteReview"
+  | "fullScreenLoader";
 
 type ModalPayload = {
   logout?: never;
@@ -40,6 +41,7 @@ type ModalPayload = {
     teacherId: string;
     reviewId: string;
   };
+  fullScreenLoader?: never;
 };
 
 type ModalState = {

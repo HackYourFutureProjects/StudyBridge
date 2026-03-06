@@ -38,12 +38,12 @@ type TeachersFiltersState = {
 const DEFAULTS = {
   subject: undefined,
   minPrice: 0,
-  maxPrice: 500,
+  maxPrice: 200,
   ratings: [] as number[],
 
   subjectDraft: undefined,
   minPriceDraft: 0,
-  maxPriceDraft: 500,
+  maxPriceDraft: 200,
   ratingsDraft: [] as number[],
 
   sortBy: "createdAt" as const,
@@ -113,10 +113,10 @@ export const useTeachersFiltersStore = create<TeachersFiltersState>()(
           subjectDraft: subject || undefined,
 
           minPrice: 0,
-          maxPrice: 500,
+          maxPrice: 200,
           ratings: [],
           minPriceDraft: 0,
-          maxPriceDraft: 500,
+          maxPriceDraft: 200,
           ratingsDraft: [],
           pageNumber: 1,
         });

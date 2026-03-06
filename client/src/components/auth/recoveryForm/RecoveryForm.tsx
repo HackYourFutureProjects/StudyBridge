@@ -4,7 +4,7 @@ import { ControlledTextField } from "../../ui/controlled/controlledTextField/Con
 import { Button } from "../../ui/button/Button.tsx";
 import type { FormValues } from "./recoveryFormTypes.ts";
 import { recoverySchema } from "./recoveryForm.validation.ts";
-import { Loader } from "../../loader/Loader.tsx";
+import { LogoPulseIcon } from "../../LogoPulsIcon/LogoPulseIcon.tsx";
 
 type RecoveryFormProps = {
   loading: boolean;
@@ -57,8 +57,7 @@ export const RecoveryForm = ({
           </div>
         </div>
       </div>
-
-      {loading && <Loader />}
+      {loading && <LogoPulseIcon size="sm" />}
     </form>
   );
 };
