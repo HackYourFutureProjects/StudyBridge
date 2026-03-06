@@ -40,7 +40,10 @@ export const MyLessonsSection = () => {
   const lessons = useMemo(() => {
     const appointments = data?.appointments ?? [];
     return appointments
-      .filter((appointment) => appointment.date === today)
+      .filter(
+        (appointment) =>
+          appointment.date === today && appointment.status === "approved",
+      )
       .map((appointment) => {
         const isPast = isPastAppointment(appointment.date, appointment.time);
 

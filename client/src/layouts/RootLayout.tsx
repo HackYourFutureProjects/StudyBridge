@@ -11,6 +11,7 @@ import { acceptCall, declineCall } from "../api/video/video.api.ts";
 import { IncomingCallPopup } from "../components/IncomingCallPopup/IncomingCallPopup.tsx";
 import { useSocketStore } from "../store/socket.store.ts";
 import { useNotificationStore } from "../store/notification.store.ts";
+import { useMouseFollowEffect } from "../hooks/useMouseFollowEffect";
 import type { AxiosError } from "axios";
 
 type IncomingCallSignal = VideoCallResponse & { callId?: string };
@@ -38,6 +39,7 @@ export const RootLayout = () => {
 
   useAuthInit();
   useMeQuery();
+  useMouseFollowEffect();
 
   useEffect(() => {
     // unlock audio once after first user interaction.
