@@ -31,7 +31,7 @@ export const Hero = ({ onLoaded, subjects }: HeroProps) => {
 
       <div className="relative z-10 container-centered mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-6xl xl:text-7xl font-bold text-white mb-4 lg:mb-6">
-          Need a tutor?
+          Need a teacher?
         </h1>
 
         <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-6xl xl:text-7xl font-bold leading-tight mb-4 lg:mb-6">
@@ -41,7 +41,7 @@ export const Hero = ({ onLoaded, subjects }: HeroProps) => {
         </h2>
 
         <p className="text-white/90 text-sm sm:text-base lg:text-lg xl:text-xl mb-8 sm:mb-12 lg:mb-16 max-w-2xl mx-auto px-4">
-          Quickly choose, pay, and receive a video call with your tutor!
+          Quickly choose, and receive a video call with your tutor!
         </p>
 
         <SearchPanel

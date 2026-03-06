@@ -70,7 +70,7 @@ export const Header = () => {
                 className="p-0 text-[#ffffff60] hover:text-light-100"
                 variant="link"
               >
-                Tutors
+                Teachers
               </Button>
               {!(isAuth && user?.role === "teacher") && (
                 <Button
@@ -79,7 +79,7 @@ export const Header = () => {
                   className="p-0 text-[#ffffff60] hover:text-light-100"
                   variant="link"
                 >
-                  I want to be a tutor
+                  I want to be a teacher
                 </Button>
               )}
             </div>
