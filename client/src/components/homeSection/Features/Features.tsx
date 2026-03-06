@@ -1,5 +1,4 @@
 import { FeatureCard } from "./FeatureCard";
-import { Button } from "../../ui/button/Button";
 import HomeSection1Icon from "../../icons/HomeSection1Icon";
 import HomeSection1Icon2 from "../../icons/HomeSection1Icon2";
 import HomeSection1Icon3 from "../../icons/HomeSection1Icon3";
@@ -53,10 +52,6 @@ export const Features = () => {
               }
             />
           ))}
-        </div>
-
-        <div className="flex justify-center mt-12 sm:mt-16 lg:mt-20">
-          <Button variant="secondary">More</Button>
         </div>
       </div>
     </section>

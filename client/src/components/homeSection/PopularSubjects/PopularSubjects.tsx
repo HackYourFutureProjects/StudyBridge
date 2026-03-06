@@ -2,10 +2,18 @@ import { SubjectCard } from "./SubjectCard";
 import { Button } from "../../ui/button/Button";
 import bgImage from "../../../assets/images/bg-popular-subjects.png";
 import { Subjects } from "../../../constants/subjects";
+import { useNavigate } from "react-router-dom";
+import { publicRoutesVariables } from "../../../router/routesVariables/pathVariables";
 
 const subjectLabels = Subjects.map((subject) => subject.label);
 
 export const PopularSubjects = () => {
+  const navigate = useNavigate();
+
+  const handleStartClick = () => {
+    navigate(publicRoutesVariables.teachers);
+    window.scrollTo(0, 0);
+  };
   return (
     <section className="relative section-spacing overflow-hidden">
       <div className="absolute inset-0 z-0 px-4 sm:px-6 lg:px-8 hidden xl:block">
@@ -27,7 +35,11 @@ export const PopularSubjects = () => {
             programming subjects — all in one place.
           </p>
 
-          <Button variant="secondary" className="mb-8">
+          <Button
+            onClick={handleStartClick}
+            variant="secondary"
+            className="mb-8"
+          >
             Start
           </Button>
 
@@ -45,7 +57,9 @@ export const PopularSubjects = () => {
                 On our platform, you can learn a wide range of foreign languages
                 and programming subjects — all in one place.
               </p>
-              <Button variant="secondary">Start</Button>
+              <Button onClick={handleStartClick} variant="secondary">
+                Start
+              </Button>
             </div>
 
             <h2 className="text-[74px] font-bold w-[394px] leading-tight">
