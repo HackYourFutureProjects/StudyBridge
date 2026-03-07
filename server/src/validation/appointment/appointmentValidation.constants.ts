@@ -25,6 +25,8 @@ export const APPOINTMENT_VALIDATION_CONSTANTS = {
     SELF_BOOKING: "Teachers cannot book appointments with themselves",
     PAST_DATE: "Cannot create appointments in the past",
     PAST_TIME: "Cannot create appointments for times that have already passed",
+    DUPLICATE_APPOINTMENT:
+      "You already have an appointment scheduled for this date and time",
     APPOINTMENT_NOT_FOUND: "Appointment not found",
     UNAUTHORIZED_DELETE: "Unauthorized to delete this appointment",
     UNAUTHORIZED_MODIFY: "Unauthorized to modify this appointment",
