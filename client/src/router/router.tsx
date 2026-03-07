@@ -12,11 +12,13 @@ import { RoleIndexRedirect } from "./RoleIndexRedirect.tsx";
 import { teacherPrivateRoutes } from "./routesVariables/teacherPrivateRoutes.tsx";
 import { VideoCallPage } from "../pages/videoCall/VideoCallPage.tsx";
 import { moderatorPrivateRoutes } from "./routesVariables/moderatorPrivateRoutes.tsx";
+import { ForbiddenPage } from "../pages/forbiddenPage/ForbiddenPage.tsx";
+import { NotFoundPage } from "../pages/notFoundPage/NotFoundPage.tsx";
 
 export const router = createBrowserRouter([
   {
     element: <RootLayout />,
-    errorElement: <div>Page not found</div>,
+    errorElement: <NotFoundPage />,
     children: [
       {
         element: <AuthLayout />,
@@ -76,7 +78,7 @@ export const router = createBrowserRouter([
         ),
       },
 
-      { path: "/forbidden", element: <div>403 Forbidden</div> },
+      { path: "/forbidden", element: <ForbiddenPage /> },
     ],
   },
 ]);
