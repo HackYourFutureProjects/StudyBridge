@@ -15,7 +15,7 @@ export const ReviewCardHome = ({
 }: ReviewCardProps) => {
   return (
     <div className="w-full max-w-[343px] mx-auto">
-      <div className="bg-[#15141D] rounded-2xl p-[25px] flex flex-col h-auto">
+      <div className="bg-[#15141D] rounded-2xl p-[25px] flex flex-col h-[220px]">
         <div className="flex items-center gap-[16px] mb-[20px] flex-shrink-0">
           <img
             src={avatar}
@@ -31,7 +31,9 @@ export const ReviewCardHome = ({
           <ReviewsIcon className="w-auto h-auto opacity-20 flex-shrink-0" />
         </div>
 
-        <p className="text-white/80 text-base leading-relaxed">{review}</p>
+        <p className="text-white/80 text-base leading-relaxed flex-1 overflow-hidden">
+          {review}
+        </p>
       </div>
     </div>
   );

@@ -4,8 +4,15 @@ import { CreateAppointmentType } from "../../types/appointment/appointment.types
 import { AppointmentScheduleValidation } from "./appointmentScheduleValidation.js";
 import { APPOINTMENT_VALIDATION_CONSTANTS } from "./appointmentValidation.constants.js";
 import { HttpError } from "../../utils/error.util.js";
+import { container } from "../../composition/compositionRoot.js";
+import { TYPES } from "../../composition/composition.types.js";
+import { AppointmentQuery } from "../../repositories/queryRepositories/appointment.query.js";
 
 export class AppointmentBusinessValidation {
+  private static get appointmentQuery(): AppointmentQuery {
+    return container.get<AppointmentQuery>(TYPES.AppointmentQuery);
+  }
+
   static async validateStudentExists(studentId: string) {
     const student = await StudentModel.findOne({ id: studentId });
     if (!student) {
@@ -79,10 +86,31 @@ export class AppointmentBusinessValidation {
     AppointmentScheduleValidation.validateMaximumAdvanceTime(date);
   }
 
+  static async validateNoDuplicateAppointment(
+    studentId: string,
+    date: string,
+    time: string,
+  ) {
+    const existingAppointment =
+      await this.appointmentQuery.findExistingAppointment(
+        studentId,
+        date,
+        time,
+      );
+
+    if (existingAppointment) {
+      throw new HttpError(
+        409,
+        APPOINTMENT_VALIDATION_CONSTANTS.ERROR_MESSAGES.DUPLICATE_APPOINTMENT,
+      );
+    }
+  }
+
   static async validateCreateAppointment(data: CreateAppointmentType) {
     await Promise.all([
       this.validateStudentExists(data.studentId),
       this.validateTeacherExists(data.teacherId),
+      this.validateNoDuplicateAppointment(data.studentId, data.date, data.time),
     ]);
 
     this.validateNotSelfBooking(data.teacherId, data.studentId);

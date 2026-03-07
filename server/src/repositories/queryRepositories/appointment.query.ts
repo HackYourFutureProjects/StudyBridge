@@ -291,6 +291,26 @@ export class AppointmentQuery {
       });
     }
   }
+
+  async findExistingAppointment(
+    studentId: string,
+    date: string,
+    time: string,
+  ): Promise<WithId<AppointmentTypeDB> | null> {
+    try {
+      return await AppointmentModel.findOne({
+        studentId,
+        date,
+        time,
+        status: { $in: ["pending", "accepted"] },
+      }).lean();
+    } catch (err: unknown) {
+      throw new Error("Something went wrong with duplicate appointment check", {
+        cause: err,
+      });
+    }
+  }
+
   async hasActiveAppointmentsBetweenUsers(
     studentId: string,
     teacherId: string,
