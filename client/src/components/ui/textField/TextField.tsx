@@ -21,7 +21,7 @@ export type TextFieldProps = {
   onValueChange?: (value: string) => void;
   errorMessage?: string;
   label?: string;
-  variant?: "primary" | "secondary" | "primarySmall" | "hero";
+  variant?: "primary" | "secondary" | "primarySmall" | "hero" | "dashboard";
   iconClassName?: string;
   containerClassName?: string;
   Icon?: MemoExoticComponent<
@@ -59,6 +59,7 @@ const fieldContainerStyles = cva(
         secondary: "bg-light-100 border-light-200",
         primarySmall: "bg-dark-800 border-dark-600",
         hero: "bg-light-100 border-light-200",
+        dashboard: "bg-bg-main border-gray-400",
       },
 
       layout: {
@@ -67,6 +68,8 @@ const fieldContainerStyles = cva(
         secondary: "max-w-[320px] gap-[8px] px-[14px] py-[14px] rounded-[14px]",
         primarySmall: "w-full gap-[10px] px-[24px] rounded-[88px] h-[55px]",
         hero: "w-full gap-[10px] px-[24px] rounded-[88px] h-[55px]",
+        dashboard:
+          "w-full max-w-[250px] gap-[10px] h-[48px] px-[14px] rounded-[10px]",
       },
 
       state: {
@@ -98,6 +101,7 @@ const inputStyles = cva(
         secondary: "text-light-500 placeholder:text-light-500",
         primarySmall: "text-light-100 placeholder:text-dark-400",
         hero: "text-light-500 placeholder:text-light-500",
+        dashboard: "text-light-500 placeholder:text-light-500",
       },
       state: {
         default: "",
@@ -115,6 +119,7 @@ const labelStyles = cva("mb-0.5 text-[12px]", {
       secondary: "text-light-500",
       primarySmall: "text-purple-500",
       hero: "text-light-500",
+      dashboard: "text-light-500",
     },
   },
   defaultVariants: { variant: "primary" },
@@ -136,6 +141,7 @@ const showPasswordBtnStyles = cva(
         secondary: "text-light-500",
         primarySmall: "text-dark-400",
         hero: "text-light-500",
+        dashboard: "text-light-500",
       },
     },
     defaultVariants: { variant: "primary" },
@@ -200,9 +206,11 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
                 id={id}
                 ref={inputRef}
                 className={twMerge(
-                  variant === "primary"
-                    ? "tf-autofill-dark"
-                    : "tf-autofill-light",
+                  variant === "dashboard"
+                    ? "tf-autofill-main"
+                    : variant === "secondary" || variant === "hero"
+                      ? "tf-autofill-light"
+                      : "tf-autofill-dark",
                   inputStyles({ variant, state }),
                   className,
                 )}

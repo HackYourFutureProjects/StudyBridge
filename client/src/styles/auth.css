@@ -72,6 +72,14 @@
     box-shadow: 0 0 0 30px var(--color-dark-800) inset !important;
   }
 
+  .tf-autofill-main:-webkit-autofill,
+  .tf-autofill-main:-webkit-autofill:hover,
+  .tf-autofill-main:-webkit-autofill:focus,
+  .tf-autofill-main:-webkit-autofill:active {
+    -webkit-text-fill-color: var(--color-gray-300) !important;
+    box-shadow: 0 0 0 30px #1e1c26 inset !important;
+  }
+
   .tf-autofill-light:-webkit-autofill,
   .tf-autofill-light:-webkit-autofill:hover,
   .tf-autofill-light:-webkit-autofill:focus,

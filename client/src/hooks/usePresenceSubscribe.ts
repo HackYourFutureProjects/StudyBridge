@@ -21,6 +21,8 @@ export function usePresenceSubscribe() {
     socket.on("presence:online", onOnline);
     socket.on("presence:offline", onOffline);
 
+    socket.emit("presence:requestSync");
+
     return () => {
       socket.off("presence:sync", onSync);
       socket.off("presence:online", onOnline);

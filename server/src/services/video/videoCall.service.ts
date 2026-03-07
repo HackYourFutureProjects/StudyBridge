@@ -13,8 +13,7 @@ import {
   VideoCallViewType,
 } from "../../types/video/video.types.js";
 import { randomUUID } from "node:crypto";
-import { io } from "../../socket/socket.server.js";
-
+import { getIO } from "../../socket/io.holder.js";
 const ACCEPTED_CALL_TTL_MS = 3 * 60 * 60 * 1000; // 3 hours
 
 @injectable()
@@ -33,9 +32,9 @@ export class VideoCallService {
     authUserId,
     authRole,
   }: StartVideoCallInput) {
+    const io = getIO();
     if (authRole !== "teacher")
       throw new HttpError(403, "Only teachers can start calls");
-
     //a teacher can only start a call using
     if (authUserId !== teacherId)
       throw new HttpError(403, "You can only start calls as yourself");
@@ -155,7 +154,7 @@ export class VideoCallService {
     authRole: "teacher" | "student";
   }): Promise<VideoCallViewType | null> {
     const now = new Date();
-
+    const io = getIO();
     // only students can accept.
     if (authRole !== "student") {
       throw new HttpError(403, "Students only can accept the call");
@@ -220,7 +219,7 @@ export class VideoCallService {
     authRole: "teacher" | "student";
   }): Promise<VideoCallViewType | null> {
     const now = new Date();
-
+    const io = getIO();
     if (authRole !== "student")
       throw new HttpError(403, "Students only can decline the call");
 

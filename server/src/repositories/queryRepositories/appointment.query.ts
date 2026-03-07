@@ -291,7 +291,6 @@ export class AppointmentQuery {
       });
     }
   }
-
   async findExistingAppointment(
     studentId: string,
     date: string,
@@ -309,5 +308,18 @@ export class AppointmentQuery {
         cause: err,
       });
     }
+  }
+
+  async hasActiveAppointmentsBetweenUsers(
+    studentId: string,
+    teacherId: string,
+  ) {
+    const count = await AppointmentModel.countDocuments({
+      studentId,
+      teacherId,
+      status: "approved",
+    });
+
+    return count > 0;
   }
 }

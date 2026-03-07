@@ -15,6 +15,10 @@ export type ConversationListItemDTO = {
     name: string;
     imageUrl: string | null;
   };
+  unreadCount: {
+    student: number;
+    teacher: number;
+  };
   lastMessage?: { text: string; senderId: string; createdAt: string };
   updatedAt: string;
   lastMessageAt?: string;

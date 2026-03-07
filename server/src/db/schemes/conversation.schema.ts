@@ -9,8 +9,19 @@ const lastMessageSchema = new Schema(
   { _id: false },
 );
 
+const unreadCountSchema = new Schema(
+  {
+    student: { type: Number, required: true, default: 0 },
+    teacher: { type: Number, required: true, default: 0 },
+  },
+  { _id: false },
+);
+
 export const ConversationSchema = new Schema(
   {
+    studentId: { type: String, required: true, index: true },
+    teacherId: { type: String, required: true, index: true },
+
     participantIds: {
       type: [String],
       required: true,
@@ -18,10 +29,15 @@ export const ConversationSchema = new Schema(
         validator: (arr: string[]) => Array.isArray(arr) && arr.length === 2,
         message: "participantIds must contain exactly 2 ids",
       },
-      index: true,
     },
 
-    appointmentId: { type: String, required: true },
+    participantsKey: {
+      type: String,
+      required: true,
+      unique: true,
+      index: true,
+      sparse: true,
+    },
 
     appointmentStatus: {
       type: String,
@@ -31,13 +47,20 @@ export const ConversationSchema = new Schema(
       index: true,
     },
 
+    unreadCount: {
+      type: unreadCountSchema,
+      required: true,
+      default: () => ({
+        student: 0,
+        teacher: 0,
+      }),
+    },
+
     lastMessage: { type: lastMessageSchema, required: false },
     lastMessageAt: { type: Date, required: false, index: true },
   },
   { timestamps: true, versionKey: false },
 );
-
-ConversationSchema.index({ appointmentId: 1 }, { unique: true });
 
 ConversationSchema.index({
   participantIds: 1,
