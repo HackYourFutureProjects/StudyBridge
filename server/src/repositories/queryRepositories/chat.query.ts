@@ -39,6 +39,10 @@ export class ChatQuery {
       id: d._id.toString(),
       participantIds: d.participantIds as [string, string],
       appointmentStatus: d.appointmentStatus,
+      unreadCount: {
+        student: d.unreadCount?.student ?? 0,
+        teacher: d.unreadCount?.teacher ?? 0,
+      },
       lastMessage: d.lastMessage
         ? {
             text: d.lastMessage.text,

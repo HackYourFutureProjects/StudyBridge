@@ -19,3 +19,9 @@ chatRouter.get(
   authMiddleware.handle,
   chatController.getMessages.bind(chatController),
 );
+
+chatRouter.patch(
+  "/conversations/:id/read",
+  authMiddleware.handle,
+  chatController.markAsRead.bind(chatController),
+);

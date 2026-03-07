@@ -1,6 +1,5 @@
 import { inject, injectable } from "inversify";
 import { TYPES } from "../../composition/composition.types.js";
-import { ChatMessageDTO } from "../../socket/chat.socket.types.js";
 import { ChatCommand } from "../../repositories/commandRepositories/chat.command.js";
 import { ChatQuery } from "../../repositories/queryRepositories/chat.query.js";
 import { HttpError } from "../../utils/error.util.js";
@@ -8,6 +7,7 @@ import { StudentQuery } from "../../repositories/queryRepositories/student.query
 import { TeacherQuery } from "../../repositories/queryRepositories/teacher.query.js";
 import { ConversationListItemDTO } from "../../types/chat/chat.types.js";
 import { mapPeer } from "../../utils/mappers/peer.mapper.js";
+import { ConversationCommand } from "../../repositories/commandRepositories/conversation.command.js";
 
 @injectable()
 export class ChatService {
@@ -16,6 +16,8 @@ export class ChatService {
     @inject(TYPES.ChatCommand) private chatCommand: ChatCommand,
     @inject(TYPES.StudentQuery) private studentQuery: StudentQuery,
     @inject(TYPES.TeacherQuery) private teacherQuery: TeacherQuery,
+    @inject(TYPES.ConversationCommand)
+    private conversationCommand: ConversationCommand,
   ) {}
 
   async canAccessConversation(userId: string, conversationId: string) {
@@ -36,17 +38,44 @@ export class ChatService {
     conversationId: string;
     senderId: string;
     text: string;
-  }): Promise<ChatMessageDTO> {
+  }) {
     const can = await this.canAccessConversation(
       args.senderId,
       args.conversationId,
     );
 
     if (!can) {
-      throw new HttpError(403, "Forbidden");
+      throw new HttpError(403, "Access denied");
     }
 
-    return this.chatCommand.createMessage(args);
+    const message = await this.chatCommand.createMessage({
+      conversationId: args.conversationId,
+      senderId: args.senderId,
+      text: args.text,
+    });
+
+    const conversationUpdate = await this.conversationCommand.applyNewMessage({
+      conversationId: args.conversationId,
+      senderId: args.senderId,
+      text: message.text,
+      createdAt: new Date(message.createdAt),
+    });
+
+    return {
+      message,
+      recipientId: conversationUpdate.recipientId,
+      unreadCount: conversationUpdate.unreadCount,
+    };
+  }
+
+  async markConversationAsRead(conversationId: string, userId: string) {
+    const can = await this.canAccessConversation(userId, conversationId);
+
+    if (!can) {
+      throw new HttpError(403, "Access denied");
+    }
+
+    return this.conversationCommand.markAsRead(conversationId, userId);
   }
 
   async getConversationList(args: {
@@ -84,6 +113,7 @@ export class ChatService {
       return {
         id: conversation.id,
         peer: mapPeer(peerId, peer),
+        unreadCount: conversation.unreadCount,
         lastMessage: conversation.lastMessage,
         updatedAt: conversation.updatedAt,
         lastMessageAt: conversation.lastMessageAt,
