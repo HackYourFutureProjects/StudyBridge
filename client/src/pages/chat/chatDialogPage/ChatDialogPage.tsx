@@ -67,23 +67,35 @@ export const ChatDialogPage = () => {
   }
 
   return (
-    <div className="flex flex-col h-full max-h-210.5 ">
-      <div className="p-3 mb-5">
-        <div className="flex items-center gap-4">
+    <div
+      className="
+      flex flex-col h-full max-h-210 min-h-0 overflow-hidden rounded-2xl
+    "
+    >
+      <div className="shrink-0 px-3 py-2 md:px-4 md:py-3">
+        <div className="flex items-center gap-3 md:gap-4">
           <ChatSideBarItem name={peer?.name} imageUrl={peer?.imageUrl} />
-          <div
+          <span
             className={[
               "h-2 w-2 rounded-full",
               isOnline ? "bg-green-400" : "bg-light-100",
             ].join(" ")}
-          ></div>
+          />
         </div>
-        <div className="mt-1 text-xs h-2.5 text-light-500">
+
+        <div className="mt-1 h-4 text-xs text-light-500">
           {typingUserId && peer?.name ? `${peer.name} is typing…` : null}
         </div>
       </div>
 
-      <div className="flex-1 overflow-auto px-7.75 py-2 bg-[#211C27] scrollbar-thin">
+      <div
+        className="
+        flex-1 min-h-0 overflow-y-auto
+        bg-[#211C27]
+        px-3 py-2 md:px-6 md:py-2
+        scrollbar-thin
+      "
+      >
         {messages.map((m, index) => {
           const isMine = m.senderId === myUserId;
           const next = messages[index + 1];
@@ -93,7 +105,7 @@ export const ChatDialogPage = () => {
             <div
               key={m.id}
               className={[
-                "mb-3",
+                "mb-2 md:mb-3",
                 isMine ? "flex justify-end" : "flex justify-start",
               ].join(" ")}
             >
@@ -117,10 +129,10 @@ export const ChatDialogPage = () => {
                 </div>
               )}
 
-              <div className="max-w-[75%]">
+              <div className="max-w-[85%] md:max-w-[75%]">
                 <div
                   className={[
-                    "rounded-2xl px-5 py-2 text-sm leading-relaxed mb-1.5 wrap-break-word whitespace-pre-wrap",
+                    "rounded-2xl px-4 py-2 md:px-5 md:py-2 text-sm leading-relaxed mb-1 whitespace-pre-wrap break-words",
                     isMine
                       ? "bg-purple-500 text-light-100 rounded-br-md"
                       : "bg-light-150 text-dark-900 rounded-bl-md",
@@ -128,7 +140,7 @@ export const ChatDialogPage = () => {
                 >
                   <p>{m.text}</p>
                 </div>
-                <p className="text-light-600 text-[12px]">
+                <p className="text-light-600 text-[11px] md:text-[12px]">
                   {formatDate(m.createdAt)}
                 </p>
               </div>
@@ -137,24 +149,32 @@ export const ChatDialogPage = () => {
         })}
       </div>
 
-      <div className="border-t border-white/10 p-3">
+      <div className="shrink-0 border-t border-white/10 px-3 py-2 md:px-4 md:py-3">
         <form
-          className="flex gap-2.5"
+          className="flex items-center gap-2"
           onSubmit={(e) => {
             e.preventDefault();
             send(text);
           }}
         >
-          <TextField
-            value={text}
-            onChange={(e) => {
-              setText(e.target.value);
-              emitTyping();
-            }}
-            placeholder="Type a message ..."
-            variant="primarySmall"
-          />
-          <Button variant="primary" type="submit">
+          <div className="min-w-0 flex-1">
+            <TextField
+              value={text}
+              onChange={(e) => {
+                setText(e.target.value);
+                emitTyping();
+              }}
+              placeholder="Type a message ..."
+              variant="primarySmall"
+              containerClassName="w-full"
+            />
+          </div>
+
+          <Button
+            variant="primary"
+            type="submit"
+            className="shrink-0 px-4 md:px-[55px]"
+          >
             Send
           </Button>
         </form>
