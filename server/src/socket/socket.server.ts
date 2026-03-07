@@ -4,13 +4,12 @@ import { Server, Socket } from "socket.io";
 import { container } from "../composition/compositionRoot.js";
 import { TYPES } from "../composition/composition.types.js";
 import type { JwtService } from "../services/jwt/jwt.service.js";
-
+import { setIO } from "./io.holder.js";
 import type {
   JoinPayload,
   LeavePayload,
   SendMessagePayload,
   SendAck,
-  NewMessageEvent,
 } from "./chat.socket.types.js";
 import { errorToMessage } from "../utils/errorToMessage.js";
 import { ChatService } from "../services/chat/chat.service.js";
@@ -22,7 +21,6 @@ type SocketData = {
   role: "student" | "teacher";
 };
 
-export let io: Server | null = null;
 const onlineCount = new Map<string, number>();
 
 function markOnline(userId: string) {
@@ -86,6 +84,10 @@ export function initSocketServer(httpServer: http.Server): Server {
       _io.emit("presence:online", { userId });
     }
 
+    socket.on("presence:requestSync", () => {
+      socket.emit("presence:sync", { userIds: Array.from(onlineCount.keys()) });
+    });
+
     socket.emit("presence:sync", { userIds: Array.from(onlineCount.keys()) });
 
     socket.on("disconnect", () => {
@@ -98,7 +100,7 @@ export function initSocketServer(httpServer: http.Server): Server {
     registerChatHandlers(_io, socket);
   });
 
-  io = _io;
+  setIO(_io);
   return _io;
 }
 
@@ -180,19 +182,26 @@ function registerChatHandlers(_io: Server, socket: Socket) {
         cb?.({ ok: false, error: validation.error });
         return;
       }
+
       try {
         const { userId } = socket.data as SocketData;
 
-        const message = await chatService.sendMessage({
+        const result = await chatService.sendMessage({
           conversationId: payload.conversationId,
           senderId: userId,
           text: payload.text,
         });
 
-        const event: NewMessageEvent = { message };
-        _io.to(payload.conversationId).emit("chat:newMessage", event);
+        _io.to(payload.conversationId).emit("chat:newMessage", {
+          message: result.message,
+        });
 
-        cb?.({ ok: true, message });
+        _io.to(`user:${result.recipientId}`).emit("chat:unreadUpdated", {
+          conversationId: payload.conversationId,
+          unreadCount: result.unreadCount,
+        });
+
+        cb?.({ ok: true, message: result.message });
       } catch (e: unknown) {
         cb?.({ ok: false, error: errorToMessage(e) });
       }

@@ -7,15 +7,10 @@ import {
 } from "../components/sidebar/sidebarMenuItems.ts";
 import { TopBar } from "../components/headerPrivate/TopBar.tsx";
 import { useAuthSessionStore } from "../store/authSession.store.ts";
-import { useEffect } from "react";
-import { useSocketStore } from "../store/socket.store.ts";
 import { usePresenceSubscribe } from "../hooks/usePresenceSubscribe.ts";
 
 export const PrivateLayout = () => {
   const user = useAuthSessionStore((s) => s.user);
-  const accessToken = useAuthSessionStore((s) => s.accessToken);
-  const connect = useSocketStore((s) => s.connect);
-  const disconnect = useSocketStore((s) => s.disconnect);
   usePresenceSubscribe();
   let items;
 
@@ -26,15 +21,6 @@ export const PrivateLayout = () => {
   } else {
     items = defaultModeratorMenuItems;
   }
-
-  useEffect(() => {
-    if (!accessToken) {
-      disconnect();
-      return;
-    }
-    connect(accessToken);
-    return () => disconnect();
-  }, [accessToken, connect, disconnect]);
 
   return (
     <>
