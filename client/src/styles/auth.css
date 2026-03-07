@@ -5,49 +5,6 @@
 
   .auth-form {
     @apply w-full max-w-[1326px] px-[20px] py-[100px] md:px-[150px] md:py-[100px] bg-bg-secondary mt-[30px] rounded-[20px] relative;
-    border: 2px solid transparent;
-    background:
-      linear-gradient(var(--color-bg-secondary), var(--color-bg-secondary))
-        padding-box,
-      conic-gradient(from 0deg, #7186ff, #fe7587, #00d4ff, #7186ff) border-box;
-    animation: spinBorder 4s linear infinite;
-  }
-
-  @keyframes spinBorder {
-    0% {
-      background:
-        linear-gradient(var(--color-bg-secondary), var(--color-bg-secondary))
-          padding-box,
-        conic-gradient(from 0deg, #7186ff, #fe7587, #00d4ff, #7186ff) border-box;
-    }
-    25% {
-      background:
-        linear-gradient(var(--color-bg-secondary), var(--color-bg-secondary))
-          padding-box,
-        conic-gradient(from 90deg, #7186ff, #fe7587, #00d4ff, #7186ff)
-          border-box;
-    }
-    50% {
-      background:
-        linear-gradient(var(--color-bg-secondary), var(--color-bg-secondary))
-          padding-box,
-        conic-gradient(from 180deg, #7186ff, #fe7587, #00d4ff, #7186ff)
-          border-box;
-    }
-    75% {
-      background:
-        linear-gradient(var(--color-bg-secondary), var(--color-bg-secondary))
-          padding-box,
-        conic-gradient(from 270deg, #7186ff, #fe7587, #00d4ff, #7186ff)
-          border-box;
-    }
-    100% {
-      background:
-        linear-gradient(var(--color-bg-secondary), var(--color-bg-secondary))
-          padding-box,
-        conic-gradient(from 360deg, #7186ff, #fe7587, #00d4ff, #7186ff)
-          border-box;
-    }
   }
 
   .auth-title {
