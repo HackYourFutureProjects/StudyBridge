@@ -291,6 +291,7 @@ export class AppointmentQuery {
       });
     }
   }
+
   async findExistingAppointment(
     studentId: string,
     date: string,
