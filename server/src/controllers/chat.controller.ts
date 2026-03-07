@@ -4,8 +4,7 @@ import { ChatQuery } from "../repositories/queryRepositories/chat.query.js";
 import { Request, NextFunction, Response } from "express";
 import { RequestWithParams } from "../types/common.types.js";
 import { ChatService } from "../services/chat/chat.service.js";
-import { io } from "../socket/socket.server.js";
-
+import { getIO } from "../socket/io.holder.js";
 @injectable()
 export class ChatController {
   constructor(
@@ -61,7 +60,7 @@ export class ChatController {
     try {
       const { userId } = req.auth!;
       const conversationId = req.params.id;
-
+      const io = getIO();
       const result = await this.chatService.markConversationAsRead(
         conversationId,
         userId,

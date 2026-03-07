@@ -61,7 +61,7 @@ export function useChatRealtime(args: {
         },
       );
 
-      if (msg.senderId !== myUserId) {
+      if (myUserId && msg.senderId !== myUserId) {
         void markConversationAsRead(conversationId);
       }
     };

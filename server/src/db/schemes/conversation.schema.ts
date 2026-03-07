@@ -36,6 +36,7 @@ export const ConversationSchema = new Schema(
       required: true,
       unique: true,
       index: true,
+      sparse: true,
     },
 
     appointmentStatus: {

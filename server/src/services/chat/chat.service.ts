@@ -45,7 +45,7 @@ export class ChatService {
     );
 
     if (!can) {
-      throw new Error("Access denied");
+      throw new HttpError(403, "Access denied");
     }
 
     const message = await this.chatCommand.createMessage({
@@ -72,7 +72,7 @@ export class ChatService {
     const can = await this.canAccessConversation(userId, conversationId);
 
     if (!can) {
-      throw new Error("Access denied");
+      throw new HttpError(403, "Access denied");
     }
 
     return this.conversationCommand.markAsRead(conversationId, userId);

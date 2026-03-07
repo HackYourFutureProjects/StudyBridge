@@ -31,13 +31,12 @@ export const ChatSidebar = () => {
         placeholder="Search"
         variant="dashboard"
         className="text-gray-300"
-        containerClassName="bg-"
         iconClassName="text-gray-300"
         Icon={Search}
         type="search"
       />
       <div className="space-y-2 min-h-0 flex flex-col">
-        <h3 className="text-gray-300 mt-[20px] shrink-0">DIRECT MASSAGES</h3>
+        <h3 className="text-gray-300 mt-5 shrink-0">DIRECT MESSAGES</h3>
         <div className="scrollbar-thin flex flex-col gap-2 min-h-0 overflow-y-auto">
           {finalChats?.length ? (
             finalChats.map((c) => {

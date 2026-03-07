@@ -4,7 +4,7 @@ import { Server, Socket } from "socket.io";
 import { container } from "../composition/compositionRoot.js";
 import { TYPES } from "../composition/composition.types.js";
 import type { JwtService } from "../services/jwt/jwt.service.js";
-
+import { setIO } from "./io.holder.js";
 import type {
   JoinPayload,
   LeavePayload,
@@ -21,7 +21,6 @@ type SocketData = {
   role: "student" | "teacher";
 };
 
-export let io: Server | null = null;
 const onlineCount = new Map<string, number>();
 
 function markOnline(userId: string) {
@@ -101,7 +100,7 @@ export function initSocketServer(httpServer: http.Server): Server {
     registerChatHandlers(_io, socket);
   });
 
-  io = _io;
+  setIO(_io);
   return _io;
 }
 

@@ -1,12 +1,17 @@
+// server/src/repositories/commandRepositories/conversation.command.ts
+
 import { ConversationModel } from "../../db/schemes/conversation.schema.js";
 import { injectable } from "inversify";
+import { HttpError } from "../../utils/error.util.js";
+
+type AppointmentStatus = "pending" | "approved" | "rejected";
 
 @injectable()
 export class ConversationCommand {
   async upsertForAppointment(args: {
     studentId: string;
     teacherId: string;
-    status: "pending" | "approved" | "rejected";
+    status: AppointmentStatus;
   }) {
     const participantIds = [args.studentId, args.teacherId].sort();
     const participantsKey = participantIds.join(":");
@@ -42,21 +47,42 @@ export class ConversationCommand {
     createdAt: Date;
   }) {
     const conversation = await ConversationModel.findById(args.conversationId)
-      .select("studentId teacherId unreadCount")
+      .select("studentId teacherId participantIds unreadCount")
       .lean();
 
     if (!conversation) {
-      throw new Error("Conversation not found");
+      throw new HttpError(404, "Conversation not found.");
     }
 
-    const isStudentSender = args.senderId === conversation.studentId;
-    const recipientId = isStudentSender
-      ? conversation.teacherId
-      : conversation.studentId;
+    const participantIds = conversation.participantIds ?? [];
+    const isParticipant = participantIds.includes(args.senderId);
+    if (!isParticipant) {
+      throw new HttpError(403, "Access denied");
+    }
 
-    const unreadField = isStudentSender
-      ? "unreadCount.teacher"
-      : "unreadCount.student";
+    const recipientId =
+      args.senderId === conversation.studentId
+        ? conversation.teacherId
+        : args.senderId === conversation.teacherId
+          ? conversation.studentId
+          : (participantIds.find((id) => id !== args.senderId) ?? null);
+
+    if (!recipientId) {
+      throw new HttpError(500, "Invalid conversation participants");
+    }
+
+    let unreadInc:
+      | { "unreadCount.student": number }
+      | { "unreadCount.teacher": number }
+      | { "unreadCount.student": number; "unreadCount.teacher": number };
+
+    if (args.senderId === conversation.studentId) {
+      unreadInc = { "unreadCount.teacher": 1 };
+    } else if (args.senderId === conversation.teacherId) {
+      unreadInc = { "unreadCount.student": 1 };
+    } else {
+      unreadInc = { "unreadCount.student": 1, "unreadCount.teacher": 1 };
+    }
 
     await ConversationModel.updateOne(
       { _id: args.conversationId },
@@ -70,9 +96,7 @@ export class ConversationCommand {
           lastMessageAt: args.createdAt,
           updatedAt: new Date(),
         },
-        $inc: {
-          [unreadField]: 1,
-        },
+        $inc: unreadInc,
       },
     ).exec();
 
@@ -93,31 +117,43 @@ export class ConversationCommand {
 
   async markAsRead(conversationId: string, userId: string) {
     const conversation = await ConversationModel.findById(conversationId)
-      .select("studentId teacherId unreadCount")
+      .select("studentId teacherId participantIds unreadCount")
       .lean();
 
     if (!conversation) {
-      throw new Error("Conversation not found");
+      throw new HttpError(404, "Conversation not found");
     }
 
-    let unreadField: "unreadCount.student" | "unreadCount.teacher";
+    const participantIds = conversation.participantIds ?? [];
+    const isParticipant =
+      userId === conversation.studentId ||
+      userId === conversation.teacherId ||
+      participantIds.includes(userId);
+
+    if (!isParticipant) {
+      throw new HttpError(403, "Access denied");
+    }
+
+    let updateSet:
+      | { "unreadCount.student": 0; updatedAt: Date }
+      | { "unreadCount.teacher": 0; updatedAt: Date }
+      | { "unreadCount.student": 0; "unreadCount.teacher": 0; updatedAt: Date };
 
     if (userId === conversation.studentId) {
-      unreadField = "unreadCount.student";
+      updateSet = { "unreadCount.student": 0, updatedAt: new Date() };
     } else if (userId === conversation.teacherId) {
-      unreadField = "unreadCount.teacher";
+      updateSet = { "unreadCount.teacher": 0, updatedAt: new Date() };
     } else {
-      throw new Error("Access denied");
+      updateSet = {
+        "unreadCount.student": 0,
+        "unreadCount.teacher": 0,
+        updatedAt: new Date(),
+      };
     }
 
     await ConversationModel.updateOne(
       { _id: conversationId },
-      {
-        $set: {
-          [unreadField]: 0,
-          updatedAt: new Date(),
-        },
-      },
+      { $set: updateSet },
     ).exec();
 
     const updatedConversation = await ConversationModel.findById(conversationId)
@@ -125,7 +161,7 @@ export class ConversationCommand {
       .lean();
 
     if (!updatedConversation) {
-      throw new Error("Conversation not found after markAsRead");
+      throw new HttpError(404, "Conversation not found after markAsRead");
     }
 
     return {

@@ -125,16 +125,22 @@ export class AppointmentService {
     }
 
     try {
-      if (updated.status === "approved") {
-        const ok = await this.conversationCommand.upsertForAppointment({
-          studentId: updated.studentId,
-          teacherId: updated.teacherId,
-          status: updated.status,
-        });
+      const hasApproved =
+        await this.appointmentQuery.hasActiveAppointmentsBetweenUsers(
+          updated.studentId,
+          updated.teacherId,
+        );
 
-        if (!ok) {
-          logWarning("Conversation upsert returned false");
-        }
+      const conversationStatus = hasApproved ? "approved" : "rejected";
+
+      const ok = await this.conversationCommand.upsertForAppointment({
+        studentId: updated.studentId,
+        teacherId: updated.teacherId,
+        status: conversationStatus,
+      });
+
+      if (!ok) {
+        logWarning("Conversation upsert returned false");
       }
     } catch (err) {
       logError(err);
@@ -142,12 +148,6 @@ export class AppointmentService {
     }
 
     return this.formatAppointmentResponse(updated);
-
-    // const updated = await this.appointmentCommand.updateAppointment(
-    //   id,
-    //   updateData,
-    // );
-    // return updated ? this.formatAppointmentResponse(updated) : null;
   }
 
   async deleteAppointment(id: string, userId: string) {
