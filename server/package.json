@@ -2,7 +2,7 @@
   "name": "project-server",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
+  "main": "dist/src/index.js",
   "type": "module",
   "engines": {
     "node": ">=24.0.0"
@@ -10,7 +10,7 @@
   "scripts": {
     "setup": "npm ci --include=dev",
     "build": "tsc -p tsconfig.json",
-    "start": "node ./dist/index.js",
+    "start": "node ./dist/src/index.js",
     "dev": "tsx watch ./src/index.ts",
     "test": "jest",
     "test:watch": "jest --watch",
