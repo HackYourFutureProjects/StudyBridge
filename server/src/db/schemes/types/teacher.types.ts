@@ -77,4 +77,5 @@ export type TeacherTypeDB = {
   authProvider: "local" | "google";
   googleSub: string | null;
   status: TeacherStatus;
+  isPublic: boolean;
 };

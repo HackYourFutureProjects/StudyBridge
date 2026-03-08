@@ -76,5 +76,6 @@ export function buildGoogleTeacher(args: {
     authProvider: "google",
     googleSub: args.googleSub,
     status: "draft",
+    isPublic: false,
   };
 }

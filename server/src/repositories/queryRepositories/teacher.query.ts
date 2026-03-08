@@ -234,13 +234,12 @@ export class TeacherQuery {
         updateFields.profileImageUrl = updates.profileImageUrl;
       if (updates.education !== undefined)
         updateFields.education = updates.education;
-      if (updates.subjects !== undefined)
+      if (updates.subjects !== undefined) {
         updateFields.subjects = updates.subjects;
-
-      if (updates.subjects) {
-        updateFields.priceFrom = Math.min(
-          ...updates.subjects.map((s) => s.hourlyRate),
-        );
+        updateFields.priceFrom =
+          updates.subjects.length > 0
+            ? Math.min(...updates.subjects.map((s) => s.hourlyRate))
+            : 0;
       }
 
       const updatedTeacher = await TeacherModel.findOneAndUpdate(

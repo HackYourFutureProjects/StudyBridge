@@ -11,6 +11,7 @@ import {
   validateWeekAvailabilityPayload,
 } from "../validation/availabilitySchedule/teacher/teacherScheduleValidationMiddleware.js";
 import { teacherProfileUpdateValidationMiddleware } from "../validation/profile/profileValidationMiddleware.js";
+import { teacherVisibilityValidationMiddleware } from "../validation/profile/teacherVisibilityValidationMiddleware.js";
 
 export const teacherRouter = Router();
 const teacherController = container.get<TeacherController>(
@@ -80,4 +81,13 @@ teacherRouter.delete(
   requireRole("teacher"),
   requireSelf("id"),
   teacherController.deleteTeacher.bind(teacherController),
+);
+
+teacherRouter.patch(
+  "/me/publish",
+  authMiddleware.handle,
+  requireRole("teacher"),
+  teacherVisibilityValidationMiddleware(),
+  errorMiddleware,
+  teacherController.updateMyVisibility.bind(teacherController),
 );

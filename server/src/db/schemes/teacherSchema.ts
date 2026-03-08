@@ -91,6 +91,7 @@ export const TeacherSchema = new mongoose.Schema<TeacherTypeDB>(
     role: { type: String, required: true },
     authProvider: { type: String, required: true, default: "local" },
     googleSub: { type: String, required: false, default: null },
+    isPublic: { type: Boolean, default: false },
   },
   {
     versionKey: false,
