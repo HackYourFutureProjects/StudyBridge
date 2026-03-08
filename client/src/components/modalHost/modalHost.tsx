@@ -61,7 +61,13 @@ export const ModalHost = () => {
           <BookingConfirmation isOpen={opened} onClose={close} />
         )}
         {activeModal === "signIn" && (
-          <SignInConfirmation isOpen={opened} onClose={close} />
+          <SignInConfirmation
+            isOpen={opened}
+            onClose={close}
+            returnTo={
+              payload && "returnTo" in payload ? payload.returnTo : undefined
+            }
+          />
         )}
         {activeModal === "fullScreenLoader" && (
           <FullScreenLoader isOpen={opened} />

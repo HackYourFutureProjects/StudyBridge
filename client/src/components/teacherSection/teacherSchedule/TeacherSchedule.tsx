@@ -8,6 +8,7 @@ import { useTeacherAppointmentsQuery } from "../../../features/appointments/quer
 import { SelectComponent } from "../../ui/select/Select.tsx";
 import { Button } from "../../ui/button/Button";
 import { getDescriptionValidation } from "../../../utils/appointmentDescription.validation";
+import { useLocation } from "react-router-dom";
 
 interface TeacherScheduleProps {
   teacher?: TeacherType;
@@ -25,11 +26,11 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
 
   const { open: openModal } = useModalStore();
   const user = useAuthSessionStore((state) => state.user);
-
+  const location = useLocation();
   const isOwnProfile = user?.id === teacher?.id;
   const isAuthenticated = !!user;
   const isTeacher = user?.role === "teacher";
-
+  const returnTo = location.pathname + location.search;
   const { data } = useTeacherAppointmentsQuery(
     isAuthenticated ? teacher?.id : undefined,
   );
@@ -102,7 +103,8 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
 
   const handleTimeSelection = (time: string): void => {
     if (!isAuthenticated) {
-      openModal("signIn");
+      openModal("signIn", { returnTo });
+
       return;
     }
 

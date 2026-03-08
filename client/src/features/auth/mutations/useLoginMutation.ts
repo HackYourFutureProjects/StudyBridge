@@ -7,7 +7,7 @@ import { getErrorMessage } from "../../../util/ErrorUtil";
 import { LoginFinalType } from "../../../api/auth/types";
 import { useNotificationStore } from "../../../store/notification.store";
 
-export function useLoginMutation() {
+export function useLoginMutation(returnTo?: string) {
   const qc = useQueryClient();
   const navigate = useNavigate();
   const setAccessToken = useAuthSessionStore((s) => s.setAccessToken);
@@ -20,7 +20,7 @@ export function useLoginMutation() {
       setAccessToken(accessToken);
       success("Successfully logged in");
       localStorage.setItem("hadSession", "1");
-      navigate("/", { replace: true });
+      navigate(returnTo ?? "/", { replace: true });
       await qc.invalidateQueries({ queryKey: queryKeys.me });
     },
     onError: (error) => {
