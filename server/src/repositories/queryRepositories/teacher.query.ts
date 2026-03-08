@@ -61,6 +61,9 @@ export class TeacherQuery {
       const filter: Record<string, unknown> = {};
       if (status !== "all") {
         filter.status = status;
+      } else {
+        // Default moderator queue excludes drafts.
+        filter.status = { $ne: "draft" };
       }
 
       const items = await TeacherModel.find(filter)
@@ -69,7 +72,7 @@ export class TeacherQuery {
         .limit(+pageSize)
         .lean();
 
-      const totalCount = await TeacherModel.countDocuments();
+      const totalCount = await TeacherModel.countDocuments(filter);
 
       const pagesCount = Math.ceil(totalCount / +pageSize);
 
