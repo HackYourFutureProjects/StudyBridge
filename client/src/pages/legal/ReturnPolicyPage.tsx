@@ -68,7 +68,8 @@ export const ReturnPolicyPage: React.FC = () => {
                 </li>
                 <li>
                   <strong>Less than 24 hours notice:</strong> Partial or no
-                  refund may apply depending on the teacher's specific policy.
+                  refund may apply depending on the teacher&apos;s specific
+                  policy.
                 </li>
                 <li>
                   <strong>No-show or cancellation during the session:</strong>{" "}

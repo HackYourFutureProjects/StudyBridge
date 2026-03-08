@@ -58,7 +58,7 @@ export const PrivacyPolicyPage: React.FC = () => {
             </p>
           </section>
 
-          <section id="collection">
+          <section id="collection" className="scroll-mt-32">
             <h2 className="mb-4 pl-4 border-blue-400 border-l-4 font-semibold text-2xl">
               2. Information We Collect
             </h2>
@@ -84,7 +84,7 @@ export const PrivacyPolicyPage: React.FC = () => {
             </div>
           </section>
 
-          <section id="usage">
+          <section id="usage" className="scroll-mt-32">
             <h2 className="mb-4 pl-4 border-blue-400 border-l-4 font-semibold text-2xl">
               3. How We Use Your Information
             </h2>
@@ -109,7 +109,7 @@ export const PrivacyPolicyPage: React.FC = () => {
             </ul>
           </section>
 
-          <section id="sharing">
+          <section id="sharing" className="scroll-mt-32">
             <h2 className="mb-4 pl-4 border-blue-400 border-l-4 font-semibold text-2xl">
               4. Sharing of Information
             </h2>
@@ -121,7 +121,7 @@ export const PrivacyPolicyPage: React.FC = () => {
             </p>
           </section>
 
-          <section id="cookies">
+          <section id="cookies" className="scroll-mt-32">
             <h2 className="mb-4 pl-4 border-blue-400 border-l-4 font-semibold text-2xl">
               5. Cookies & Tracking
             </h2>
@@ -132,7 +132,7 @@ export const PrivacyPolicyPage: React.FC = () => {
             </p>
           </section>
 
-          <section id="retention">
+          <section id="retention" className="scroll-mt-32">
             <h2 className="mb-4 pl-4 border-blue-400 border-l-4 font-semibold text-2xl">
               6. Data Retention
             </h2>

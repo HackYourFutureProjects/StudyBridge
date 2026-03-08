@@ -77,7 +77,7 @@ export const TermsAndConditionsPage: React.FC = () => {
               <li>You are responsible for keeping your password safe.</li>
               <li>
                 You must be <strong className="text-white">18 or older</strong>,
-                or have a parent's permission.
+                or have a parent&apos;s permission.
               </li>
               <li>You must follow all local laws while using the site.</li>
             </ul>
