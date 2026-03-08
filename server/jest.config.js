@@ -1,7 +1,22 @@
 export default {
-  transform: {
-    "^.+\\.jsx?$": "babel-jest",
+  preset: "ts-jest/presets/default-esm",
+  extensionsToTreatAsEsm: [".ts"],
+  moduleNameMapper: {
+    "^(\\.{1,2}/.*)\\.js$": "$1",
   },
+  transform: {
+    "^.+\\.ts$": [
+      "ts-jest",
+      {
+        useESM: true,
+        diagnostics: {
+          ignoreCodes: [151002],
+        },
+      },
+    ],
+  },
+  transformIgnorePatterns: ["node_modules/(?!(uuid|@babel)/)"],
   modulePathIgnorePatterns: ["__testUtils__"],
-  transformIgnorePatterns: [],
+  testEnvironment: "node",
+  testMatch: ["**/__tests__/**/*.test.ts"],
 };
