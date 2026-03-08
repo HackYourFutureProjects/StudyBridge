@@ -11,6 +11,9 @@ export interface AppointmentTypeDB {
   level?: string;
   teacher: string;
   student: string;
+  teacherName?: string;
+  studentName?: string;
+  studentProfileImageUrl?: string | null;
   price: string;
   date: string;
   time: string;
