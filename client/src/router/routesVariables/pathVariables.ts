@@ -6,6 +6,9 @@ export const publicRoutesVariables = {
   home: "/",
   teachers: "/teachers",
   teacher: "/teacher/:id",
+  privacyPolicy: "/privacy-policy",
+  termsAndConditions: "/terms-and-conditions",
+  returnPolicy: "/return-policy",
 };
 
 export const authRoutesVariables = {
