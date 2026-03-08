@@ -68,6 +68,7 @@ export type TeacherType = {
   createdAt: Date;
   status: TeacherStatus;
   role: Role;
+  isPublic: boolean;
 };
 
 export type TeacherOutputModel = {
