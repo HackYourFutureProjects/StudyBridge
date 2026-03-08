@@ -1,6 +1,5 @@
 import {
   createTestStudent,
-  getFutureDate,
 } from "../helpers/test.helpers.js";
 import { StudentTypeDB } from "../../src/db/schemes/types/student.types.js";
 import {
@@ -13,7 +12,7 @@ import { StudentQuery } from "../../src/repositories/queryRepositories/student.q
 import { StudentCommand } from "../../src/repositories/commandRepositories/student.command.js";
 import { randomUUID } from "node:crypto";
 
-describe("Student Service", () => {
+describe("StudentQuery and StudentCommand", () => {
   let studentQuery: StudentQuery;
   let studentCommand: StudentCommand;
   let testStudent: StudentTypeDB;
@@ -268,7 +267,7 @@ describe("Student Service", () => {
         },
       };
 
-      await expect(StudentModel.create(duplicateStudentData)).rejects.toThrow();
+      await expect(StudentModel.create(duplicateStudentData)).rejects.toThrow(/duplicate key/i);
     });
   });
 
