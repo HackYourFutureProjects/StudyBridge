@@ -37,6 +37,30 @@ export interface TimeSlot {
   hour: number;
 }
 
+const teacherStatusUi: Record<string, { label: string; className: string }> = {
+  draft: {
+    label: "Draft",
+    className: "bg-yellow-500/20 text-yellow-300 border border-yellow-500/40",
+  },
+  pending: {
+    label: "Pending Review",
+    className: "bg-purple-500/20 text-purple-300 border border-purple-500/40",
+  },
+  active: {
+    label: "Approved",
+    className:
+      "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40",
+  },
+  rejected: {
+    label: "Rejected",
+    className: "bg-red-500/20 text-red-300 border border-red-500/40",
+  },
+  blocked: {
+    label: "Blocked",
+    className: "bg-gray-500/20 text-gray-200 border border-gray-500/40",
+  },
+};
+
 export const TeacherProfile = () => {
   const { data: profile, isLoading } = useMyProfileQuery();
   const updateProfileMutation = useUpdateMyProfileMutation();
@@ -452,6 +476,19 @@ export const TeacherProfile = () => {
             />
             <span className="text-green-400 text-sm">Public profile</span>
           </label>
+        </div>
+        <div className="mb-6 sm:mb-8">
+          <span
+            className={`inline-flex items-center rounded-full px-3 py-1 text-xs sm:text-sm font-medium ${
+              teacherStatusUi[profile?.status ?? "draft"]?.className ??
+              "bg-light-500/20 text-light-100 border border-light-500/40"
+            }`}
+          >
+            Account status:{" "}
+            {teacherStatusUi[profile?.status ?? "draft"]?.label ??
+              profile?.status ??
+              "Draft"}
+          </span>
         </div>
         <div className="flex flex-col lg:flex-row gap-6 lg:gap-12">
           <ProfileAvatar avatarUrl={profile?.profileImageUrl} />
