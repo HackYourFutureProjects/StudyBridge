@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useParams } from "react-router-dom";
 import { Calendar } from "./Calendar/Calendar";
 import { Time } from "./Time/Time";
 import { TeacherType } from "../../../api/teacher/teacher.type";
@@ -13,15 +14,81 @@ interface TeacherScheduleProps {
   teacher?: TeacherType;
 }
 
+type PendingBookingIntent = {
+  teacherId: string;
+  selectedDate: string;
+  selectedTime: string;
+  selectedSubject: string;
+  selectedLevel: string;
+  description: string;
+};
+
+const PENDING_BOOKING_INTENT_KEY = "pending-booking-intent";
+
 export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [showTimeAndBook, setShowTimeAndBook] = useState<boolean>(false);
-  const [selectedSubject, setSelectedSubject] = useState<string>("");
-  const [selectedLevel, setSelectedLevel] = useState<string>("");
-  const [selectedTime, setSelectedTime] = useState<string | null>(null);
-  const [description, setDescription] = useState<string>("");
+  const params = useParams<{ id: string }>();
+
+  const [initialPendingBooking] = useState<{
+    selectedDate: Date;
+    selectedTime: string;
+    selectedSubject: string;
+    selectedLevel: string;
+    description: string;
+  } | null>(() => {
+    const routeTeacherId = params.id;
+    const raw = sessionStorage.getItem(PENDING_BOOKING_INTENT_KEY);
+
+    if (!routeTeacherId || !raw) {
+      return null;
+    }
+
+    try {
+      const pending: PendingBookingIntent = JSON.parse(raw);
+      if (pending.teacherId !== routeTeacherId) {
+        return null;
+      }
+
+      const restoredDate = new Date(pending.selectedDate);
+      if (Number.isNaN(restoredDate.getTime())) {
+        sessionStorage.removeItem(PENDING_BOOKING_INTENT_KEY);
+        return null;
+      }
+
+      sessionStorage.removeItem(PENDING_BOOKING_INTENT_KEY);
+
+      return {
+        selectedDate: restoredDate,
+        selectedTime: pending.selectedTime,
+        selectedSubject: pending.selectedSubject,
+        selectedLevel: pending.selectedLevel,
+        description: pending.description,
+      };
+    } catch {
+      sessionStorage.removeItem(PENDING_BOOKING_INTENT_KEY);
+      return null;
+    }
+  });
+
+  const [selectedDate, setSelectedDate] = useState<Date | null>(
+    initialPendingBooking?.selectedDate ?? null,
+  );
+  const [showTimeAndBook, setShowTimeAndBook] = useState<boolean>(
+    Boolean(initialPendingBooking),
+  );
+  const [selectedSubject, setSelectedSubject] = useState<string>(
+    initialPendingBooking?.selectedSubject ?? "",
+  );
+  const [selectedLevel, setSelectedLevel] = useState<string>(
+    initialPendingBooking?.selectedLevel ?? "",
+  );
+  const [selectedTime, setSelectedTime] = useState<string | null>(
+    initialPendingBooking?.selectedTime ?? null,
+  );
+  const [description, setDescription] = useState<string>(
+    initialPendingBooking?.description ?? "",
+  );
   const [showSubjectLevelSelection, setShowSubjectLevelSelection] =
-    useState<boolean>(false);
+    useState<boolean>(Boolean(initialPendingBooking?.selectedTime));
 
   const { open: openModal } = useModalStore();
   const user = useAuthSessionStore((state) => state.user);
@@ -102,6 +169,20 @@ export default function TeacherSchedule({ teacher }: TeacherScheduleProps) {
 
   const handleTimeSelection = (time: string): void => {
     if (!isAuthenticated) {
+      if (teacher?.id && selectedDate) {
+        const pending: PendingBookingIntent = {
+          teacherId: teacher.id,
+          selectedDate: selectedDate.toISOString(),
+          selectedTime: time,
+          selectedSubject,
+          selectedLevel,
+          description,
+        };
+        sessionStorage.setItem(
+          PENDING_BOOKING_INTENT_KEY,
+          JSON.stringify(pending),
+        );
+      }
       openModal("signIn");
       return;
     }

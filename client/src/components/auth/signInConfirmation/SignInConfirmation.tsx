@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { authRoutesVariables } from "../../../router/routesVariables/pathVariables";
 import SignInIcon from "../../icons/SignInIcon";
 import Cross from "../../icons/Cross";
@@ -11,10 +11,14 @@ interface Props {
 
 export const SignInConfirmation: React.FC<Props> = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSignIn = () => {
+    const redirectTo = `${location.pathname}${location.search}${location.hash}`;
     onClose();
-    navigate(authRoutesVariables.loginStudent);
+    navigate(authRoutesVariables.loginStudent, {
+      state: { redirectTo },
+    });
   };
 
   if (!isOpen) return null;
