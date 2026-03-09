@@ -16,6 +16,8 @@ import type { AxiosError } from "axios";
 import { useAudioUnlock } from "../hooks/useAudioUnlock.ts";
 import { useUnreadChatSync } from "../hooks/useUnreadChatSync.tsx";
 import { useSocketConnection } from "../hooks/useSocketConnection.ts";
+import { useNotificationsRealtime } from "../hooks/useNotificationsRealtime.ts";
+import { useHydrateNotifications } from "../hooks/useHydrateNotifications.tsx";
 type IncomingCallSignal = VideoCallResponse & { callId?: string };
 
 export const RootLayout = () => {
@@ -38,12 +40,11 @@ export const RootLayout = () => {
   useAuthInit();
   useMeQuery();
   useMouseFollowEffect();
-
   useAudioUnlock();
-
+  useHydrateNotifications();
   useUnreadChatSync();
   useSocketConnection();
-
+  useNotificationsRealtime();
   useEffect(() => {
     // Student listens for incoming call event.
     if (!isStudent || !socket) return;

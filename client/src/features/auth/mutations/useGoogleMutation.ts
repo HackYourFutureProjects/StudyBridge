@@ -13,12 +13,14 @@ type useLoginMutationProps = {
   onClose?: () => void;
   intent: Intent;
   role: Role;
+  returnTo?: string;
 };
 
 export function useGoogleLoginMutation({
   intent,
   role,
   onClose,
+  returnTo,
 }: useLoginMutationProps) {
   const setAccessToken = useAuthSessionStore((s) => s.setAccessToken);
   const notifyError = useNotificationStore((s) => s.error);
@@ -32,7 +34,7 @@ export function useGoogleLoginMutation({
     onSuccess: ({ accessToken }) => {
       setAccessToken(accessToken);
       localStorage.setItem("hadSession", "1");
-      navigate("/", { replace: true });
+      navigate(returnTo ?? "/", { replace: true });
       onClose?.();
     },
     onError: (error) => {

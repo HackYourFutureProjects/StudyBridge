@@ -49,4 +49,9 @@ export const TYPES = {
   //moderator
   ModeratorController: Symbol.for("ModeratorController"),
   ModeratorQuery: Symbol.for("ModeratorQuery"),
+  //notifications
+  NotificationCommand: Symbol.for("NotificationCommand"),
+  NotificationQuery: Symbol.for("NotificationQuery"),
+  NotificationService: Symbol.for("NotificationService"),
+  NotificationController: Symbol.for("NotificationController"),
 };

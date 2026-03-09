@@ -49,3 +49,7 @@ export const chatKeys = {
 export const subjectsKey = {
   all: ["subjects"] as const,
 };
+
+export const notificationKeys = {
+  root: ["notifications"] as const,
+};

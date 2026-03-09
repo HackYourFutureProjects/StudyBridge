@@ -7,14 +7,24 @@ import Cross from "../../icons/Cross";
 interface Props {
   isOpen: boolean;
   onClose: () => void;
+  returnTo: string | undefined;
 }
 
-export const SignInConfirmation: React.FC<Props> = ({ isOpen, onClose }) => {
+export const SignInConfirmation: React.FC<Props> = ({
+  isOpen,
+  onClose,
+  returnTo,
+}) => {
   const navigate = useNavigate();
 
   const handleSignIn = () => {
+    const back = returnTo ?? location.pathname + location.search;
+    navigate(authRoutesVariables.loginStudent, {
+      replace: true,
+      state: { returnTo: back },
+    });
+
     onClose();
-    navigate(authRoutesVariables.loginStudent);
   };
 
   if (!isOpen) return null;

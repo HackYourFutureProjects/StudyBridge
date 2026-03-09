@@ -1,7 +1,7 @@
 import { DropdownMenu } from "./DropdownMenu.tsx";
 import { Button } from "../ui/button/Button.tsx";
 import ArrowDown from "../icons/ArrowDown.tsx";
-import { useState } from "react";
+import React, { useState } from "react";
 import { LinkOption } from "../../types/linkOptionsType.ts";
 
 type ControlPanelTriggerProps = {
@@ -24,7 +24,7 @@ export const ControlPanelTrigger = ({ options }: ControlPanelTriggerProps) => {
         className="items-center gap-2.5"
         onClick={() => setOpenMenu((prev) => !prev)}
       >
-        <span className="text-light-100">Sign in </span>
+        <span className="text-light-100">Sign in</span>
         <ArrowDown />
       </Button>
     </DropdownMenu>

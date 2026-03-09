@@ -1,6 +1,7 @@
 import { GoogleLogin } from "@react-oauth/google";
 import { Intent, Role } from "../../../api/auth/types";
 import { useGoogleLoginMutation } from "../../../features/auth/mutations/useGoogleMutation";
+import { useLocation } from "react-router-dom";
 
 type Props = {
   role: Role;
@@ -15,7 +16,14 @@ export const GoogleAuthButton = ({
   onClose,
   className,
 }: Props) => {
-  const { mutate } = useGoogleLoginMutation({ role, intent, onClose });
+  const location = useLocation();
+  const returnTo = (location.state as { returnTo?: string } | null)?.returnTo;
+  const { mutate } = useGoogleLoginMutation({
+    role,
+    intent,
+    onClose,
+    returnTo,
+  });
 
   return (
     <div className={className}>

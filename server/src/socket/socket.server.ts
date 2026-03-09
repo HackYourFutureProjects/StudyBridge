@@ -15,6 +15,8 @@ import { errorToMessage } from "../utils/errorToMessage.js";
 import { ChatService } from "../services/chat/chat.service.js";
 import { validateChatText } from "./validators/chatText.validator.js";
 import { validateConversationId } from "./validators/conversationId.validator.js";
+import { NotificationService } from "../services/notifications/notifications.service.js";
+import { logError } from "../utils/logging.js";
 
 type SocketData = {
   userId: string;
@@ -178,17 +180,21 @@ function registerChatHandlers(_io: Server, socket: Socket) {
     "chat:sendMessage",
     async (payload: SendMessagePayload, cb?: (ack: SendAck) => void) => {
       const validation = validateChatText(payload?.text, { maxLen: 1000 });
+      const notificationService = container.get<NotificationService>(
+        TYPES.NotificationService,
+      );
       if (!validation.ok) {
         cb?.({ ok: false, error: validation.error });
         return;
       }
 
       try {
-        const { userId } = socket.data as SocketData;
+        const { userId, role } = socket.data as SocketData;
 
         const result = await chatService.sendMessage({
           conversationId: payload.conversationId,
           senderId: userId,
+          senderRole: role,
           text: payload.text,
         });
 
@@ -200,6 +206,27 @@ function registerChatHandlers(_io: Server, socket: Socket) {
           conversationId: payload.conversationId,
           unreadCount: result.unreadCount,
         });
+
+        try {
+          const notification = await notificationService.createNotification({
+            userId: result.recipientId,
+            type: "chatMessages",
+            conversationId: payload.conversationId,
+            sender: result.sender,
+            message: {
+              id: result.message.id,
+              text: result.message.text,
+              senderId: result.message.senderId,
+              createdAt: result.message.createdAt,
+            },
+          });
+
+          _io
+            .to(`user:${result.recipientId}`)
+            .emit("notification:new", notification);
+        } catch (notificationError) {
+          logError(notificationError);
+        }
 
         cb?.({ ok: true, message: result.message });
       } catch (e: unknown) {

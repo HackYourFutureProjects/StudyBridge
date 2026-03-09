@@ -12,6 +12,7 @@ import { videoCallRouter } from "./routes/videoCallRoute.js";
 import { subjectRouter } from "./routes/subjectRoute.js";
 import { uploadRouter } from "./routes/uploadRoute.js";
 import { moderatorRouter } from "./routes/moderatorRoute.js";
+import { notificationsRouter } from "./routes/notificationsRoute.js";
 
 // Create an express server
 const app = express();
@@ -34,6 +35,7 @@ app.use("/api/chat", chatRouter);
 app.use("/api/stream", streamRouter);
 app.use("/api/video-calls", videoCallRouter);
 app.use("/api/moderator", moderatorRouter);
+app.use("/api/notifications", notificationsRouter);
 app.use("/api/upload", uploadRouter);
 app.use(globalErrorMiddleware);
 

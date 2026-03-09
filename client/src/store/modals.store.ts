@@ -24,7 +24,7 @@ type ModalPayload = {
     description?: string;
     onSuccess?: () => void;
   };
-  signIn?: never;
+  signIn?: { returnTo?: string };
   confirmDelete?: {
     title: string;
     message: string;

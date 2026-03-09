@@ -37,6 +37,7 @@ export class ChatService {
   async sendMessage(args: {
     conversationId: string;
     senderId: string;
+    senderRole: "student" | "teacher";
     text: string;
   }) {
     const can = await this.canAccessConversation(
@@ -61,10 +62,30 @@ export class ChatService {
       createdAt: new Date(message.createdAt),
     });
 
+    let senderProfile: {
+      id: string;
+      firstName?: string;
+      lastName?: string;
+      profileImageUrl?: string | null;
+    } | null = null;
+
+    if (args.senderRole === "student") {
+      senderProfile = await this.studentQuery.getStudentById(args.senderId);
+    } else {
+      senderProfile = await this.teacherQuery.getTeacherById(args.senderId);
+    }
+
     return {
       message,
       recipientId: conversationUpdate.recipientId,
       unreadCount: conversationUpdate.unreadCount,
+      sender: {
+        id: args.senderId,
+        name: senderProfile
+          ? `${senderProfile.firstName ?? ""} ${senderProfile.lastName ?? ""}`.trim()
+          : "Unknown user",
+        imageUrl: senderProfile?.profileImageUrl ?? null,
+      },
     };
   }
 
