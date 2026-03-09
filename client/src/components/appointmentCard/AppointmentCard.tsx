@@ -3,6 +3,7 @@ import { AppointmentStatusBar } from "./AppointmentStatusBar";
 import { AppointmentAvatar } from "./AppointmentAvatar";
 import { AppointmentInfo } from "./AppointmentInfo";
 import { AppointmentJoinButton } from "./AppointmentJoinButton";
+import { RejectionReasonDisplay } from "./RejectionReasonDisplay";
 import {
   getStatusStyles,
   isInternalVideoCallLink,
@@ -69,6 +70,8 @@ export const AppointmentCard = ({
           onDelete={isPast ? onDelete : undefined}
         />
       </div>
+
+      <RejectionReasonDisplay appointment={appointment} />
     </div>
   );
 };

@@ -26,7 +26,11 @@ export const StatusButtons = ({
     if (disabled) return;
     event.preventDefault();
     event.stopPropagation();
-    setStatus(newStatus);
+
+    if (newStatus !== "rejected") {
+      setStatus(newStatus);
+    }
+
     onStatusChange?.(newStatus);
   };
 

@@ -111,6 +111,22 @@ export class AppointmentService {
   }
 
   async updateAppointmentStatus(id: string, data: UpdateAppointmentStatusType) {
+    if (data.status === "rejected") {
+      if (!data.rejectionReason) {
+        throw new Error(
+          "Rejection reason is required when rejecting an appointment",
+        );
+      }
+      if (
+        data.rejectionReason.length < 100 ||
+        data.rejectionReason.length > 500
+      ) {
+        throw new Error(
+          "Rejection reason must be between 100 and 500 characters",
+        );
+      }
+    }
+
     const updateData = {
       ...data,
       updatedAt: new Date(),
@@ -258,6 +274,7 @@ export class AppointmentService {
       time: string;
       description?: string;
       status: string;
+      rejectionReason?: string;
       videoCall?: string;
       isRegularStudent?: boolean;
       weeklySchedule?: { day: string; hour: number }[];
@@ -281,6 +298,7 @@ export class AppointmentService {
       time: apt.time,
       description: apt.description,
       status: apt.status,
+      rejectionReason: apt.rejectionReason,
       videoCall: apt.videoCall,
       isRegularStudent: apt.isRegularStudent,
       weeklySchedule: apt.weeklySchedule,

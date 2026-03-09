@@ -14,6 +14,7 @@ export interface Appointment {
   time: string;
   description?: string;
   status: AppointmentStatus;
+  rejectionReason?: string;
   videoCall?: string;
   isRegularStudent?: boolean;
   addedToRegularAt?: string;

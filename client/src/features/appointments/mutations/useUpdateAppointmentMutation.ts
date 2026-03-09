@@ -11,14 +11,23 @@ import { getErrorMessage } from "../../../util/ErrorUtil";
 interface UpdateAppointmentRequest {
   appointmentId: string;
   status: AppointmentStatus;
+  rejectionReason?: string;
 }
 
 const updateAppointmentStatus = async (
   data: UpdateAppointmentRequest,
 ): Promise<Appointment> => {
+  const requestBody: { status: AppointmentStatus; rejectionReason?: string } = {
+    status: data.status,
+  };
+
+  if (data.rejectionReason) {
+    requestBody.rejectionReason = data.rejectionReason;
+  }
+
   const response = await apiProtected.put<Appointment>(
     `/api/appointments/${data.appointmentId}/status`,
-    { status: data.status },
+    requestBody,
   );
   return response.data;
 };
