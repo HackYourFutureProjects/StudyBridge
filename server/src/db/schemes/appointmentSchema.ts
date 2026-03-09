@@ -29,6 +29,7 @@ export const AppointmentSchema = new mongoose.Schema<AppointmentTypeDB>(
       enum: ["pending", "approved", "rejected"],
       default: "pending",
     },
+    rejectionReason: { type: String, default: null },
     videoCall: { type: String, default: null },
     isRegularStudent: { type: Boolean, default: false },
     weeklySchedule: [weeklyScheduleSlotSchema],

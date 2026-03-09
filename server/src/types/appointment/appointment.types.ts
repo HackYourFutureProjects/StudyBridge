@@ -15,6 +15,7 @@ export interface CreateAppointmentType {
 
 export interface UpdateAppointmentStatusType {
   status: "pending" | "approved" | "rejected";
+  rejectionReason?: string;
 }
 
 export interface UpdateWeeklyScheduleType {

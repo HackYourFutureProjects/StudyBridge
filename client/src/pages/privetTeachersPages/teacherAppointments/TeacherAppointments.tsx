@@ -14,6 +14,7 @@ import { useVideoCall } from "../../../features/appointments/hooks/useVideoCall"
 import { useAppointmentTime } from "../../../features/appointments/hooks/useAppointmentTime";
 import { TeacherAppointmentsList } from "../../../components/teacherAppointmentCard/TeacherAppointmentsList";
 import { RegularStudentScheduleModal } from "../../../components/regularStudentScheduleModal/RegularStudentScheduleModal";
+import { RejectAppointmentModal } from "../../../components/appointmentCard/RejectAppointmentModal";
 import { useSetRegularStudentMutation } from "../../../features/appointments/mutations/useSetRegularStudentMutation";
 import { useUpdateWeeklyScheduleMutation } from "../../../features/appointments/mutations/useUpdateWeeklyScheduleMutation";
 import { useRemoveRegularStudentMutation } from "../../../features/appointments/mutations/useRemoveRegularStudentMutation";
@@ -30,6 +31,9 @@ export const TeacherAppointments = () => {
   const [selectedStudent, setSelectedStudent] = useState<Appointment | null>(
     null,
   );
+  const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
+  const [appointmentToReject, setAppointmentToReject] =
+    useState<Appointment | null>(null);
 
   const { open: openModal } = useModalStore();
   const { confirmStartCall } = useVideoCall();
@@ -74,6 +78,15 @@ export const TeacherAppointments = () => {
     appointmentId: string,
     newStatus: AppointmentStatus,
   ) => {
+    if (newStatus === "rejected") {
+      const appointment = appointments.find((apt) => apt.id === appointmentId);
+      if (appointment) {
+        setAppointmentToReject(appointment);
+        setIsRejectModalOpen(true);
+      }
+      return;
+    }
+
     updateAppointmentMutation.mutate({
       appointmentId,
       status: newStatus,
@@ -241,6 +254,17 @@ export const TeacherAppointments = () => {
             .flatMap((apt) => apt.weeklySchedule || []) || []
         }
       />
+
+      {appointmentToReject && (
+        <RejectAppointmentModal
+          appointment={appointmentToReject}
+          isOpen={isRejectModalOpen}
+          onClose={() => {
+            setIsRejectModalOpen(false);
+            setAppointmentToReject(null);
+          }}
+        />
+      )}
     </div>
   );
 };

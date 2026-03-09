@@ -19,6 +19,7 @@ export interface AppointmentTypeDB {
   time: string;
   description?: string;
   status: "pending" | "approved" | "rejected";
+  rejectionReason?: string;
   videoCall?: string;
   isRegularStudent?: boolean;
   weeklySchedule?: WeeklyScheduleSlot[];
