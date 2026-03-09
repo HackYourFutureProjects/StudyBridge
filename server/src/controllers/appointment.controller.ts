@@ -18,12 +18,15 @@ import {
   validatePaginationParams,
   validateAuthorization,
 } from "../utils/validation/requestValidation.util.js";
+import { getIO } from "../socket/io.holder.js";
+import { TeacherQuery } from "../repositories/queryRepositories/teacher.query.js";
 
 @injectable()
 export class AppointmentController {
   constructor(
     @inject(TYPES.AppointmentService)
     protected appointmentService: AppointmentService,
+    @inject(TYPES.TeacherQuery) protected teacherQuery: TeacherQuery,
   ) {}
 
   async createAppointmentController(
@@ -127,6 +130,7 @@ export class AppointmentController {
     res: Response,
     next: NextFunction,
   ) {
+    const io = getIO();
     try {
       const appointment = await this.appointmentService.updateAppointmentStatus(
         req.params.id,
@@ -137,6 +141,33 @@ export class AppointmentController {
         return res.status(404).json({ message: "Appointment not found" });
       }
 
+      const teacher = await this.teacherQuery.getTeacherById(
+        appointment.teacherId,
+      );
+
+      if (
+        appointment.status === "approved" ||
+        appointment.status === "rejected"
+      ) {
+        io?.to(`user:${appointment.studentId}`).emit("notification:new", {
+          id: crypto.randomUUID(),
+          type: "appointmentStatus",
+          appointmentId: appointment.id,
+          status: appointment.status,
+          lesson: appointment.lesson,
+          date: appointment.date,
+          time: appointment.time,
+          createdAt: new Date().toISOString(),
+          isRead: false,
+          actor: {
+            id: appointment.teacherId,
+            name: teacher
+              ? `${teacher.firstName ?? ""} ${teacher.lastName ?? ""}`.trim()
+              : "Unknown teacher",
+            imageUrl: teacher?.profileImageUrl ?? null,
+          },
+        });
+      }
       return res.status(200).json(appointment);
     } catch (error) {
       return next(error);

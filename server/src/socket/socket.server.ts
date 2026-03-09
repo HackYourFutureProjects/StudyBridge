@@ -184,11 +184,12 @@ function registerChatHandlers(_io: Server, socket: Socket) {
       }
 
       try {
-        const { userId } = socket.data as SocketData;
+        const { userId, role } = socket.data as SocketData;
 
         const result = await chatService.sendMessage({
           conversationId: payload.conversationId,
           senderId: userId,
+          senderRole: role,
           text: payload.text,
         });
 
@@ -199,6 +200,21 @@ function registerChatHandlers(_io: Server, socket: Socket) {
         _io.to(`user:${result.recipientId}`).emit("chat:unreadUpdated", {
           conversationId: payload.conversationId,
           unreadCount: result.unreadCount,
+        });
+
+        _io.to(`user:${result.recipientId}`).emit("notification:new", {
+          id: crypto.randomUUID(),
+          type: "chatMessages",
+          conversationId: payload.conversationId,
+          createdAt: new Date().toISOString(),
+          isRead: false,
+          message: {
+            id: result.message.id,
+            text: result.message.text,
+            senderId: result.message.senderId,
+            createdAt: result.message.createdAt,
+          },
+          sender: result.sender,
         });
 
         cb?.({ ok: true, message: result.message });
