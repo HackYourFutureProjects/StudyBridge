@@ -8,7 +8,7 @@ import { getAvatarUrl } from "../../api/upload/upload.api";
 import type { LinkOption } from "../../types/linkOptionsType";
 import { useNotificationFeedStore } from "../../store/notificationFeed.store.ts";
 import { twMerge } from "tailwind-merge";
-import { lockScroll } from "../../util/modalScroll.util.ts";
+import { lockScroll, unlockScroll } from "../../util/modalScroll.util.ts";
 import { NotificationBar } from "../notificationBar/NotificationBar.tsx";
 
 type Props = {
@@ -27,8 +27,17 @@ export const IndicatorTrigger = ({ options, variant = "private" }: Props) => {
   );
 
   const onOpenNotificationsMenu = () => {
-    setOpenNotificationMenu(!openNotificationMenu);
-    lockScroll();
+    setOpenNotificationMenu((prev) => {
+      const next = !prev;
+
+      if (next) {
+        lockScroll();
+      } else {
+        unlockScroll();
+      }
+
+      return next;
+    });
   };
 
   const wrapperClass =

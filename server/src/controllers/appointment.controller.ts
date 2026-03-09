@@ -21,6 +21,7 @@ import {
 import { getIO } from "../socket/io.holder.js";
 import { TeacherQuery } from "../repositories/queryRepositories/teacher.query.js";
 import { NotificationService } from "../services/notifications/notifications.service.js";
+import { logError } from "../utils/logging.js";
 
 @injectable()
 export class AppointmentController {
@@ -134,6 +135,7 @@ export class AppointmentController {
     next: NextFunction,
   ) {
     const io = getIO();
+
     try {
       const appointment = await this.appointmentService.updateAppointmentStatus(
         req.params.id,
@@ -144,45 +146,40 @@ export class AppointmentController {
         return res.status(404).json({ message: "Appointment not found" });
       }
 
-      const teacher = await this.teacherQuery.getTeacherById(
-        appointment.teacherId,
-      );
-
-      if (!teacher) {
-        return res.status(404).json({ message: "Teacher not found" });
-      }
-
       if (
         appointment.status === "approved" ||
         appointment.status === "rejected"
       ) {
-        const teacher = await this.teacherQuery.getTeacherById(
-          appointment.teacherId,
-        );
+        try {
+          const teacher = await this.teacherQuery.getTeacherById(
+            appointment.teacherId,
+          );
 
-        if (!teacher) {
-          return res.status(404).json({ message: "Teacher not found" });
+          if (teacher) {
+            const notification =
+              await this.notificationService.createNotification({
+                userId: appointment.studentId,
+                type: "appointmentStatus",
+                appointmentId: appointment.id,
+                status: appointment.status,
+                actor: {
+                  id: teacher.id,
+                  name: `${teacher.firstName} ${teacher.lastName}`.trim(),
+                  imageUrl: teacher.profileImageUrl ?? null,
+                },
+                lesson: appointment.lesson,
+                date: appointment.date,
+                time: appointment.time,
+              });
+
+            io?.to(`user:${appointment.studentId}`).emit(
+              "notification:new",
+              notification,
+            );
+          }
+        } catch (notificationError) {
+          logError(notificationError);
         }
-
-        const notification = await this.notificationService.createNotification({
-          userId: appointment.studentId,
-          type: "appointmentStatus",
-          appointmentId: appointment.id,
-          status: appointment.status,
-          actor: {
-            id: teacher.id,
-            name: `${teacher.firstName} ${teacher.lastName}`.trim(),
-            imageUrl: teacher.profileImageUrl ?? null,
-          },
-          lesson: appointment.lesson,
-          date: appointment.date,
-          time: appointment.time,
-        });
-
-        io?.to(`user:${appointment.studentId}`).emit(
-          "notification:new",
-          notification,
-        );
       }
 
       return res.status(200).json(appointment);

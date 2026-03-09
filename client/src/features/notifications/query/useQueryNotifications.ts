@@ -23,7 +23,7 @@ export const useNotificationsQuery = () => {
       const msg = getErrorMessage(query.error);
       notifyError(msg ?? "Failed to load notifications");
     }
-  }, [query.isError, query.isSuccess, query.error, notifyError]);
+  }, [query.isError, query.error, notifyError]);
 
   return query;
 };

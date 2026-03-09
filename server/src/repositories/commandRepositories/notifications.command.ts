@@ -5,9 +5,7 @@ import { CreateNotificationInput } from "../../types/notifications/notifications
 
 @injectable()
 export class NotificationCommand {
-  async createNotification(
-    data: Omit<CreateNotificationInput, "id" | "createdAt" | "isRead">,
-  ) {
+  async createNotification(data: CreateNotificationInput) {
     const created = await NotificationModel.create({
       ...data,
       id: randomUUID(),

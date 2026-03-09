@@ -154,14 +154,10 @@ export const DropdownNotificationsMenu = ({
                       )}
                     >
                       <div className="flex flex-col items-start gap-1">
-                        <span className="text-sm font-medium text-light-100">
-                          <div className="flex items-center justify-center gap-1">
-                            {option.sender.name}
-                            <span>
-                              <Badge title="Messages" />
-                            </span>
-                          </div>
-                        </span>
+                        <div className="flex items-center gap-1 text-sm font-medium text-light-100">
+                          <span>{option.sender.name}</span>
+                          <Badge title="Messages" />
+                        </div>
                         <span className="line-clamp-1 text-sm text-light-400">
                           {option.message.text}
                         </span>
@@ -184,14 +180,10 @@ export const DropdownNotificationsMenu = ({
                       )}
                     >
                       <div className="flex flex-col items-start gap-1">
-                        <span className="text-sm font-medium text-light-100">
-                          <div className="flex items-center justify-center gap-1">
-                            {option.actor.name}
-                            <span>
-                              <Badge title="Appointments" />
-                            </span>
-                          </div>
-                        </span>
+                        <div className="flex items-center gap-1 text-sm font-medium text-light-100">
+                          <span>{option.actor.name}</span>
+                          <Badge title="Messages" />
+                        </div>
                         <span className="text-sm text-light-400">
                           {option.status === "approved"
                             ? "Approved your appointment"

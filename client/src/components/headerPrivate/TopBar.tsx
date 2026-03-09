@@ -4,7 +4,7 @@ import { ProfileIndicator } from "../profileIndicator/ProfileIndicator.tsx";
 import { Logo } from "../logo/Logo.tsx";
 import { NotificationBar } from "../notificationBar/NotificationBar.tsx";
 import { useNotificationFeedStore } from "../../store/notificationFeed.store.ts";
-import { lockScroll } from "../../util/modalScroll.util.ts";
+import { lockScroll, unlockScroll } from "../../util/modalScroll.util.ts";
 import { useAuthSessionStore } from "../../store/authSession.store.ts";
 
 export const TopBar = () => {
@@ -17,8 +17,17 @@ export const TopBar = () => {
   const user = useAuthSessionStore((s) => s.user);
 
   const onOpenNotificationsMenu = () => {
-    setOpenNotificationMenu(!openNotificationMenu);
-    lockScroll();
+    setOpenNotificationMenu((prev) => {
+      const next = !prev;
+
+      if (next) {
+        lockScroll();
+      } else {
+        unlockScroll();
+      }
+
+      return next;
+    });
   };
   return (
     <>

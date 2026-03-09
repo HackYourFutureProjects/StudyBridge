@@ -8,18 +8,17 @@ import { getErrorMessage } from "../../../util/ErrorUtil.ts";
 export const useMarkOneNotificationAsRead = () => {
   const queryClient = useQueryClient();
   const notifyError = useNotificationStore((s) => s.error);
-  const setItems = useNotificationFeedStore((s) => s.setItems);
-  const items = useNotificationFeedStore((s) => s.items);
 
   return useMutation({
     mutationFn: markNotificationAsRead,
     onSuccess: (_, notificationId) => {
+      const { items, setItems } = useNotificationFeedStore.getState();
+
       const updated = items.map((item) =>
         item.id === notificationId ? { ...item, isRead: true } : item,
       );
 
       setItems(updated);
-
       queryClient.setQueryData(notificationKeys.root, updated);
     },
     onError: (error) => {

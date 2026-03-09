@@ -7,13 +7,13 @@ import { notificationKeys } from "../../queryKeys.ts";
 
 export const useDeleteAllReadNotifications = () => {
   const queryClient = useQueryClient();
-  const items = useNotificationFeedStore((s) => s.items);
-  const setItems = useNotificationFeedStore((s) => s.setItems);
   const notifyError = useNotificationStore((s) => s.error);
 
   return useMutation({
     mutationFn: deleteAllReadNotifications,
     onSuccess: () => {
+      const { items, setItems } = useNotificationFeedStore.getState();
+
       const unreadOnly = items.filter((item) => !item.isRead);
 
       setItems(unreadOnly);

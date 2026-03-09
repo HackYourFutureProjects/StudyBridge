@@ -16,6 +16,7 @@ import { ChatService } from "../services/chat/chat.service.js";
 import { validateChatText } from "./validators/chatText.validator.js";
 import { validateConversationId } from "./validators/conversationId.validator.js";
 import { NotificationService } from "../services/notifications/notifications.service.js";
+import { logError } from "../utils/logging.js";
 
 type SocketData = {
   userId: string;
@@ -179,6 +180,9 @@ function registerChatHandlers(_io: Server, socket: Socket) {
     "chat:sendMessage",
     async (payload: SendMessagePayload, cb?: (ack: SendAck) => void) => {
       const validation = validateChatText(payload?.text, { maxLen: 1000 });
+      const notificationService = container.get<NotificationService>(
+        TYPES.NotificationService,
+      );
       if (!validation.ok) {
         cb?.({ ok: false, error: validation.error });
         return;
@@ -202,40 +206,27 @@ function registerChatHandlers(_io: Server, socket: Socket) {
           conversationId: payload.conversationId,
           unreadCount: result.unreadCount,
         });
-        const notificationService = container.get<NotificationService>(
-          TYPES.NotificationService,
-        );
-        const notification = await notificationService.createNotification({
-          userId: result.recipientId,
-          type: "chatMessages",
-          conversationId: payload.conversationId,
-          sender: result.sender,
-          message: {
-            id: result.message.id,
-            text: result.message.text,
-            senderId: result.message.senderId,
-            createdAt: result.message.createdAt,
-          },
-        });
 
-        _io
-          .to(`user:${result.recipientId}`)
-          .emit("notification:new", notification);
+        try {
+          const notification = await notificationService.createNotification({
+            userId: result.recipientId,
+            type: "chatMessages",
+            conversationId: payload.conversationId,
+            sender: result.sender,
+            message: {
+              id: result.message.id,
+              text: result.message.text,
+              senderId: result.message.senderId,
+              createdAt: result.message.createdAt,
+            },
+          });
 
-        // _io.to(`user:${result.recipientId}`).emit("notification:new", {
-        //   id: crypto.randomUUID(),
-        //   type: "chatMessages",
-        //   conversationId: payload.conversationId,
-        //   createdAt: new Date().toISOString(),
-        //   isRead: false,
-        //   message: {
-        //     id: result.message.id,
-        //     text: result.message.text,
-        //     senderId: result.message.senderId,
-        //     createdAt: result.message.createdAt,
-        //   },
-        //   sender: result.sender,
-        // });
+          _io
+            .to(`user:${result.recipientId}`)
+            .emit("notification:new", notification);
+        } catch (notificationError) {
+          logError(notificationError);
+        }
 
         cb?.({ ok: true, message: result.message });
       } catch (e: unknown) {

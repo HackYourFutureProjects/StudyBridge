@@ -27,10 +27,13 @@ export const NotificationBar = ({
         variant="link"
         className="relative"
         onClick={onOpenNotificationsMenu}
+        aria-label="Notifications"
+        aria-expanded={openMenu}
+        aria-haspopup="menu"
       >
         <div
           className="absolute right-2 top-1 flex items-center justify-center
-          text-[12px] min-w-4 min-h-4 bg-danger-100 rounded-full text-light-100"
+    text-[12px] min-w-4 min-h-4 bg-danger-100 rounded-full text-light-100"
         >
           {unreadNotifications}
         </div>
