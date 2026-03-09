@@ -6,10 +6,10 @@ import DefaultAvatarIcon from "../icons/DefaultAvatarIcon";
 import { useAuthSessionStore } from "../../store/authSession.store";
 import { getAvatarUrl } from "../../api/upload/upload.api";
 import type { LinkOption } from "../../types/linkOptionsType";
-import Bell from "../icons/Bell.tsx";
 import { useNotificationFeedStore } from "../../store/notificationFeed.store.ts";
-import { DropdownNotificationsMenu } from "../DropdownNotificationsMenu/DropdownNotificationsMenu.tsx";
 import { twMerge } from "tailwind-merge";
+import { lockScroll } from "../../util/modalScroll.util.ts";
+import { NotificationBar } from "../notificationBar/NotificationBar.tsx";
 
 type Props = {
   options: LinkOption[];
@@ -20,37 +20,30 @@ export const IndicatorTrigger = ({ options, variant = "private" }: Props) => {
   const [openMenu, setOpenMenu] = useState(false);
   const [openNotificationMenu, setOpenNotificationMenu] = useState(false);
   const user = useAuthSessionStore((s) => s.user);
-  const notifications = useNotificationFeedStore((s) => s.items);
   const avatarUrl = getAvatarUrl(user?.profileImageUrl || null);
-
-  const wrapperClass =
-    variant === "private" ? "hidden md:flex items-center" : "flex items-center";
+  const notifications = useNotificationFeedStore((s) => s.items);
   const unreadNotifications = useNotificationFeedStore(
     (s) => s.items.filter((item) => !item.isRead).length,
   );
+
+  const onOpenNotificationsMenu = () => {
+    setOpenNotificationMenu(!openNotificationMenu);
+    lockScroll();
+  };
+
+  const wrapperClass =
+    variant === "private" ? "hidden md:flex items-center" : "flex items-center";
+
   return (
     <div className={twMerge("flex gap-5", wrapperClass)}>
-      <div className="relative">
-        <Button
-          variant="link"
-          className="relative"
-          onClick={() => setOpenNotificationMenu((prev) => !prev)}
-        >
-          <div
-            className="absolute right-2 top-1 flex items-center justify-center
-          text-[12px] min-w-4 min-h-4 bg-danger-100 rounded-full text-light-100"
-          >
-            {unreadNotifications}
-          </div>
-          <Bell />
-        </Button>
-        <DropdownNotificationsMenu
-          setOpenMenu={setOpenNotificationMenu}
-          openMenu={openNotificationMenu}
-          options={notifications}
-          currentRole={user?.role}
-        />
-      </div>
+      <NotificationBar
+        options={notifications}
+        openMenu={openNotificationMenu}
+        onOpenNotificationsMenu={onOpenNotificationsMenu}
+        unreadNotifications={unreadNotifications}
+        setOpenNotificationMenu={setOpenNotificationMenu}
+        currentRole={user?.role}
+      />
       <div className="bg-[#E4E4E4] w-px h-8.25" />
       <DropdownMenu
         openMenu={openMenu}

@@ -20,6 +20,7 @@ import {
 } from "../utils/validation/requestValidation.util.js";
 import { getIO } from "../socket/io.holder.js";
 import { TeacherQuery } from "../repositories/queryRepositories/teacher.query.js";
+import { NotificationService } from "../services/notifications/notifications.service.js";
 
 @injectable()
 export class AppointmentController {
@@ -27,6 +28,8 @@ export class AppointmentController {
     @inject(TYPES.AppointmentService)
     protected appointmentService: AppointmentService,
     @inject(TYPES.TeacherQuery) protected teacherQuery: TeacherQuery,
+    @inject(TYPES.NotificationService)
+    protected notificationService: NotificationService,
   ) {}
 
   async createAppointmentController(
@@ -145,29 +148,43 @@ export class AppointmentController {
         appointment.teacherId,
       );
 
+      if (!teacher) {
+        return res.status(404).json({ message: "Teacher not found" });
+      }
+
       if (
         appointment.status === "approved" ||
         appointment.status === "rejected"
       ) {
-        io?.to(`user:${appointment.studentId}`).emit("notification:new", {
-          id: crypto.randomUUID(),
+        const teacher = await this.teacherQuery.getTeacherById(
+          appointment.teacherId,
+        );
+
+        if (!teacher) {
+          return res.status(404).json({ message: "Teacher not found" });
+        }
+
+        const notification = await this.notificationService.createNotification({
+          userId: appointment.studentId,
           type: "appointmentStatus",
           appointmentId: appointment.id,
           status: appointment.status,
+          actor: {
+            id: teacher.id,
+            name: `${teacher.firstName} ${teacher.lastName}`.trim(),
+            imageUrl: teacher.profileImageUrl ?? null,
+          },
           lesson: appointment.lesson,
           date: appointment.date,
           time: appointment.time,
-          createdAt: new Date().toISOString(),
-          isRead: false,
-          actor: {
-            id: appointment.teacherId,
-            name: teacher
-              ? `${teacher.firstName ?? ""} ${teacher.lastName ?? ""}`.trim()
-              : "Unknown teacher",
-            imageUrl: teacher?.profileImageUrl ?? null,
-          },
         });
+
+        io?.to(`user:${appointment.studentId}`).emit(
+          "notification:new",
+          notification,
+        );
       }
+
       return res.status(200).json(appointment);
     } catch (error) {
       return next(error);

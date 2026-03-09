@@ -37,6 +37,10 @@ import { SubjectsController } from "../controllers/subjects.controller.js";
 import { SubjectsQuery } from "../repositories/queryRepositories/subjects.query.js";
 import { ModeratorController } from "../controllers/moderator.controller.js";
 import { ModeratorQuery } from "../repositories/queryRepositories/moderator.query.js";
+import { NotificationCommand } from "../repositories/commandRepositories/notifications.command.js";
+import { NotificationQuery } from "../repositories/queryRepositories/notifications.query.js";
+import { NotificationService } from "../services/notifications/notifications.service.js";
+import { NotificationController } from "../controllers/notification.controller.js";
 
 export const container = new Container();
 
@@ -111,3 +115,16 @@ container
   .bind<ModeratorController>(TYPES.ModeratorController)
   .to(ModeratorController);
 container.bind<ModeratorQuery>(TYPES.ModeratorQuery).to(ModeratorQuery);
+//notifications
+container
+  .bind<NotificationCommand>(TYPES.NotificationCommand)
+  .to(NotificationCommand);
+container
+  .bind<NotificationQuery>(TYPES.NotificationQuery)
+  .to(NotificationQuery);
+container
+  .bind<NotificationService>(TYPES.NotificationService)
+  .to(NotificationService);
+container
+  .bind<NotificationController>(TYPES.NotificationController)
+  .to(NotificationController);

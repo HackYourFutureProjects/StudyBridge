@@ -34,52 +34,28 @@ export type AppNotification =
       isRead: boolean;
     };
 
-export type NewAppNotification =
-  | {
-      type: "chatMessages";
-      conversationId: string;
-      sender: NotificationPerson;
-      message: {
-        id: string;
-        text: string;
-        senderId: string;
-        createdAt: string;
-      };
-    }
-  | {
-      type: "appointmentStatus";
-      appointmentId: string;
-      status: "approved" | "rejected";
-      actor: NotificationPerson;
-      lesson: string;
-      date: string;
-      time: string;
-    };
-
 type NotificationFeedState = {
   items: AppNotification[];
-  addNotification: (notification: NewAppNotification) => void;
-  markAllAsRead: () => void;
+  setItems: (items: AppNotification[]) => void;
+  addNotification: (notification: AppNotification) => void;
+  markAllAsReadLocal: () => void;
 };
 
 export const useNotificationFeedStore = create<NotificationFeedState>(
   (set) => ({
     items: [],
 
+    setItems: (items) =>
+      set({
+        items,
+      }),
+
     addNotification: (notification) =>
       set((state) => ({
-        items: [
-          {
-            ...notification,
-            id: crypto.randomUUID(),
-            createdAt: new Date().toISOString(),
-            isRead: false,
-          } as AppNotification,
-          ...state.items,
-        ],
+        items: [notification, ...state.items],
       })),
 
-    markAllAsRead: () =>
+    markAllAsReadLocal: () =>
       set((state) => ({
         items: state.items.map((item) => ({ ...item, isRead: true })),
       })),
