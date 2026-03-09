@@ -70,6 +70,7 @@ export type TeacherViewType = {
   authProvider: "local" | "google";
   googleSub: string | null;
   status: TeacherStatus;
+  isPublic: boolean;
 };
 
 type SortDirection = "asc" | "desc";
@@ -119,3 +120,5 @@ export type UpdateTeacherProfileInput = {
     hourlyRate: number;
   }>;
 };
+
+export type UpdateTeacherVisibilityInput = { isPublic: boolean };

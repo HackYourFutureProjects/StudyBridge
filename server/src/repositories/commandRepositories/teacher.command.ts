@@ -5,6 +5,7 @@ import {
   TeacherStatus,
   TeacherTypeDB,
 } from "../../db/schemes/types/teacher.types.js";
+import { NotFoundError } from "../../utils/error.util.js";
 
 @injectable()
 export class TeacherCommand {
@@ -125,6 +126,21 @@ export class TeacherCommand {
       return updated.matchedCount === 1;
     } catch (error) {
       throw new HttpError(500, "Password was not updated", { cause: error });
+    }
+  }
+
+  async updateTeacherVisibility(
+    id: string,
+    data: { isPublic: boolean; status: TeacherStatus },
+  ): Promise<void> {
+    // Keep visibility preference and effective public status in sync atomically.
+    const updated = await TeacherModel.updateOne(
+      { id },
+      { $set: { isPublic: data.isPublic, status: data.status } },
+    );
+
+    if (updated.matchedCount === 0) {
+      throw new NotFoundError("Teacher not found", { id });
     }
   }
 }

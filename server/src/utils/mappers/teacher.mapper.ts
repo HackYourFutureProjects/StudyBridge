@@ -37,5 +37,6 @@ export const teacherMapper = (
     authProvider: teacher.authProvider,
     googleSub: teacher.googleSub,
     status: teacher.status,
+    isPublic: teacher.isPublic,
   };
 };

@@ -16,6 +16,7 @@ import {
   TeacherOutputModel,
   UpdateTeacherProfileInput,
   QueryTeacherForModeratorInput,
+  UpdateTeacherVisibilityInput,
 } from "../types/teacher/teacher.types.js";
 import { validateAuthorization } from "../utils/validation/requestValidation.util.js";
 
@@ -159,6 +160,16 @@ export class TeacherController {
       );
 
       if (!updated) return res.sendStatus(404);
+
+      const teacher = await this.teacherQuery.getTeacherById(teacherId);
+      // If teacher removes all schedule slots, auto-switch to private draft.
+      if (teacher && !this.isProfileComplete(teacher)) {
+        await this.teacherService.updateTeacherVisibility({
+          teacherId,
+          isPublic: false,
+        });
+      }
+
       return res.status(200).json(updated);
     } catch (err) {
       return next(err);
@@ -196,9 +207,57 @@ export class TeacherController {
         return res.status(404).json({ message: "Teacher not found" });
       }
 
+      if (!this.isProfileComplete(updatedTeacher)) {
+        // If profile becomes incomplete, force private + draft.
+        await this.teacherService.updateTeacherVisibility({
+          teacherId,
+          isPublic: false,
+        });
+
+        // Re-fetch to return the final persisted state (status/isPublic included).
+        const refreshedTeacher =
+          await this.teacherQuery.getTeacherById(teacherId);
+        if (!refreshedTeacher) {
+          return res.status(404).json({ message: "Teacher not found" });
+        }
+        return res.status(200).json(refreshedTeacher);
+      }
+
+      // Profile is complete, so the updated profile snapshot is already valid.
       return res.status(200).json(updatedTeacher);
     } catch (err) {
       return next(err);
     }
+  }
+
+  async updateMyVisibility(
+    req: RequestWithBody<UpdateTeacherVisibilityInput>,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const teacherId = validateAuthorization(req.auth?.userId);
+      const { isPublic } = req.body;
+      // Teacher controls publish intent; service enforces completeness rules.
+      await this.teacherService.updateTeacherVisibility({
+        teacherId,
+        isPublic,
+      });
+      return res.sendStatus(204);
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  private isProfileComplete(teacher: {
+    subjects: unknown[];
+    availability: Record<string, { start: string; end: string }[]>;
+  }) {
+    // complete profile means at least one subject and one schedule slot.
+    const hasSubjects = teacher.subjects.length > 0;
+    const hasSchedule = Object.values(teacher.availability).some(
+      (slots) => slots.length > 0,
+    );
+    return hasSubjects && hasSchedule;
   }
 }

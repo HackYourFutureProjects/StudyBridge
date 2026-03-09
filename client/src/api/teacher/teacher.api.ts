@@ -78,3 +78,7 @@ export async function updateMyProfileApi(data: UpdateTeacherProfileInput) {
   const res = await apiProtected.put<TeacherType>("/api/teachers/me", data);
   return res.data;
 }
+
+export async function updateMyPublishApi(payload: { isPublic: boolean }) {
+  return apiProtected.patch("/api/teachers/me/publish", payload);
+}

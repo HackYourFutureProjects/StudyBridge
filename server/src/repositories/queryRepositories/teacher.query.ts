@@ -61,6 +61,9 @@ export class TeacherQuery {
       const filter: Record<string, unknown> = {};
       if (status !== "all") {
         filter.status = status;
+      } else {
+        // Default moderator queue excludes drafts.
+        filter.status = { $ne: "draft" };
       }
 
       const items = await TeacherModel.find(filter)
@@ -69,7 +72,7 @@ export class TeacherQuery {
         .limit(+pageSize)
         .lean();
 
-      const totalCount = await TeacherModel.countDocuments();
+      const totalCount = await TeacherModel.countDocuments(filter);
 
       const pagesCount = Math.ceil(totalCount / +pageSize);
 
@@ -234,13 +237,12 @@ export class TeacherQuery {
         updateFields.profileImageUrl = updates.profileImageUrl;
       if (updates.education !== undefined)
         updateFields.education = updates.education;
-      if (updates.subjects !== undefined)
+      if (updates.subjects !== undefined) {
         updateFields.subjects = updates.subjects;
-
-      if (updates.subjects) {
-        updateFields.priceFrom = Math.min(
-          ...updates.subjects.map((s) => s.hourlyRate),
-        );
+        updateFields.priceFrom =
+          updates.subjects.length > 0
+            ? Math.min(...updates.subjects.map((s) => s.hourlyRate))
+            : 0;
       }
 
       const updatedTeacher = await TeacherModel.findOneAndUpdate(

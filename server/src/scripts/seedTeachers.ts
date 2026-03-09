@@ -134,6 +134,7 @@ const createTeacherDoc = async (index: number): Promise<TeacherTypeDB> => {
     authProvider: "local",
     googleSub: null,
     status: "draft",
+    isPublic: false,
   };
 };
 
@@ -179,6 +180,7 @@ export const seedTeachers = async () => {
             availability: teacher.availability,
             address: teacher.address,
             role: teacher.role,
+            isPublic: teacher.isPublic,
           },
           $setOnInsert: {
             id: teacher.id,

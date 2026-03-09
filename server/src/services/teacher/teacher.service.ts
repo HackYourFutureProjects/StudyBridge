@@ -86,6 +86,7 @@ export class TeacherService {
       createdAt: new Date(),
       status: "draft",
       role,
+      isPublic: false,
     };
 
     try {
@@ -121,6 +122,62 @@ export class TeacherService {
     }
 
     return await this.teacherCommand.updateTeacherStatus(id, status);
+  }
+
+  async updateTeacherVisibility({
+    teacherId,
+    isPublic,
+  }: {
+    teacherId: string;
+    isPublic: boolean;
+  }): Promise<void> {
+    const teacher = await this.teacherQuery.getTeacherById(teacherId);
+
+    if (!teacher) {
+      throw new NotFoundError("Teacher not found", { id: teacherId });
+    }
+
+    // Teacher cannot self-publish when moderated to blocked/rejected.
+    if (
+      isPublic &&
+      (teacher.status === "blocked" || teacher.status === "rejected")
+    ) {
+      throw new HttpError(403, "You cannot publish this profile");
+    }
+
+    // explicit unpublish: always make profile private and hidden from public list.
+    if (!isPublic) {
+      // Preserve moderated statuses; only active should move back to draft.
+      const nextStatus: TeacherStatus =
+        teacher.status === "blocked" || teacher.status === "rejected"
+          ? teacher.status
+          : "draft";
+
+      await this.teacherCommand.updateTeacherVisibility(teacherId, {
+        isPublic: false,
+        status: nextStatus,
+      });
+      return;
+    }
+
+    // publish is allowed only for complete profiles.
+    const hasSubjects = teacher.subjects.length > 0;
+    const hasSchedule = Object.values(teacher.availability).some(
+      (slots) => slots.length > 0,
+    );
+
+    if (!hasSubjects || !hasSchedule) {
+      throw new HttpError(
+        400,
+        "Add at least 1 subject and 1 schedule slot before publishing",
+      );
+    }
+
+    // profile is complete and teacher requested publish.
+    await this.teacherCommand.updateTeacherVisibility(teacherId, {
+      isPublic: true,
+      status: "pending",
+    });
   }
 
   async _generateHash(password: string, salt: string) {
