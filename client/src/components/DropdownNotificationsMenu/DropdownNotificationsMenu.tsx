@@ -91,7 +91,11 @@ export const DropdownNotificationsMenu = ({
   return (
     <div
       ref={wrapperRef}
-      className={twMerge("absolute right-0 top-[130%] z-400", classNames)}
+      className={twMerge(
+        "absolute right-0 top-[130%] z-400",
+        openMenu ? "pointer-events-auto" : "pointer-events-none",
+        classNames,
+      )}
     >
       <div
         className={twMerge(
