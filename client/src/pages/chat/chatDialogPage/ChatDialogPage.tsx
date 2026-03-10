@@ -21,32 +21,44 @@ export const ChatDialogPage = () => {
   const { id: conversationId } = useParams();
   const socket = useSocketStore((s) => s.socket);
   const myUserId = useAuthSessionStore((s) => s.user?.id);
-  const { data: messages = [] } = useChatMessagesQuery(conversationId);
+
   const { data: conversations = [] } = useChatConversationsQuery();
+
   const conversation = useMemo(
     () => conversations.find((c) => c.id === conversationId),
     [conversations, conversationId],
   );
 
+  const { data: messages = [] } = useChatMessagesQuery(
+    conversationId,
+    Boolean(conversation),
+  );
+
   const peer = conversation?.peer;
   const peerId = peer?.id;
 
-  useChatRealtime({ socket, conversationId, myUserId });
+  useChatRealtime({
+    socket,
+    conversationId: conversation ? conversationId : undefined,
+    myUserId,
+  });
 
   const { typingUserId } = useTypingIndicator({
     socket,
-    conversationId,
+    conversationId: conversation ? conversationId : undefined,
     myUserId,
   });
+
   const { emitTyping, stopTypingNow } = useTypingEmitter({
     socket,
-    conversationId,
+    conversationId: conversation ? conversationId : undefined,
   });
 
   const [text, setText] = useState("");
+
   const send = useSendChatMessage({
     socket,
-    conversationId,
+    conversationId: conversation ? conversationId : undefined,
     stopTypingNow,
     onSuccess: () => setText(""),
   });
@@ -56,11 +68,12 @@ export const ChatDialogPage = () => {
   );
 
   useEffect(() => {
-    if (!conversationId || !socket) {
+    if (!conversationId || !socket || !conversation) {
       return;
     }
-    void markConversationAsRead(conversationId);
-  }, [conversationId, socket]);
+
+    void markConversationAsRead(conversationId).catch(() => {});
+  }, [conversationId, socket, conversation]);
 
   if (!conversation) {
     return <div className="p-4 text-light-500">Conversation not found</div>;

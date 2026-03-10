@@ -182,7 +182,7 @@ export const DropdownNotificationsMenu = ({
                       <div className="flex flex-col items-start gap-1">
                         <div className="flex items-center gap-1 text-sm font-medium text-light-100">
                           <span>{option.actor.name}</span>
-                          <Badge title="Messages" />
+                          <Badge title="Appointments" />
                         </div>
                         <span className="text-sm text-light-400">
                           {option.status === "approved"

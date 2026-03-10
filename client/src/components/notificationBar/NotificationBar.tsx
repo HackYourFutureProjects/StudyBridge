@@ -31,12 +31,14 @@ export const NotificationBar = ({
         aria-expanded={openMenu}
         aria-haspopup="menu"
       >
-        <div
-          className="absolute right-2 top-1 flex items-center justify-center
+        {unreadNotifications > 0 && (
+          <div
+            className="absolute right-2 top-1 flex items-center justify-center
     text-[12px] min-w-4 min-h-4 bg-danger-100 rounded-full text-light-100"
-        >
-          {unreadNotifications}
-        </div>
+          >
+            {unreadNotifications}
+          </div>
+        )}
         <Bell />
       </Button>
       <DropdownNotificationsMenu

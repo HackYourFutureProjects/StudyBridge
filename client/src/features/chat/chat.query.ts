@@ -9,10 +9,14 @@ export function useChatConversationsQuery() {
   });
 }
 
-export function useChatMessagesQuery(conversationId: string | undefined) {
+export function useChatMessagesQuery(
+  conversationId: string | undefined,
+  enabled = true,
+) {
   return useQuery({
     queryKey: chatKeys.messages(conversationId ?? ""),
     queryFn: () => getMessages(conversationId as string),
-    enabled: Boolean(conversationId),
+    enabled: Boolean(conversationId) && enabled,
+    retry: false,
   });
 }
