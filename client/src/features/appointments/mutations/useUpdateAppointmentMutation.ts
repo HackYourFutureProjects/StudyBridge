@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { queryKeys } from "../../queryKeys";
+import { chatKeys, queryKeys } from "../../queryKeys";
 import {
   Appointment,
   AppointmentStatus,
@@ -46,6 +46,7 @@ export const useUpdateAppointmentMutation = () => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.teacherAppointments(appointment.teacherId),
       });
+      queryClient.invalidateQueries({ queryKey: chatKeys.conversations });
       queryClient.invalidateQueries({
         queryKey: queryKeys.studentAppointments(appointment.studentId),
       });
